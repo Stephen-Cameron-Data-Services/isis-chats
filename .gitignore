@@ -11,6 +11,7 @@ logs/
 .idea
 *.iml
 
+
 JArchitectOut/
 *.jdproj
 
