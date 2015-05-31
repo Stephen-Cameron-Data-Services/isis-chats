@@ -30,8 +30,8 @@ import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
 
-@DomainService(repositoryFor = StaffMember.class)
-@DomainServiceLayout(menuOrder = "100")
+//@DomainService(repositoryFor = StaffMember.class)
+//@DomainServiceLayout(menuOrder = "100")
 public class StaffMembers {
 
     //region > listAll (action)

@@ -29,7 +29,7 @@ public class HomePageViewModel {
 
     //region > title
     public String title() {
-        return getObjects().size() + " objects";
+        return "Chats Clients";
     }
     //endregion
 

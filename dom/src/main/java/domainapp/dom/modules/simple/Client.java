@@ -36,6 +36,7 @@ import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.Title;
 import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
@@ -143,23 +144,28 @@ public class Client implements Comparable<Client> {
 	}
 
 	@MemberOrder(name = "conversations", sequence = "1")
-	public void addConversation(final String subject, final String notes) {
+	public Client addConversation(
+            @ParameterLayout(
+                    named="Subject",
+                    describedAs="The subject (heading) of the conversation, displayed in table view"
+                )
+			final String subject, 
+            @ParameterLayout(
+                    named="Notes",
+                    describedAs="Notes about the conversation. "
+                )
+			final String notes) {
 		Conversation conversation = container
 				.newTransientInstance(Conversation.class);
 		conversation.setDate(new Date());
 		conversation.setSubject(subject);
 		conversation.setNotes(notes);
-		conversation.setStaffMember(container.getUser());
+		conversation.setStaffMember(container.getUser().getName());
 		container.persist(conversation);
 		addToConversations(conversation);
-		return;
+		return this;
 	}
 
-	@MemberOrder(name = "conversations", sequence = "2")
-	public void removeConversation(final Conversation conversation) {
-		removeFromConversations(conversation);
-		return;
-	}
 
 	public void addToConversations(final Conversation conversation) {
 		// check for no-op
@@ -175,16 +181,19 @@ public class Client implements Comparable<Client> {
 		// onAddToConversations(conversation);
 	}
 
-	public void removeFromConversations(final Conversation conversation) {
+	@Programmatic
+	public Client removeConversation(final Conversation conversation) {
 		// check for no-op
 		if (conversation == null || !getConversations().contains(conversation)) {
-			return;
+			return this;
 		}
 		// dissociate arg
-		conversation.setClient(null);
 		getConversations().remove(conversation);
 		// additional business logic
 		// onRemoveFromConversations(conversation);
+		//kill the conversation!
+		container.remove(conversation);
+		return this;
 	}
 
 	// region > injected services
