@@ -18,6 +18,7 @@
  */
 package domainapp.dom.modules.simple;
 
+import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.VersionStrategy;
 import org.apache.isis.applib.DomainObjectContainer;
@@ -29,6 +30,7 @@ import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Property;
@@ -41,6 +43,7 @@ import org.apache.isis.applib.util.ObjectContracts;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -84,6 +87,7 @@ public class Activity implements Comparable<Activity> {
 
     @javax.jdo.annotations.Column(allowsNull="false", length = 40)
     @Title(sequence="1")
+    @MemberOrder(name="General", sequence = "1")
     @Property(
             editing = Editing.DISABLED
     )
@@ -135,6 +139,24 @@ public class Activity implements Comparable<Activity> {
 
     //endregion
     
+    // {{ ActivityProvider (property)
+	private ActivityProvider provider;
+
+	@Column(allowsNull="true")
+	@MemberOrder(name="General", sequence = "2")
+	public ActivityProvider getProvider() {
+		return provider;
+	}
+
+	public void setProvider(final ActivityProvider provider) {
+		this.provider = provider;
+	}
+	
+	public List<ActivityProvider> choicesProvider(){
+		return activityProviders.listAllProviders();
+	}
+	// }}
+
     //region > participants
    
     private List<Client> participants = new ArrayList<Client>();
@@ -154,7 +176,16 @@ public class Activity implements Comparable<Activity> {
     	addToParticipants(participant);
     	return this;
     }
+    
     @MemberOrder(name="participants",sequence="2")
+    public Activity addNewParticipant(
+            final @ParameterLayout(named="Name") String name){
+    	Client participant = clients.create(name); 
+    	addToParticipants(participant);
+    	return this;
+    }
+    
+    @MemberOrder(name="participants",sequence="3")
     public Activity removeParticipant(
     		final Client participant){
     	removeFromParticipants(participant);
@@ -196,16 +227,84 @@ public class Activity implements Comparable<Activity> {
 		getParticipants().remove(partipipant);
 		// additional business logic
 		//onRemoveFromParticipants(partipipant);
-	}
-    //region
-    
+	}  
     //endregion
+	
+	// {{ Events (Collection)
+	private List<ActivityEvent> events = new ArrayList<ActivityEvent>();
+
+	@CollectionLayout(render = RenderType.EAGERLY)
+	public List<ActivityEvent> getEvents() {
+		return events;
+	}
+
+	public void setEvents(final List<ActivityEvent> events) {
+		this.events = events;
+	}
+	
+    @MemberOrder(name="events",sequence="1")
+    public Activity addNewEvent(
+            final @Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Event Name") String name,
+            final @Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Event Date") Date date){
+    	ActivityEvent event = container.newTransientInstance(ActivityEvent.class);
+    	event.setName(name);
+    	event.setDate(date);
+    	container.persistIfNotAlready(event);
+    	addToEvents(event);
+    	return this;
+    }
+    
+    @MemberOrder(name="events",sequence="2")
+    public Activity removeEvent(
+    		final ActivityEvent event){
+    	removeFromEvents(event);
+    	return this;
+    }
+    
+    public List<ActivityEvent> choices0RemoveEvent(){
+    	return events;
+    }
+	
+	public void addToEvents(final ActivityEvent event) {
+		// check for no-op
+		if (event == null || getEvents().contains(event)) {
+			return;
+		}
+		// associate new
+		getEvents().add(event);
+		// additional business logic
+		onAddToEvents(event);
+	}
+
+	public void removeFromEvents(final ActivityEvent event) {
+		// check for no-op
+		if (event == null || !getEvents().contains(event)) {
+			return;
+		}
+		// dissociate existing
+		getEvents().remove(event);
+		// additional business logic
+		onRemoveFromEvents(event);
+	}
+
+	protected void onAddToEvents(final ActivityEvent event) {
+	}
+
+	protected void onRemoveFromEvents(final ActivityEvent event) {
+	}
+	// }}
+
+
 
     //region > injected services
     
     @javax.inject.Inject
     @SuppressWarnings("unused")
     private Clients clients;
+    
+    @javax.inject.Inject
+    @SuppressWarnings("unused")
+    private ActivityProviders activityProviders;
 
     @javax.inject.Inject
     @SuppressWarnings("unused")

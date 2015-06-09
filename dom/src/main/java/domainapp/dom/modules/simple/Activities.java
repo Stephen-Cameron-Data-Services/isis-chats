@@ -18,6 +18,7 @@
  */
 package domainapp.dom.modules.simple;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
@@ -25,64 +26,53 @@ import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
+import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
 
 @DomainService(repositoryFor = Activity.class)
-@DomainServiceLayout(menuOrder = "30")
+@DomainServiceLayout(named = "Activities", menuBar = MenuBar.PRIMARY, menuOrder = "30.1")
 public class Activities {
 
-    //region > listAll (action)
-    @Action(
-            semantics = SemanticsOf.SAFE
-    )
-    @ActionLayout(
-            bookmarking = BookmarkPolicy.AS_ROOT
-    )
-    @MemberOrder(sequence = "1")
-    public List<Activity> listAll() {
-        return container.allInstances(Activity.class);
-    }
-    //endregion
+	// region > listAll (action)
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@MemberOrder(sequence = "1")
+	public List<Activity> listAll() {
+		return container.allInstances(Activity.class);
+	}
 
-    //region > findByName (action)
-    @Action(
-            semantics = SemanticsOf.SAFE
-    )
-    @ActionLayout(
-            bookmarking = BookmarkPolicy.AS_ROOT
-    )
-    @MemberOrder(sequence = "2")
-    public List<Activity> findByName(
-            @ParameterLayout(named="Name")
-            final String name
-    ) {
-        return container.allMatches(
-                new QueryDefault<>(
-                        Activity.class,
-                        "findByName",
-                        "name", name));
-    }
-    //endregion
+	// endregion
 
-    //region > create (action)
-    @MemberOrder(sequence = "3")
-    public Activity create(
-            final @ParameterLayout(named="Name") String name) {
-        final Activity obj = container.newTransientInstance(Activity.class);
-        obj.setName(name);
-        container.persistIfNotAlready(obj);
-        return obj;
-    }
+	// region > findByName (action)
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@MemberOrder(sequence = "2")
+	public List<Activity> findByName(
+			@ParameterLayout(named = "Name") final String name) {
+		return container.allMatches(new QueryDefault<>(Activity.class,
+				"findByName", "name", name));
+	}
 
-    //endregion
+	// endregion
 
-    //region > injected services
+	// region > create (action)
+	@MemberOrder(sequence = "3")
+	public Activity create(final @ParameterLayout(named = "Name") String name) {
+		final Activity obj = container.newTransientInstance(Activity.class);
+		obj.setName(name);
+		container.persistIfNotAlready(obj);
+		return obj;
+	}
 
-    @javax.inject.Inject 
-    DomainObjectContainer container;
+	// endregion
 
-    //endregion
+	// region > injected services
+
+	@javax.inject.Inject
+	DomainObjectContainer container;
+
+	// endregion
 }

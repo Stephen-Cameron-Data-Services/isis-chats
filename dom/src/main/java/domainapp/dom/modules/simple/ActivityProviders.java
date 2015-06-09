@@ -18,6 +18,7 @@
  */
 package domainapp.dom.modules.simple;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
@@ -25,63 +26,55 @@ import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
+import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
 
-@DomainService(repositoryFor = Client.class)
-@DomainServiceLayout(menuOrder = "20")
-public class Clients {
+@DomainService(repositoryFor = ActivityProvider.class)
+@DomainServiceLayout(named = "Activities", menuBar = MenuBar.PRIMARY, menuOrder = "30.2")
+public class ActivityProviders {
 
-    //region > listAll (action)
-    @Action(
-            semantics = SemanticsOf.SAFE
-    )
-    @ActionLayout(
-            bookmarking = BookmarkPolicy.AS_ROOT
-    )
-    @MemberOrder(sequence = "1")
-    public List<Client> listAll() {
-        return container.allInstances(Client.class);
-    }
-    //endregion
+	// region > listAll (action)
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@MemberOrder(sequence = "1")
+	public List<ActivityProvider> listAllProviders() {
+		return container.allInstances(ActivityProvider.class);
+	}
 
-    //region > findByName (action)
-    @Action(
-            semantics = SemanticsOf.SAFE
-    )
-    @ActionLayout(
-            bookmarking = BookmarkPolicy.AS_ROOT
-    )
-    @MemberOrder(sequence = "2")
-    public List<Client> findByName(
-            @ParameterLayout(named="Name")
-            final String name
-    ) {
-        return container.allMatches(
-                new QueryDefault<>(
-                        Client.class,
-                        "findByName",
-                        "name", name));
-    }
-    //endregion
+	// endregion
 
-    //region > create (action)
-    @MemberOrder(sequence = "3")
-    public Client create(
-            final @ParameterLayout(named="Name") String name) {
-        final Client obj = container.newTransientInstance(Client.class);
-        obj.setName(name);
-        container.persistIfNotAlready(obj);
-        return obj;
-    }
-    //endregion
-    
-    //region > injected services
+	// region > findByName (action)
+	/*@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@MemberOrder(sequence = "2")
+	public List<ActivityProvider> findByName(
+			@ParameterLayout(named = "Name") final String name) {
+		return container.allMatches(new QueryDefault<>(ActivityProvider.class,
+				"findByName", "name", name));
+	}*/
 
-    @javax.inject.Inject 
-    DomainObjectContainer container;
+	// endregion
 
-    //endregion
+	// region > create (action)
+	@MemberOrder(sequence = "3")
+	public ActivityProvider createProvider(
+			final @ParameterLayout(named = "Name") String name) {
+		final ActivityProvider obj = container
+				.newTransientInstance(ActivityProvider.class);
+		obj.setName(name);
+		container.persistIfNotAlready(obj);
+		return obj;
+	}
+
+	// endregion
+
+	// region > injected services
+
+	@javax.inject.Inject
+	DomainObjectContainer container;
+
+	// endregion
 }

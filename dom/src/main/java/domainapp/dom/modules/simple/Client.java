@@ -34,6 +34,7 @@ import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
@@ -69,8 +70,8 @@ public class Client implements Comparable<Client> {
 	private String name;
 
 	@javax.jdo.annotations.Column(allowsNull = "false", length = 40)
-	@Title(sequence = "1")
 	@Property(editing = Editing.DISABLED)
+	@MemberOrder(sequence = "1")
 	public String getName() {
 		return name;
 	}
@@ -107,6 +108,23 @@ public class Client implements Comparable<Client> {
 	}
 
 	// endregion
+	
+	// {{ Address (property)
+	private String address;
+
+	@javax.jdo.annotations.Column(length = 40)
+	@MemberOrder(sequence = "2")
+	@Property(optionality=Optionality.DEFAULT)
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(final String address) {
+		this.address = address;
+	}
+	// }}
+
+
 
 	// region > compareTo
 
