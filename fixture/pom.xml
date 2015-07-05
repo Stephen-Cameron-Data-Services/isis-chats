@@ -20,18 +20,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.mycompany</groupId>
-        <artifactId>myapp</artifactId>
+        <groupId>au.com.scds</groupId>
+        <artifactId>isis-chats</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>myapp-fixture</artifactId>
-    <name>Simple App Fixtures</name>
+    <artifactId>isis-chats-fixture</artifactId>
+    <name>Chats Data Management Application Fixtures</name>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>myapp-dom</artifactId>
+            <artifactId>isis-chats-dom</artifactId>
         </dependency>
     </dependencies>
 

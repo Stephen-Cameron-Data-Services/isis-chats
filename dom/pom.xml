@@ -20,13 +20,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.mycompany</groupId>
-        <artifactId>myapp</artifactId>
+        <groupId>au.com.scds</groupId>
         <version>1.0-SNAPSHOT</version>
+        <artifactId>isis-chats</artifactId>
     </parent>
 
-    <artifactId>myapp-dom</artifactId>
-    <name>Simple App DOM</name>
+    <artifactId>isis-chats-dom</artifactId>
+    <name>Chats Data Management Application DOM</name>
 
     <build>
         <resources>

@@ -20,13 +20,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.mycompany</groupId>
-        <artifactId>myapp</artifactId>
+        <artifactId>isis-chats</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <groupId>au.com.scds</groupId>
     </parent>
 
-    <artifactId>myapp-webapp</artifactId>
-    <name>Simple App Webapp</name>
+    <artifactId>isis-chats-webapp</artifactId>
+    <name>Chats Data Management Application Webapp</name>
 
     <description>This module runs both the Wicket viewer and the Restfulobjects viewer in a single webapp configured to run using the datanucleus object store.</description>
 
@@ -133,7 +133,7 @@
         <!-- other modules in this project -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>myapp-dom</artifactId>
+            <artifactId>isis-chats-dom</artifactId>
             <exclusions>
                 <exclusion>
                     <!-- so don't pick up transitive dependency to asm 4.0.0 -->
@@ -144,7 +144,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>myapp-fixture</artifactId>
+            <artifactId>isis-chats-fixture</artifactId>
             <exclusions>
                 <exclusion>
                     <!-- so don't pick up transitive dependency to asm 4.0.0 -->

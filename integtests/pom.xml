@@ -20,13 +20,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.mycompany</groupId>
-        <artifactId>myapp</artifactId>
+        <artifactId>isis-chats</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <groupId>au.com.scds</groupId>
     </parent>
 
-    <artifactId>myapp-integtests</artifactId>
-    <name>Simple App Integration Tests</name>
+    <artifactId>isis-chats-integtests</artifactId>
+    <name>Chats Data Management Application Tests</name>
 
     <build>
         <testResources>
@@ -49,7 +49,7 @@
         <!-- other modules in this project -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>myapp-fixture</artifactId>
+            <artifactId>isis-chats-fixture</artifactId>
         </dependency>
 
         <dependency>
