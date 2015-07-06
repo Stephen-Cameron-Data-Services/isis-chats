@@ -46,13 +46,13 @@ public class ClientIntegTest extends SimpleAppIntegTest {
     @Inject
     FixtureScripts fixtureScripts;
     @Inject
-    Clients simpleObjects;
+    Clients clients;
     @Inject
     TranslationService translationService;
 
     RecreateClients fs;
-    Client simpleObjectPojo;
-    Client simpleObjectWrapped;
+    Client clientPojo;
+    Client clientWrapped;
 
     @Before
     public void setUp() throws Exception {
@@ -60,10 +60,10 @@ public class ClientIntegTest extends SimpleAppIntegTest {
         fs = new RecreateClients().setNumber(1);
         fixtureScripts.runFixtureScript(fs, null);
 
-        simpleObjectPojo = fs.getClients().get(0);
+        clientPojo = fs.getClients().get(0);
 
-        assertThat(simpleObjectPojo, is(not(nullValue())));
-        simpleObjectWrapped = wrap(simpleObjectPojo);
+        assertThat(clientPojo, is(not(nullValue())));
+        clientWrapped = wrap(clientPojo);
     }
 
     public static class Name extends ClientIntegTest {
@@ -72,7 +72,7 @@ public class ClientIntegTest extends SimpleAppIntegTest {
         public void accessible() throws Exception {
 
             // when
-            final String name = simpleObjectWrapped.getName();
+            final String name = clientWrapped.getName();
             //
             // then
             assertThat(name, is(fs.NAMES.get(0)));
@@ -85,7 +85,7 @@ public class ClientIntegTest extends SimpleAppIntegTest {
             expectedExceptions.expect(DisabledException.class);
 
             // when
-            simpleObjectWrapped.setName("new name");
+            clientWrapped.setName("new name");
         }
     }
 
@@ -95,10 +95,10 @@ public class ClientIntegTest extends SimpleAppIntegTest {
         public void happyCase() throws Exception {
 
             // when
-            simpleObjectWrapped.updateName("new name");
+            clientWrapped.updateName("new name");
 
             // then
-            assertThat(simpleObjectWrapped.getName(), is("new name"));
+            assertThat(clientWrapped.getName(), is("new name"));
         }
 
         @Test
@@ -109,7 +109,7 @@ public class ClientIntegTest extends SimpleAppIntegTest {
             expectedExceptions.expectMessage("Exclamation mark is not allowed");
 
             // when
-            simpleObjectWrapped.updateName("new name!");
+            clientWrapped.updateName("new name!");
         }
     }
 
@@ -120,13 +120,13 @@ public class ClientIntegTest extends SimpleAppIntegTest {
         public void interpolatesName() throws Exception {
 
             // given
-            final String name = simpleObjectWrapped.getName();
+            final String name = clientWrapped.getName();
 
             // when
-            final String title = container().titleOf(simpleObjectWrapped);
+            final String title = container().titleOf(clientWrapped);
 
             // then
-            assertThat(title, is("Object: " + name));
+            assertThat(title, is("Client: " + name));
         }
     }
 }

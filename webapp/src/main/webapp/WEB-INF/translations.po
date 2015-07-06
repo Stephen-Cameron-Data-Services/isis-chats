@@ -22,7 +22,7 @@ msgid "Clear translation cache"
 msgstr ""
 
 
-#: domainapp.dom.modules.simple.SimpleObjects#create()
+#: domainapp.dom.modules.simple.Clients#create()
 msgid "Create"
 msgstr ""
 
@@ -32,12 +32,12 @@ msgid "Download Translations"
 msgstr ""
 
 
-#: domainapp.dom.modules.simple.SimpleObject#updateName()
+#: domainapp.dom.modules.simple.Client#updateName()
 msgid "Exclamation mark is not allowed"
 msgstr ""
 
 
-#: domainapp.dom.modules.simple.SimpleObjects#findByName()
+#: domainapp.dom.modules.simple.Clients#findByName()
 msgid "Find By Name"
 msgstr ""
 
@@ -52,25 +52,25 @@ msgid "Home Page"
 msgstr ""
 
 
-#: domainapp.dom.modules.simple.SimpleObjects#listAll()
+#: domainapp.dom.modules.simple.Clients#listAll()
 msgid "List All"
 msgstr ""
 
 
-#: domainapp.fixture.scenarios.RecreateSimpleObjects#lookup()
+#: domainapp.fixture.scenarios.RecreateClients#lookup()
 #: org.apache.isis.applib.fixturescripts.FixtureScript#lookup()
 #: org.apache.isis.applib.services.bookmark.BookmarkHolderActionContributions#lookup()
 msgid "Lookup"
 msgstr ""
 
 
-#: domainapp.dom.modules.simple.SimpleObjects#create(java.lang.String)
-#: domainapp.dom.modules.simple.SimpleObjects#findByName(java.lang.String)
+#: domainapp.dom.modules.simple.Clients#create(java.lang.String)
+#: domainapp.dom.modules.simple.Clients#findByName(java.lang.String)
 msgid "Name"
 msgstr ""
 
 
-#: domainapp.dom.modules.simple.SimpleObject#updateName(java.lang.String)
+#: domainapp.dom.modules.simple.Client#updateName(java.lang.String)
 msgid "New name"
 msgstr ""
 
@@ -80,7 +80,7 @@ msgid "Object"
 msgstr ""
 
 
-#: domainapp.dom.modules.simple.SimpleObject#title()
+#: domainapp.dom.modules.simple.Client#title()
 msgid "Object: {name}"
 msgstr ""
 
@@ -123,7 +123,7 @@ msgid "Run Fixture Script"
 msgstr ""
 
 
-#: domainapp.fixture.scenarios.RecreateSimpleObjects
+#: domainapp.fixture.scenarios.RecreateClients
 #: org.apache.isis.applib.fixturescripts.FixtureScript
 msgid "Script"
 msgstr ""
@@ -135,12 +135,12 @@ msgid "Script-specific parameters (if any).  The format depends on the script im
 msgstr ""
 
 
-#: domainapp.dom.modules.simple.SimpleObject#updateName()
+#: domainapp.dom.modules.simple.Client#updateName()
 msgid "Update Name"
 msgstr ""
 
 
-#: domainapp.fixture.scenarios.RecreateSimpleObjects#withDiscoverability()
+#: domainapp.fixture.scenarios.RecreateClients#withDiscoverability()
 #: org.apache.isis.applib.fixturescripts.FixtureScript#withDiscoverability()
 msgid "With Discoverability"
 msgstr ""
