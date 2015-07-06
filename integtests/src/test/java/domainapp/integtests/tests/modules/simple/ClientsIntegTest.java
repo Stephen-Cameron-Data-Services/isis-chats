@@ -18,10 +18,10 @@
  */
 package domainapp.integtests.tests.modules.simple;
 
-import domainapp.dom.modules.simple.SimpleObject;
-import domainapp.dom.modules.simple.SimpleObjects;
-import domainapp.fixture.modules.simple.SimpleObjectsTearDown;
-import domainapp.fixture.scenarios.RecreateSimpleObjects;
+import domainapp.dom.modules.simple.Client;
+import domainapp.dom.modules.simple.Clients;
+import domainapp.fixture.modules.simple.ClientsTearDown;
+import domainapp.fixture.scenarios.RecreateClients;
 import domainapp.integtests.tests.SimpleAppIntegTest;
 
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -40,7 +40,7 @@ import org.apache.isis.applib.fixturescripts.FixtureScripts;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class SimpleObjectsIntegTest extends SimpleAppIntegTest {
+public class ClientsIntegTest extends SimpleAppIntegTest {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -48,59 +48,59 @@ public class SimpleObjectsIntegTest extends SimpleAppIntegTest {
     @Inject
     FixtureScripts fixtureScripts;
     @Inject
-    SimpleObjects simpleObjects;
+    Clients clients;
 
-    public static class ListAll extends SimpleObjectsIntegTest {
+    public static class ListAll extends ClientsIntegTest {
 
         @Test
         public void happyCase() throws Exception {
 
             // given
-            RecreateSimpleObjects fs = new RecreateSimpleObjects();
+            RecreateClients fs = new RecreateClients();
             fixtureScripts.runFixtureScript(fs, null);
             nextTransaction();
 
             // when
-            final List<SimpleObject> all = wrap(simpleObjects).listAll();
+            final List<Client> all = wrap(clients).listAll();
 
             // then
-            assertThat(all.size(), is(fs.getSimpleObjects().size()));
+            assertThat(all.size(), is(fs.getClients().size()));
 
-            SimpleObject simpleObject = wrap(all.get(0));
-            assertThat(simpleObject.getName(), is(fs.getSimpleObjects().get(0).getName()));
+            Client simpleObject = wrap(all.get(0));
+            assertThat(simpleObject.getName(), is(fs.getClients().get(0).getName()));
         }
 
         @Test
         public void whenNone() throws Exception {
 
             // given
-            FixtureScript fs = new SimpleObjectsTearDown();
+            FixtureScript fs = new ClientsTearDown();
             fixtureScripts.runFixtureScript(fs, null);
             nextTransaction();
 
             // when
-            final List<SimpleObject> all = wrap(simpleObjects).listAll();
+            final List<Client> all = wrap(clients).listAll();
 
             // then
             assertThat(all.size(), is(0));
         }
     }
 
-    public static class Create extends SimpleObjectsIntegTest {
+    public static class Create extends ClientsIntegTest {
 
         @Test
         public void happyCase() throws Exception {
 
             // given
-            FixtureScript fs = new SimpleObjectsTearDown();
+            FixtureScript fs = new ClientsTearDown();
             fixtureScripts.runFixtureScript(fs, null);
             nextTransaction();
 
             // when
-            wrap(simpleObjects).create("Faz");
+            wrap(clients).create("Faz");
 
             // then
-            final List<SimpleObject> all = wrap(simpleObjects).listAll();
+            final List<Client> all = wrap(clients).listAll();
             assertThat(all.size(), is(1));
         }
 
@@ -108,17 +108,17 @@ public class SimpleObjectsIntegTest extends SimpleAppIntegTest {
         public void whenAlreadyExists() throws Exception {
 
             // given
-            FixtureScript fs = new SimpleObjectsTearDown();
+            FixtureScript fs = new ClientsTearDown();
             fixtureScripts.runFixtureScript(fs, null);
             nextTransaction();
-            wrap(simpleObjects).create("Faz");
+            wrap(clients).create("Faz");
             nextTransaction();
 
             // then
             expectedException.expectCause(causalChainContains(SQLIntegrityConstraintViolationException.class));
 
             // when
-            wrap(simpleObjects).create("Faz");
+            wrap(clients).create("Faz");
             nextTransaction();
         }
 

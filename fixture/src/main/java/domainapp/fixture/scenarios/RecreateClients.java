@@ -19,9 +19,9 @@
 
 package domainapp.fixture.scenarios;
 
-import domainapp.dom.modules.simple.SimpleObject;
-import domainapp.fixture.modules.simple.SimpleObjectsTearDown;
-import domainapp.fixture.modules.simple.SimpleObjectCreate;
+import domainapp.dom.modules.simple.Client;
+import domainapp.fixture.modules.simple.ClientsTearDown;
+import domainapp.fixture.modules.simple.ClientCreate;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,12 +29,12 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import org.apache.isis.applib.fixturescripts.FixtureScript;
 
-public class RecreateSimpleObjects extends FixtureScript {
+public class RecreateClients extends FixtureScript {
 
     public final List<String> NAMES = Collections.unmodifiableList(Arrays.asList(
             "Foo", "Bar", "Baz", "Frodo", "Froyo", "Fizz", "Bip", "Bop", "Bang", "Boo"));
 
-    public RecreateSimpleObjects() {
+    public RecreateClients() {
         withDiscoverability(Discoverability.DISCOVERABLE);
     }
 
@@ -48,19 +48,19 @@ public class RecreateSimpleObjects extends FixtureScript {
         return number;
     }
 
-    public RecreateSimpleObjects setNumber(final Integer number) {
+    public RecreateClients setNumber(final Integer number) {
         this.number = number;
         return this;
     }
     //endregion
 
     //region > simpleObjects (output)
-    private final List<SimpleObject> simpleObjects = Lists.newArrayList();
+    private final List<Client> simpleObjects = Lists.newArrayList();
 
     /**
      * The simpleobjects created by this fixture (output).
      */
-    public List<SimpleObject> getSimpleObjects() {
+    public List<Client> getClients() {
         return simpleObjects;
     }
     //endregion
@@ -79,12 +79,12 @@ public class RecreateSimpleObjects extends FixtureScript {
         //
         // execute
         //
-        ec.executeChild(this, new SimpleObjectsTearDown());
+        ec.executeChild(this, new ClientsTearDown());
 
         for (int i = 0; i < number; i++) {
-            final SimpleObjectCreate fs = new SimpleObjectCreate().setName(NAMES.get(i));
+            final ClientCreate fs = new ClientCreate().setName(NAMES.get(i));
             ec.executeChild(this, fs.getName(), fs);
-            simpleObjects.add(fs.getSimpleObject());
+            simpleObjects.add(fs.getClient());
         }
     }
 }

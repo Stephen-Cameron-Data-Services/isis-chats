@@ -18,9 +18,9 @@
  */
 package domainapp.integtests.tests.modules.simple;
 
-import domainapp.dom.modules.simple.SimpleObject;
-import domainapp.dom.modules.simple.SimpleObjects;
-import domainapp.fixture.scenarios.RecreateSimpleObjects;
+import domainapp.dom.modules.simple.Client;
+import domainapp.dom.modules.simple.Clients;
+import domainapp.fixture.scenarios.RecreateClients;
 import domainapp.integtests.tests.SimpleAppIntegTest;
 
 import javax.inject.Inject;
@@ -38,7 +38,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-public class SimpleObjectIntegTest extends SimpleAppIntegTest {
+public class ClientIntegTest extends SimpleAppIntegTest {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -46,27 +46,27 @@ public class SimpleObjectIntegTest extends SimpleAppIntegTest {
     @Inject
     FixtureScripts fixtureScripts;
     @Inject
-    SimpleObjects simpleObjects;
+    Clients simpleObjects;
     @Inject
     TranslationService translationService;
 
-    RecreateSimpleObjects fs;
-    SimpleObject simpleObjectPojo;
-    SimpleObject simpleObjectWrapped;
+    RecreateClients fs;
+    Client simpleObjectPojo;
+    Client simpleObjectWrapped;
 
     @Before
     public void setUp() throws Exception {
         // given
-        fs = new RecreateSimpleObjects().setNumber(1);
+        fs = new RecreateClients().setNumber(1);
         fixtureScripts.runFixtureScript(fs, null);
 
-        simpleObjectPojo = fs.getSimpleObjects().get(0);
+        simpleObjectPojo = fs.getClients().get(0);
 
         assertThat(simpleObjectPojo, is(not(nullValue())));
         simpleObjectWrapped = wrap(simpleObjectPojo);
     }
 
-    public static class Name extends SimpleObjectIntegTest {
+    public static class Name extends ClientIntegTest {
 
         @Test
         public void accessible() throws Exception {
@@ -89,7 +89,7 @@ public class SimpleObjectIntegTest extends SimpleAppIntegTest {
         }
     }
 
-    public static class UpdateName extends SimpleObjectIntegTest {
+    public static class UpdateName extends ClientIntegTest {
 
         @Test
         public void happyCase() throws Exception {
@@ -114,7 +114,7 @@ public class SimpleObjectIntegTest extends SimpleAppIntegTest {
     }
 
 
-    public static class Title extends SimpleObjectIntegTest {
+    public static class Title extends ClientIntegTest {
 
         @Test
         public void interpolatesName() throws Exception {

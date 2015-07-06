@@ -18,7 +18,7 @@
  */
 package domainapp.fixture;
 
-import domainapp.fixture.scenarios.RecreateSimpleObjects;
+import domainapp.fixture.scenarios.RecreateClients;
 
 import java.util.List;
 import org.apache.isis.applib.annotation.Action;
@@ -68,7 +68,7 @@ public class DomainAppFixturesService extends FixtureScripts {
     )
     @MemberOrder(sequence="20")
     public Object recreateObjectsAndReturnFirst() {
-        final List<FixtureResult> run = findFixtureScriptFor(RecreateSimpleObjects.class).run(null);
+        final List<FixtureResult> run = findFixtureScriptFor(RecreateClients.class).run(null);
         return run.get(0).getObject();
     }
 

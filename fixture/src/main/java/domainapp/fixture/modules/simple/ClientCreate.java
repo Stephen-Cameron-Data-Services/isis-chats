@@ -19,12 +19,12 @@
 
 package domainapp.fixture.modules.simple;
 
-import domainapp.dom.modules.simple.SimpleObjects;
-import domainapp.dom.modules.simple.SimpleObject;
+import domainapp.dom.modules.simple.Clients;
+import domainapp.dom.modules.simple.Client;
 
 import org.apache.isis.applib.fixturescripts.FixtureScript;
 
-public class SimpleObjectCreate extends FixtureScript {
+public class ClientCreate extends FixtureScript {
 
     //region > name (input)
     private String name;
@@ -35,7 +35,7 @@ public class SimpleObjectCreate extends FixtureScript {
         return name;
     }
 
-    public SimpleObjectCreate setName(final String name) {
+    public ClientCreate setName(final String name) {
         this.name = name;
         return this;
     }
@@ -43,13 +43,13 @@ public class SimpleObjectCreate extends FixtureScript {
 
 
     //region > simpleObject (output)
-    private SimpleObject simpleObject;
+    private Client simpleObject;
 
     /**
      * The created simple object (output).
      * @return
      */
-    public SimpleObject getSimpleObject() {
+    public Client getClient() {
         return simpleObject;
     }
     //endregion
@@ -66,6 +66,6 @@ public class SimpleObjectCreate extends FixtureScript {
     }
 
     @javax.inject.Inject
-    private SimpleObjects simpleObjects;
+    private Clients simpleObjects;
 
 }
