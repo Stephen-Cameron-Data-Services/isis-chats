@@ -33,6 +33,7 @@ import javax.validation.GroupSequence;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.Identifier;
 import org.apache.isis.applib.annotation.Action;
+import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
@@ -48,6 +49,7 @@ import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.annotation.Title;
+import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
 import org.apache.isis.applib.services.i18n.TranslatableString;
 import org.apache.isis.applib.util.ObjectContracts;
@@ -142,23 +144,30 @@ public class Participant implements Comparable<Participant> {
 	private LifeHistory lifeHistory;
 
 	@Column(allowsNull = "true")
+	@Property(hidden = Where.OBJECT_FORMS)
 	public LifeHistory getLifeHistory() {
 		return lifeHistory;
 	}
 
 	public void setLifeHistory(final LifeHistory lifeHistory) {
-		this.lifeHistory = lifeHistory;
+		// only set life history once
+		if (this.lifeHistory == null && lifeHistory != null) {
+			this.lifeHistory = lifeHistory;
+			this.lifeHistory.setParentParticipant(this);
+		}
 	}
 
 	@MemberOrder(sequence = "10")
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
+	@ActionLayout(named = "Life History")
 	public LifeHistory updateLifeHistory() {
-		if (lifeHistory == null) {
-			lifeHistory = container.newTransientInstance(LifeHistory.class);
-			lifeHistory.participant = this;
+		if (getLifeHistory() == null) {
+			LifeHistory lifeHistory = container
+					.newTransientInstance(LifeHistory.class);
+			setLifeHistory(lifeHistory);
 			container.persist(lifeHistory);
 		}
-		return lifeHistory;
+		return getLifeHistory();
 	}
 
 	// }}
@@ -167,24 +176,30 @@ public class Participant implements Comparable<Participant> {
 	private SocialFactors socialFactors;
 
 	@Column(allowsNull = "true")
+	@Property(hidden = Where.OBJECT_FORMS)
 	public SocialFactors getSocialFactors() {
 		return socialFactors;
 	}
 
 	public void setSocialFactors(final SocialFactors socialFactors) {
-		this.socialFactors = socialFactors;
+		// only set social factors once
+		if (this.socialFactors == null && socialFactors != null) {
+			this.socialFactors = socialFactors;
+			this.socialFactors.setParentParticipant(this);
+		}
 	}
 
 	@MemberOrder(sequence = "11")
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
+	@ActionLayout(named = "Social Factors")
 	public SocialFactors updateSocialFactors() {
-		if (socialFactors == null) {
-			socialFactors = container.newTransientInstance(SocialFactors.class);
-			socialFactors.participant = this;
+		if (getSocialFactors() == null) {
+			SocialFactors socialFactors = container
+					.newTransientInstance(SocialFactors.class);
+			setSocialFactors(socialFactors);
 			container.persist(socialFactors);
-			System.out.print("SF: " + socialFactors.title());
 		}
-		return socialFactors;
+		return getSocialFactors();
 	}
 
 	// }}
@@ -476,6 +491,31 @@ public class Participant implements Comparable<Participant> {
 		// kill the conversation!
 		container.remove(conversation);
 		return this;
+	}
+
+	// {{ test (property)
+	private DateTestTest test;
+
+	@Column(allowsNull = "true")
+	@MemberOrder(sequence = "1")
+	public DateTestTest getTest() {
+		return test;
+	}
+
+	public void setTest(final DateTestTest test) {
+		this.test = test;
+	}
+
+	// }}
+
+	@MemberOrder(sequence = "200")
+	@Action(semantics = SemanticsOf.IDEMPOTENT)
+	@ActionLayout(named = "Date Test")
+	public DateTestTest updateDateTest() {
+		DateTestTest t = container.newTransientInstance(DateTestTest.class);
+		this.test = t;
+		container.persist(t);
+		return this.test;
 	}
 
 	// region > injected services
