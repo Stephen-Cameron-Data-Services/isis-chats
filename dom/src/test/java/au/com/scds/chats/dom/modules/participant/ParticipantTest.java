@@ -14,28 +14,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package au.com.scds.chats.dom.modules.client;
+package au.com.scds.chats.dom.modules.participant;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import au.com.scds.chats.dom.modules.client.Client;
+import au.com.scds.chats.dom.modules.participant.Participant;
 
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-public class ClientTest {
+public class ParticipantTest {
 
-    Client client;
+    Participant client;
 
     @Before
     public void setUp() throws Exception {
-        client = new Client();
+        client = new Participant();
     }
 
-    public static class Name extends ClientTest {
+    public static class Name extends ParticipantTest {
 
         @Test
         public void happyCase() throws Exception {

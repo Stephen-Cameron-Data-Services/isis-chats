@@ -29,8 +29,8 @@ import org.apache.isis.applib.services.i18n.TranslationService;
 import org.apache.isis.applib.services.wrapper.DisabledException;
 import org.apache.isis.applib.services.wrapper.InvalidException;
 
-import au.com.scds.chats.dom.modules.client.Client;
-import au.com.scds.chats.dom.modules.client.Clients;
+import au.com.scds.chats.dom.modules.participant.Participant;
+import au.com.scds.chats.dom.modules.participant.Participants;
 import au.com.scds.chats.fixture.scenarios.RecreateClients;
 import au.com.scds.isis.integtests.tests.SimpleAppIntegTest;
 
@@ -47,13 +47,13 @@ public class ClientIntegTest extends SimpleAppIntegTest {
     @Inject
     FixtureScripts fixtureScripts;
     @Inject
-    Clients clients;
+    Participants clients;
     @Inject
     TranslationService translationService;
 
     RecreateClients fs;
-    Client clientPojo;
-    Client clientWrapped;
+    Participant clientPojo;
+    Participant clientWrapped;
 
     @Before
     public void setUp() throws Exception {

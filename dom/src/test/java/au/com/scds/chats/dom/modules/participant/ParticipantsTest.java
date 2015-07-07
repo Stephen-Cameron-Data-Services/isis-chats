@@ -14,12 +14,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package au.com.scds.chats.dom.modules.client;
+package au.com.scds.chats.dom.modules.participant;
 
 import java.util.List;
 
-import au.com.scds.chats.dom.modules.client.Client;
-import au.com.scds.chats.dom.modules.client.Clients;
+import au.com.scds.chats.dom.modules.participant.Participant;
+import au.com.scds.chats.dom.modules.participant.Participants;
 
 import com.google.common.collect.Lists;
 
@@ -37,7 +37,7 @@ import org.apache.isis.core.unittestsupport.jmocking.JUnitRuleMockery2.Mode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class ClientsTest {
+public class ParticipantsTest {
 
     @Rule
     public JUnitRuleMockery2 context = JUnitRuleMockery2.createFor(Mode.INTERFACES_AND_CLASSES);
@@ -45,26 +45,26 @@ public class ClientsTest {
     @Mock
     DomainObjectContainer mockContainer;
     
-    Clients clients;
+    Participants participants;
 
     @Before
     public void setUp() throws Exception {
-        clients = new Clients();
-        clients.container = mockContainer;
+        participants = new Participants();
+        participants.container = mockContainer;
     }
 
-    public static class Create extends ClientsTest {
+    public static class Create extends ParticipantsTest {
 
         @Test
         public void happyCase() throws Exception {
 
             // given
-            final Client client = new Client();
+            final Participant client = new Participant();
 
             final Sequence seq = context.sequence("create");
             context.checking(new Expectations() {
                 {
-                    oneOf(mockContainer).newTransientInstance(Client.class);
+                    oneOf(mockContainer).newTransientInstance(Participant.class);
                     inSequence(seq);
                     will(returnValue(client));
 
@@ -74,7 +74,7 @@ public class ClientsTest {
             });
 
             // when
-            final Client obj = clients.create("Foobar");
+            final Participant obj = participants.create("Foobar");
 
             // then
             assertThat(obj, is(client));
@@ -83,23 +83,23 @@ public class ClientsTest {
 
     }
 
-    public static class ListAll extends ClientsTest {
+    public static class ListAll extends ParticipantsTest {
 
         @Test
         public void happyCase() throws Exception {
 
             // given
-            final List<Client> all = Lists.newArrayList();
+            final List<Participant> all = Lists.newArrayList();
 
             context.checking(new Expectations() {
                 {
-                    oneOf(mockContainer).allInstances(Client.class);
+                    oneOf(mockContainer).allInstances(Participant.class);
                     will(returnValue(all));
                 }
             });
 
             // when
-            final List<Client> list = clients.listAll();
+            final List<Participant> list = participants.listActive();
 
             // then
             assertThat(list, is(all));

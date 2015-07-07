@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package au.com.scds.chats.dom.modules.client;
+package au.com.scds.chats.dom.modules.participant;
 
 import java.util.List;
 import org.apache.isis.applib.DomainObjectContainer;
@@ -30,11 +30,11 @@ import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
 
-@DomainService(repositoryFor = Client.class)
+@DomainService(repositoryFor = Participant.class)
 @DomainServiceLayout(menuOrder = "20")
-public class Clients {
+public class Participants {
 
-    //region > listAll (action)
+    //region > listActive (action)
     @Action(
             semantics = SemanticsOf.SAFE
     )
@@ -42,8 +42,31 @@ public class Clients {
             bookmarking = BookmarkPolicy.AS_ROOT
     )
     @MemberOrder(sequence = "1")
-    public List<Client> listAll() {
-        return container.allInstances(Client.class);
+    public List<Participant> listActive() {
+        //return container.allInstances(Participant.class);
+        return container.allMatches(
+                new QueryDefault<>(
+                        Participant.class,
+                        "findActive",
+                        "status", "active"));
+    }
+    //endregion
+    
+    //region > listExited (action)
+    @Action(
+            semantics = SemanticsOf.SAFE
+    )
+    @ActionLayout(
+            bookmarking = BookmarkPolicy.AS_ROOT
+    )
+    @MemberOrder(sequence = "2")
+    public List<Participant> listExited() {
+        //return container.allInstances(Participant.class);
+        return container.allMatches(
+                new QueryDefault<>(
+                        Participant.class,
+                        "findExited",
+                        "status", "exited"));
     }
     //endregion
 
@@ -54,24 +77,24 @@ public class Clients {
     @ActionLayout(
             bookmarking = BookmarkPolicy.AS_ROOT
     )
-    @MemberOrder(sequence = "2")
-    public List<Client> findByName(
+    @MemberOrder(sequence = "3")
+    public List<Participant> findByName(
             @ParameterLayout(named="Name")
             final String name
     ) {
         return container.allMatches(
                 new QueryDefault<>(
-                        Client.class,
+                        Participant.class,
                         "findByName",
                         "name", name));
     }
     //endregion
 
     //region > create (action)
-    @MemberOrder(sequence = "3")
-    public Client create(
+    @MemberOrder(sequence = "4")
+    public Participant create(
             final @ParameterLayout(named="Name") String name) {
-        final Client obj = container.newTransientInstance(Client.class);
+        final Participant obj = container.newTransientInstance(Participant.class);
         obj.setName(name);
         container.persistIfNotAlready(obj);
         return obj;

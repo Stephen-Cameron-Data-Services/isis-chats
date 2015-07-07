@@ -22,8 +22,8 @@ package au.com.scds.chats.fixture.modules.client;
 
 import org.apache.isis.applib.fixturescripts.FixtureScript;
 
-import au.com.scds.chats.dom.modules.client.Client;
-import au.com.scds.chats.dom.modules.client.Clients;
+import au.com.scds.chats.dom.modules.participant.Participant;
+import au.com.scds.chats.dom.modules.participant.Participants;
 
 public class ClientCreate extends FixtureScript {
 
@@ -44,13 +44,13 @@ public class ClientCreate extends FixtureScript {
 
 
     //region > simpleObject (output)
-    private Client simpleObject;
+    private Participant simpleObject;
 
     /**
      * The created simple object (output).
      * @return
      */
-    public Client getClient() {
+    public Participant getClient() {
         return simpleObject;
     }
     //endregion
@@ -67,6 +67,6 @@ public class ClientCreate extends FixtureScript {
     }
 
     @javax.inject.Inject
-    private Clients simpleObjects;
+    private Participants simpleObjects;
 
 }

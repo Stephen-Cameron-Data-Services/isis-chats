@@ -1,4 +1,4 @@
-package au.com.scds.chats.dom.modules.client;
+package au.com.scds.chats.dom.modules.activity;
 
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
@@ -35,7 +35,7 @@ import org.apache.isis.applib.services.i18n.TranslatableString;
 @DomainObjectLayout(
         bookmarking = BookmarkPolicy.AS_ROOT
 )
-public class ActivityProvider {
+public class Provider {
 	
     //region > identificatiom
     public TranslatableString title() {

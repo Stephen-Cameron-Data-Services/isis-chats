@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package au.com.scds.chats.dom.modules.client;
+package au.com.scds.chats.dom.modules.activity;
 
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
@@ -40,6 +40,9 @@ import org.apache.isis.applib.annotation.Title;
 import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
 import org.apache.isis.applib.services.i18n.TranslatableString;
 import org.apache.isis.applib.util.ObjectContracts;
+
+import au.com.scds.chats.dom.modules.participant.Participant;
+import au.com.scds.chats.dom.modules.participant.Participants;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -140,39 +143,39 @@ public class Activity implements Comparable<Activity> {
     //endregion
     
     // {{ ActivityProvider (property)
-	private ActivityProvider provider;
+	private Provider provider;
 
 	@Column(allowsNull="true")
 	@MemberOrder(name="General", sequence = "2")
-	public ActivityProvider getProvider() {
+	public Provider getProvider() {
 		return provider;
 	}
 
-	public void setProvider(final ActivityProvider provider) {
+	public void setProvider(final Provider provider) {
 		this.provider = provider;
 	}
 	
-	public List<ActivityProvider> choicesProvider(){
+	public List<Provider> choicesProvider(){
 		return activityProviders.listAllProviders();
 	}
 	// }}
 
     //region > participants
    
-    private List<Client> participants = new ArrayList<Client>();
+    private List<Participant> participants = new ArrayList<Participant>();
 
     @CollectionLayout(render = RenderType.EAGERLY)
-    public List<Client> getParticipants() {
+    public List<Participant> getParticipants() {
         return participants;
     }
     
-    private void setParticipants(List<Client> participants) { 
+    private void setParticipants(List<Participant> participants) { 
         this.participants = participants;
     }
     
     @MemberOrder(name="participants",sequence="1")
     public Activity addParticipant(
-    		final Client participant){
+    		final Participant participant){
     	addToParticipants(participant);
     	return this;
     }
@@ -180,27 +183,27 @@ public class Activity implements Comparable<Activity> {
     @MemberOrder(name="participants",sequence="2")
     public Activity addNewParticipant(
             final @ParameterLayout(named="Name") String name){
-    	Client participant = clients.create(name); 
+    	Participant participant = clients.create(name); 
     	addToParticipants(participant);
     	return this;
     }
     
     @MemberOrder(name="participants",sequence="3")
     public Activity removeParticipant(
-    		final Client participant){
+    		final Participant participant){
     	removeFromParticipants(participant);
     	return this;
     }
     
-    public List<Client> choices0AddParticipant() {
-        return clients.listAll();
+    public List<Participant> choices0AddParticipant() {
+        return clients.listActive();
     }
     
-    public List<Client> choices0RemoveParticipant() {
+    public List<Participant> choices0RemoveParticipant() {
         return getParticipants();
     }
     
-    private void addToParticipants(final Client participant) {
+    private void addToParticipants(final Participant participant) {
 		// check for no-op
 		if (participant == null
 				|| getParticipants().contains(participant)) {
@@ -216,7 +219,7 @@ public class Activity implements Comparable<Activity> {
 	}
 
 	private void removeFromParticipants(
-			final Client partipipant) {
+			final Participant partipipant) {
 		// check for no-op
 		if (partipipant == null
 				|| !getParticipants().contains(partipipant)) {
@@ -231,14 +234,14 @@ public class Activity implements Comparable<Activity> {
     //endregion
 	
 	// {{ Events (Collection)
-	private List<ActivityEvent> events = new ArrayList<ActivityEvent>();
+	private List<Event> events = new ArrayList<Event>();
 
 	@CollectionLayout(render = RenderType.EAGERLY)
-	public List<ActivityEvent> getEvents() {
+	public List<Event> getEvents() {
 		return events;
 	}
 
-	public void setEvents(final List<ActivityEvent> events) {
+	public void setEvents(final List<Event> events) {
 		this.events = events;
 	}
 	
@@ -246,7 +249,7 @@ public class Activity implements Comparable<Activity> {
     public Activity addNewEvent(
             final @Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Event Name") String name,
             final @Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Event Date") Date date){
-    	ActivityEvent event = container.newTransientInstance(ActivityEvent.class);
+    	Event event = container.newTransientInstance(Event.class);
     	event.setName(name);
     	event.setDate(date);
     	container.persistIfNotAlready(event);
@@ -256,16 +259,16 @@ public class Activity implements Comparable<Activity> {
     
     @MemberOrder(name="events",sequence="2")
     public Activity removeEvent(
-    		final ActivityEvent event){
+    		final Event event){
     	removeFromEvents(event);
     	return this;
     }
     
-    public List<ActivityEvent> choices0RemoveEvent(){
+    public List<Event> choices0RemoveEvent(){
     	return events;
     }
 	
-	public void addToEvents(final ActivityEvent event) {
+	public void addToEvents(final Event event) {
 		// check for no-op
 		if (event == null || getEvents().contains(event)) {
 			return;
@@ -276,7 +279,7 @@ public class Activity implements Comparable<Activity> {
 		onAddToEvents(event);
 	}
 
-	public void removeFromEvents(final ActivityEvent event) {
+	public void removeFromEvents(final Event event) {
 		// check for no-op
 		if (event == null || !getEvents().contains(event)) {
 			return;
@@ -287,10 +290,10 @@ public class Activity implements Comparable<Activity> {
 		onRemoveFromEvents(event);
 	}
 
-	protected void onAddToEvents(final ActivityEvent event) {
+	protected void onAddToEvents(final Event event) {
 	}
 
-	protected void onRemoveFromEvents(final ActivityEvent event) {
+	protected void onRemoveFromEvents(final Event event) {
 	}
 	// }}
 
@@ -300,11 +303,11 @@ public class Activity implements Comparable<Activity> {
     
     @javax.inject.Inject
     @SuppressWarnings("unused")
-    private Clients clients;
+    private Participants clients;
     
     @javax.inject.Inject
     @SuppressWarnings("unused")
-    private ActivityProviders activityProviders;
+    private Providers activityProviders;
 
     @javax.inject.Inject
     @SuppressWarnings("unused")

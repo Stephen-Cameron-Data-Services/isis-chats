@@ -16,8 +16,8 @@
  */
 package au.com.scds.isis.integtests.specglue.modules.simple;
 
-import au.com.scds.chats.dom.modules.client.Client;
-import au.com.scds.chats.dom.modules.client.Clients;
+import au.com.scds.chats.dom.modules.participant.Participant;
+import au.com.scds.chats.dom.modules.participant.Participants;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
 
@@ -33,7 +33,7 @@ public class ClientGlue extends CukeGlueAbstract {
     @Given("^there are.* (\\d+) client objects$")
     public void there_are_N_client_objects(int n) throws Throwable {
         try {
-            final List<Client> findAll = service(Clients.class).listAll();
+            final List<Participant> findAll = service(Participants.class).listAll();
             assertThat(findAll.size(), is(n));
             putVar("list", "all", findAll);
             
@@ -44,7 +44,7 @@ public class ClientGlue extends CukeGlueAbstract {
     
     @When("^I create a new client object$")
     public void I_create_a_new_client_object() throws Throwable {
-        service(Clients.class).create(UUID.randomUUID().toString());
+        service(Participants.class).create(UUID.randomUUID().toString());
     }
     
 }

@@ -1,4 +1,4 @@
-package au.com.scds.chats.dom.modules.client;
+package au.com.scds.chats.dom.modules.activity;
 
 import java.util.Date;
 
@@ -17,7 +17,7 @@ import org.apache.isis.applib.annotation.MemberOrder;
 @javax.jdo.annotations.Version(strategy = VersionStrategy.VERSION_NUMBER, column = "version")
 @DomainObject(objectType = "ACTIVITY_EVENT")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-public class ActivityEvent {
+public class Event {
 
 	// {{ Name (property)
 	private String name;

@@ -1,4 +1,4 @@
-package au.com.scds.chats.dom.modules.client;
+package au.com.scds.chats.dom.modules.participant;
 
 import java.util.Date;
 
@@ -21,7 +21,7 @@ import org.apache.isis.applib.services.i18n.TranslatableString;
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
 @javax.jdo.annotations.Version(strategy = VersionStrategy.VERSION_NUMBER, column = "version")
-public class Conversation {
+public class PhoneCall {
 	
     //region > identificatiom
     public TranslatableString title() {
@@ -97,22 +97,22 @@ public class Conversation {
 	// }}
 
 	// {{ Client (property)
-	private Client client;
+	private Participant participant;
 
 	@javax.jdo.annotations.Column(allowsNull = "false")
 	@Property(hidden = Where.EVERYWHERE)
-	public Client getClient() {
-		return client;
+	public Participant getParticipant() {
+		return participant;
 	}
 
-	public void setClient(final Client client) {
-		this.client = client;
+	public void setParticipant(final Participant client) {
+		this.participant = client;
 	}
 
 	// }}
 
-	public Client delete() {
-		getClient().removeConversation(this);
-		return getClient();
+	public Participant delete() {
+		getParticipant().removeConversation(this);
+		return getParticipant();
 	}
 }

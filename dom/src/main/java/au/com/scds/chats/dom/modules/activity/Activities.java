@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package au.com.scds.chats.dom.modules.client;
+package au.com.scds.chats.dom.modules.activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,38 +32,36 @@ import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
 
-@DomainService(repositoryFor = ActivityProvider.class)
-@DomainServiceLayout(named = "Activities", menuBar = MenuBar.PRIMARY, menuOrder = "30.2")
-public class ActivityProviders {
+@DomainService(repositoryFor = Activity.class)
+@DomainServiceLayout(named = "Activities", menuBar = MenuBar.PRIMARY, menuOrder = "30.1")
+public class Activities {
 
 	// region > listAll (action)
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "1")
-	public List<ActivityProvider> listAllProviders() {
-		return container.allInstances(ActivityProvider.class);
+	public List<Activity> listAll() {
+		return container.allInstances(Activity.class);
 	}
 
 	// endregion
 
 	// region > findByName (action)
-	/*@Action(semantics = SemanticsOf.SAFE)
+	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "2")
-	public List<ActivityProvider> findByName(
+	public List<Activity> findByName(
 			@ParameterLayout(named = "Name") final String name) {
-		return container.allMatches(new QueryDefault<>(ActivityProvider.class,
+		return container.allMatches(new QueryDefault<>(Activity.class,
 				"findByName", "name", name));
-	}*/
+	}
 
 	// endregion
 
 	// region > create (action)
 	@MemberOrder(sequence = "3")
-	public ActivityProvider createProvider(
-			final @ParameterLayout(named = "Name") String name) {
-		final ActivityProvider obj = container
-				.newTransientInstance(ActivityProvider.class);
+	public Activity create(final @ParameterLayout(named = "Name") String name) {
+		final Activity obj = container.newTransientInstance(Activity.class);
 		obj.setName(name);
 		container.persistIfNotAlready(obj);
 		return obj;

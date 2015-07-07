@@ -22,8 +22,8 @@ package au.com.scds.chats.dom.app.homepage;
 import java.util.List;
 import org.apache.isis.applib.annotation.ViewModel;
 
-import au.com.scds.chats.dom.modules.client.Client;
-import au.com.scds.chats.dom.modules.client.Clients;
+import au.com.scds.chats.dom.modules.participant.Participant;
+import au.com.scds.chats.dom.modules.participant.Participants;
 
 @ViewModel
 public class HomePageViewModel {
@@ -36,15 +36,15 @@ public class HomePageViewModel {
 
     //region > object (collection)
     @org.apache.isis.applib.annotation.HomePage
-    public List<Client> getObjects() {
-        return clients.listAll();
+    public List<Participant> getObjects() {
+        return clients.listActive();
     }
     //endregion
 
     //region > injected services
 
     @javax.inject.Inject
-    Clients clients;
+    Participants clients;
 
     //endregion
 }

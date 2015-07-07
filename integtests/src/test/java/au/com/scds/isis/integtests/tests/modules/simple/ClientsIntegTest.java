@@ -23,8 +23,8 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import javax.inject.Inject;
 
-import au.com.scds.chats.dom.modules.client.Client;
-import au.com.scds.chats.dom.modules.client.Clients;
+import au.com.scds.chats.dom.modules.participant.Participant;
+import au.com.scds.chats.dom.modules.participant.Participants;
 import au.com.scds.chats.fixture.modules.client.ClientsTearDown;
 import au.com.scds.chats.fixture.scenarios.RecreateClients;
 import au.com.scds.isis.integtests.tests.SimpleAppIntegTest;
@@ -50,7 +50,7 @@ public class ClientsIntegTest extends SimpleAppIntegTest {
     @Inject
     FixtureScripts fixtureScripts;
     @Inject
-    Clients clients;
+    Participants clients;
 
     public static class ListAll extends ClientsIntegTest {
 
@@ -63,12 +63,12 @@ public class ClientsIntegTest extends SimpleAppIntegTest {
             nextTransaction();
 
             // when
-            final List<Client> all = wrap(clients).listAll();
+            final List<Participant> all = wrap(clients).listAll();
 
             // then
             assertThat(all.size(), is(fs.getClients().size()));
 
-            Client simpleObject = wrap(all.get(0));
+            Participant simpleObject = wrap(all.get(0));
             assertThat(simpleObject.getName(), is(fs.getClients().get(0).getName()));
         }
 
@@ -81,7 +81,7 @@ public class ClientsIntegTest extends SimpleAppIntegTest {
             nextTransaction();
 
             // when
-            final List<Client> all = wrap(clients).listAll();
+            final List<Participant> all = wrap(clients).listAll();
 
             // then
             assertThat(all.size(), is(0));
@@ -102,7 +102,7 @@ public class ClientsIntegTest extends SimpleAppIntegTest {
             wrap(clients).create("Faz");
 
             // then
-            final List<Client> all = wrap(clients).listAll();
+            final List<Participant> all = wrap(clients).listAll();
             assertThat(all.size(), is(1));
         }
 

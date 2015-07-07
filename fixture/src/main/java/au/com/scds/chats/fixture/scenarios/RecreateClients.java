@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import au.com.scds.chats.dom.modules.client.Client;
+import au.com.scds.chats.dom.modules.participant.Participant;
 import au.com.scds.chats.fixture.modules.client.ClientCreate;
 import au.com.scds.chats.fixture.modules.client.ClientsTearDown;
 
@@ -57,12 +57,12 @@ public class RecreateClients extends FixtureScript {
     //endregion
 
     //region > simpleObjects (output)
-    private final List<Client> simpleObjects = Lists.newArrayList();
+    private final List<Participant> simpleObjects = Lists.newArrayList();
 
     /**
      * The simpleobjects created by this fixture (output).
      */
-    public List<Client> getClients() {
+    public List<Participant> getClients() {
         return simpleObjects;
     }
     //endregion
