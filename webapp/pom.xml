@@ -78,7 +78,7 @@
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <warName>simpleapp</warName>
+                    <warName>isis-chats-webapp</warName>
                     <archive>
                         <manifest>
                             <addClasspath>false</addClasspath>

@@ -17,6 +17,7 @@ import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.security.UserMemento;
 import org.apache.isis.applib.services.i18n.TranslatableString;
+import org.apache.isis.applib.value.DateTime;
 
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
@@ -40,8 +41,8 @@ public class PhoneCall {
 		return date;
 	}
 
-	public void setDate(final Date date) {
-		this.date = date;
+	public void setDate(final Date date2) {
+		this.date = date2;
 	}
 
 	// }}

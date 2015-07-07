@@ -34,8 +34,21 @@ import org.apache.isis.applib.query.QueryDefault;
 @DomainServiceLayout(menuOrder = "20")
 public class Participants {
 
-    //region > listActive (action)
+    //region > listAll (action)
     @Action(
+            semantics = SemanticsOf.SAFE
+    )
+    @ActionLayout(
+            bookmarking = BookmarkPolicy.AS_ROOT
+    )
+    @MemberOrder(sequence = "1")
+    public List<Participant> listAll() {
+        return container.allInstances(Participant.class);
+    }
+    //endregion
+    
+    //region > listActive (action)
+    /*@Action(
             semantics = SemanticsOf.SAFE
     )
     @ActionLayout(
@@ -48,12 +61,12 @@ public class Participants {
                 new QueryDefault<>(
                         Participant.class,
                         "findActive",
-                        "status", "active"));
-    }
+                        "status", Status.ACTIVE));
+    }*/
     //endregion
     
     //region > listExited (action)
-    @Action(
+    /*@Action(
             semantics = SemanticsOf.SAFE
     )
     @ActionLayout(
@@ -67,7 +80,7 @@ public class Participants {
                         Participant.class,
                         "findExited",
                         "status", "exited"));
-    }
+    }*/
     //endregion
 
     //region > findByName (action)
@@ -93,9 +106,9 @@ public class Participants {
     //region > create (action)
     @MemberOrder(sequence = "4")
     public Participant create(
-            final @ParameterLayout(named="Name") String name) {
+            final @ParameterLayout(named="Full Name") String name) {
         final Participant obj = container.newTransientInstance(Participant.class);
-        obj.setName(name);
+        obj.setFullname(name);
         container.persistIfNotAlready(obj);
         return obj;
     }

@@ -15,12 +15,12 @@
 #  limitations under the License.
 #
 @SimpleObjectsFixture
-Feature: List and Create New Simple Objectts
+Feature: List and Create New Participant Objectts
 
   @integration
-  Scenario: Existing simple objects can be listed and new ones created
-    Given there are initially 3 simple objects
-    When  I create a new simple object
-    Then  there are 4 simple objects 
+  Scenario: Existing participant objects can be listed and new ones created
+    Given there are initially 3 participant objects
+    When  I create a new participant object
+    Then  there are 4 participant objects 
 
     

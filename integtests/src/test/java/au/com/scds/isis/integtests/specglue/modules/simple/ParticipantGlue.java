@@ -28,10 +28,10 @@ import org.apache.isis.core.specsupport.specs.CukeGlueAbstract;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class ClientGlue extends CukeGlueAbstract {
+public class ParticipantGlue extends CukeGlueAbstract {
 
-    @Given("^there are.* (\\d+) client objects$")
-    public void there_are_N_client_objects(int n) throws Throwable {
+    @Given("^there are.* (\\d+) participant objects$")
+    public void there_are_N_participant_objects(int n) throws Throwable {
         try {
             final List<Participant> findAll = service(Participants.class).listAll();
             assertThat(findAll.size(), is(n));
@@ -42,8 +42,8 @@ public class ClientGlue extends CukeGlueAbstract {
         }
     }
     
-    @When("^I create a new client object$")
-    public void I_create_a_new_client_object() throws Throwable {
+    @When("^I create a new participant object$")
+    public void I_create_a_new_participant_object() throws Throwable {
         service(Participants.class).create(UUID.randomUUID().toString());
     }
     

@@ -363,7 +363,7 @@
   <modules>
     <module>dom</module>
     <module>fixture</module>
-    <module>integtests</module>
+    <!--  module>integtests</module-->
     <module>webapp</module>
   </modules>
   <groupId>au.com.scds</groupId>

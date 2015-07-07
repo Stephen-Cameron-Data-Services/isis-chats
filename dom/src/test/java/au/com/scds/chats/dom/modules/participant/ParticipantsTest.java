@@ -78,7 +78,7 @@ public class ParticipantsTest {
 
             // then
             assertThat(obj, is(client));
-            assertThat(obj.getName(), is("Foobar"));
+            assertThat(obj.getFullname(), is("Foobar"));
         }
 
     }
@@ -99,7 +99,7 @@ public class ParticipantsTest {
             });
 
             // when
-            final List<Participant> list = participants.listActive();
+            final List<Participant> list = participants.listAll();
 
             // then
             assertThat(list, is(all));

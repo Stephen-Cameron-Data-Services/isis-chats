@@ -28,11 +28,11 @@ import static org.junit.Assert.assertThat;
 
 public class ParticipantTest {
 
-    Participant client;
+    Participant participant;
 
     @Before
     public void setUp() throws Exception {
-        client = new Participant();
+        participant = new Participant();
     }
 
     public static class Name extends ParticipantTest {
@@ -41,13 +41,13 @@ public class ParticipantTest {
         public void happyCase() throws Exception {
             // given
             String name = "Foobar";
-            assertThat(client.getName(), is(nullValue()));
+            assertThat(participant.getFullname(), is(nullValue()));
 
             // when
-            client.setName(name);
+            participant.setFullname(name);
 
             // then
-            assertThat(client.getName(), is(name));
+            assertThat(participant.getFullname(), is(name));
         }
     }
 

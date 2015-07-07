@@ -7,7 +7,6 @@ import org.apache.isis.applib.annotation.MemberOrder;
 
 public class Volunteer {
 
-	
 	// {{ Status (property)
 	private Status status = Status.ACTIVE;
 
