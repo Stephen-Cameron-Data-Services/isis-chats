@@ -1,0 +1,1 @@
+start java -jar isis-chats-webapp-1.0-SNAPSHOT-jetty-console.jar
