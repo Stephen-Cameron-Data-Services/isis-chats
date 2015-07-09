@@ -30,7 +30,7 @@ public class HomePageViewModel {
 
     //region > title
     public String title() {
-        return "Chats Clients";
+        return "Chats Participants";
     }
     //endregion
 

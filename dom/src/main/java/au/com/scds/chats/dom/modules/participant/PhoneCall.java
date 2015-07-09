@@ -26,7 +26,7 @@ public class PhoneCall {
 	
     //region > identificatiom
     public TranslatableString title() {
-        return TranslatableString.tr("Conversation: {subject}", "subject", getSubject());
+        return TranslatableString.tr("Call: {subject}", "subject", getSubject());
     }
     //endregion
 

@@ -35,6 +35,7 @@ import org.apache.isis.applib.Identifier;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.BookmarkPolicy;
+import org.apache.isis.applib.annotation.Collection;
 import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
@@ -159,18 +160,17 @@ public class Participant implements Comparable<Participant> {
 		if (this.lifeHistory == null && lifeHistory != null) {
 			this.lifeHistory = lifeHistory;
 			this.lifeHistory.setParentParticipant(this);
+			container.persistIfNotAlready(lifeHistory);
 		}
 	}
 
 	@MemberOrder(sequence = "10")
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	@ActionLayout(named = "Life History",cssClassFa="")
+	@ActionLayout(named = "Life History")
 	public LifeHistory updateLifeHistory() {
 		if (getLifeHistory() == null) {
-			LifeHistory lifeHistory = container
-					.newTransientInstance(LifeHistory.class);
-			setLifeHistory(lifeHistory);
-			container.persist(lifeHistory);
+			setLifeHistory(container.newTransientInstance(LifeHistory.class));
+
 		}
 		return getLifeHistory();
 	}
@@ -191,23 +191,80 @@ public class Participant implements Comparable<Participant> {
 		if (this.socialFactors == null && socialFactors != null) {
 			this.socialFactors = socialFactors;
 			this.socialFactors.setParentParticipant(this);
+			container.persistIfNotAlready(socialFactors);
 		}
 	}
 
 	@MemberOrder(sequence = "11")
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	@ActionLayout(named = "Social Factors",cssClassFa="")
+	@ActionLayout(named = "Social Factors")
 	public SocialFactors updateSocialFactors() {
 		if (getSocialFactors() == null) {
-			SocialFactors socialFactors = container
-					.newTransientInstance(SocialFactors.class);
-			setSocialFactors(socialFactors);
-			container.persist(socialFactors);
+			setSocialFactors(container
+					.newTransientInstance(SocialFactors.class));
 		}
 		return getSocialFactors();
 	}
 
 	// }}
+
+	// {{ Loneliness (property)
+	private Loneliness loneliness;
+
+	@Column(allowsNull = "true")
+	@Property(hidden = Where.EVERYWHERE)
+	public Loneliness getLoneliness() {
+		return loneliness;
+	}
+
+	public void setLoneliness(final Loneliness loneliness) {
+		// only set loneliness once
+		if (this.loneliness == null && loneliness != null) {
+			this.loneliness = loneliness;
+			this.loneliness.setParentParticipant(this);
+			container.persistIfNotAlready(loneliness);
+		}
+	}
+
+	@MemberOrder(sequence = "12")
+	@Action(semantics = SemanticsOf.IDEMPOTENT)
+	@ActionLayout(named = "Loneliness")
+	public Loneliness updateLoneliness() {
+		if (getLoneliness() == null) {
+			setLoneliness(container.newTransientInstance(Loneliness.class));
+		}
+		return getLoneliness();
+	}
+
+	// }}
+	
+	// {{ Participation (property)
+	private Participation participation;
+
+	@Column(allowsNull = "true")
+	@Property(hidden = Where.EVERYWHERE)
+	public Participation getParticipation() {
+		return participation;
+	}
+
+	public void setParticipation(final Participation participation) {
+		// only set participation once
+		if (this.participation == null && participation != null) {
+			this.participation = participation;
+			this.participation.setParentParticipant(this);
+			container.persistIfNotAlready(participation);
+		}
+	}
+
+	@MemberOrder(sequence = "12")
+	@Action(semantics = SemanticsOf.IDEMPOTENT)
+	@ActionLayout(named = "Participation")
+	public Participation updateParticipation() {
+		if (getParticipation() == null) {
+			setParticipation(container.newTransientInstance(Participation.class));
+		}
+		return getParticipation();
+	}
 
 	// region > updateName (action)
 	// not used, see @Action below
@@ -437,8 +494,8 @@ public class Participant implements Comparable<Participant> {
 	// {{ Activities (Collection)
 	private List<Activity> activities = new ArrayList<Activity>();
 
-	@MemberOrder(sequence = "5")
-	@Property(hidden = Where.ALL_TABLES)
+	// @MemberOrder(sequence = "5")
+	@Collection(hidden = Where.EVERYWHERE)
 	@CollectionLayout(paged = 10, render = RenderType.EAGERLY)
 	public List<Activity> getActivities() {
 		return activities;
@@ -502,6 +559,65 @@ public class Participant implements Comparable<Participant> {
 		}
 		// dissociate arg
 		getCalls().remove(call);
+		// additional business logic
+		// onRemoveFromConversations(conversation);
+		// kill the conversation!
+		container.remove(call);
+		return this;
+	}
+
+	// }}
+	
+	// {{ Notes (Collection)
+	private List<Note> notes = new ArrayList<Note>();
+
+	@MemberOrder(sequence = "6")
+	@Property(hidden = Where.ALL_TABLES)
+	@CollectionLayout(paged = 10, render = RenderType.EAGERLY)
+	public List<Note> getNotes() {
+		return notes;
+	}
+
+	public void setNotes(final List<Note> notes) {
+		this.notes = notes;
+	}
+
+	@MemberOrder(name = "notes", sequence = "1")
+	public Participant addNote(
+			@ParameterLayout(named = "Text", describedAs = "The content of the Note") final String text) {
+		Note note = container
+				.newTransientInstance(Note.class);
+		note.setDate(new Date());
+		note.setText(text);
+		note.setStaffMember(container.getUser().getName());
+		container.persist(note);
+		addToNotes(note);
+		return this;
+	}
+
+	@Programmatic
+	public void addToNotes(final Note call) {
+		// check for no-op
+		if (call == null || getNotes().contains(call)) {
+			return;
+		}
+		// dissociate arg from its current parent (if any).
+		// conversation.clearParticipant();
+		// associate arg
+		call.setParticipant(this);
+		getNotes().add(call);
+		// additional business logic
+		// onAddToConversations(conversation);
+	}
+
+	@Programmatic
+	public Participant removeNote(final Note call) {
+		// check for no-op
+		if (call == null || !getNotes().contains(call)) {
+			return this;
+		}
+		// dissociate arg
+		getNotes().remove(call);
 		// additional business logic
 		// onRemoveFromConversations(conversation);
 		// kill the conversation!
