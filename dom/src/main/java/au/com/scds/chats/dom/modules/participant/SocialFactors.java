@@ -11,7 +11,7 @@ import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
-import org.apache.isis.applib.value.Date;
+import org.joda.time.LocalDate;
 
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
@@ -132,15 +132,15 @@ public class SocialFactors {
 	// }}
 
 	// {{ DateofSettlement (property)
-	private Date dateOfSettlement;
+	private LocalDate dateOfSettlement;
 
 	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "7")
-	public Date getDateofSettlement() {
+	public LocalDate getDateofSettlement() {
 		return dateOfSettlement;
 	}
 
-	public void setDateofSettlement(final Date dateOfSettlement) {
+	public void setDateofSettlement(final LocalDate dateOfSettlement) {
 		this.dateOfSettlement = dateOfSettlement;
 	}
 

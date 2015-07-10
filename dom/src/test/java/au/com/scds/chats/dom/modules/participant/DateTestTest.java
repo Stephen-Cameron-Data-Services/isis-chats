@@ -26,11 +26,11 @@ public class DateTestTest {
 
             // when
             Date now = new Date();
-            Date later = now.add(1, 1, 1);
+            //Date later = now.add(1, 1, 1);
             date.setTest(now);
 
             // then
-            assertThat(date.getTest(), is(later));
+            assertThat(date.getTest(), is(now));
         }
     }
 }

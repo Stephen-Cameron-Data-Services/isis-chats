@@ -105,7 +105,7 @@ public class Activity implements Comparable<Activity> {
     // endregion
 
     //region > updateName (action)
-
+    /*
     public static class UpdateNameDomainEvent extends ActionDomainEvent<Activity> {
         public UpdateNameDomainEvent(final Activity source, final Identifier identifier, final Object... arguments) {
             super(source, identifier, arguments);
@@ -129,7 +129,7 @@ public class Activity implements Comparable<Activity> {
 
     public TranslatableString validateUpdateName(final String name) {
         return name.contains("!")? TranslatableString.tr("Exclamation mark is not allowed"): null;
-    }
+    }*/
 
     //endregion
 

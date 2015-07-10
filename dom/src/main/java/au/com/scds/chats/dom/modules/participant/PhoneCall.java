@@ -69,7 +69,7 @@ public class PhoneCall {
 	private String notes;
 
 	@javax.jdo.annotations.Column(allowsNull = "false")
-	@Property(maxLength = 2048)
+	@Property(maxLength = 2048,hidden=Where.ALL_TABLES)
 	@PropertyLayout(multiLine = 5, describedAs = "Notes about the conversation.")
 	@MemberOrder(sequence = "3")
 	public String getNotes() {
@@ -113,7 +113,7 @@ public class PhoneCall {
 	// }}
 
 	public Participant delete() {
-		getParticipant().removeConversation(this);
+		getParticipant().removeCall(this);
 		return getParticipant();
 	}
 }

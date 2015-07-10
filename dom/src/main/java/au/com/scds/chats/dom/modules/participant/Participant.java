@@ -35,6 +35,7 @@ import org.apache.isis.applib.Identifier;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.BookmarkPolicy;
+import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
@@ -47,12 +48,14 @@ import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
+import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.annotation.Title;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
 import org.apache.isis.applib.services.i18n.TranslatableString;
 import org.apache.isis.applib.util.ObjectContracts;
+import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.modules.activity.Activity;
 import au.com.scds.chats.dom.modules.general.Address;
@@ -112,15 +115,16 @@ public class Participant implements Comparable<Participant> {
 	// }}
 
 	// {{ DateOfBirth (property)
-	private Date dob;
+	private LocalDate dob;
 
 	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "3")
-	public Date getDateOfBirth() {
+	@Property(hidden = Where.PARENTED_TABLES)
+	public LocalDate getDateOfBirth() {
 		return dob;
 	}
 
-	public void setDateOfBirth(final Date dob) {
+	public void setDateOfBirth(final LocalDate dob) {
 		this.dob = dob;
 	}
 
@@ -130,6 +134,7 @@ public class Participant implements Comparable<Participant> {
 	private Status status = Status.ACTIVE;
 
 	@Column(allowsNull = "false")
+	@Property(hidden = Where.PARENTED_TABLES)
 	public Status getStatus() {
 		return status;
 	}
@@ -144,7 +149,7 @@ public class Participant implements Comparable<Participant> {
 	private LifeHistory lifeHistory;
 
 	@Column(allowsNull = "true")
-	@Property(hidden = Where.OBJECT_FORMS)
+	@Property(hidden = Where.EVERYWHERE)
 	public LifeHistory getLifeHistory() {
 		return lifeHistory;
 	}
@@ -159,7 +164,7 @@ public class Participant implements Comparable<Participant> {
 
 	@MemberOrder(sequence = "10")
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	@ActionLayout(named = "Life History")
+	@ActionLayout(named = "Life History",cssClassFa="")
 	public LifeHistory updateLifeHistory() {
 		if (getLifeHistory() == null) {
 			LifeHistory lifeHistory = container
@@ -176,7 +181,7 @@ public class Participant implements Comparable<Participant> {
 	private SocialFactors socialFactors;
 
 	@Column(allowsNull = "true")
-	@Property(hidden = Where.OBJECT_FORMS)
+	@Property(hidden = Where.EVERYWHERE)
 	public SocialFactors getSocialFactors() {
 		return socialFactors;
 	}
@@ -191,7 +196,7 @@ public class Participant implements Comparable<Participant> {
 
 	@MemberOrder(sequence = "11")
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	@ActionLayout(named = "Social Factors")
+	@ActionLayout(named = "Social Factors",cssClassFa="")
 	public SocialFactors updateSocialFactors() {
 		if (getSocialFactors() == null) {
 			SocialFactors socialFactors = container
@@ -265,9 +270,9 @@ public class Participant implements Comparable<Participant> {
 	// {{ Street Address (property)
 	private Address streetAddress = new Address();
 
-	@Property(editing = Editing.DISABLED)
 	@Column(allowsNull = "true")
 	@MemberOrder(name = "Contact Details", sequence = "1")
+	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	public Address getStreetAddress() {
 		return streetAddress;
 	}
@@ -294,7 +299,7 @@ public class Participant implements Comparable<Participant> {
 		setStreetAddress(newAddress);
 		if (oldAddress != null)
 			container.removeIfNotAlready(oldAddress);
-		if (isMailAddress)
+		if (isMailAddress != null && isMailAddress == true)
 			setMailAddress(newAddress);
 		return this;
 	}
@@ -315,14 +320,18 @@ public class Participant implements Comparable<Participant> {
 		return getStreetAddress().getPostcode();
 	}
 
+	public Boolean default4UpdateStreetAddress() {
+		return false;
+	}
+
 	// }}
 
 	// {{ Mail Address (property)
 	private Address mailAddress = new Address();
 
-	@Property(editing = Editing.DISABLED)
 	@Column(allowsNull = "true")
 	@MemberOrder(name = "Contact Details", sequence = "2")
+	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	public Address getMailAddress() {
 		return mailAddress;
 	}
@@ -389,6 +398,7 @@ public class Participant implements Comparable<Participant> {
 
 	@Column(allowsNull = "true")
 	@MemberOrder(name = "Contact Details", sequence = "4")
+	@Property()
 	public String getMobilePhoneNumber() {
 		return mobilePhoneNumber;
 	}
@@ -404,6 +414,7 @@ public class Participant implements Comparable<Participant> {
 
 	@Column(allowsNull = "true")
 	@MemberOrder(name = "Contact Details", sequence = "5")
+	@Property(hidden = Where.ALL_TABLES)
 	public String getEmailAddress() {
 		return email;
 	}
@@ -427,6 +438,8 @@ public class Participant implements Comparable<Participant> {
 	private List<Activity> activities = new ArrayList<Activity>();
 
 	@MemberOrder(sequence = "5")
+	@Property(hidden = Where.ALL_TABLES)
+	@CollectionLayout(paged = 10, render = RenderType.EAGERLY)
 	public List<Activity> getActivities() {
 		return activities;
 	}
@@ -437,20 +450,22 @@ public class Participant implements Comparable<Participant> {
 
 	// }}
 
-	// {{ Conversations (Collection)
-	private List<PhoneCall> conversations = new ArrayList<PhoneCall>();
+	// {{ Calls (Collection)
+	private List<PhoneCall> calls = new ArrayList<PhoneCall>();
 
 	@MemberOrder(sequence = "6")
-	public List<PhoneCall> getConversations() {
-		return conversations;
+	@Property(hidden = Where.ALL_TABLES)
+	@CollectionLayout(paged = 10, render = RenderType.EAGERLY)
+	public List<PhoneCall> getCalls() {
+		return calls;
 	}
 
-	public void setConversations(final List<PhoneCall> conversations) {
-		this.conversations = conversations;
+	public void setCalls(final List<PhoneCall> calls) {
+		this.calls = calls;
 	}
 
-	@MemberOrder(name = "conversations", sequence = "1")
-	public Participant addConversation(
+	@MemberOrder(name = "calls", sequence = "1")
+	public Participant addCall(
 			@ParameterLayout(named = "Subject", describedAs = "The subject (heading) of the conversation, displayed in table view") final String subject,
 			@ParameterLayout(named = "Notes", describedAs = "Notes about the conversation. ") final String notes) {
 		PhoneCall conversation = container
@@ -460,63 +475,41 @@ public class Participant implements Comparable<Participant> {
 		conversation.setNotes(notes);
 		conversation.setStaffMember(container.getUser().getName());
 		container.persist(conversation);
-		addToConversations(conversation);
+		addToCalls(conversation);
 		return this;
 	}
 
-	public void addToConversations(final PhoneCall conversation) {
+	@Programmatic
+	public void addToCalls(final PhoneCall call) {
 		// check for no-op
-		if (conversation == null || getConversations().contains(conversation)) {
+		if (call == null || getCalls().contains(call)) {
 			return;
 		}
 		// dissociate arg from its current parent (if any).
 		// conversation.clearParticipant();
 		// associate arg
-		conversation.setParticipant(this);
-		getConversations().add(conversation);
+		call.setParticipant(this);
+		getCalls().add(call);
 		// additional business logic
 		// onAddToConversations(conversation);
 	}
 
 	@Programmatic
-	public Participant removeConversation(final PhoneCall conversation) {
+	public Participant removeCall(final PhoneCall call) {
 		// check for no-op
-		if (conversation == null || !getConversations().contains(conversation)) {
+		if (call == null || !getCalls().contains(call)) {
 			return this;
 		}
 		// dissociate arg
-		getConversations().remove(conversation);
+		getCalls().remove(call);
 		// additional business logic
 		// onRemoveFromConversations(conversation);
 		// kill the conversation!
-		container.remove(conversation);
+		container.remove(call);
 		return this;
 	}
 
-	// {{ test (property)
-	private DateTest test;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "1")
-	public DateTest getTest() {
-		return test;
-	}
-
-	public void setTest(final DateTest test) {
-		this.test = test;
-	}
-
 	// }}
-
-	@MemberOrder(sequence = "200")
-	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	@ActionLayout(named = "Date Test")
-	public DateTest updateDateTest() {
-		DateTest t = container.newTransientInstance(DateTest.class);
-		this.test = t;
-		container.persist(t);
-		return this.test;
-	}
 
 	// region > injected services
 
