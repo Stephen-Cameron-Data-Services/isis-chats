@@ -494,15 +494,15 @@ public class Participant implements Comparable<Participant> {
 	}
 
 	// {{ test (property)
-	private DateTestTest test;
+	private DateTest test;
 
 	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "1")
-	public DateTestTest getTest() {
+	public DateTest getTest() {
 		return test;
 	}
 
-	public void setTest(final DateTestTest test) {
+	public void setTest(final DateTest test) {
 		this.test = test;
 	}
 
@@ -511,8 +511,8 @@ public class Participant implements Comparable<Participant> {
 	@MemberOrder(sequence = "200")
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
 	@ActionLayout(named = "Date Test")
-	public DateTestTest updateDateTest() {
-		DateTestTest t = container.newTransientInstance(DateTestTest.class);
+	public DateTest updateDateTest() {
+		DateTest t = container.newTransientInstance(DateTest.class);
 		this.test = t;
 		container.persist(t);
 		return this.test;
