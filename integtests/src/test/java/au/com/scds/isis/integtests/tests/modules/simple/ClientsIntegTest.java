@@ -25,8 +25,8 @@ import javax.inject.Inject;
 
 import au.com.scds.chats.dom.modules.participant.Participant;
 import au.com.scds.chats.dom.modules.participant.Participants;
-import au.com.scds.chats.fixture.modules.client.ClientsTearDown;
-import au.com.scds.chats.fixture.scenarios.RecreateClients;
+import au.com.scds.chats.fixture.modules.participant.ParticipantsTearDown;
+import au.com.scds.chats.fixture.scenarios.RecreateParticipants;
 import au.com.scds.isis.integtests.tests.SimpleAppIntegTest;
 
 import com.google.common.base.Throwables;
@@ -58,7 +58,7 @@ public class ClientsIntegTest extends SimpleAppIntegTest {
         public void happyCase() throws Exception {
 
             // given
-            RecreateClients fs = new RecreateClients();
+            RecreateParticipants fs = new RecreateParticipants();
             fixtureScripts.runFixtureScript(fs, null);
             nextTransaction();
 
@@ -66,17 +66,17 @@ public class ClientsIntegTest extends SimpleAppIntegTest {
             final List<Participant> all = wrap(clients).listAll();
 
             // then
-            assertThat(all.size(), is(fs.getClients().size()));
+            assertThat(all.size(), is(fs.getParticipants().size()));
 
-            Participant simpleObject = wrap(all.get(0));
-            assertThat(simpleObject.getName(), is(fs.getClients().get(0).getName()));
+            Participant participant = wrap(all.get(0));
+            assertThat(participant.getFullname(), is(fs.getParticipants().get(0).getFullname()));
         }
 
         @Test
         public void whenNone() throws Exception {
 
             // given
-            FixtureScript fs = new ClientsTearDown();
+            FixtureScript fs = new ParticipantsTearDown();
             fixtureScripts.runFixtureScript(fs, null);
             nextTransaction();
 
@@ -94,7 +94,7 @@ public class ClientsIntegTest extends SimpleAppIntegTest {
         public void happyCase() throws Exception {
 
             // given
-            FixtureScript fs = new ClientsTearDown();
+            FixtureScript fs = new ParticipantsTearDown();
             fixtureScripts.runFixtureScript(fs, null);
             nextTransaction();
 
@@ -110,7 +110,7 @@ public class ClientsIntegTest extends SimpleAppIntegTest {
         public void whenAlreadyExists() throws Exception {
 
             // given
-            FixtureScript fs = new ClientsTearDown();
+            FixtureScript fs = new ParticipantsTearDown();
             fixtureScripts.runFixtureScript(fs, null);
             nextTransaction();
             wrap(clients).create("Faz");

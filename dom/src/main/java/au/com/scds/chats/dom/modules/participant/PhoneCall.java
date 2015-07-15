@@ -97,7 +97,7 @@ public class PhoneCall {
 
 	// }}
 
-	// {{ Client (property)
+	// {{ Participant (property)
 	private Participant participant;
 
 	@javax.jdo.annotations.Column(allowsNull = "false")

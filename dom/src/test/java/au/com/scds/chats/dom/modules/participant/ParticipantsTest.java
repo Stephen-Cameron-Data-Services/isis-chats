@@ -59,16 +59,16 @@ public class ParticipantsTest {
         public void happyCase() throws Exception {
 
             // given
-            final Participant client = new Participant();
+            final Participant participant = new Participant();
 
             final Sequence seq = context.sequence("create");
             context.checking(new Expectations() {
                 {
                     oneOf(mockContainer).newTransientInstance(Participant.class);
                     inSequence(seq);
-                    will(returnValue(client));
+                    will(returnValue(participant));
 
-                    oneOf(mockContainer).persistIfNotAlready(client);
+                    oneOf(mockContainer).persistIfNotAlready(participant);
                     inSequence(seq);
                 }
             });
@@ -77,7 +77,7 @@ public class ParticipantsTest {
             final Participant obj = participants.create("Foobar");
 
             // then
-            assertThat(obj, is(client));
+            assertThat(obj, is(participant));
             assertThat(obj.getFullname(), is("Foobar"));
         }
 

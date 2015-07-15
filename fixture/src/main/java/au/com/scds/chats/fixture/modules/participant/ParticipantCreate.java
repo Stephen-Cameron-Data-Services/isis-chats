@@ -17,7 +17,7 @@
  *  under the License.
  */
 
-package au.com.scds.chats.fixture.modules.client;
+package au.com.scds.chats.fixture.modules.participant;
 
 
 import org.apache.isis.applib.fixturescripts.FixtureScript;
@@ -25,7 +25,7 @@ import org.apache.isis.applib.fixturescripts.FixtureScript;
 import au.com.scds.chats.dom.modules.participant.Participant;
 import au.com.scds.chats.dom.modules.participant.Participants;
 
-public class ClientCreate extends FixtureScript {
+public class ParticipantCreate extends FixtureScript {
 
     //region > name (input)
     private String name;
@@ -36,7 +36,7 @@ public class ClientCreate extends FixtureScript {
         return name;
     }
 
-    public ClientCreate setName(final String name) {
+    public ParticipantCreate setName(final String name) {
         this.name = name;
         return this;
     }
@@ -44,14 +44,14 @@ public class ClientCreate extends FixtureScript {
 
 
     //region > simpleObject (output)
-    private Participant simpleObject;
+    private Participant participant;
 
     /**
      * The created simple object (output).
      * @return
      */
-    public Participant getClient() {
-        return simpleObject;
+    public Participant getParticipant() {
+        return participant;
     }
     //endregion
 
@@ -60,13 +60,13 @@ public class ClientCreate extends FixtureScript {
 
         String name = checkParam("name", ec, String.class);
 
-        this.simpleObject = simpleObjects.create(name);
+        this.participant = Participants.create(name);
 
         // also make available to UI
-        ec.addResult(this, simpleObject);
+        ec.addResult(this, participant);
     }
 
     @javax.inject.Inject
-    private Participants simpleObjects;
+    private Participants Participants;
 
 }

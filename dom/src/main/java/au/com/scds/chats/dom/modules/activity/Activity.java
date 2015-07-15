@@ -215,7 +215,7 @@ public class Activity implements Comparable<Activity> {
 		participant.getActivities().add(this);
 		getParticipants().add(participant);
 		// additional business logic
-		//onAddToParticipants(partipipant);
+		//onAddToParticipants(participant);
 	}
 
 	private void removeFromParticipants(

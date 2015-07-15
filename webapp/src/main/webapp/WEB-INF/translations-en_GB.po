@@ -57,7 +57,7 @@ msgid "List All"
 msgstr ""
 
 
-#: au.com.scds.chats.fixture.scenarios.RecreateClients#lookup()
+#: au.com.scds.chats.fixture.scenarios.RecreateParticipants#lookup()
 #: org.apache.isis.applib.fixturescripts.FixtureScript#lookup()
 #: org.apache.isis.applib.services.bookmark.BookmarkHolderActionContributions#lookup()
 msgid "Lookup"
@@ -123,7 +123,7 @@ msgid "Run Fixture Script"
 msgstr ""
 
 
-#: au.com.scds.chats.fixture.scenarios.RecreateClients
+#: au.com.scds.chats.fixture.scenarios.RecreateParticipants
 #: org.apache.isis.applib.fixturescripts.FixtureScript
 msgid "Script"
 msgstr ""
@@ -140,7 +140,7 @@ msgid "Update Name"
 msgstr ""
 
 
-#: au.com.scds.chats.fixture.scenarios.RecreateClients#withDiscoverability()
+#: au.com.scds.chats.fixture.scenarios.RecreateParticipants#withDiscoverability()
 #: org.apache.isis.applib.fixturescripts.FixtureScript#withDiscoverability()
 msgid "With Discoverability"
 msgstr ""

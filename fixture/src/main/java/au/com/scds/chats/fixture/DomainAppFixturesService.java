@@ -18,7 +18,6 @@
  */
 package au.com.scds.chats.fixture;
 
-
 import java.util.List;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
@@ -31,47 +30,55 @@ import org.apache.isis.applib.fixturescripts.FixtureScript;
 import org.apache.isis.applib.fixturescripts.FixtureScripts;
 import org.apache.isis.applib.fixturescripts.SimpleFixtureScript;
 
-import au.com.scds.chats.fixture.scenarios.RecreateClients;
+import au.com.scds.chats.fixture.scenarios.RecreateParticipants;
 
 /**
  * Enables fixtures to be installed from the application.
  */
 @DomainService
-@DomainServiceLayout(
-        named="Prototyping",
-        menuBar = DomainServiceLayout.MenuBar.SECONDARY,
-        menuOrder = "20"
-)
+@DomainServiceLayout(named = "Prototyping", menuBar = DomainServiceLayout.MenuBar.SECONDARY, menuOrder = "20")
 public class DomainAppFixturesService extends FixtureScripts {
 
-    public DomainAppFixturesService() {
-        super("domainapp", MultipleExecutionStrategy.EXECUTE);
-    }
+	public DomainAppFixturesService() {
+		super("au.com.scds.chats.fixture", MultipleExecutionStrategy.EXECUTE);
+	}
 
-    @Override
-    public FixtureScript default0RunFixtureScript() {
-        return findFixtureScriptFor(SimpleFixtureScript.class);
-    }
+	@Override
+	public FixtureScript default0RunFixtureScript() {
+		return findFixtureScriptFor(SimpleFixtureScript.class);
+	}
 
-    @Override
-    public List<FixtureScript> choices0RunFixtureScript() {
-        return super.choices0RunFixtureScript();
-    }
+	@Override
+	public List<FixtureScript> choices0RunFixtureScript() {
+		return super.choices0RunFixtureScript();
+	}
 
+	// //////////////////////////////////////
 
-    // //////////////////////////////////////
+	@Action(restrictTo = RestrictTo.PROTOTYPING)
+	@ActionLayout(cssClassFa = "fa fa-refresh")
+	@MemberOrder(sequence = "20")
+	public Object recreateObjectsAndReturnFirst() throws Exception {
+		final FixtureScript script = findFixtureScriptFor(RecreateParticipants.class);
+		if (script != null) {
+			final List<FixtureResult> results = script.run(null);
+			return results.get(0).getObject();
+		} else {
+			throw new Exception("Fixture Script not found");
+		}
+	}
 
-    @Action(
-            restrictTo = RestrictTo.PROTOTYPING
-    )
-    @ActionLayout(
-            cssClassFa="fa fa-refresh"
-    )
-    @MemberOrder(sequence="20")
-    public Object recreateObjectsAndReturnFirst() {
-        final List<FixtureResult> run = findFixtureScriptFor(RecreateClients.class).run(null);
-        return run.get(0).getObject();
-    }
-
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		DomainAppFixturesService service = new DomainAppFixturesService();
+		service.init();
+		try {
+			service.recreateObjectsAndReturnFirst();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }

@@ -31,7 +31,7 @@ import org.apache.isis.applib.services.wrapper.InvalidException;
 
 import au.com.scds.chats.dom.modules.participant.Participant;
 import au.com.scds.chats.dom.modules.participant.Participants;
-import au.com.scds.chats.fixture.scenarios.RecreateClients;
+import au.com.scds.chats.fixture.scenarios.RecreateParticipants;
 import au.com.scds.isis.integtests.tests.SimpleAppIntegTest;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -51,17 +51,17 @@ public class ClientIntegTest extends SimpleAppIntegTest {
     @Inject
     TranslationService translationService;
 
-    RecreateClients fs;
+    RecreateParticipants fs;
     Participant clientPojo;
     Participant clientWrapped;
 
     @Before
     public void setUp() throws Exception {
         // given
-        fs = new RecreateClients().setNumber(1);
+        fs = new RecreateParticipants().setNumber(1);
         fixtureScripts.runFixtureScript(fs, null);
 
-        clientPojo = fs.getClients().get(0);
+        clientPojo = fs.getParticipants().get(0);
 
         assertThat(clientPojo, is(not(nullValue())));
         clientWrapped = wrap(clientPojo);
@@ -73,7 +73,7 @@ public class ClientIntegTest extends SimpleAppIntegTest {
         public void accessible() throws Exception {
 
             // when
-            final String name = clientWrapped.getName();
+            final String name = clientWrapped.getFullname();
             //
             // then
             assertThat(name, is(fs.NAMES.get(0)));
@@ -86,7 +86,7 @@ public class ClientIntegTest extends SimpleAppIntegTest {
             expectedExceptions.expect(DisabledException.class);
 
             // when
-            clientWrapped.setName("new name");
+            clientWrapped.setFullname("new name");
         }
     }
 
@@ -96,10 +96,10 @@ public class ClientIntegTest extends SimpleAppIntegTest {
         public void happyCase() throws Exception {
 
             // when
-            clientWrapped.updateName("new name");
+            clientWrapped.setFullname("new name");
 
             // then
-            assertThat(clientWrapped.getName(), is("new name"));
+            assertThat(clientWrapped.getFullname(), is("new name"));
         }
 
         @Test
@@ -110,7 +110,7 @@ public class ClientIntegTest extends SimpleAppIntegTest {
             expectedExceptions.expectMessage("Exclamation mark is not allowed");
 
             // when
-            clientWrapped.updateName("new name!");
+            clientWrapped.setFullname("new name!");
         }
     }
 
@@ -121,7 +121,7 @@ public class ClientIntegTest extends SimpleAppIntegTest {
         public void interpolatesName() throws Exception {
 
             // given
-            final String name = clientWrapped.getName();
+            final String name = clientWrapped.getFullname();
 
             // when
             final String title = container().titleOf(clientWrapped);

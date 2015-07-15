@@ -16,7 +16,7 @@
  */
 package au.com.scds.isis.integtests.specglue;
 
-import au.com.scds.chats.fixture.scenarios.RecreateClients;
+import au.com.scds.chats.fixture.scenarios.RecreateParticipants;
 import cucumber.api.java.Before;
 
 import org.apache.isis.core.specsupport.specs.CukeGlueAbstract;
@@ -25,7 +25,7 @@ public class CatalogOfFixturesGlue extends CukeGlueAbstract {
 
     @Before(value={"@integration", "@SimpleObjectsFixture"}, order=20000)
     public void integrationFixtures() throws Throwable {
-        scenarioExecution().install(new RecreateClients());
+        scenarioExecution().install(new RecreateParticipants());
     }
 
 }

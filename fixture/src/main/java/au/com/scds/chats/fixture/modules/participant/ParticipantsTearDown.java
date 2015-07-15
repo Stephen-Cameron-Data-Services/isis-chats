@@ -17,16 +17,16 @@
  *  under the License.
  */
 
-package au.com.scds.chats.fixture.modules.client;
+package au.com.scds.chats.fixture.modules.participant;
 
 import org.apache.isis.applib.fixturescripts.FixtureScript;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
 
-public class ClientsTearDown extends FixtureScript {
+public class ParticipantsTearDown extends FixtureScript {
 
     @Override
     protected void execute(ExecutionContext executionContext) {
-        isisJdoSupport.executeUpdate("delete from \"Client\"");
+        isisJdoSupport.executeUpdate("delete from \"Participant\"");
     }
 
 

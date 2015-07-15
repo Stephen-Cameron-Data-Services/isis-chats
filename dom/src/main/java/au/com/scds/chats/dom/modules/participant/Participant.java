@@ -525,14 +525,14 @@ public class Participant implements Comparable<Participant> {
 	public Participant addCall(
 			@ParameterLayout(named = "Subject", describedAs = "The subject (heading) of the conversation, displayed in table view") final String subject,
 			@ParameterLayout(named = "Notes", describedAs = "Notes about the conversation. ") final String notes) {
-		PhoneCall conversation = container
+		PhoneCall call = container
 				.newTransientInstance(PhoneCall.class);
-		conversation.setDate(new Date());
-		conversation.setSubject(subject);
-		conversation.setNotes(notes);
-		conversation.setStaffMember(container.getUser().getName());
-		container.persist(conversation);
-		addToCalls(conversation);
+		call.setDate(new Date());
+		call.setSubject(subject);
+		call.setNotes(notes);
+		call.setStaffMember(container.getUser().getName());
+		container.persist(call);
+		addToCalls(call);
 		return this;
 	}
 
