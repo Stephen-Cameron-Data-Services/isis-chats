@@ -18,6 +18,7 @@
  */
 package au.com.scds.chats.dom.modules.participant;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -237,7 +238,7 @@ public class Participant implements Comparable<Participant> {
 	}
 
 	// }}
-	
+
 	// {{ Participation (property)
 	private Participation participation;
 
@@ -261,7 +262,8 @@ public class Participant implements Comparable<Participant> {
 	@ActionLayout(named = "Participation")
 	public Participation updateParticipation() {
 		if (getParticipation() == null) {
-			setParticipation(container.newTransientInstance(Participation.class));
+			setParticipation(container
+					.newTransientInstance(Participation.class));
 		}
 		return getParticipation();
 	}
@@ -525,8 +527,7 @@ public class Participant implements Comparable<Participant> {
 	public Participant addCall(
 			@ParameterLayout(named = "Subject", describedAs = "The subject (heading) of the conversation, displayed in table view") final String subject,
 			@ParameterLayout(named = "Notes", describedAs = "Notes about the conversation. ") final String notes) {
-		PhoneCall call = container
-				.newTransientInstance(PhoneCall.class);
+		PhoneCall call = container.newTransientInstance(PhoneCall.class);
 		call.setDate(new Date());
 		call.setSubject(subject);
 		call.setNotes(notes);
@@ -567,7 +568,7 @@ public class Participant implements Comparable<Participant> {
 	}
 
 	// }}
-	
+
 	// {{ Notes (Collection)
 	private List<Note> notes = new ArrayList<Note>();
 
@@ -584,9 +585,8 @@ public class Participant implements Comparable<Participant> {
 
 	@MemberOrder(name = "notes", sequence = "1")
 	public Participant addNote(
-			@ParameterLayout(named = "Text", describedAs = "The content of the Note") final String text) {
-		Note note = container
-				.newTransientInstance(Note.class);
+			@ParameterLayout(named = "Text", describedAs = "The content of the Note", multiLine = 5) final String text) {
+		Note note = container.newTransientInstance(Note.class);
 		note.setDate(new Date());
 		note.setText(text);
 		note.setStaffMember(container.getUser().getName());

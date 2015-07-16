@@ -27,8 +27,12 @@ import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.ParameterLayout;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
+import org.joda.time.LocalDate;
+
+import au.com.scds.chats.dom.modules.general.Address;
 
 @DomainService(repositoryFor = Participant.class)
 @DomainServiceLayout(menuOrder = "20")
@@ -113,6 +117,31 @@ public class Participants {
         return obj;
     }
     //endregion
+    
+	// region > helpers
+	@Programmatic
+	// for use by fixtures 
+	private Participant newParticipant(final String fullName,
+			final String preferredName, final String mobilePhoneNumber,
+			final String homePhoneNumber, final String email,
+			final Address streetAddress, final Address mailAddress,
+			final LocalDate dob) {
+
+		final Participant p = container.newTransientInstance(Participant.class);
+		p.setFullname(fullName);
+		p.setPreferredName(preferredName);
+		p.setMobilePhoneNumber(mobilePhoneNumber);
+		p.setHomePhoneNumber(homePhoneNumber);
+		p.setEmailAddress(email);
+		p.setStreetAddress(streetAddress);
+		p.setMailAddress(mailAddress);
+		p.setDateOfBirth(dob);
+
+		container.persist(p);
+		container.flush();
+
+		return p;
+	}
     
     //region > injected services
 

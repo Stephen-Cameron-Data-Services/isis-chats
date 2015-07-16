@@ -20,19 +20,23 @@ import org.apache.isis.applib.value.DateTime;
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
 @javax.jdo.annotations.Version(strategy = VersionStrategy.VERSION_NUMBER, column = "version")
 public class Note {
-	
-    //region > identificatiom
-    public String title() {
-        return getText().substring(0, 20);
-    }
-    //endregion
+
+	// region > identificatiom
+	public String title() {
+		String title = getText();
+		if (title != null && title.length() > 20)
+			title = title.substring(0, 20) + "...";
+		return title;
+	}
+
+	// endregion
 
 	// {{ Date (property)
 	private Date date;
 
 	@javax.jdo.annotations.Column(allowsNull = "false")
 	@Property(editing = Editing.DISABLED)
-	@PropertyLayout(typicalLength=20)
+	@PropertyLayout(typicalLength = 20)
 	@MemberOrder(sequence = "1")
 	public Date getDate() {
 		return date;
@@ -49,7 +53,7 @@ public class Note {
 	private String text;
 
 	@javax.jdo.annotations.Column(allowsNull = "false")
-	@Property(maxLength = 2048,hidden=Where.ALL_TABLES)
+	@Property(maxLength = 2048, hidden = Where.ALL_TABLES)
 	@PropertyLayout(multiLine = 5)
 	@MemberOrder(sequence = "3")
 	public String getText() {
@@ -97,4 +101,3 @@ public class Note {
 		return getParticipant();
 	}
 }
-
