@@ -79,7 +79,7 @@
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<warName>todoapp</warName>
+					<warName>isis-chats-webapp</warName>
 					<archive>
 						<manifest>
 							<addClasspath>false</addClasspath>

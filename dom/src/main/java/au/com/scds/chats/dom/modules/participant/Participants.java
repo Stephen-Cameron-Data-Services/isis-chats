@@ -29,6 +29,7 @@ import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.SemanticsOf;
+import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.query.QueryDefault;
 import org.joda.time.LocalDate;
 
@@ -38,93 +39,73 @@ import au.com.scds.chats.dom.modules.general.Address;
 @DomainServiceLayout(menuOrder = "20")
 public class Participants {
 
-    //region > listAll (action)
-    @Action(
-            semantics = SemanticsOf.SAFE
-    )
-    @ActionLayout(
-            bookmarking = BookmarkPolicy.AS_ROOT
-    )
-    @MemberOrder(sequence = "1")
-    public List<Participant> listAll() {
-        return container.allInstances(Participant.class);
-    }
-    //endregion
-    
-    //region > listActive (action)
-    /*@Action(
-            semantics = SemanticsOf.SAFE
-    )
-    @ActionLayout(
-            bookmarking = BookmarkPolicy.AS_ROOT
-    )
-    @MemberOrder(sequence = "1")
-    public List<Participant> listActive() {
-        //return container.allInstances(Participant.class);
-        return container.allMatches(
-                new QueryDefault<>(
-                        Participant.class,
-                        "findActive",
-                        "status", Status.ACTIVE));
-    }*/
-    //endregion
-    
-    //region > listExited (action)
-    /*@Action(
-            semantics = SemanticsOf.SAFE
-    )
-    @ActionLayout(
-            bookmarking = BookmarkPolicy.AS_ROOT
-    )
-    @MemberOrder(sequence = "2")
-    public List<Participant> listExited() {
-        //return container.allInstances(Participant.class);
-        return container.allMatches(
-                new QueryDefault<>(
-                        Participant.class,
-                        "findExited",
-                        "status", "exited"));
-    }*/
-    //endregion
+	// region > listAll (action)
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@MemberOrder(sequence = "1")
+	public List<Participant> listAll() {
+		return container.allInstances(Participant.class);
+	}
 
-    //region > findByName (action)
-    @Action(
-            semantics = SemanticsOf.SAFE
-    )
-    @ActionLayout(
-            bookmarking = BookmarkPolicy.AS_ROOT
-    )
-    @MemberOrder(sequence = "3")
-    public List<Participant> findByName(
-            @ParameterLayout(named="Name")
-            final String name
-    ) {
-        return container.allMatches(
-                new QueryDefault<>(
-                        Participant.class,
-                        "findByName",
-                        "name", name));
-    }
-    //endregion
+	// endregion
 
-    //region > create (action)
-    @MemberOrder(sequence = "4")
-    public Participant create(
-            final @ParameterLayout(named="Full Name") String name) {
-        final Participant obj = container.newTransientInstance(Participant.class);
-        obj.setFullname(name);
-        container.persistIfNotAlready(obj);
-        return obj;
-    }
-    //endregion
-    
+	// region > listActive (action)
+	/*
+	 * @Action( semantics = SemanticsOf.SAFE )
+	 * 
+	 * @ActionLayout( bookmarking = BookmarkPolicy.AS_ROOT )
+	 * 
+	 * @MemberOrder(sequence = "1") public List<Participant> listActive() {
+	 * //return container.allInstances(Participant.class); return
+	 * container.allMatches( new QueryDefault<>( Participant.class,
+	 * "findActive", "status", Status.ACTIVE)); }
+	 */
+	// endregion
+
+	// region > listExited (action)
+	/*
+	 * @Action( semantics = SemanticsOf.SAFE )
+	 * 
+	 * @ActionLayout( bookmarking = BookmarkPolicy.AS_ROOT )
+	 * 
+	 * @MemberOrder(sequence = "2") public List<Participant> listExited() {
+	 * //return container.allInstances(Participant.class); return
+	 * container.allMatches( new QueryDefault<>( Participant.class,
+	 * "findExited", "status", "exited")); }
+	 */
+	// endregion
+
+	// region > findByName (action)
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@MemberOrder(sequence = "3")
+	public List<Participant> findByName(
+			@ParameterLayout(named = "Name") final String name) {
+		return container.allMatches(new QueryDefault<>(Participant.class,
+				"findByName", "name", name));
+	}
+
+	// endregion
+
+	// region > create (action)
+	@MemberOrder(sequence = "4")
+	public Participant create(
+			final @ParameterLayout(named = "Full Name") String name) {
+		final Participant obj = container
+				.newTransientInstance(Participant.class);
+		obj.setFullname(name);
+		container.persistIfNotAlready(obj);
+		return obj;
+	}
+
+	// endregion
+
 	// region > helpers
-	@Programmatic
-	// for use by fixtures 
-	private Participant newParticipant(final String fullName,
+	// for use by fixtures
+	@ActionLayout(hidden=Where.OBJECT_FORMS)
+	public Participant newParticipant(final String fullName,
 			final String preferredName, final String mobilePhoneNumber,
 			final String homePhoneNumber, final String email,
-			final Address streetAddress, final Address mailAddress,
 			final LocalDate dob) {
 
 		final Participant p = container.newTransientInstance(Participant.class);
@@ -133,8 +114,6 @@ public class Participants {
 		p.setMobilePhoneNumber(mobilePhoneNumber);
 		p.setHomePhoneNumber(homePhoneNumber);
 		p.setEmailAddress(email);
-		p.setStreetAddress(streetAddress);
-		p.setMailAddress(mailAddress);
 		p.setDateOfBirth(dob);
 
 		container.persist(p);
@@ -142,11 +121,11 @@ public class Participants {
 
 		return p;
 	}
-    
-    //region > injected services
 
-    @javax.inject.Inject 
-    DomainObjectContainer container;
+	// region > injected services
 
-    //endregion
+	@javax.inject.Inject
+	DomainObjectContainer container;
+
+	// endregion
 }
