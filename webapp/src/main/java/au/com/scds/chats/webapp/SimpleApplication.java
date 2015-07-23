@@ -28,6 +28,9 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+
+import au.com.scds.isis.viewer.wicket.viewer.registries.components.MyComponentFactoryRegistrar;
+
 import com.google.common.base.Joiner;
 import com.google.common.io.Resources;
 import com.google.inject.AbstractModule;
@@ -40,6 +43,7 @@ import org.apache.wicket.request.IRequestParameters;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 import org.apache.wicket.request.http.WebRequest;
+import org.apache.isis.viewer.wicket.ui.app.registry.ComponentFactoryRegistrar;
 import org.apache.isis.viewer.wicket.viewer.IsisWicketApplication;
 import org.apache.isis.viewer.wicket.viewer.integration.wicket.AuthenticatedWebSessionForIsis;
 
@@ -117,6 +121,7 @@ public class SimpleApplication extends IsisWicketApplication {
         return request;
     }
     
+    
     @Override
     protected Module newIsisWicketModule() {
         final Module isisDefaults = super.newIsisWicketModule();
@@ -124,6 +129,8 @@ public class SimpleApplication extends IsisWicketApplication {
         final Module overrides = new AbstractModule() {
             @Override
             protected void configure() {
+            	//SC new Wicket component factory registrar
+            	bind(ComponentFactoryRegistrar.class).to(MyComponentFactoryRegistrar.class);
                 bind(String.class).annotatedWith(Names.named("applicationName")).toInstance("Chats App");
                 bind(String.class).annotatedWith(Names.named("applicationCss")).toInstance("css/application.css");
                 bind(String.class).annotatedWith(Names.named("applicationJs")).toInstance("scripts/application.js");
