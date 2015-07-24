@@ -400,27 +400,17 @@
 			<!-- this project's own modules -->
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>todoapp-canonical</artifactId>
+				<artifactId>isis-chats-dom</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>todoapp-dom</artifactId>
+				<artifactId>isis-chats-fixture</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>todoapp-domrepo</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>todoapp-fixture</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>todoapp-webapp</artifactId>
+				<artifactId>isis-chats-webapp</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
