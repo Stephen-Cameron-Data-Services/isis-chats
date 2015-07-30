@@ -41,10 +41,10 @@ public class ParticipantCreate3 extends FixtureScript {
 		participant = wrap(participants).newParticipant(data.fullName,
 				data.preferredName, data.mobilePhoneNumber, data.homePhoneNumber,
 				data.email, LocalDate.parse(data.dob));
-		wrap(participant).updateStreetAddress(data.sStreet1, data.sStreet2,
+		wrap(participant.getPerson()).updateStreetAddress(data.sStreet1, data.sStreet2,
 				data.sSuburb, data.sPostcode, Boolean.valueOf(data.sStreetIsMail));
 		if (!Boolean.valueOf(data.sStreetIsMail)) {
-			wrap(participant).updateMailAddress(data.mStreet1, data.mStreet2,
+			wrap(participant.getPerson()).updateMailAddress(data.mStreet1, data.mStreet2,
 					data.mSuburb, data.mPostcode);
 		}
 		ec.addResult(this, participant);

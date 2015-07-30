@@ -37,14 +37,14 @@ public class HomePageViewModel {
     //region > object (collection)
     @org.apache.isis.applib.annotation.HomePage
     public List<Participant> getObjects() {
-        return clients.listAll();
+        return participants.listAll();
     }
     //endregion
 
     //region > injected services
 
     @javax.inject.Inject
-    Participants clients;
+    Participants participants;
 
     //endregion
 }

@@ -92,11 +92,11 @@ public class ParticipantCreate2 extends FixtureScript {
 						.newParticipant(pd.fullName, pd.preferredName,
 								pd.mobilePhoneNumber, pd.homePhoneNumber,
 								pd.email, LocalDate.parse(pd.dob));
-				wrap(participant).updateStreetAddress(pd.sStreet1, pd.sStreet2,
+				wrap(participant.getPerson()).updateStreetAddress(pd.sStreet1, pd.sStreet2,
 						pd.sSuburb, pd.sPostcode,
 						Boolean.valueOf(pd.sStreetIsMail));
 				if (!Boolean.valueOf(pd.sStreetIsMail)) {
-					wrap(participant).updateMailAddress(pd.mStreet1,
+					wrap(participant.getPerson()).updateMailAddress(pd.mStreet1,
 							pd.mStreet2, pd.mSuburb, pd.mPostcode);
 				}
 				return participant;

@@ -19,7 +19,6 @@
 
 package au.com.scds.chats.fixture.modules.participant;
 
-
 import org.apache.isis.applib.fixturescripts.FixtureScript;
 
 import au.com.scds.chats.dom.modules.participant.Participant;
@@ -27,46 +26,49 @@ import au.com.scds.chats.dom.modules.participant.Participants;
 
 public class ParticipantCreate extends FixtureScript {
 
-    //region > name (input)
-    private String name;
-    /**
-     * Name of the object (required)
-     */
-    public String getName() {
-        return name;
-    }
+	// region > name (input)
+	private String name;
 
-    public ParticipantCreate setName(final String name) {
-        this.name = name;
-        return this;
-    }
-    //endregion
+	/**
+	 * Name of the object (required)
+	 */
+	public String getName() {
+		return name;
+	}
 
+	public ParticipantCreate setName(final String name) {
+		this.name = name;
+		return this;
+	}
 
-    //region > simpleObject (output)
-    private Participant participant;
+	// endregion
 
-    /**
-     * The created simple object (output).
-     * @return
-     */
-    public Participant getParticipant() {
-        return participant;
-    }
-    //endregion
+	// region > simpleObject (output)
+	private Participant participant;
 
-    @Override
-    protected void execute(final ExecutionContext ec) {
+	/**
+	 * The created simple object (output).
+	 * 
+	 * @return
+	 */
+	public Participant getParticipant() {
+		return participant;
+	}
 
-        String name = checkParam("name", ec, String.class);
+	// endregion
 
-        this.participant = Participants.create(name);
+	@Override
+	protected void execute(final ExecutionContext ec) {
 
-        // also make available to UI
-        ec.addResult(this, participant);
-    }
+		String name = checkParam("name", ec, String.class);
 
-    @javax.inject.Inject
-    private Participants Participants;
+		this.participant = Participants.create("", "", name);
+
+		// also make available to UI
+		ec.addResult(this, participant);
+	}
+
+	@javax.inject.Inject
+	private Participants Participants;
 
 }

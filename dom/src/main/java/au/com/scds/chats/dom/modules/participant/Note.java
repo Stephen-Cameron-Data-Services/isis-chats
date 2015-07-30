@@ -90,8 +90,8 @@ public class Note {
 		return participant;
 	}
 
-	public void setParticipant(final Participant client) {
-		this.participant = client;
+	public void setParticipant(final Participant participant2) {
+		this.participant = participant2;
 	}
 
 	// }}

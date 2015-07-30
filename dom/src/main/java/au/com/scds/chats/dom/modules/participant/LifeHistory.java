@@ -22,7 +22,7 @@ import org.apache.isis.applib.util.TitleBuffer;
 public class LifeHistory {
 
 	public String title() {
-		return "Life History of Participant: " + parent.getFullname() ;
+		return "Life History of Participant: " + parent.getPerson().getFullname() ;
 	}
 	
 	// {{ ParentParticipant (property)
@@ -35,9 +35,9 @@ public class LifeHistory {
 		return parent;
 	}
 	
-	public void setParentParticipant(Participant parent) {
-		if (this.parent == null && parent != null)
-			this.parent = parent;
+	public void setParentParticipant(Participant participant) {
+		if (this.parent == null && participant != null)
+			this.parent = participant;
 	}
 
 	// {{ LifeStory (property)

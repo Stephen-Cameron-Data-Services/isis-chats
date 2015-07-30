@@ -61,20 +61,20 @@ import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.modules.activity.Activity;
 import au.com.scds.chats.dom.modules.general.Address;
+import au.com.scds.chats.dom.modules.general.Person;
 
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
 //@javax.jdo.annotations.Version(strategy = VersionStrategy.VERSION_NUMBER, column = "version")
-@javax.jdo.annotations.Queries({
+/*@javax.jdo.annotations.Queries({
 		@javax.jdo.annotations.Query(name = "find", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.modules.participant.Participant "),
 		@javax.jdo.annotations.Query(name = "findByName", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.modules.participant.Participant "
-				+ "WHERE name.indexOf(:name) >= 0 ") })
-@javax.jdo.annotations.Unique(name = "Person_name_UNQ", members = { "fullname" })
+				+ "WHERE name.indexOf(:name) >= 0 ") })*/
 @DomainObject(objectType = "PARTICIPANT")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-public class Participant implements Comparable<Participant> {
+public class Participant {
 
 	// region > identificatiom
 	public TranslatableString title() {
@@ -82,55 +82,43 @@ public class Participant implements Comparable<Participant> {
 				getFullname());
 	}
 
-	// endregion
+	// {{ Person (property)
+	private Person person;
 
-	// firstname (property)
-
-	private String fullName;
-
-	@Column(allowsNull = "false", length = 40)
-	// @Property(editing = Editing.DISABLED)
+	@Column()
 	@MemberOrder(sequence = "1")
-	public String getFullname() {
-		return fullName;
+	public Person getPerson() {
+		return person;
 	}
 
-	public void setFullname(final String name) {
-		this.fullName = name;
+	public void setPerson(final Person person) {
+		this.person = person;
 	}
-
-	// endregion
-
-	// {{ PreferredName (property)
-	private String preferredName;
-
-	@Column(allowsNull = "true", length = 20)
-	@MemberOrder(sequence = "2")
-	public String getPreferredName() {
-		return preferredName;
+	
+	public List<Person> choicesPerson(){
+		return container.allInstances(Person.class);
 	}
-
-	public void setPreferredName(final String preferredName) {
-		this.preferredName = preferredName;
+	
+	public String getFullname(){
+		if(getPerson()!= null){
+			return getPerson().getFirstname() + " " + getPerson().getMiddlename() + " " + getPerson().getSurname();
+		}else{
+			return "";
+		}
 	}
-
+	
+	@MemberOrder(name="Contact Details",sequence = "1")
+	public Address getStreetAddress(){
+		return getPerson().getStreetAddress();
+	}
+	
+	@MemberOrder(name="Contact Details",sequence = "2")
+	public Address getMailAddress(){
+		return getPerson().getMailAddress();
+	}
 	// }}
 
-	// {{ DateOfBirth (property)
-	private LocalDate dob;
 
-	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "3")
-	@Property(hidden = Where.PARENTED_TABLES)
-	public LocalDate getDateOfBirth() {
-		return dob;
-	}
-
-	public void setDateOfBirth(final LocalDate dob) {
-		this.dob = dob;
-	}
-
-	// }}
 
 	// {{ Status (property)
 	private Status status = Status.ACTIVE;
@@ -295,201 +283,13 @@ public class Participant implements Comparable<Participant> {
 
 	// endregion
 
-	// {{ Address (property)
-	/*
-	 * private String address;
-	 * 
-	 * @Column(length = 40)
-	 * 
-	 * @MemberOrder(sequence = "3")
-	 * 
-	 * @Property(optionality = Optionality.DEFAULT) public String getAddress() {
-	 * return address; }
-	 * 
-	 * public void setAddress(final String address) { this.address = address; }
-	 */
-
-	// }}
-
-	// {{ ContactDetails (property)
-	/*
-	 * private ContactDetails contactDetails = new ContactDetails();
-	 * 
-	 * @Column(allowsNull="true")
-	 * 
-	 * @MemberOrder(sequence = "4") public ContactDetails getContactDetails() {
-	 * return contactDetails; }
-	 * 
-	 * public void setContactDetails(final ContactDetails contactDetails) {
-	 * this.contactDetails = contactDetails; }
-	 */
-
-	// }}
-
-	// {{ Street Address (property)
-	private Address streetAddress = new Address();
-
-	@Column(allowsNull = "true")
-	@MemberOrder(name = "Contact Details", sequence = "1")
-	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
-	public Address getStreetAddress() {
-		return streetAddress;
-	}
-
-	public void setStreetAddress(final Address streetAddress) {
-		this.streetAddress = streetAddress;
-	}
-
-	@MemberOrder(name = "streetaddress", sequence = "1")
-	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	public Participant updateStreetAddress(
-			@ParameterLayout(named = "Street 1") String street1,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
-			@ParameterLayout(named = "Suburb") String suburb,
-			@ParameterLayout(named = "Postcode") String postcode,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Is Mail Address Too?") Boolean isMailAddress) {
-		Address newAddress = container.newTransientInstance(Address.class);
-		newAddress.setStreet1(street1);
-		newAddress.setStreet2(street2);
-		newAddress.setPostcode(postcode);
-		newAddress.setSuburb(suburb);
-		Address oldAddress = getStreetAddress();
-		container.persist(newAddress);
-		setStreetAddress(newAddress);
-		if (oldAddress != null)
-			container.removeIfNotAlready(oldAddress);
-		if (isMailAddress != null && isMailAddress == true)
-			setMailAddress(newAddress);
-		return this;
-	}
-
-	public String default0UpdateStreetAddress() {
-		return getStreetAddress().getStreet1();
-	}
-
-	public String default1UpdateStreetAddress() {
-		return getStreetAddress().getStreet2();
-	}
-
-	public String default2UpdateStreetAddress() {
-		return getStreetAddress().getSuburb();
-	}
-
-	public String default3UpdateStreetAddress() {
-		return getStreetAddress().getPostcode();
-	}
-
-	public Boolean default4UpdateStreetAddress() {
-		return false;
-	}
-
-	// }}
-
-	// {{ Mail Address (property)
-	private Address mailAddress = new Address();
-
-	@Column(allowsNull = "true")
-	@MemberOrder(name = "Contact Details", sequence = "2")
-	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
-	public Address getMailAddress() {
-		return mailAddress;
-	}
-
-	public void setMailAddress(final Address mailAddress) {
-		this.mailAddress = mailAddress;
-	}
-
-	@MemberOrder(name = "mailaddress", sequence = "1")
-	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	public Participant updateMailAddress(
-			@ParameterLayout(named = "Street 1") String street1,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
-			@ParameterLayout(named = "Suburb") String suburb,
-			@ParameterLayout(named = "Postcode") String postcode) {
-		Address newAddress = container.newTransientInstance(Address.class);
-		newAddress.setStreet1(street1);
-		newAddress.setStreet2(street2);
-		newAddress.setPostcode(postcode);
-		newAddress.setSuburb(suburb);
-		Address oldMailAddress = getMailAddress();
-		container.persist(newAddress);
-		setMailAddress(newAddress);
-		if (oldMailAddress != null && oldMailAddress != getStreetAddress())
-			container.removeIfNotAlready(oldMailAddress);
-		return this;
-	}
-
-	public String default0UpdateMailAddress() {
-		return getMailAddress().getStreet1();
-	}
-
-	public String default1UpdateMailAddress() {
-		return getMailAddress().getStreet2();
-	}
-
-	public String default2UpdateMailAddress() {
-		return getMailAddress().getSuburb();
-	}
-
-	public String default3UpdateMailAddress() {
-		return getMailAddress().getPostcode();
-	}
-
-	// }}
-
-	// {{ HomePhoneNumber (property)
-	private String homePhoneNumber;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(name = "Contact Details", sequence = "3")
-	public String getHomePhoneNumber() {
-		return homePhoneNumber;
-	}
-
-	public void setHomePhoneNumber(final String homePhoneNumber) {
-		this.homePhoneNumber = homePhoneNumber;
-	}
-
-	// }}
-
-	// {{ MobilePhoneNumber (property)
-	private String mobilePhoneNumber;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(name = "Contact Details", sequence = "4")
-	@Property()
-	public String getMobilePhoneNumber() {
-		return mobilePhoneNumber;
-	}
-
-	public void setMobilePhoneNumber(final String mobilePhoneNumber) {
-		this.mobilePhoneNumber = mobilePhoneNumber;
-	}
-
-	// }}
-
-	// {{ EmailAddress (property)
-	private String email;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(name = "Contact Details", sequence = "5")
-	@Property(hidden = Where.ALL_TABLES)
-	public String getEmailAddress() {
-		return email;
-	}
-
-	public void setEmailAddress(final String email) {
-		this.email = email;
-	}
-
-	// }}
 
 	// region > compareTo
 
-	@Override
+	/*@Override
 	public int compareTo(final Participant other) {
 		return ObjectContracts.compare(this, other, "name");
-	}
+	}*/
 
 	// endregion
 

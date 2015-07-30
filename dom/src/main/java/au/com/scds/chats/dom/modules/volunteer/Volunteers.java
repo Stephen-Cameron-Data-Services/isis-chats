@@ -15,6 +15,8 @@ import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.query.QueryDefault;
 import org.joda.time.LocalDate;
 
+import au.com.scds.chats.dom.modules.general.Person;
+
 
 /**
  * 
@@ -65,14 +67,19 @@ public class Volunteers {
 	// region > create (action)
 	@MemberOrder(sequence = "4")
 	public Volunteer create(
-			final @ParameterLayout(named = "First Name") String firstName,
+			final @ParameterLayout(named = "First name") String firstname,
+			final @ParameterLayout(named = "Middle name(s)") String middlename,
 			final @ParameterLayout(named = "Surname") String surname) {
-		final Volunteer obj = container
+		final Volunteer volunteer = container
 				.newTransientInstance(Volunteer.class);
-		obj.setFirstname(firstName);
-		obj.setSurname(surname);
-		container.persistIfNotAlready(obj);
-		return obj;
+		final Person person = container.newTransientInstance(Person.class);
+		person.setFirstname(firstname);
+		person.setMiddlename(middlename);
+		person.setSurname(surname);
+		container.persistIfNotAlready(person);
+		volunteer.setPerson(person);
+		container.persistIfNotAlready(volunteer);
+		return volunteer;
 	}
 
 	// endregion
@@ -86,8 +93,8 @@ public class Volunteers {
 			final LocalDate dob) {
 
 		final Volunteer p = container.newTransientInstance(Volunteer.class);
-		p.setFirstname(fullName);
-		p.setPreferredname(preferredName);
+		//p.setFirstname(fullName);
+		//p.setPreferredname(preferredName);
 		//p.setMobilePhoneNumber(mobilePhoneNumber);
 		//p.setHomePhoneNumber(homePhoneNumber);
 		//p.setEmailAddress(email);

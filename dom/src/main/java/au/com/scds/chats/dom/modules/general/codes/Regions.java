@@ -12,6 +12,9 @@ import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.SemanticsOf;
+import org.apache.isis.applib.query.QueryDefault;
+
+import au.com.scds.chats.dom.modules.participant.Participant;
 
 
 
@@ -42,10 +45,6 @@ public class Regions {
 		return obj;
 	}
 	
-	// endregion
-	
-	
-
 	// endregion
 
 	// region > injected services

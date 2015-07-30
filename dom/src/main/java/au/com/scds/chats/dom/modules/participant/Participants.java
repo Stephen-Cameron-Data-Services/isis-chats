@@ -33,7 +33,7 @@ import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.query.QueryDefault;
 import org.joda.time.LocalDate;
 
-import au.com.scds.chats.dom.modules.general.Address;
+import au.com.scds.chats.dom.modules.general.Person;
 
 @DomainService(repositoryFor = Participant.class)
 @DomainServiceLayout(menuOrder = "20")
@@ -90,31 +90,38 @@ public class Participants {
 	// region > create (action)
 	@MemberOrder(sequence = "4")
 	public Participant create(
-			final @ParameterLayout(named = "Full Name") String name) {
-		final Participant obj = container
+			final @ParameterLayout(named = "First name") String firstname,
+			final @ParameterLayout(named = "Middle name(s)") String middlename,
+			final @ParameterLayout(named = "Surname") String surname) {
+		final Participant participant = container
 				.newTransientInstance(Participant.class);
-		obj.setFullname(name);
-		container.persistIfNotAlready(obj);
-		return obj;
+		final Person person = container.newTransientInstance(Person.class);
+		person.setFirstname(firstname);
+		person.setMiddlename(middlename);
+		person.setSurname(surname);
+		container.persistIfNotAlready(person);
+		participant.setPerson(person);
+		container.persistIfNotAlready(participant);
+		return participant;
 	}
 
 	// endregion
 
 	// region > helpers
 	// for use by fixtures
-	@ActionLayout(hidden=Where.EVERYWHERE)
+	@ActionLayout(hidden = Where.EVERYWHERE)
 	public Participant newParticipant(final String fullName,
 			final String preferredName, final String mobilePhoneNumber,
 			final String homePhoneNumber, final String email,
 			final LocalDate dob) {
 
 		final Participant p = container.newTransientInstance(Participant.class);
-		p.setFullname(fullName);
-		p.setPreferredName(preferredName);
-		p.setMobilePhoneNumber(mobilePhoneNumber);
-		p.setHomePhoneNumber(homePhoneNumber);
-		p.setEmailAddress(email);
-		p.setDateOfBirth(dob);
+		/*
+		 * p.setFullname(fullName); p.setPreferredName(preferredName);
+		 * p.setMobilePhoneNumber(mobilePhoneNumber);
+		 * p.setHomePhoneNumber(homePhoneNumber); p.setEmailAddress(email);
+		 * p.setDateOfBirth(dob);
+		 */
 
 		container.persist(p);
 		container.flush();

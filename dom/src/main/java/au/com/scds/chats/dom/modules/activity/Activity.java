@@ -182,8 +182,10 @@ public class Activity implements Comparable<Activity> {
     
     @MemberOrder(name="participants",sequence="2")
     public Activity addNewParticipant(
-            final @ParameterLayout(named="Name") String name){
-    	Participant participant = clients.create(name); 
+    				final @ParameterLayout(named = "First name") String firstname,
+    				final @ParameterLayout(named = "Middle name(s)") String middlename,
+    				final @ParameterLayout(named = "Surname") String surname){
+    	Participant participant = repository.create(firstname,middlename,surname); 
     	addToParticipants(participant);
     	return this;
     }
@@ -196,7 +198,7 @@ public class Activity implements Comparable<Activity> {
     }
     
     public List<Participant> choices0AddParticipant() {
-        return clients.listAll();
+        return repository.listAll();
     }
     
     public List<Participant> choices0RemoveParticipant() {
@@ -219,15 +221,15 @@ public class Activity implements Comparable<Activity> {
 	}
 
 	private void removeFromParticipants(
-			final Participant partipipant) {
+			final Participant participant) {
 		// check for no-op
-		if (partipipant == null
-				|| !getParticipants().contains(partipipant)) {
+		if (participant == null
+				|| !getParticipants().contains(participant)) {
 			return;
 		}
 		// dissociate arg
-		partipipant.getActivities().remove(this);
-		getParticipants().remove(partipipant);
+		participant.getActivities().remove(this);
+		getParticipants().remove(participant);
 		// additional business logic
 		//onRemoveFromParticipants(partipipant);
 	}  
@@ -303,7 +305,7 @@ public class Activity implements Comparable<Activity> {
     
     @javax.inject.Inject
     @SuppressWarnings("unused")
-    private Participants clients;
+    private Participants repository;
     
     @javax.inject.Inject
     @SuppressWarnings("unused")
