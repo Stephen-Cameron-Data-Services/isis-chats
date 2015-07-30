@@ -102,7 +102,7 @@ public class Participants {
 
 	// region > helpers
 	// for use by fixtures
-	@ActionLayout(hidden=Where.OBJECT_FORMS)
+	@ActionLayout(hidden=Where.EVERYWHERE)
 	public Participant newParticipant(final String fullName,
 			final String preferredName, final String mobilePhoneNumber,
 			final String homePhoneNumber, final String email,
