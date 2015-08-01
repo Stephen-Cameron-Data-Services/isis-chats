@@ -1,5 +1,6 @@
 package au.com.scds.chats.dom.modules.general;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jdo.annotations.Column;
@@ -21,6 +22,9 @@ import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.annotation.Where;
 import org.joda.time.DateTime;
+
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import au.com.scds.chats.dom.modules.general.codes.ContactType;
 import au.com.scds.chats.dom.modules.general.codes.EnglishSkill;
@@ -69,6 +73,7 @@ public class Person {
 		return this.getFullname();
 	}
 
+	@Programmatic
 	public String getFullname() {
 		return this.getFirstname() + " " + this.getMiddlename() + " "
 				+ this.getSurname();
@@ -140,6 +145,7 @@ public class Person {
 
 	@Column(name = "region", allowsNull = "true")
 	@MemberOrder(sequence = "7")
+	//@Property(hidden=Where.EVERYWHERE)
 	public Region getRegion() {
 		return this.region;
 	}
@@ -147,6 +153,25 @@ public class Person {
 	public void setRegion(Region region) {
 		this.region = region;
 	}
+	
+	public List<Region> choicesRegion() {
+		return regions.listAllRegions();
+	}
+	
+	//TODO failed experiment with making Region
+	//appear as a simple type, Dan is checking
+	/*@MemberOrder(sequence = "7")
+	public String getRegionName() {
+	    return regions.nameForRegion(getRegion());
+	}
+	
+	public void setRegionName(String name) {
+	    setRegion(regions.regionForName(name));
+	}
+	
+    public List<String> choicesRegionName(){
+    	return regions.listAllNamesExclusive(getRegion());
+    }*/
 
 	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "8")

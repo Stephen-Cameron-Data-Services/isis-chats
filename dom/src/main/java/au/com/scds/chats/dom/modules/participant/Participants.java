@@ -19,6 +19,7 @@
 package au.com.scds.chats.dom.modules.participant;
 
 import java.util.List;
+
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
@@ -27,62 +28,57 @@ import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.ParameterLayout;
-import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.query.QueryDefault;
+import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
 import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.modules.general.Person;
+import au.com.scds.chats.dom.modules.general.Status;
 
 @DomainService(repositoryFor = Participant.class)
 @DomainServiceLayout(menuOrder = "20")
 public class Participants {
 
-	// region > listAll (action)
+	// region > listActive (action)
+
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "1")
-	public List<Participant> listAll() {
-		return container.allInstances(Participant.class);
+	@SuppressWarnings("all")
+	public List<Participant> listActive() {
+		return container.allMatches(new QueryDefault<>(Participant.class,
+				"listByStatus", "status", Status.ACTIVE));
+        /*TODO replace all queries with typesafe 
+        final QParticipant p =  QParticipant.candidate();
+        return isisJdoSupport.executeQuery(Participant.class,
+                p.status.eq(Status.ACTIVE));*/
+		
 	}
 
 	// endregion
 
-	// region > listActive (action)
-	/*
-	 * @Action( semantics = SemanticsOf.SAFE )
-	 * 
-	 * @ActionLayout( bookmarking = BookmarkPolicy.AS_ROOT )
-	 * 
-	 * @MemberOrder(sequence = "1") public List<Participant> listActive() {
-	 * //return container.allInstances(Participant.class); return
-	 * container.allMatches( new QueryDefault<>( Participant.class,
-	 * "findActive", "status", Status.ACTIVE)); }
-	 */
-	// endregion
-
 	// region > listExited (action)
-	/*
-	 * @Action( semantics = SemanticsOf.SAFE )
-	 * 
-	 * @ActionLayout( bookmarking = BookmarkPolicy.AS_ROOT )
-	 * 
-	 * @MemberOrder(sequence = "2") public List<Participant> listExited() {
-	 * //return container.allInstances(Participant.class); return
-	 * container.allMatches( new QueryDefault<>( Participant.class,
-	 * "findExited", "status", "exited")); }
-	 */
+
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@MemberOrder(sequence = "2")
+	public List<Participant> listExited() {
+		return container.allMatches(new QueryDefault<>(Participant.class,
+				"listByStatus", "status", Status.EXCITED));
+	}
+
 	// endregion
 
-	// region > findByName (action)
+	// region > findBySurname (action)
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "3")
-	public List<Participant> findByName(
-			@ParameterLayout(named = "Name") final String name) {
+	public List<Participant> findBySurname(
+			@ParameterLayout(named = "Surname") final String surname) {
 		return container.allMatches(new QueryDefault<>(Participant.class,
-				"findByName", "name", name));
+				"findBySurname", "surname", surname));
 	}
 
 	// endregion
@@ -134,5 +130,8 @@ public class Participants {
 	@javax.inject.Inject
 	DomainObjectContainer container;
 
+    @javax.inject.Inject
+    private IsisJdoSupport isisJdoSupport;
+    //endregion
 	// endregion
 }

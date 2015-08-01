@@ -21,7 +21,7 @@ import org.joda.time.LocalDate;
 public class SocialFactors {
 
 	public String title() {
-		return "Social Factors of Participant: " + parent.getFullname();
+		return "Social Factors of Participant: " + parent.getPerson().getFullname();
 	}
 
 	// {{ ParentParticipant (property)

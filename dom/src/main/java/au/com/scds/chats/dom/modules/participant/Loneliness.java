@@ -18,7 +18,7 @@ import org.apache.isis.applib.annotation.Property;
 public class Loneliness {
 
 	public String title() {
-		return "Loneliness of Participant: " + parent.getFullname() ;
+		return "Loneliness of Participant: " + parent.getPerson().getFullname() ;
 	}
 	
 	// {{ ParentParticipant (property)

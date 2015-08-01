@@ -16,6 +16,7 @@ import org.apache.isis.applib.query.QueryDefault;
 import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.modules.general.Person;
+import au.com.scds.chats.dom.modules.general.Status;
 
 
 /**
@@ -25,41 +26,47 @@ import au.com.scds.chats.dom.modules.general.Person;
  * 
  */
 @DomainService(repositoryFor = Volunteer.class)
-@DomainServiceLayout(menuOrder = "30")
+@DomainServiceLayout(menuOrder = "50")
 public class Volunteers {
 
 	// region > listActive (action)
+
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "1")
+	@SuppressWarnings("all")
 	public List<Volunteer> listActive() {
-		// return container.allInstances(Volunteer.class);
 		return container.allMatches(new QueryDefault<>(Volunteer.class,
-				"findActive", "status", "active"));
+				"listByStatus", "status", Status.ACTIVE));
+        /*TODO replace all queries with typesafe 
+        final QVolunteer p =  QVolunteer.candidate();
+        return isisJdoSupport.executeQuery(Volunteer.class,
+                p.status.eq(Status.ACTIVE));*/
+		
 	}
 
 	// endregion
 
 	// region > listExited (action)
+
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "2")
 	public List<Volunteer> listExited() {
-		// return container.allInstances(Volunteer.class);
 		return container.allMatches(new QueryDefault<>(Volunteer.class,
-				"findExited", "status", "exited"));
+				"listByStatus", "status", Status.EXCITED));
 	}
 
 	// endregion
 
-	// region > findByName (action)
+	// region > findBySurname (action)
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "3")
-	public List<Volunteer> findByName(
-			@ParameterLayout(named = "Name") final String name) {
+	public List<Volunteer> findBySurname(
+			@ParameterLayout(named = "Surname") final String surname) {
 		return container.allMatches(new QueryDefault<>(Volunteer.class,
-				"findByName", "name", name));
+				"findBySurname", "surname", surname));
 	}
 
 	// endregion
@@ -70,6 +77,7 @@ public class Volunteers {
 			final @ParameterLayout(named = "First name") String firstname,
 			final @ParameterLayout(named = "Middle name(s)") String middlename,
 			final @ParameterLayout(named = "Surname") String surname) {
+System.out.println("1");
 		final Volunteer volunteer = container
 				.newTransientInstance(Volunteer.class);
 		final Person person = container.newTransientInstance(Person.class);
@@ -77,8 +85,11 @@ public class Volunteers {
 		person.setMiddlename(middlename);
 		person.setSurname(surname);
 		container.persistIfNotAlready(person);
+System.out.println("2");
 		volunteer.setPerson(person);
 		container.persistIfNotAlready(volunteer);
+System.out.println("3");
+		container.flush();
 		return volunteer;
 	}
 

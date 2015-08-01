@@ -26,7 +26,7 @@ import au.com.scds.chats.dom.modules.activity.Activity;
 public class Participation {
 
 	public String title() {
-		return "Participation of Participant: " + parent.getFullname() ;
+		return "Participation of Participant: " + parent.getPerson().getFullname() ;
 	}
 	
 	// {{ ParentParticipant (property)

@@ -198,7 +198,7 @@ public class Activity implements Comparable<Activity> {
     }
     
     public List<Participant> choices0AddParticipant() {
-        return repository.listAll();
+        return repository.listActive();
     }
     
     public List<Participant> choices0RemoveParticipant() {

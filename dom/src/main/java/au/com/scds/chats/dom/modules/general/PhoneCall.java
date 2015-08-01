@@ -1,13 +1,17 @@
-package au.com.scds.chats.dom.modules.participant;
+package au.com.scds.chats.dom.modules.general;
 
 import java.util.Date;
 
+import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.VersionStrategy;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Editing;
+import org.apache.isis.applib.annotation.Hidden;
+import org.apache.isis.applib.annotation.MaxLength;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.MultiLine;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
@@ -16,27 +20,26 @@ import org.apache.isis.applib.security.UserMemento;
 import org.apache.isis.applib.services.i18n.TranslatableString;
 import org.apache.isis.applib.value.DateTime;
 
+import au.com.scds.chats.dom.modules.participant.Participant;
+import au.com.scds.chats.dom.modules.volunteer.Volunteer;
+
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
-@javax.jdo.annotations.Version(strategy = VersionStrategy.VERSION_NUMBER, column = "version")
-public class Note {
-
-	// region > identificatiom
-	public String title() {
-		String title = getText();
-		if (title != null && title.length() > 20)
-			title = title.substring(0, 20) + "...";
-		return title;
-	}
-
-	// endregion
+//@javax.jdo.annotations.Version(strategy = VersionStrategy.VERSION_NUMBER, column = "version")
+public class PhoneCall {
+	
+    //region > identificatiom
+    public TranslatableString title() {
+        return TranslatableString.tr("Call: {subject}", "subject", getSubject());
+    }
+    //endregion
 
 	// {{ Date (property)
 	private Date date;
 
 	@javax.jdo.annotations.Column(allowsNull = "false")
 	@Property(editing = Editing.DISABLED)
-	@PropertyLayout(typicalLength = 20)
+	@PropertyLayout(typicalLength=20)
 	@MemberOrder(sequence = "1")
 	public Date getDate() {
 		return date;
@@ -48,20 +51,37 @@ public class Note {
 
 	// }}
 
-	// {{ Notes (property)
-
-	private String text;
+	// {{ Subject (property)
+	private String subject;
 
 	@javax.jdo.annotations.Column(allowsNull = "false")
-	@Property(maxLength = 2048, hidden = Where.ALL_TABLES)
-	@PropertyLayout(multiLine = 5)
-	@MemberOrder(sequence = "3")
-	public String getText() {
-		return text;
+	@Property(maxLength = 100)
+	@PropertyLayout(describedAs = "The subject (heading) of the conversation, displayed in table view")
+	@MemberOrder(sequence = "2")
+	public String getSubject() {
+		return subject;
 	}
 
-	public void setText(final String text) {
-		this.text = text;
+	public void setSubject(final String subject) {
+		this.subject = subject;
+	}
+
+	// }}
+
+	// {{ Notes (property)
+
+	private String notes;
+
+	@javax.jdo.annotations.Column(allowsNull = "false")
+	@Property(maxLength = 2048,hidden=Where.ALL_TABLES)
+	@PropertyLayout(multiLine = 5, describedAs = "Notes about the conversation.")
+	@MemberOrder(sequence = "3")
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(final String notes) {
+		this.notes = notes;
 	}
 
 	// }}
@@ -81,23 +101,4 @@ public class Note {
 
 	// }}
 
-	// {{ Participant (property)
-	private Participant participant;
-
-	@javax.jdo.annotations.Column(allowsNull = "false")
-	@Property(hidden = Where.EVERYWHERE)
-	public Participant getParticipant() {
-		return participant;
-	}
-
-	public void setParticipant(final Participant participant2) {
-		this.participant = participant2;
-	}
-
-	// }}
-
-	public Participant delete() {
-		getParticipant().removeNote(this);
-		return getParticipant();
-	}
 }

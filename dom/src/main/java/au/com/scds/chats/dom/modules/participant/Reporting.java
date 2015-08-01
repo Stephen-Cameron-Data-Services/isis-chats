@@ -18,7 +18,7 @@ import org.apache.isis.applib.annotation.Property;
 public class Reporting {
 
 	public String title() {
-		return "Reporting of Participant: " + parent.getFullname() ;
+		return "Reporting of Participant: " + parent.getPerson().getFullname() ;
 	}
 	
 	// {{ ParentParticipant (property)

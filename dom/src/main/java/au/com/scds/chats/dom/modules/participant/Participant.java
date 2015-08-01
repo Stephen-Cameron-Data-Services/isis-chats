@@ -28,6 +28,8 @@ import java.util.Date;
 
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.Queries;
+import javax.jdo.annotations.Query;
 import javax.jdo.annotations.VersionStrategy;
 import javax.validation.GroupSequence;
 
@@ -61,17 +63,19 @@ import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.modules.activity.Activity;
 import au.com.scds.chats.dom.modules.general.Address;
+import au.com.scds.chats.dom.modules.general.Note;
 import au.com.scds.chats.dom.modules.general.Person;
+import au.com.scds.chats.dom.modules.general.Status;
 
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
-//@javax.jdo.annotations.Version(strategy = VersionStrategy.VERSION_NUMBER, column = "version")
-/*@javax.jdo.annotations.Queries({
-		@javax.jdo.annotations.Query(name = "find", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.modules.participant.Participant "),
-		@javax.jdo.annotations.Query(name = "findByName", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.modules.participant.Participant "
-				+ "WHERE name.indexOf(:name) >= 0 ") })*/
+@Queries({
+	@Query(name = "listByStatus", language = "JDOQL", value = "SELECT "
+			+ "FROM au.com.scds.chats.dom.modules.participant.Participant "
+			+ "WHERE status == :status"),
+	@Query(name = "findBySurname", language = "JDOQL", value = "SELECT "
+			+ "FROM au.com.scds.chats.dom.modules.participant.Participant "
+			+ "WHERE person.surname == :surname"), })
 @DomainObject(objectType = "PARTICIPANT")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 public class Participant {
@@ -79,7 +83,7 @@ public class Participant {
 	// region > identificatiom
 	public TranslatableString title() {
 		return TranslatableString.tr("Participant: {fullname}", "fullname",
-				getFullname());
+				getPerson().getFullname());
 	}
 
 	// {{ Person (property)
@@ -91,34 +95,35 @@ public class Participant {
 		return person;
 	}
 
-	public void setPerson(final Person person) {
+	void setPerson(final Person person) {
 		this.person = person;
 	}
 	
-	public List<Person> choicesPerson(){
-		return container.allInstances(Person.class);
+	@MemberOrder(sequence = "2")
+	public String getHomePhoneNumber(){
+		return getPerson().getHomePhoneNumber();
 	}
 	
-	public String getFullname(){
-		if(getPerson()!= null){
-			return getPerson().getFirstname() + " " + getPerson().getMiddlename() + " " + getPerson().getSurname();
-		}else{
-			return "";
-		}
+	@MemberOrder(sequence = "3")
+	public String getMobilePhoneNumber(){
+		return getPerson().getMobilePhoneNumber();
 	}
 	
-	@MemberOrder(name="Contact Details",sequence = "1")
-	public Address getStreetAddress(){
-		return getPerson().getStreetAddress();
+	@MemberOrder(sequence = "4")
+	public String getStreetAddress(){
+		return getPerson().getStreetAddress().title();
 	}
 	
-	@MemberOrder(name="Contact Details",sequence = "2")
-	public Address getMailAddress(){
-		return getPerson().getMailAddress();
+	@MemberOrder(sequence = "5")
+	public String getMailAddress(){
+		return getPerson().getMailAddress().title();
 	}
-	// }}
 
-
+	@MemberOrder(sequence = "6")
+	public String getEMailAddress(){
+		return getPerson().getEmailAddress();
+	}
+	
 
 	// {{ Status (property)
 	private Status status = Status.ACTIVE;
@@ -134,6 +139,22 @@ public class Participant {
 	}
 
 	// }}
+	
+	// {{ Test (property)
+	private String test;
+
+	@Column()
+	@MemberOrder(sequence = "1")
+	public String getTest() {
+		return test;
+	}
+
+	public void setTest(final String test) {
+		this.test = test;
+	}
+	// }}
+
+
 
 	// {{ LifeHistory (property)
 	private LifeHistory lifeHistory;
@@ -159,7 +180,6 @@ public class Participant {
 	public LifeHistory updateLifeHistory() {
 		if (getLifeHistory() == null) {
 			setLifeHistory(container.newTransientInstance(LifeHistory.class));
-
 		}
 		return getLifeHistory();
 	}
@@ -309,17 +329,17 @@ public class Participant {
 
 	// }}
 
-	// {{ Calls (Collection)
-	private List<PhoneCall> calls = new ArrayList<PhoneCall>();
+	// {{ Calls (Collection) 
+	private List<ParticipantPhoneCall> calls = new ArrayList<ParticipantPhoneCall>();
 
 	@MemberOrder(sequence = "6")
 	@Property(hidden = Where.ALL_TABLES)
 	@CollectionLayout(paged = 10, render = RenderType.EAGERLY)
-	public List<PhoneCall> getCalls() {
+	public List<ParticipantPhoneCall> getCalls() {
 		return calls;
 	}
 
-	public void setCalls(final List<PhoneCall> calls) {
+	public void setCalls(final List<ParticipantPhoneCall> calls) {
 		this.calls = calls;
 	}
 
@@ -327,7 +347,7 @@ public class Participant {
 	public Participant addCall(
 			@ParameterLayout(named = "Subject", describedAs = "The subject (heading) of the conversation, displayed in table view") final String subject,
 			@ParameterLayout(named = "Notes", describedAs = "Notes about the conversation. ") final String notes) {
-		PhoneCall call = container.newTransientInstance(PhoneCall.class);
+		ParticipantPhoneCall call = container.newTransientInstance(ParticipantPhoneCall.class);
 		call.setDate(new Date());
 		call.setSubject(subject);
 		call.setNotes(notes);
@@ -338,7 +358,7 @@ public class Participant {
 	}
 
 	@Programmatic
-	public void addToCalls(final PhoneCall call) {
+	public void addToCalls(final ParticipantPhoneCall call) {
 		// check for no-op
 		if (call == null || getCalls().contains(call)) {
 			return;
@@ -353,7 +373,7 @@ public class Participant {
 	}
 
 	@Programmatic
-	public Participant removeCall(final PhoneCall call) {
+	public Participant removeCall(final ParticipantPhoneCall call) {
 		// check for no-op
 		if (call == null || !getCalls().contains(call)) {
 			return this;
