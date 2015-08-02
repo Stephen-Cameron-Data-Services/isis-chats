@@ -22,8 +22,8 @@
 
 	<parent>
 		<artifactId>isis-chats</artifactId>
-		<groupId>au.com.scds</groupId>
 		<version>1.0-SNAPSHOT</version>
+		<groupId>au.com.scds</groupId>
 	</parent>
 
 	<artifactId>isis-chats-webapp</artifactId>
@@ -79,7 +79,7 @@
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<warName>isis-chats-webapp</warName>
+					<warName>simpleapp</warName>
 					<archive>
 						<manifest>
 							<addClasspath>false</addClasspath>
@@ -110,15 +110,9 @@
 							<pluginExecutions>
 								<pluginExecution>
 									<pluginExecutionFilter>
-										<groupId>
-											org.codehaus.mojo
-										</groupId>
-										<artifactId>
-											build-helper-maven-plugin
-										</artifactId>
-										<versionRange>
-											[1.5,)
-										</versionRange>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>build-helper-maven-plugin</artifactId>
+										<versionRange>[1.5,)</versionRange>
 										<goals>
 											<goal>maven-version</goal>
 										</goals>
@@ -141,7 +135,6 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>isis-chats-dom</artifactId>
-			<version>1.0-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<!-- so don't pick up transitive dependency to asm 4.0.0 -->
@@ -153,7 +146,6 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>isis-chats-fixture</artifactId>
-			<version>1.0-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<!-- so don't pick up transitive dependency to asm 4.0.0 -->
@@ -162,6 +154,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
 		<!-- other isis components -->
 		<dependency>
 			<groupId>org.apache.isis.viewer</groupId>
@@ -191,11 +184,11 @@
 			<artifactId>isis-core-security</artifactId>
 		</dependency>
 
-
-		<!-- enable -parameters support -->
+		<!-- added devutils to get layout json -->
 		<dependency>
-			<groupId>org.isisaddons.metamodel.paraname8</groupId>
-			<artifactId>isis-metamodel-paraname8-dom</artifactId>
+			<groupId>org.isisaddons.module.devutils</groupId>
+			<artifactId>isis-module-devutils-dom</artifactId>
+			<version>1.8.0</version>
 		</dependency>
 
 
@@ -210,7 +203,12 @@
 
 		<dependency>
 			<groupId>org.apache.geronimo.specs</groupId>
-			<artifactId>geronimo-servlet_3.0_spec</artifactId>
+			<artifactId>geronimo-servlet_2.5_spec</artifactId>
+			<!--
+				removed so can run o.a.i.WebServer from within IntelliJ;
+				can rely on servlet container to ignore this in war file
+				<scope>provided</scope>
+			-->
 		</dependency>
 
 		<!--
@@ -256,27 +254,6 @@
 			</exclusions>
 		</dependency>
 
-		<!-- dependency of security module -->
-		<dependency>
-			<groupId>org.mindrot</groupId>
-			<artifactId>jbcrypt</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.isisaddons.module.togglz</groupId>
-			<artifactId>isis-module-togglz-glue</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.togglz</groupId>
-			<artifactId>togglz-servlet</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.togglz</groupId>
-			<artifactId>togglz-console</artifactId>
-		</dependency>
-
 	</dependencies>
 
 	<profiles>
@@ -302,31 +279,13 @@
 				</plugins>
 			</build>
 		</profile>
-		<profile>
-			<id>intellij</id>
-			<activation>
-				<property>
-					<name>idea.version</name>
-				</property>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>org.apache.geronimo.specs</groupId>
-					<artifactId>geronimo-servlet_3.0_spec</artifactId>
-					<!--
-						Use 'compile' so can run o.a.i.WebServer from within IntelliJ;
-						can rely on servlet container to ignore this in war file
-					-->
-					<scope>compile</scope>
-				</dependency>
-			</dependencies>
-		</profile>
+
 		<profile>
 			<id>jrebel</id>
 			<properties>
 				<!-- as used in the rebel.xml in the dom project -->
 				<target.dir>target</target.dir>
-				<isis-jrebel-plugin.packagePrefix>dom.todo,org.apache.isis.objectstore.jdo.applib</isis-jrebel-plugin.packagePrefix>
+				<isis-jrebel-plugin.packagePrefix>dom.simple,org.apache.isis.objectstore.jdo.applib</isis-jrebel-plugin.packagePrefix>
 				<isis-jrebel-plugin.loggingLevel>warn</isis-jrebel-plugin.loggingLevel>
 			</properties>
 			<build>
@@ -384,7 +343,7 @@
 				<dependency>
 					<groupId>org.datanucleus</groupId>
 					<artifactId>datanucleus-neo4j</artifactId>
-					<version>4.0.4</version>
+					<version>3.2.3</version>
 				</dependency>
 			</dependencies>
 		</profile>
