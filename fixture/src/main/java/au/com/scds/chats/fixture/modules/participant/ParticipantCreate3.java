@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 
 import org.apache.isis.applib.fixturescripts.FixtureScript;
 import org.apache.isis.applib.services.clock.ClockService;
-import org.apache.isis.applib.services.sudo.SudoService;
+//import org.apache.isis.applib.services.sudo.SudoService;
 import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.modules.participant.Participant;

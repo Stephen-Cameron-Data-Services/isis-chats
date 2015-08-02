@@ -19,7 +19,7 @@ import org.apache.isis.applib.query.QueryDefault;
 import au.com.scds.chats.dom.modules.participant.Participant;
 
 @DomainService(repositoryFor = Region.class)
-@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.1")
+@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.8")
 public class Regions {
 
 	// region > listAll (action)
@@ -29,19 +29,18 @@ public class Regions {
 	public List<Region> listAllRegions() {
 		return container.allInstances(Region.class);
 	}
-
 	// endregion
 
 	// region > create (action)
 	@MemberOrder(sequence = "2")
-	public Region createRegion(
+	public List<Region> createRegion(
 			final @ParameterLayout(named = "Region Name") String name) {
 		final Region obj = container.newTransientInstance(Region.class);
 		obj.setName(name);
 		container.persistIfNotAlready(obj);
-		return obj;
+		container.flush();
+		return listAllRegions();
 	}
-
 	// endregion
 
 	// region > injected services

@@ -36,8 +36,9 @@ import org.apache.isis.applib.fixturescripts.FixtureResult;
 import org.apache.isis.applib.fixturescripts.FixtureScript;
 import org.apache.isis.applib.fixturescripts.FixtureScripts;
 
-import au.com.scds.chats.fixture.modules.participant.ParticipantCreate2;
-import au.com.scds.chats.fixture.scenarios.RecreateParticipants2;
+import au.com.scds.chats.fixture.modules.participant.ParticipantCreate;
+//import au.com.scds.chats.fixture.modules.participant.ParticipantCreate2;
+//import au.com.scds.chats.fixture.scenarios.RecreateParticipants2;
 import au.com.scds.chats.fixture.scenarios.RecreateParticipants3;
 
 /**
@@ -79,7 +80,9 @@ public class IsisChatsFixturesService extends FixtureScripts {
 
     @Override
     public FixtureScript default0RunFixtureScript() {
-        return findFixtureScriptFor(ParticipantCreate2.class);
+        //return findFixtureScriptFor(ParticipantCreate2.class);
+    	return findFixtureScriptFor(ParticipantCreate.class);
+    	
     }
 
     /**

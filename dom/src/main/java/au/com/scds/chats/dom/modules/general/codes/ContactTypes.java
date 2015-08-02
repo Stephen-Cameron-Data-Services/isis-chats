@@ -33,13 +33,14 @@ public class ContactTypes {
 
 	// region > create (action)
 	@MemberOrder(sequence = "2")
-	public ContactTypes createContactType(
+	public List<ContactType> createContactType(
 			final @ParameterLayout(named = "Contact Type") String name) {
 		final ContactType obj = container
 				.newTransientInstance(ContactType.class);
 		obj.setName(name);
 		container.persistIfNotAlready(obj);
-		return this;
+		container.flush();
+		return listAllContactTypes();
 	}
 	
 	// endregion

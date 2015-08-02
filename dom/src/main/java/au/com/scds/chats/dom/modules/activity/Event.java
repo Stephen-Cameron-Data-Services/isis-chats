@@ -10,6 +10,7 @@ import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.joda.time.DateTime;
 
 //An Activity is a sequence of ActivityEvents
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
@@ -18,6 +19,10 @@ import org.apache.isis.applib.annotation.MemberOrder;
 @DomainObject(objectType = "ACTIVITY_EVENT")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 public class Event {
+	
+	public String title(){
+		return getName();
+	}
 
 	// {{ Name (property)
 	private String name;
@@ -34,16 +39,16 @@ public class Event {
 	// }}
 	
 	// {{ Date (property)
-	private Date date;
+	private DateTime datetime;
 
 	@Column(allowsNull="false")
 	@MemberOrder(sequence = "1")
-	public Date getDate() {
-		return date;
+	public DateTime getDatetime() {
+		return datetime;
 	}
 
-	public void setDate(final Date date) {
-		this.date = date;
+	public void setDatetime(final DateTime datetime) {
+		this.datetime = datetime;
 	}
 	// }}
 

@@ -91,12 +91,19 @@ public class Participant {
 
 	@Column()
 	@MemberOrder(sequence = "1")
+	@Property(hidden=Where.PARENTED_TABLES)
 	public Person getPerson() {
 		return person;
 	}
 
 	void setPerson(final Person person) {
 		this.person = person;
+	}
+	
+	@MemberOrder(sequence = "1.1")
+	@Property(hidden=Where.OBJECT_FORMS)
+	public String getFullName() {
+		return getPerson().getFullname();
 	}
 	
 	@MemberOrder(sequence = "2")
@@ -110,16 +117,19 @@ public class Participant {
 	}
 	
 	@MemberOrder(sequence = "4")
+	@Property(hidden=Where.PARENTED_TABLES)
 	public String getStreetAddress(){
 		return getPerson().getStreetAddress().title();
 	}
 	
 	@MemberOrder(sequence = "5")
+	@Property(hidden=Where.PARENTED_TABLES)
 	public String getMailAddress(){
 		return getPerson().getMailAddress().title();
 	}
 
 	@MemberOrder(sequence = "6")
+	@Property(hidden=Where.PARENTED_TABLES)
 	public String getEMailAddress(){
 		return getPerson().getEmailAddress();
 	}
@@ -139,22 +149,6 @@ public class Participant {
 	}
 
 	// }}
-	
-	// {{ Test (property)
-	private String test;
-
-	@Column()
-	@MemberOrder(sequence = "1")
-	public String getTest() {
-		return test;
-	}
-
-	public void setTest(final String test) {
-		this.test = test;
-	}
-	// }}
-
-
 
 	// {{ LifeHistory (property)
 	private LifeHistory lifeHistory;

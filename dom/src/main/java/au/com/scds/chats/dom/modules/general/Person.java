@@ -1,17 +1,19 @@
 package au.com.scds.chats.dom.modules.general;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.jdo.annotations.Column;
-import javax.jdo.annotations.DiscriminatorStrategy;
+import javax.jdo.annotations.Sequence;
+//import javax.jdo.annotations.DiscriminatorStrategy;
 import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.InheritanceStrategy;
+//import javax.jdo.annotations.InheritanceStrategy;
+import javax.jdo.annotations.PrimaryKey;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.Editing;
-import org.apache.isis.applib.annotation.Hidden;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
@@ -23,14 +25,13 @@ import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.annotation.Where;
 import org.joda.time.DateTime;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 import au.com.scds.chats.dom.modules.general.codes.ContactType;
 import au.com.scds.chats.dom.modules.general.codes.EnglishSkill;
 import au.com.scds.chats.dom.modules.general.codes.Region;
 import au.com.scds.chats.dom.modules.general.codes.Regions;
 import au.com.scds.chats.dom.modules.general.codes.Salutation;
+import au.com.scds.chats.dom.modules.general.codes.Salutations;
 import au.com.scds.chats.dom.modules.participant.Participant;
 
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
@@ -39,6 +40,7 @@ import au.com.scds.chats.dom.modules.participant.Participant;
 		"firstname", "middlename", "surname" })
 public class Person {
 
+	private Long oldId;
 	private Salutation salutation;
 	private ContactType contactType;
 	private EnglishSkill englishSkill;
@@ -46,7 +48,7 @@ public class Person {
 	private String middlename;
 	private String surname;
 	private String preferredname;
-	private DateTime birthdate;
+	private Date birthdate;
 	private Long createdbyUserId;
 	private DateTime createdDttm;
 	private Long lastmodifiedbyUserId;
@@ -54,20 +56,15 @@ public class Person {
 	private DateTime deletedDttm;
 	private Region region;
 
-	/*
-	 * public Person(Salutation salutation, ContactType contactType,
-	 * EnglishSkill englishSkill, String firstname, String middlename, String
-	 * surname, String preferredname, DateTime birthdate, Long createdbyUserId,
-	 * DateTime createdDttm, Long lastmodifiedbyUserId, DateTime
-	 * lastmodifiedDttm, DateTime deletedDttm, Region region) { this.salutation
-	 * = salutation; this.contactType = contactType; this.englishSkill =
-	 * englishSkill; this.firstname = firstname; this.middlename = middlename;
-	 * this.surname = surname; this.preferredname = preferredname;
-	 * this.birthdate = birthdate; this.createdbyUserId = createdbyUserId;
-	 * this.createdDttm = createdDttm; this.lastmodifiedbyUserId =
-	 * lastmodifiedbyUserId; this.lastmodifiedDttm = lastmodifiedDttm;
-	 * this.deletedDttm = deletedDttm; this.region = region; }
-	 */
+	@Column(allowsNull="true")
+	@Programmatic
+	public Long getOldId() {
+		return this.oldId;
+	}
+
+	public void setOldId(Long id) {
+		this.oldId = id;
+	}
 	
 	public String title(){
 		return this.getFullname();
@@ -79,19 +76,33 @@ public class Person {
 				+ this.getSurname();
 	}
 
-	@Column(name = "salutation_id")
-	private Salutation getSalutation() {
+	@Column()
+	@MemberOrder(sequence = "1")
+	public Salutation getSalutation() {
 		return this.salutation;
 	}
 
 	public void setSalutation(Salutation salutationId) {
 		this.salutation = salutationId;
 	}
+	
+	public List<Salutation> choicesSalutation(){
+		return salutations.listAllSalutations();
+	}
 
-	@MemberOrder(sequence = "1")
-	private String getSalutationName() {
+	/*@MemberOrder(sequence = "1")
+	@PropertyLayout(named="Salutation")
+	public String getSalutationName() {
 		return this.salutation.getName();
 	}
+	
+	public void setSalutationName(String name) {
+		this.setSalutation(salutations.salutationForName(name));
+	}
+	
+	public List<String> choicesSalutationName(){
+		return this.salutations.listAllNamesExclusive(this.salutation);
+	}*/
 
 	@Column(allowsNull = "true", length = 100)
 	@MemberOrder(sequence = "2")
@@ -135,11 +146,11 @@ public class Person {
 
 	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "6")
-	public DateTime getBirthdate() {
+	public Date getBirthdate() {
 		return this.birthdate;
 	}
 
-	public void setBirthdate(DateTime birthdate) {
+	public void setBirthdate(Date birthdate) {
 		this.birthdate = birthdate;
 	}
 
@@ -182,12 +193,8 @@ public class Person {
 	public void setContactType(ContactType contacttypeId) {
 		this.contactType = contacttypeId;
 	}
+	
 
-	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "9")
-	public EnglishSkill getEnglishSkill() {
-		return this.englishSkill;
-	}
 
 	// {{ Address (property)
 	/*
@@ -377,59 +384,99 @@ public class Person {
 	}
 
 	// }}
+	@Column(allowsNull = "true")
+	@MemberOrder(sequence = "16")
+	@Property(editing = Editing.DISABLED)
+	@PropertyLayout(named = "Created by User Id")	
+	public EnglishSkill getEnglishSkill() {
+		return this.englishSkill;
+	}
 
 	public void setEnglishSkill(EnglishSkill englishSkill) {
 		this.englishSkill = englishSkill;
 	}
 
-	@Column(allowsNull = "true")
-	@Programmatic
-	public Long getCreatedbyUserId() {
-		return this.createdbyUserId;
-	}
-
-	public void setCreatedbyUserId(Long createdbyUserId) {
-		this.createdbyUserId = createdbyUserId;
-	}
+	// {{ CreatedByUserId (property)
+	private Long createdByUserId;
 
 	@Column(allowsNull = "true")
-	@Programmatic
-	public DateTime getCreatedDttm() {
-		return this.createdDttm;
+	@MemberOrder(sequence = "16")
+	@Property(editing = Editing.DISABLED)
+	@PropertyLayout(named = "Created by User Id")
+	public Long getCreatedByUserId() {
+		return createdByUserId;
 	}
 
-	public void setCreatedDttm(DateTime createdDttm) {
-		this.createdDttm = createdDttm;
+	public void setCreatedByUserId(final Long createdByUserId) {
+		this.createdByUserId = createdByUserId;
 	}
 
-	@Column(allowsNull = "true")
-	@Programmatic
-	public Long getLastmodifiedbyUserId() {
-		return this.lastmodifiedbyUserId;
-	}
+	// }}
 
-	public void setLastmodifiedbyUserId(Long lastmodifiedbyUserId) {
-		this.lastmodifiedbyUserId = lastmodifiedbyUserId;
-	}
+	// {{ CreatedDateTime (property)
+	private DateTime createdDateTime;
 
 	@Column(allowsNull = "true")
-	@Programmatic
-	public DateTime getLastmodifiedDttm() {
-		return this.lastmodifiedDttm;
+	@MemberOrder(sequence = "17")
+	@Property(editing = Editing.DISABLED)
+	@PropertyLayout(named = "Created Date & Time")
+	public DateTime getCreatedDateTime() {
+		return createdDateTime;
 	}
 
-	public void setLastmodifiedDttm(DateTime lastmodifiedDttm) {
-		this.lastmodifiedDttm = lastmodifiedDttm;
+	public void setCreatedDateTime(final DateTime createdDateTime) {
+		this.createdDateTime = createdDateTime;
 	}
+
+	// }}
+
+	// {{ DeletedDateTime (property)
+	private DateTime deletedDateTime;
 
 	@Column(allowsNull = "true")
-	@Programmatic
-	public DateTime getDeletedDttm() {
-		return this.deletedDttm;
+	@MemberOrder(sequence = "18")
+	@Property(editing = Editing.DISABLED)
+	@PropertyLayout(named = "Deleted Date & Time")
+	public DateTime getDeletedDateTime() {
+		return deletedDateTime;
 	}
 
-	public void setDeletedDttm(DateTime deletedDttm) {
-		this.deletedDttm = deletedDttm;
+	public void setDeletedDateTime(final DateTime deletedDateTime) {
+		this.deletedDateTime = deletedDateTime;
+	}
+
+	// }}
+	
+	// {{ ModifiedbyUserId (property)
+	private Long lastModifiedbyUserId;
+
+	@Column(allowsNull = "true")
+	@Property(editing = Editing.DISABLED)
+	@MemberOrder(sequence = "19")
+	@PropertyLayout(named = "Modified by User Id")
+	public Long getLastModifiedByUserId() {
+		return lastModifiedbyUserId;
+	}
+
+	public void setLastModifiedByUserId(Long lastModifiedByUserId) {
+		this.lastModifiedbyUserId = lastModifiedByUserId;
+	}
+
+	// }}
+
+	// {{ ModifiedDateTime (property)
+	private DateTime lastModifiedDateTime;
+
+	@Column(allowsNull = "true")
+	@Property(editing = Editing.DISABLED)
+	@MemberOrder(sequence = "20")
+	@PropertyLayout(named = "Last Modified")
+	public DateTime getLastModifiedDateTime() {
+		return lastModifiedDateTime;
+	}
+
+	public void setLastModifiedDateTime(DateTime lastModifiedDateTime) {
+		this.lastModifiedDateTime = lastModifiedDateTime;
 	}
 
 	// region > injected services
@@ -442,5 +489,10 @@ public class Person {
 	@javax.inject.Inject
 	@SuppressWarnings("unused")
 	private DomainObjectContainer container;
+	
+	@javax.inject.Inject
+	@SuppressWarnings("unused")
+	private Salutations salutations;
 	// endregion
+	
 }
