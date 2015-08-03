@@ -7,7 +7,7 @@ import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.NatureOfService;
 
 @DomainService(nature = NatureOfService.VIEW)
-@DomainServiceLayout(named = "Reports", menuBar = MenuBar.PRIMARY, menuOrder = "40.1")
+@DomainServiceLayout(named = "Reports", menuBar = MenuBar.PRIMARY, menuOrder = "30")
 public class ReportsList {
 
 	// {{ InactiveParticipantsByMonthsInactiveReport (action)

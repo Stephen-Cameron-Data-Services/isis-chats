@@ -20,11 +20,13 @@ package au.com.scds.chats.dom.modules.activity;
 
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PrimaryKey;
 import javax.jdo.annotations.VersionStrategy;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.Identifier;
 import org.apache.isis.applib.annotation.Action;
+import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.DomainObject;
@@ -40,6 +42,7 @@ import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.annotation.Title;
+import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
 import org.apache.isis.applib.services.i18n.TranslatableString;
 import org.apache.isis.applib.util.ObjectContracts;
@@ -47,7 +50,10 @@ import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.modules.general.codes.ActivityType;
 import au.com.scds.chats.dom.modules.general.codes.ActivityTypes;
+import au.com.scds.chats.dom.modules.general.codes.Location;
+import au.com.scds.chats.dom.modules.general.codes.Locations;
 import au.com.scds.chats.dom.modules.general.codes.Region;
+import au.com.scds.chats.dom.modules.general.codes.Regions;
 import au.com.scds.chats.dom.modules.participant.Participant;
 import au.com.scds.chats.dom.modules.participant.Participants;
 
@@ -111,30 +117,6 @@ public class Activity implements Comparable<Activity> {
 
 	// endregion
 
-	// region > updateName (action)
-	/*
-	 * public static class UpdateNameDomainEvent extends
-	 * ActionDomainEvent<Activity> { public UpdateNameDomainEvent(final Activity
-	 * source, final Identifier identifier, final Object... arguments) {
-	 * super(source, identifier, arguments); } }
-	 * 
-	 * @Action( domainEvent = UpdateNameDomainEvent.class ) public Activity
-	 * updateName(
-	 * 
-	 * @Parameter(maxLength = 40)
-	 * 
-	 * @ParameterLayout(named = "New name") final String name) { setName(name);
-	 * return this; }
-	 * 
-	 * public String default0UpdateName() { return getName(); }
-	 * 
-	 * public TranslatableString validateUpdateName(final String name) { return
-	 * name.contains("!")?
-	 * TranslatableString.tr("Exclamation mark is not allowed"): null; }
-	 */
-
-	// endregion
-
 	// region > compareTo
 
 	@Override
@@ -177,12 +159,14 @@ public class Activity implements Comparable<Activity> {
 	}
 
 	@MemberOrder(name = "participants", sequence = "1")
+	@ActionLayout(named="Add")
 	public Activity addParticipant(final Participant participant) {
 		addToParticipants(participant);
 		return this;
 	}
 
 	@MemberOrder(name = "participants", sequence = "2")
+	@ActionLayout(named="Add New")
 	public Activity addNewParticipant(
 			final @ParameterLayout(named = "First name") String firstname,
 			final @ParameterLayout(named = "Middle name(s)") String middlename,
@@ -194,6 +178,7 @@ public class Activity implements Comparable<Activity> {
 	}
 
 	@MemberOrder(name = "participants", sequence = "3")
+	@ActionLayout(named="Remove")
 	public Activity removeParticipant(final Participant participant) {
 		removeFromParticipants(participant);
 		return this;
@@ -248,6 +233,7 @@ public class Activity implements Comparable<Activity> {
 	}
 
 	@MemberOrder(name = "events", sequence = "1")
+	@ActionLayout(named="Add")
 	public Activity addNewEvent(
 			final @Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Event Name") String name,
 			final @Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Event Date & Time") DateTime datetime) {
@@ -260,6 +246,7 @@ public class Activity implements Comparable<Activity> {
 	}
 
 	@MemberOrder(name = "events", sequence = "2")
+	@ActionLayout(named="Remove")
 	public Activity removeEvent(final Event event) {
 		removeFromEvents(event);
 		return this;
@@ -297,16 +284,13 @@ public class Activity implements Comparable<Activity> {
 	protected void onRemoveFromEvents(final Event event) {
 	}
 
-	// }}
-
-	// }}
 
 	// {{ ActivityType (property)
 	private ActivityType activityType;
 
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "5")
-	@PropertyLayout(named = "Activity Type")
+	//@MemberOrder(sequence = "5")
+	@Property(hidden=Where.EVERYWHERE)
 	public ActivityType getActivityType() {
 		return activityType;
 	}
@@ -315,8 +299,19 @@ public class Activity implements Comparable<Activity> {
 		this.activityType = activityType;
 	}
 	
-	public List<ActivityType> choicesActivityType(){
-		return activityTypes.listAllActivityTypes();
+	@MemberOrder(sequence = "5")
+	@PropertyLayout(named="Activity Type")
+	@NotPersistent
+	public String getActivityTypeName() {
+		return getActivityType() != null ? this.getActivityType().getName() : null;
+	}
+	
+	public void setActivityTypeName(String name) {
+		this.setActivityType(activityTypes.activityTypeForName(name));
+	}
+	
+	public List<String> choicesActivityTypeName(){
+		return activityTypes.allNames();
 	}
 
 	// }}
@@ -392,17 +387,32 @@ public class Activity implements Comparable<Activity> {
 	// }}
 
 	// {{ Location (property)
-	private String location;
+	private Location location;
 
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "10")
-	@PropertyLayout()
-	public String getLocation() {
+	//@MemberOrder(sequence = "5")
+	@Property(hidden=Where.EVERYWHERE)
+	public Location getLocation() {
 		return location;
 	}
 
-	public void setLocation(String location) {
+	public void setLocation(final Location location) {
 		this.location = location;
+	}
+	
+	@MemberOrder(sequence = "10")
+	@PropertyLayout(named="Location")
+	@NotPersistent
+	public String getLocationName() {
+		return getLocation() != null ? this.getLocation().getName() : null;
+	}
+	
+	public void setLocationName(String name) {
+		this.setLocation(locations.locationForName(name));
+	}
+	
+	public List<String> choicesLocationName(){
+		return locations.allNames();
 	}
 
 	// }}
@@ -429,18 +439,32 @@ public class Activity implements Comparable<Activity> {
 	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "12")
 	@PropertyLayout()
+	@Property(hidden=Where.EVERYWHERE)
 	public Region getRegion() {
-		return region;
+		return this.region;
 	}
 
 	public void setRegion(Region region) {
 		this.region = region;
-
 	}
 	
-	public List<Region> choicesRegion(){
-		return container.allInstances(Region.class);
+	public List<Region> choicesRegion() {
+		return regions.listAllRegions();
 	}
+	
+	@MemberOrder(sequence = "7")
+	@NotPersistent
+	public String getRegionName() {
+	    return regions.nameForRegion(getRegion());
+	}
+	
+	public void setRegionName(String name) {
+	    setRegion(regions.regionForName(name));
+	}
+	
+    public List<String> choicesRegionName(){
+    	return regions.allNames();
+    }
 
 	// }}
 
@@ -588,11 +612,20 @@ public class Activity implements Comparable<Activity> {
 	@javax.inject.Inject
 	@SuppressWarnings("unused")
 	private ActivityTypes activityTypes;
+	
+	@javax.inject.Inject
+	@SuppressWarnings("unused")
+	private Locations locations;
+	
+	@javax.inject.Inject
+	Regions regions;
 
 	@javax.inject.Inject
 	//@SuppressWarnings("unused")
 	private DomainObjectContainer container;
 
 	// endregion
+	
+
 
 }

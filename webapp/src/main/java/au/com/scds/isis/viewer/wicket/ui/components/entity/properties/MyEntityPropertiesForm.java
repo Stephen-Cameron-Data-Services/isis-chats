@@ -357,7 +357,7 @@ public class MyEntityPropertiesForm extends FormAbstract<ObjectAdapter>
 		final List<String> groupNames = ObjectSpecifications
 				.orderByMemberGroups(objSpec, associationsByGroup.keySet(),
 						hint);
-		System.out.println(">>>" + groupNames.toString());
+//TODO remove		System.out.println(">>>" + groupNames.toString());
 
 		for (String groupName : groupNames) {
 			final List<ObjectAssociation> associationsInGroup = associationsByGroup

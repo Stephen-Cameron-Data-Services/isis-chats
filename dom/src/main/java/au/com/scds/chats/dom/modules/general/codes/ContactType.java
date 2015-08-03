@@ -3,12 +3,21 @@ package au.com.scds.chats.dom.modules.general.codes;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PrimaryKey;
+import javax.jdo.annotations.Queries;
+import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.PropertyLayout;
 
 @javax.jdo.annotations.PersistenceCapable(
         identityType=IdentityType.APPLICATION)
+@Queries({
+	@Query(name = "findByName", language = "JDOQL", value = "SELECT "
+			+ "FROM au.com.scds.chats.dom.modules.general.codes.ContactType "
+			+ "WHERE name == :name"), 
+	@Query(name = "findAll", language = "JDOQL", value = "SELECT "
+			+ "FROM au.com.scds.chats.dom.modules.general.codes.ContactType "
+			+ "ORDER BY name")})
 public class ContactType {
 
 	

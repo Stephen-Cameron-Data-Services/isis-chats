@@ -18,48 +18,48 @@ import org.apache.isis.applib.query.QueryDefault;
 
 import au.com.scds.chats.dom.modules.participant.Participant;
 
-@DomainService(repositoryFor = ActivityType.class)
-@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.1")
-public class ActivityTypes {
+@DomainService(repositoryFor = Location.class)
+@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.9")
+public class Locations {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "1")
-	public List<ActivityType> listAllActivityTypes() {
-		List<ActivityType> list = container.allMatches(new QueryDefault<>(ActivityType.class, "findAll"));
+	public List<Location> listAllLocations() {
+		List<Location> list = container.allMatches(new QueryDefault<>(Location.class, "findAll"));
 		return list;
 	}
 
 	@MemberOrder(sequence = "2")
-	public List<ActivityType> createActivityType(final @ParameterLayout(named = "ActivityType Name") String name) {
-		final ActivityType obj = container.newTransientInstance(ActivityType.class);
+	public List<Location> createLocation(final @ParameterLayout(named = "Location Name") String name) {
+		final Location obj = container.newTransientInstance(Location.class);
 		obj.setName(name);
 		container.persistIfNotAlready(obj);
 		container.flush();
-		return listAllActivityTypes();
+		return listAllLocations();
 	}
 
 	@Programmatic
-	public String nameForActivityType(ActivityType activityType) {
-		return (activityType != null) ? activityType.getName() : null;
+	public String nameForLocation(Location location) {
+		return (location != null) ? location.getName() : null;
 	}
 
 	@Programmatic
 	public List<String> allNames() {
-		List<ActivityType> activityTypes = listAllActivityTypes();
+		List<Location> locations = listAllLocations();
 		List<String> names = new ArrayList<String>();
-		for (ActivityType a : activityTypes) {
-			names.add(a.getName());
+		for (Location l : locations) {
+			names.add(l.getName());
 		}
 		return names;
 	}
 
 	@Programmatic
-	public ActivityType activityTypeForName(String name) {
+	public Location locationForName(String name) {
 		if (name == null)
 			return null;
 		else
-			return container.firstMatch(new QueryDefault<>(ActivityType.class, "findByName", "name", name));
+			return container.firstMatch(new QueryDefault<>(Location.class, "findByName", "name", name));
 	}
 
 	@javax.inject.Inject

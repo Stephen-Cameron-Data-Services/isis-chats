@@ -33,7 +33,7 @@ import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
 
 @DomainService(repositoryFor = Provider.class)
-@DomainServiceLayout(named = "Activities", menuBar = MenuBar.PRIMARY, menuOrder = "30.2")
+@DomainServiceLayout(named = "Activities", menuBar = MenuBar.PRIMARY, menuOrder = "10.1")
 public class Providers {
 
 	// region > listAll (action)

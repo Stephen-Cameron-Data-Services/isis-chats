@@ -30,6 +30,7 @@ import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.annotation.Where;
+import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
 import org.joda.time.LocalDate;
@@ -38,7 +39,7 @@ import au.com.scds.chats.dom.modules.general.Person;
 import au.com.scds.chats.dom.modules.general.Status;
 
 @DomainService(repositoryFor = Participant.class)
-@DomainServiceLayout(menuOrder = "20")
+@DomainServiceLayout(named="Participants", menuBar = MenuBar.PRIMARY, menuOrder = "20")
 public class Participants {
 
 	// region > listActive (action)
@@ -50,11 +51,13 @@ public class Participants {
 	public List<Participant> listActive() {
 		return container.allMatches(new QueryDefault<>(Participant.class,
 				"listByStatus", "status", Status.ACTIVE));
-        /*TODO replace all queries with typesafe 
-        final QParticipant p =  QParticipant.candidate();
-        return isisJdoSupport.executeQuery(Participant.class,
-                p.status.eq(Status.ACTIVE));*/
-		
+		/*
+		 * TODO replace all queries with typesafe final QParticipant p =
+		 * QParticipant.candidate(); return
+		 * isisJdoSupport.executeQuery(Participant.class,
+		 * p.status.eq(Status.ACTIVE));
+		 */
+
 	}
 
 	// endregion
@@ -89,13 +92,41 @@ public class Participants {
 			final @ParameterLayout(named = "First name") String firstname,
 			final @ParameterLayout(named = "Middle name(s)") String middlename,
 			final @ParameterLayout(named = "Surname") String surname) {
-		final Participant participant = container
-				.newTransientInstance(Participant.class);
-		final Person person = container.newTransientInstance(Person.class);
-		person.setFirstname(firstname);
-		person.setMiddlename(middlename);
-		person.setSurname(surname);
-		container.persistIfNotAlready(person);
+		// check of existing Participant
+		List<Participant> participants = container
+				.allMatches(new QueryDefault<>(Participant.class,
+						"findBySurname", "surname", surname));
+		for (Participant participant : participants) {
+			if (participant.getPerson().getFirstname()
+					.equalsIgnoreCase(firstname)
+					&& participant.getPerson().getMiddlename()
+							.equalsIgnoreCase(middlename)) {
+				container
+						.informUser("The following Participant with the same names already exists!");
+				return participant;
+			}
+		}
+		// check if existing Person
+		List<Person> persons = container.allMatches(new QueryDefault<>(
+				Person.class, "findBySurname", "surname", surname));
+		Person person = null;
+		for (Person p : persons) {
+			if (p.getFirstname().equalsIgnoreCase(firstname)
+					&& p.getMiddlename().equalsIgnoreCase(middlename)) {
+				// use this found person
+				person = p;
+				break;
+			}
+		}
+		// create new Person?
+		if (person == null) {
+			person = container.newTransientInstance(Person.class);
+			person.setFirstname(firstname);
+			person.setMiddlename(middlename);
+			person.setSurname(surname);
+			container.persistIfNotAlready(person);
+		}
+		final Participant participant = container.newTransientInstance(Participant.class);
 		participant.setPerson(person);
 		container.persistIfNotAlready(participant);
 		return participant;
@@ -130,8 +161,8 @@ public class Participants {
 	@javax.inject.Inject
 	DomainObjectContainer container;
 
-    @javax.inject.Inject
-    private IsisJdoSupport isisJdoSupport;
-    //endregion
+	@javax.inject.Inject
+	private IsisJdoSupport isisJdoSupport;
+	// endregion
 	// endregion
 }

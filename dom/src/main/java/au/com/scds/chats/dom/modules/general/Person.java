@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.List;
 
 import javax.jdo.annotations.Column;
+import javax.jdo.annotations.NotPersistent;
+import javax.jdo.annotations.Queries;
+import javax.jdo.annotations.Query;
 import javax.jdo.annotations.Sequence;
 //import javax.jdo.annotations.DiscriminatorStrategy;
 import javax.jdo.annotations.IdentityType;
@@ -13,6 +16,9 @@ import javax.jdo.annotations.PrimaryKey;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
+import org.apache.isis.applib.annotation.BookmarkPolicy;
+import org.apache.isis.applib.annotation.DomainObject;
+import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Optionality;
@@ -27,17 +33,24 @@ import org.joda.time.DateTime;
 
 
 import au.com.scds.chats.dom.modules.general.codes.ContactType;
+import au.com.scds.chats.dom.modules.general.codes.ContactTypes;
 import au.com.scds.chats.dom.modules.general.codes.EnglishSkill;
 import au.com.scds.chats.dom.modules.general.codes.Region;
 import au.com.scds.chats.dom.modules.general.codes.Regions;
 import au.com.scds.chats.dom.modules.general.codes.Salutation;
 import au.com.scds.chats.dom.modules.general.codes.Salutations;
-import au.com.scds.chats.dom.modules.participant.Participant;
+import au.com.scds.chats.dom.modules.general.Person;
 
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
 @javax.jdo.annotations.Unique(name = "Person_name_UNQ", members = {
 		"firstname", "middlename", "surname" })
+@Queries({
+	@Query(name = "findBySurname", language = "JDOQL", value = "SELECT "
+			+ "FROM au.com.scds.chats.dom.modules.general.Person "
+			+ "WHERE surname == :surname"), })
+@DomainObject(objectType = "PERSON")
+@DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 public class Person {
 
 	private Long oldId;
@@ -77,6 +90,7 @@ public class Person {
 	}
 
 	@Column()
+	@Property(hidden=Where.EVERYWHERE)
 	@MemberOrder(sequence = "1")
 	public Salutation getSalutation() {
 		return this.salutation;
@@ -90,10 +104,11 @@ public class Person {
 		return salutations.listAllSalutations();
 	}
 
-	/*@MemberOrder(sequence = "1")
+	@MemberOrder(sequence = "1")
 	@PropertyLayout(named="Salutation")
+	@NotPersistent
 	public String getSalutationName() {
-		return this.salutation.getName();
+		return getSalutation() != null ? this.getSalutation().getName() : null;
 	}
 	
 	public void setSalutationName(String name) {
@@ -101,8 +116,8 @@ public class Person {
 	}
 	
 	public List<String> choicesSalutationName(){
-		return this.salutations.listAllNamesExclusive(this.salutation);
-	}*/
+		return salutations.allNames();
+	}
 
 	@Column(allowsNull = "true", length = 100)
 	@MemberOrder(sequence = "2")
@@ -155,8 +170,8 @@ public class Person {
 	}
 
 	@Column(name = "region", allowsNull = "true")
-	@MemberOrder(sequence = "7")
-	//@Property(hidden=Where.EVERYWHERE)
+	//@MemberOrder(sequence = "7")
+	@Property(hidden=Where.EVERYWHERE)
 	public Region getRegion() {
 		return this.region;
 	}
@@ -169,9 +184,8 @@ public class Person {
 		return regions.listAllRegions();
 	}
 	
-	//TODO failed experiment with making Region
-	//appear as a simple type, Dan is checking
-	/*@MemberOrder(sequence = "7")
+	@MemberOrder(sequence = "7")
+	@NotPersistent
 	public String getRegionName() {
 	    return regions.nameForRegion(getRegion());
 	}
@@ -181,10 +195,11 @@ public class Person {
 	}
 	
     public List<String> choicesRegionName(){
-    	return regions.listAllNamesExclusive(getRegion());
-    }*/
+    	return regions.allNames();
+    }
 
 	@Column(allowsNull = "true")
+	@Property(hidden=Where.EVERYWHERE)
 	@MemberOrder(sequence = "8")
 	public ContactType getContactType() {
 		return this.contactType;
@@ -194,38 +209,20 @@ public class Person {
 		this.contactType = contacttypeId;
 	}
 	
-
-
-	// {{ Address (property)
-	/*
-	 * private String address;
-	 * 
-	 * @Column(length = 40)
-	 * 
-	 * @MemberOrder(sequence = "3")
-	 * 
-	 * @Property(optionality = Optionality.DEFAULT) public String getAddress() {
-	 * return address; }
-	 * 
-	 * public void setAddress(final String address) { this.address = address; }
-	 */
-
-	// }}
-
-	// {{ ContactDetails (property)
-	/*
-	 * private ContactDetails contactDetails = new ContactDetails();
-	 * 
-	 * @Column(allowsNull="true")
-	 * 
-	 * @MemberOrder(sequence = "4") public ContactDetails getContactDetails() {
-	 * return contactDetails; }
-	 * 
-	 * public void setContactDetails(final ContactDetails contactDetails) {
-	 * this.contactDetails = contactDetails; }
-	 */
-
-	// }}
+	@MemberOrder(sequence = "8")
+	@PropertyLayout(named="ContactType")
+	@NotPersistent
+	public String getContactTypeName() {
+		return getContactType() != null ? this.getContactType().getName() : null;
+	}
+	
+	public void setContactTypeName(String name) {
+		this.setContactType(contactTypes.contactTypeForName(name));
+	}
+	
+	public List<String> choicesContactTypeName(){
+		return contactTypes.allNames();
+	}
 
 	// {{ Street Address (property)
 	private Address streetAddress = new Address();
@@ -480,19 +477,20 @@ public class Person {
 	}
 
 	// region > injected services
+	
+	@javax.inject.Inject
+	private Salutations salutations;
 
 	@javax.inject.Inject
 	Regions regions;
-
-	// endregion
-	// region > injected services
-	@javax.inject.Inject
-	@SuppressWarnings("unused")
-	private DomainObjectContainer container;
 	
 	@javax.inject.Inject
-	@SuppressWarnings("unused")
-	private Salutations salutations;
+	ContactTypes contactTypes;
+
+	@javax.inject.Inject
+	private DomainObjectContainer container;
+	
+
 	// endregion
 	
 }
