@@ -79,12 +79,12 @@ public class Volunteer{
 	
 	@MemberOrder(sequence = "4")
 	public String getStreetAddress(){
-		return getPerson().getStreetAddress().title();
+		return getPerson().getFullStreetAddress();
 	}
 	
 	@MemberOrder(sequence = "5")
 	public String getMailAddress(){
-		return getPerson().getMailAddress().title();
+		return getPerson().getFullMailAddress();
 	}
 
 	@MemberOrder(sequence = "6")

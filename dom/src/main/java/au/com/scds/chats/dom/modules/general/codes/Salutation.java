@@ -17,6 +17,10 @@ import org.apache.isis.applib.annotation.MemberOrder;
 			+ "FROM au.com.scds.chats.dom.modules.general.codes.Salutation "
 			+ "ORDER BY name")})
 public class Salutation {
+	
+	public String title(){
+		return getName();
+	}
 
 	// {{ Name (property)
 	private String name;

@@ -103,10 +103,9 @@ public class Activity implements Comparable<Activity> {
 
 	private String name;
 
-	@javax.jdo.annotations.Column(allowsNull = "false", length = 40)
+	@Column(allowsNull = "false", length = 40)
 	@Title(sequence = "2")
-	@MemberOrder(name = "General", sequence = "1")
-	@Property(editing = Editing.DISABLED)
+	@MemberOrder(sequence = "1")
 	public String getName() {
 		return name;
 	}
@@ -379,10 +378,6 @@ public class Activity implements Comparable<Activity> {
 	public void setDescription(final String description) {
 		this.description = description;
 	}
-
-	// }}
-
-
 
 	// }}
 

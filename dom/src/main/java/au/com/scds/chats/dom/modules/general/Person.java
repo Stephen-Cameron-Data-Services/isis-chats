@@ -20,6 +20,7 @@ import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
+import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
@@ -30,7 +31,6 @@ import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.annotation.Where;
 import org.joda.time.DateTime;
-
 
 import au.com.scds.chats.dom.modules.general.codes.ContactType;
 import au.com.scds.chats.dom.modules.general.codes.ContactTypes;
@@ -43,14 +43,11 @@ import au.com.scds.chats.dom.modules.general.Person;
 
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
-@javax.jdo.annotations.Unique(name = "Person_name_UNQ", members = {
-		"firstname", "middlename", "surname" })
-@Queries({
-	@Query(name = "findBySurname", language = "JDOQL", value = "SELECT "
-			+ "FROM au.com.scds.chats.dom.modules.general.Person "
-			+ "WHERE surname == :surname"), })
+@javax.jdo.annotations.Unique(name = "Person_name_UNQ", members = { "firstname", "middlename", "surname" })
+@Queries({ @Query(name = "findBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.modules.general.Person " + "WHERE surname == :surname"), })
 @DomainObject(objectType = "PERSON")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = "General", middle = { "Contact Details", "Admin" })
 public class Person {
 
 	private Long oldId;
@@ -69,7 +66,7 @@ public class Person {
 	private DateTime deletedDttm;
 	private Region region;
 
-	@Column(allowsNull="true")
+	@Column(allowsNull = "true")
 	@Programmatic
 	public Long getOldId() {
 		return this.oldId;
@@ -78,19 +75,18 @@ public class Person {
 	public void setOldId(Long id) {
 		this.oldId = id;
 	}
-	
-	public String title(){
+
+	public String title() {
 		return this.getFullname();
 	}
 
 	@Programmatic
 	public String getFullname() {
-		return this.getFirstname() + " " + this.getMiddlename() + " "
-				+ this.getSurname();
+		return this.getFirstname() + " " + this.getMiddlename() + " " + this.getSurname();
 	}
 
 	@Column()
-	@Property(hidden=Where.EVERYWHERE)
+	@Property(hidden = Where.EVERYWHERE)
 	@MemberOrder(sequence = "1")
 	public Salutation getSalutation() {
 		return this.salutation;
@@ -99,28 +95,29 @@ public class Person {
 	public void setSalutation(Salutation salutationId) {
 		this.salutation = salutationId;
 	}
-	
-	public List<Salutation> choicesSalutation(){
+
+	public List<Salutation> choicesSalutation() {
 		return salutations.listAllSalutations();
 	}
 
 	@MemberOrder(sequence = "1")
-	@PropertyLayout(named="Salutation")
+	@PropertyLayout(named = "Salutation")
 	@NotPersistent
 	public String getSalutationName() {
 		return getSalutation() != null ? this.getSalutation().getName() : null;
 	}
-	
+
 	public void setSalutationName(String name) {
 		this.setSalutation(salutations.salutationForName(name));
 	}
-	
-	public List<String> choicesSalutationName(){
+
+	public List<String> choicesSalutationName() {
 		return salutations.allNames();
 	}
 
 	@Column(allowsNull = "true", length = 100)
 	@MemberOrder(sequence = "2")
+	@PropertyLayout(named = "First Name")
 	public String getFirstname() {
 		return this.firstname;
 	}
@@ -131,6 +128,7 @@ public class Person {
 
 	@Column(allowsNull = "true", length = 100)
 	@MemberOrder(sequence = "3")
+	@PropertyLayout(named = "Middle Name(s)")
 	public String getMiddlename() {
 		return this.middlename;
 	}
@@ -151,6 +149,7 @@ public class Person {
 
 	@Column(allowsNull = "true", length = 100)
 	@MemberOrder(sequence = "5")
+	@PropertyLayout(named = "Preferred Name")
 	public String getPreferredname() {
 		return this.preferredname;
 	}
@@ -170,8 +169,8 @@ public class Person {
 	}
 
 	@Column(name = "region", allowsNull = "true")
-	//@MemberOrder(sequence = "7")
-	@Property(hidden=Where.EVERYWHERE)
+	// @MemberOrder(sequence = "7")
+	@Property(hidden = Where.EVERYWHERE)
 	public Region getRegion() {
 		return this.region;
 	}
@@ -179,27 +178,28 @@ public class Person {
 	public void setRegion(Region region) {
 		this.region = region;
 	}
-	
+
 	public List<Region> choicesRegion() {
 		return regions.listAllRegions();
 	}
-	
+
 	@MemberOrder(sequence = "7")
 	@NotPersistent
+	@PropertyLayout(named = "Region")
 	public String getRegionName() {
-	    return regions.nameForRegion(getRegion());
+		return regions.nameForRegion(getRegion());
 	}
-	
+
 	public void setRegionName(String name) {
-	    setRegion(regions.regionForName(name));
+		setRegion(regions.regionForName(name));
 	}
-	
-    public List<String> choicesRegionName(){
-    	return regions.allNames();
-    }
+
+	public List<String> choicesRegionName() {
+		return regions.allNames();
+	}
 
 	@Column(allowsNull = "true")
-	@Property(hidden=Where.EVERYWHERE)
+	@Property(hidden = Where.EVERYWHERE)
 	@MemberOrder(sequence = "8")
 	public ContactType getContactType() {
 		return this.contactType;
@@ -208,24 +208,24 @@ public class Person {
 	public void setContactType(ContactType contacttypeId) {
 		this.contactType = contacttypeId;
 	}
-	
+
 	@MemberOrder(sequence = "8")
-	@PropertyLayout(named="ContactType")
+	@PropertyLayout(named = "Contact Type")
 	@NotPersistent
 	public String getContactTypeName() {
 		return getContactType() != null ? this.getContactType().getName() : null;
 	}
-	
+
 	public void setContactTypeName(String name) {
 		this.setContactType(contactTypes.contactTypeForName(name));
 	}
-	
-	public List<String> choicesContactTypeName(){
+
+	public List<String> choicesContactTypeName() {
 		return contactTypes.allNames();
 	}
 
 	// {{ Street Address (property)
-	private Address streetAddress = new Address();
+	private Address streetAddress;
 
 	@Column(allowsNull = "true")
 	@MemberOrder(name = "Contact Details", sequence = "1")
@@ -238,13 +238,18 @@ public class Person {
 		this.streetAddress = streetAddress;
 	}
 
+	@Programmatic
+	public String getFullStreetAddress() {
+		if (getStreetAddress() == null)
+			return "Unknown";
+		else
+			return getStreetAddress().title();
+	}
+
 	@MemberOrder(name = "streetaddress", sequence = "1")
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	public Person updateStreetAddress(
-			@ParameterLayout(named = "Street 1") String street1,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
-			@ParameterLayout(named = "Suburb") String suburb,
-			@ParameterLayout(named = "Postcode") String postcode,
+	public Person updateStreetAddress(@ParameterLayout(named = "Street 1") String street1, @Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
+			@ParameterLayout(named = "Suburb") String suburb, @ParameterLayout(named = "Postcode") String postcode,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Is Mail Address Too?") Boolean isMailAddress) {
 		Address newAddress = container.newTransientInstance(Address.class);
 		newAddress.setStreet1(street1);
@@ -262,19 +267,19 @@ public class Person {
 	}
 
 	public String default0UpdateStreetAddress() {
-		return getStreetAddress().getStreet1();
+		return getStreetAddress() != null ? getStreetAddress().getStreet1() : null;
 	}
 
 	public String default1UpdateStreetAddress() {
-		return getStreetAddress().getStreet2();
+		return getStreetAddress() != null ? getStreetAddress().getStreet2() : null;
 	}
 
 	public String default2UpdateStreetAddress() {
-		return getStreetAddress().getSuburb();
+		return getStreetAddress() != null ? getStreetAddress().getSuburb() : null;
 	}
 
 	public String default3UpdateStreetAddress() {
-		return getStreetAddress().getPostcode();
+		return getStreetAddress() != null ? getStreetAddress().getPostcode() : null;
 	}
 
 	public Boolean default4UpdateStreetAddress() {
@@ -284,7 +289,7 @@ public class Person {
 	// }}
 
 	// {{ Mail Address (property)
-	private Address mailAddress = new Address();
+	private Address mailAddress;
 
 	@Column(allowsNull = "true")
 	@MemberOrder(name = "Contact Details", sequence = "2")
@@ -297,13 +302,18 @@ public class Person {
 		this.mailAddress = mailAddress;
 	}
 
+	@Programmatic
+	public String getFullMailAddress() {
+		if (getMailAddress() == null)
+			return "Unknown";
+		else
+			return getMailAddress().title();
+	}
+
 	@MemberOrder(name = "mailaddress", sequence = "1")
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	public Person updateMailAddress(
-			@ParameterLayout(named = "Street 1") String street1,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
-			@ParameterLayout(named = "Suburb") String suburb,
-			@ParameterLayout(named = "Postcode") String postcode) {
+	public Person updateMailAddress(@ParameterLayout(named = "Street 1") String street1, @Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
+			@ParameterLayout(named = "Suburb") String suburb, @ParameterLayout(named = "Postcode") String postcode) {
 		Address newAddress = container.newTransientInstance(Address.class);
 		newAddress.setStreet1(street1);
 		newAddress.setStreet2(street2);
@@ -318,19 +328,19 @@ public class Person {
 	}
 
 	public String default0UpdateMailAddress() {
-		return getMailAddress().getStreet1();
+		return getMailAddress() != null ? getMailAddress().getStreet1() : null;
 	}
 
 	public String default1UpdateMailAddress() {
-		return getMailAddress().getStreet2();
+		return getMailAddress() != null ? getMailAddress().getStreet2() : null;
 	}
 
 	public String default2UpdateMailAddress() {
-		return getMailAddress().getSuburb();
+		return getMailAddress() != null ? getMailAddress().getSuburb() : null;
 	}
 
 	public String default3UpdateMailAddress() {
-		return getMailAddress().getPostcode();
+		return getMailAddress() != null ? getMailAddress().getPostcode() : null;
 	}
 
 	// }}
@@ -340,6 +350,7 @@ public class Person {
 
 	@Column(allowsNull = "true")
 	@MemberOrder(name = "Contact Details", sequence = "3")
+	@PropertyLayout(named = "Home Phone Number")
 	public String getHomePhoneNumber() {
 		return homePhoneNumber;
 	}
@@ -355,7 +366,7 @@ public class Person {
 
 	@Column(allowsNull = "true")
 	@MemberOrder(name = "Contact Details", sequence = "4")
-	@Property()
+	@PropertyLayout(named = "Mobile Phone Number")
 	public String getMobilePhoneNumber() {
 		return mobilePhoneNumber;
 	}
@@ -372,6 +383,7 @@ public class Person {
 	@Column(allowsNull = "true")
 	@MemberOrder(name = "Contact Details", sequence = "5")
 	@Property(hidden = Where.ALL_TABLES)
+	@PropertyLayout(named = "Email Address")
 	public String getEmailAddress() {
 		return email;
 	}
@@ -384,7 +396,7 @@ public class Person {
 	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "16")
 	@Property(editing = Editing.DISABLED)
-	@PropertyLayout(named = "Created by User Id")	
+	@PropertyLayout(named = "English Skill")
 	public EnglishSkill getEnglishSkill() {
 		return this.englishSkill;
 	}
@@ -397,7 +409,7 @@ public class Person {
 	private Long createdByUserId;
 
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "16")
+	@MemberOrder(name = "Admin", sequence = "1")
 	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(named = "Created by User Id")
 	public Long getCreatedByUserId() {
@@ -414,7 +426,7 @@ public class Person {
 	private DateTime createdDateTime;
 
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "17")
+	@MemberOrder(name = "Admin", sequence = "2")
 	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(named = "Created Date & Time")
 	public DateTime getCreatedDateTime() {
@@ -431,9 +443,9 @@ public class Person {
 	private DateTime deletedDateTime;
 
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "18")
+	@MemberOrder(name = "Admin", sequence = "5")
 	@Property(editing = Editing.DISABLED)
-	@PropertyLayout(named = "Deleted Date & Time")
+	@PropertyLayout(hidden = Where.EVERYWHERE, named = "Deleted Date & Time")
 	public DateTime getDeletedDateTime() {
 		return deletedDateTime;
 	}
@@ -443,13 +455,13 @@ public class Person {
 	}
 
 	// }}
-	
+
 	// {{ ModifiedbyUserId (property)
 	private Long lastModifiedbyUserId;
 
 	@Column(allowsNull = "true")
 	@Property(editing = Editing.DISABLED)
-	@MemberOrder(sequence = "19")
+	@MemberOrder(name = "Admin", sequence = "3")
 	@PropertyLayout(named = "Modified by User Id")
 	public Long getLastModifiedByUserId() {
 		return lastModifiedbyUserId;
@@ -466,7 +478,7 @@ public class Person {
 
 	@Column(allowsNull = "true")
 	@Property(editing = Editing.DISABLED)
-	@MemberOrder(sequence = "20")
+	@MemberOrder(name = "Admin", sequence = "4")
 	@PropertyLayout(named = "Last Modified")
 	public DateTime getLastModifiedDateTime() {
 		return lastModifiedDateTime;
@@ -477,20 +489,19 @@ public class Person {
 	}
 
 	// region > injected services
-	
+
 	@javax.inject.Inject
 	private Salutations salutations;
 
 	@javax.inject.Inject
 	Regions regions;
-	
+
 	@javax.inject.Inject
 	ContactTypes contactTypes;
 
 	@javax.inject.Inject
 	private DomainObjectContainer container;
-	
 
 	// endregion
-	
+
 }

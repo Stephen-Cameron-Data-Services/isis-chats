@@ -119,13 +119,13 @@ public class Participant {
 	@MemberOrder(sequence = "4")
 	@Property(hidden=Where.PARENTED_TABLES)
 	public String getStreetAddress(){
-		return getPerson().getStreetAddress().title();
+		return getPerson().getFullStreetAddress();
 	}
 	
 	@MemberOrder(sequence = "5")
 	@Property(hidden=Where.PARENTED_TABLES)
 	public String getMailAddress(){
-		return getPerson().getMailAddress().title();
+		return getPerson().getFullMailAddress();
 	}
 
 	@MemberOrder(sequence = "6")
