@@ -359,8 +359,25 @@ public class Participant {
 		}
 		return null;
 	}
+	
+	/**
+	 * Finds the Participation for a specific Activity
+	 * Called from Activity
+	 * 
+	 * @param activity
+	 * @return
+	 */
+	@Programmatic
+	public Participation getParticipation(Activity activity) {
+		for (Participation p : participations) {
+			if (p.getActivity().equals(activity)) {
+				return p;
+			}
+		}
+		return null;
+	}
 
-	// }}
+	
 
 	// {{ Calls (Collection)
 	private List<ParticipantPhoneCall> calls = new ArrayList<ParticipantPhoneCall>();

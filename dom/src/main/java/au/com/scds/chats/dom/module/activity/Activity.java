@@ -146,7 +146,7 @@ public class Activity implements Comparable<Activity> {
 
 	private List<Participation> participationList = new ArrayList<Participation>();
 
-	@CollectionLayout(named="Participants", render = RenderType.EAGERLY)
+	@CollectionLayout(named = "Participants", render = RenderType.EAGERLY)
 	public List<Participation> getParticipationList() {
 		return participationList;
 	}
@@ -172,7 +172,7 @@ public class Activity implements Comparable<Activity> {
 	@MemberOrder(name = "participants", sequence = "1")
 	@ActionLayout(named = "Add")
 	public Activity addParticipant(final Participant participant) {
-		addToParticipants(participant);
+		registerParticipant(participant);
 		return this;
 	}
 
@@ -181,7 +181,7 @@ public class Activity implements Comparable<Activity> {
 	public Activity addNewParticipant(final @ParameterLayout(named = "First name") String firstname, final @ParameterLayout(named = "Middle name(s)") String middlename,
 			final @ParameterLayout(named = "Surname") String surname) {
 		Participant participant = allParticipants.create(firstname, middlename, surname);
-		addToParticipants(participant);
+		registerParticipant(participant);
 		return this;
 	}
 
@@ -200,12 +200,16 @@ public class Activity implements Comparable<Activity> {
 		return getParticipants();
 	}
 
-	private void addToParticipants(final Participant participant) {
-		// check for no-op
+	public Participation registerParticipant(final Participant participant) {
 		if (participant == null || participant.hasParticipation(this)) {
-			return;
+			return null;
 		}
-		participationList.add(participant.addParticipation(this));
+		// TODO an Activity should 'register' a participant
+		// returning a Participation to the Participant.
+		// So this is currently this done the wrong way around.
+		Participation participation = participant.addParticipation(this);
+		participationList.add(participation);
+		return participation;
 	}
 
 	private void removeFromParticipants(final Participant participant) {
@@ -613,6 +617,8 @@ public class Activity implements Comparable<Activity> {
 	@javax.inject.Inject
 	// @SuppressWarnings("unused")
 	private DomainObjectContainer container;
+
+
 
 	// endregion
 
