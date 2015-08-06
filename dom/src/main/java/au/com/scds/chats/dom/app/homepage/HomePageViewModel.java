@@ -22,8 +22,8 @@ package au.com.scds.chats.dom.app.homepage;
 import java.util.List;
 import org.apache.isis.applib.annotation.ViewModel;
 
-import au.com.scds.chats.dom.modules.participant.Participant;
-import au.com.scds.chats.dom.modules.participant.Participants;
+import au.com.scds.chats.dom.module.participant.Participant;
+import au.com.scds.chats.dom.module.participant.Participants;
 
 @ViewModel
 public class HomePageViewModel {

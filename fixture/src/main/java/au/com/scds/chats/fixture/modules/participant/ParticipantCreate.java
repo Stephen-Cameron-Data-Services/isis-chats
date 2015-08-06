@@ -21,8 +21,8 @@ package au.com.scds.chats.fixture.modules.participant;
 
 import org.apache.isis.applib.fixturescripts.FixtureScript;
 
-import au.com.scds.chats.dom.modules.participant.Participant;
-import au.com.scds.chats.dom.modules.participant.Participants;
+import au.com.scds.chats.dom.module.participant.Participant;
+import au.com.scds.chats.dom.module.participant.Participants;
 
 public class ParticipantCreate extends FixtureScript {
 

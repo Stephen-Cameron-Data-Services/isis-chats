@@ -23,8 +23,8 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import javax.inject.Inject;
 
-import au.com.scds.chats.dom.modules.participant.Participant;
-import au.com.scds.chats.dom.modules.participant.Participants;
+import au.com.scds.chats.dom.module.participant.Participant;
+import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.fixture.modules.participant.ParticipantsTearDown;
 import au.com.scds.chats.fixture.scenarios.RecreateParticipants;
 import au.com.scds.isis.integtests.tests.SimpleAppIntegTest;

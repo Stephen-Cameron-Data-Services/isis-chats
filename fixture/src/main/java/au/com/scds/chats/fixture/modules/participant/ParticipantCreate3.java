@@ -8,8 +8,8 @@ import org.apache.isis.applib.services.clock.ClockService;
 //import org.apache.isis.applib.services.sudo.SudoService;
 import org.joda.time.LocalDate;
 
-import au.com.scds.chats.dom.modules.participant.Participant;
-import au.com.scds.chats.dom.modules.participant.Participants;
+import au.com.scds.chats.dom.module.participant.Participant;
+import au.com.scds.chats.dom.module.participant.Participants;
 
 public class ParticipantCreate3 extends FixtureScript {
 

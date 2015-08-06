@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import au.com.scds.chats.dom.modules.participant.Participant;
+import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.fixture.modules.participant.ParticipantCreate;
 import au.com.scds.chats.fixture.modules.participant.ParticipantsTearDown;
 

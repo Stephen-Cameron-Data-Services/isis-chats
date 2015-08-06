@@ -16,8 +16,8 @@
  */
 package au.com.scds.isis.integtests.specglue.modules.simple;
 
-import au.com.scds.chats.dom.modules.participant.Participant;
-import au.com.scds.chats.dom.modules.participant.Participants;
+import au.com.scds.chats.dom.module.participant.Participant;
+import au.com.scds.chats.dom.module.participant.Participants;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
 

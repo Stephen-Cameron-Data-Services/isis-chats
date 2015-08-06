@@ -29,8 +29,8 @@ import org.apache.isis.applib.services.i18n.TranslationService;
 import org.apache.isis.applib.services.wrapper.DisabledException;
 import org.apache.isis.applib.services.wrapper.InvalidException;
 
-import au.com.scds.chats.dom.modules.participant.Participant;
-import au.com.scds.chats.dom.modules.participant.Participants;
+import au.com.scds.chats.dom.module.participant.Participant;
+import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.fixture.scenarios.RecreateParticipants;
 import au.com.scds.isis.integtests.tests.SimpleAppIntegTest;
 
