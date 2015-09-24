@@ -9,7 +9,10 @@ import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Optionality;
+import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.query.QueryDefault;
@@ -26,8 +29,13 @@ import au.com.scds.chats.dom.module.volunteer.Volunteer;
  * 
  */
 @DomainService(repositoryFor = Volunteer.class)
-@DomainServiceLayout(menuOrder = "50")
+@DomainServiceLayout(menuOrder = "30")
 public class Volunteers {
+
+	@Programmatic
+	public List<Volunteer> listAll() {
+		return container.allInstances(Volunteer.class);
+	}
 
 	// region > listActive (action)
 
@@ -71,27 +79,27 @@ public class Volunteers {
 
 	// region > create (action)
 	@MemberOrder(sequence = "4")
-	public Volunteer create(final @ParameterLayout(named = "First name") String firstname, final @ParameterLayout(named = "Middle name(s)") String middlename,
-			final @ParameterLayout(named = "Surname") String surname) {
+	public Volunteer create(final @ParameterLayout(named = "First name") String firstname,
+			final @ParameterLayout(named = "Middle name(s)") @Parameter(optionality = Optionality.OPTIONAL) String middlename, final @ParameterLayout(named = "Surname") String surname) {
 		// check of existing Volunteer
-		List<Volunteer> volunteers = container.allMatches(new QueryDefault<>(Volunteer.class, "findBySurname", "surname", surname));
-		for (Volunteer volunteer : volunteers) {
-			if (volunteer.getPerson().getFirstname().equalsIgnoreCase(firstname) && volunteer.getPerson().getMiddlename().equalsIgnoreCase(middlename)) {
-				container.informUser("The following Volunteer with the same names already exists!");
-				return volunteer;
-			}
-		}
-		// check if existing Person
-		List<Person> persons = container.allMatches(new QueryDefault<>(Person.class, "findBySurname", "surname", surname));
-		Person person = null;
-		for (Person p : persons) {
-			if (p.getFirstname().equalsIgnoreCase(firstname) && p.getMiddlename().equalsIgnoreCase(middlename)) {
-				// use this found person
-				person = p;
-				break;
-			}
-		}
+		/*
+		 * List<Volunteer> volunteers = container.allMatches(new
+		 * QueryDefault<>(Volunteer.class, "findBySurname", "surname",
+		 * surname)); for (Volunteer volunteer : volunteers) { if
+		 * (volunteer.getPerson().getFirstname().equalsIgnoreCase(firstname) &&
+		 * volunteer.getPerson().getMiddlename().equalsIgnoreCase(middlename)) {
+		 * container
+		 * .informUser("The following Volunteer with the same names already exists!"
+		 * ); return volunteer; } } // check if existing Person List<Person>
+		 * persons = container.allMatches(new QueryDefault<>(Person.class,
+		 * "findBySurname", "surname", surname)); Person person = null; for
+		 * (Person p : persons) { if
+		 * (p.getFirstname().equalsIgnoreCase(firstname) &&
+		 * p.getMiddlename().equalsIgnoreCase(middlename)) { // use this found
+		 * person person = p; break; } }
+		 */
 		// create new Person?
+		Person person = null;
 		if (person == null) {
 			person = container.newTransientInstance(Person.class);
 			person.setFirstname(firstname);

@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 import org.apache.isis.applib.DomainObjectContainer;
+import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.module.general.Person;
 
@@ -35,7 +36,7 @@ public class PersonMap extends BaseMap {
 					n = new Person();
 				}
 				n.setOldId(BigInt2Long(o.getId()));
-				n.setBirthdate(new org.joda.time.DateTime(o.getBirthdate()));
+				//TODO n.setBirthdate(o.getBirthdate());
 				// ALLNULL n.setContacttypeId(o.getContacttypeId() );
 				n.setCreatedByUserId(BigInt2Long(o.getCreatedbyUserId()));
 				n.setCreatedDateTime(new org.joda.time.DateTime(o.getCreatedDTTM()));

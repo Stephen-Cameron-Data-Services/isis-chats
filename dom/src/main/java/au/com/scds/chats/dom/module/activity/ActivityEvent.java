@@ -18,18 +18,14 @@
  */
 package au.com.scds.chats.dom.module.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.annotation.*;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEvent;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEventable;
-import org.joda.time.DateTime;
-import au.com.scds.chats.dom.module.general.Location;
-import au.com.scds.chats.dom.module.participant.Participant;
-import au.com.scds.chats.dom.module.participant.Participation;
+
+import au.com.scds.chats.dom.module.attendance.AttendanceList;
+import au.com.scds.chats.dom.module.note.NoteLinkable;
 
 /**
  * ActivityEvents are individual Activities that appear on a calendar.
@@ -53,20 +49,32 @@ import au.com.scds.chats.dom.module.participant.Participation;
  */
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
-@Queries({ @Query(name = "find", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.activity.ActivityEvent "),
-		@Query(name = "findByName", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.activity.ActivityEvent " + "WHERE name.indexOf(:name) >= 0 ") })
+@Queries({ @Query(name = "find", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent "),
+		@Query(name = "findOneOffActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE name.indexOf(:name) >= 0 "),
+		@Query(name = "findActivitiesWithoutAttendanceList", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE attendances == null "),
+		@Query(name = "findAllFutureActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE startDateTime > :currentDateTime "),
+		@Query(name = "findAllPastActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE startDateTime <= :currentDateTime ")})
+
 // @Unique(name = "Activity_name_UNQ", members = { "name"
 // })
 @DomainObject(objectType = "ACTIVITY")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-public class ActivityEvent extends AbstractActivity implements CalendarEventable {
+@MemberGroupLayout(columnSpans = { 3, 3, 0, 6 }, left = { "General" }, middle = { "Admin" })
+public class ActivityEvent extends Activity implements NoteLinkable, CalendarEventable {
 
 	private RecurringActivity parent;
+
+	public String title() {
+		if (parent != null && getName() == null)
+			return "Activity: " + parent.getName();
+		else
+			return "Activity: " + getName();
+	}
 
 	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "1")
 	@Property(hidden = Where.EVERYWHERE)
-	public RecurringActivity getParentActivity() {
+	public final RecurringActivity getParentActivity() {
 		return parent;
 	}
 
@@ -74,101 +82,92 @@ public class ActivityEvent extends AbstractActivity implements CalendarEventable
 		this.parent = activity;
 	}
 
-	@Column(allowsNull = "false", length = 100)
-	@Title(sequence = "2")
-	@MemberOrder(sequence = "1")
-	@Override
-	public String getName() {
-		if (name == null && parent != null)
-			return parent.getName();
-		else
-			return name;
-	}
+	// {{ AttendanceList (property)
+	private AttendanceList attendances;
 
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "3")
-	public Provider getProvider() {
-		if (provider == null && parent != null)
-			return parent.getProvider();
-		else
-			return provider;
+	@Property()
+	@PropertyLayout(named="Attendance List")
+	@MemberOrder(sequence = "1")
+	public AttendanceList getAttendances() {
+		return attendances;
+	}
+
+	public void setAttendances(final AttendanceList attendances) {
+		// can only be set once
+		// used by AttendanceLists.createAttendanceList(activity)
+		if (this.attendances != null)
+			return;
+		this.attendances = attendances;
 	}
 
 	// }}
-
-	/**
-	 * Get a list of the Participants from the Participations List,
-	 * 
-	 * If this activity has a parent it gets a merged Participation list.
-	 * 
-	 * @return
-	 */
-	@CollectionLayout(named = "Participants", render = RenderType.EAGERLY)
-	@Override
-	public List<Participant> getParticipants() {
-		// TODO create the merged list
-		List<Participant> participants = new ArrayList<Participant>();
-		List<Participation> participations = getParticipationList();
-		for (Participation p : participations) {
-			participants.add(p.getParticipant());
-		}
-		return participants;
-	}
-
-	// @Column(allowsNull = "true")
-	// @MemberOrder(sequence = "6")
-	// @PropertyLayout(named = "Approximate End Date & Time")
-	@Override
-	public DateTime getApproximateEndDateTime() {
-		if (approximateEndDateTime == null && parent != null)
-			return parent.getApproximateEndDateTime();
-		else
-			return approximateEndDateTime;
-	}
-
-	// @Column(allowsNull = "true")
-	// @MemberOrder(sequence = "8")
-	// @PropertyLayout(named = "Cost For Participant")
-	@Override
-	public String getCostForParticipant() {
-		if (costForParticipant == null && parent != null)
-			return parent.getCostForParticipant();
-		else
-			return costForParticipant;
-	}
-
-	// @Column(allowsNull = "true")
-	// @MemberOrder(sequence = "9")
-	// @PropertyLayout()
-	@Override
-	public String getDescription() {
-		if (description == null && parent != null)
-			return parent.getDescription();
-		else
-			return description;
-	}
-
-	// @Column(allowsNull = "true")
-	// @Property(hidden = Where.EVERYWHERE)
-	@Override
-	public Location getLocation() {
-		if (location == null && parent != null)
-			return parent.getLocation();
-		else
-			return location;
-	}
 
 	// CalendarEventable methods
 	@Programmatic
 	@Override
 	public String getCalendarName() {
-		return "Activity";
+		return "startDateTime";
 	}
 
 	@Programmatic
 	@Override
 	public CalendarEvent toCalendarEvent() {
-		return new CalendarEvent(getStartDateTime(), getCalendarName(), getName(), getNotes());
+		return new CalendarEvent(getStartDateTime().withTimeAtStartOfDay(), getCalendarName(), title());
 	}
 
+	// TODO override getParticipations(), needs to add the parents
+	// Participations
+	// to ones added just for this event.
+
+	// //Overides
+	// TODO test all this with integtests , grrr!!!!
+	/*
+	 * @Property(hidden = Where.EVERYWHERE)
+	 * 
+	 * @Override //TODO runtime error array index out of bounds public
+	 * ActivityType getActivityType() { if(getParentActivity() != null &&
+	 * activityType == null){ return getParentActivity().getActivityType(); }
+	 * return activityType; }
+	 * 
+	 * @Override public DateTime getStartDateTime() { if(getParentActivity() !=
+	 * null && startDateTime == null){ return
+	 * getParentActivity().getStartDateTime(); } return this.startDateTime; }
+	 * 
+	 * @Override public DateTime getApproximateEndDateTime() {
+	 * if(getParentActivity() != null && approximateEndDateTime == null){ return
+	 * getParentActivity().getApproximateEndDateTime(); } return
+	 * approximateEndDateTime; }
+	 * 
+	 * @Override public String getCostForParticipant() { if(getParentActivity()
+	 * != null && costForParticipant == null){ return
+	 * getParentActivity().getCostForParticipant(); } return costForParticipant;
+	 * }
+	 * 
+	 * @Override public String getDescription() { if(getParentActivity() != null
+	 * && description == null){ return getParentActivity().getDescription(); }
+	 * return description; }
+	 * 
+	 * @Override
+	 * 
+	 * @Property(hidden = Where.EVERYWHERE) //see Activity#getLocationName()
+	 * //TODO runtime error array index out of bounds public Location
+	 * getLocation() { if(getParentActivity() != null && location == null){
+	 * return getParentActivity().getLocation(); } return location; }
+	 * 
+	 * @Override
+	 * 
+	 * @Property(hidden = Where.EVERYWHERE) //TODO runtime error array index out
+	 * of bounds public Region getRegion() { if(getParentActivity() != null &&
+	 * region == null){ return getParentActivity().getRegion(); } return region;
+	 * }
+	 * 
+	 * @Override public Boolean getIsRestricted() { if(getParentActivity() !=
+	 * null && isRestricted == null){ return
+	 * getParentActivity().getIsRestricted(); } return isRestricted; }
+	 * 
+	 * @Override public Long getScheduleId() { if(getParentActivity() != null &&
+	 * scheduleId == null){ return getParentActivity().getScheduleId(); } return
+	 * scheduleId; }
+	 */
 }

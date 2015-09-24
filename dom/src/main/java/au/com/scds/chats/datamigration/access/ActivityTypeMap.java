@@ -10,8 +10,8 @@ import javax.persistence.EntityManager;
 import org.apache.isis.applib.DomainObjectContainer;
 
 import au.com.scds.chats.dom.module.general.Location;
-import au.com.scds.chats.dom.module.general.codes.ActivityType;
-import au.com.scds.chats.dom.module.general.codes.Region;
+import au.com.scds.chats.dom.module.general.names.ActivityType;
+import au.com.scds.chats.dom.module.general.names.Region;
 
 public class ActivityTypeMap extends BaseMap {
 
@@ -22,7 +22,7 @@ public class ActivityTypeMap extends BaseMap {
 		this.em = em;
 	}
 
-	public au.com.scds.chats.dom.module.general.codes.ActivityType map(BigInteger id) {
+	public au.com.scds.chats.dom.module.general.names.ActivityType map(BigInteger id) {
 		if (id == null)
 			return null;
 		else {

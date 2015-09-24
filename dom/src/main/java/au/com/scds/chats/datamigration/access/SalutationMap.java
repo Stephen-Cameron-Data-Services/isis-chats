@@ -9,8 +9,8 @@ import javax.persistence.EntityManager;
 
 import org.apache.isis.applib.DomainObjectContainer;
 
-import au.com.scds.chats.dom.module.general.codes.Region;
-import au.com.scds.chats.dom.module.general.codes.Salutation;
+import au.com.scds.chats.dom.module.general.names.Region;
+import au.com.scds.chats.dom.module.general.names.Salutation;
 
 public class SalutationMap extends BaseMap {
 
@@ -21,7 +21,7 @@ public class SalutationMap extends BaseMap {
 		this.em = em;
 	}
 
-	public au.com.scds.chats.dom.module.general.codes.Salutation map(BigInteger id) {
+	public au.com.scds.chats.dom.module.general.names.Salutation map(BigInteger id) {
 		if (id == null)
 			return null;
 		else {

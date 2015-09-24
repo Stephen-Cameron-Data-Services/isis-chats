@@ -56,7 +56,7 @@ public class ActivityMap extends BaseMap{
 				n.setLastModifiedByUserId(BigInt2Long(o.getLastmodifiedbyUserId()));
 				n.setLastModifiedDateTime(new org.joda.time.DateTime(o.getLastmodifiedDTTM()));
 				n.setActivityType(activityTypes.map(o.getActivitytypeId()));
-				n.setNotes(TrimToLength(o.getNotes(),255));
+				//n.setNotes(TrimToLength(o.getNotes(),255));
 				n.setRegion(regions.map(o.getRegion()));
 				n.setLocation(locations.map(TrimToLength(o.getLocation().replace("@", "at"),255)));
 				n.setIsRestricted(o.getRestricted() != 0);

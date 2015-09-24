@@ -2,26 +2,34 @@ package au.com.scds.chats.dom.module.participant;
 
 import java.util.Date;
 
-import javax.jdo.annotations.*;
+import javax.jdo.annotations.Column;
+import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.NotPersistent;
+
+import com.google.common.collect.ComparisonChain;
+
+import org.joda.time.DateTime;
 
 import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
+import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
-import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.module.activity.Activity;
-import au.com.scds.chats.dom.module.activity.ActivityEvent;
 
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
-@DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
+@javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
+@javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
 @DomainObject(objectType = "PARTICIPATION")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-public class Participation {
+@MemberGroupLayout(columnSpans = { 3, 3, 0, 6 }, left = { "General" }, middle = { "Admin" })
+public class Participation implements Comparable<Participation> {
+
+	// //General
 
 	public String title() {
 		if (getParticipant() != null && getParticipant().getPerson() != null && getActivity() != null) {
@@ -32,19 +40,10 @@ public class Participation {
 	}
 
 	private Participant participant;
-	private Activity activity;
-
-	private String oldId;
-	private Long arrivingTransporttypeId;
-	private Long departingTransporttypeId;
-	private Date dropoffTime;
-	private Date pickupTime;
-	private int region;
-	private Long roleId;
-	private String transportNotes;
 
 	@Column(allowsNull = "false")
-	@Property(hidden = Where.EVERYWHERE)
+	@Property(hidden = Where.REFERENCES_PARENT)
+	@MemberOrder(sequence="1")
 	public Participant getParticipant() {
 		return participant;
 	}
@@ -55,19 +54,10 @@ public class Participation {
 			this.participant = parent;
 	}
 
-	@MemberOrder(sequence = "1")
-	@Property(hidden = Where.NOWHERE)
-	@NotPersistent
-	public String getParticipantName() {
-		if (getParticipant() != null)
-			return getParticipant().getFullName();
-		else
-			return null;
-	}
+	private String oldId;
 
 	@Column(allowsNull = "true")
 	@Property(editing = Editing.DISABLED, hidden = Where.EVERYWHERE)
-	@MemberOrder(sequence = "2")
 	public String getOldId() {
 		return this.oldId;
 	}
@@ -76,8 +66,10 @@ public class Participation {
 		this.oldId = id;
 	}
 
+	private Activity activity;
+
 	@Column(allowsNull = "false")
-	@Property(hidden = Where.EVERYWHERE)
+	@Property(hidden = Where.REFERENCES_PARENT)
 	@MemberOrder(sequence = "3")
 	public Activity getActivity() {
 		return this.activity;
@@ -86,16 +78,8 @@ public class Participation {
 	public void setActivity(Activity activity) {
 		this.activity = activity;
 	}
-	
-	@MemberOrder(sequence = "3")
-	@Property(hidden = Where.NOWHERE)
-	@NotPersistent
-	public String getActivityName() {
-		if (getActivity() != null)
-			return getActivity().getName();
-		else
-			return null;
-	}
+
+	private Long arrivingTransporttypeId;
 
 	@Column(allowsNull = "true")
 	@Property(hidden = Where.ALL_TABLES)
@@ -108,6 +92,8 @@ public class Participation {
 		this.arrivingTransporttypeId = arrivingTransporttypeId;
 	}
 
+	private Long departingTransporttypeId;
+
 	@Column(allowsNull = "true")
 	@Property(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "5")
@@ -118,6 +104,8 @@ public class Participation {
 	public void setDepartingTransporttypeId(Long departingTransporttypeId) {
 		this.departingTransporttypeId = departingTransporttypeId;
 	}
+
+	private Date dropoffTime;
 
 	@Column(allowsNull = "true")
 	@Property(hidden = Where.ALL_TABLES)
@@ -130,6 +118,8 @@ public class Participation {
 		this.dropoffTime = dropoffTime;
 	}
 
+	private Date pickupTime;
+
 	@Column(allowsNull = "true")
 	@Property(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "7")
@@ -141,16 +131,20 @@ public class Participation {
 		this.pickupTime = pickupTime;
 	}
 
+	private Integer region;
+
 	@Column(allowsNull = "true")
 	@Property(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "8")
-	public int getRegion() {
+	public Integer getRegion() {
 		return this.region;
 	}
 
-	public void setRegion(int region) {
+	public void setRegion(Integer region) {
 		this.region = region;
 	}
+
+	private Long roleId;
 
 	@Column(allowsNull = "true")
 	@Property(hidden = Where.ALL_TABLES)
@@ -162,6 +156,8 @@ public class Participation {
 	public void setRoleId(Long roleId) {
 		this.roleId = roleId;
 	}
+
+	private String transportNotes;
 
 	@Column(allowsNull = "true")
 	@Property(hidden = Where.ALL_TABLES)
@@ -244,4 +240,8 @@ public class Participation {
 		this.lastModifiedDateTime = lastModifiedDateTime;
 	}
 
+	@Override
+	public int compareTo(final Participation o) {
+		return ComparisonChain.start().compare(getActivity(), o.getActivity()).compare(getParticipant(), o.getParticipant()).result();
+	}
 }

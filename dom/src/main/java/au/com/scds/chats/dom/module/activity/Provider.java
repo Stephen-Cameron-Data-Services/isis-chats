@@ -1,8 +1,6 @@
 package au.com.scds.chats.dom.module.activity;
 
-import javax.jdo.annotations.Column;
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.VersionStrategy;
+import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
@@ -10,25 +8,22 @@ import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.services.i18n.TranslatableString;
 
-@javax.jdo.annotations.PersistenceCapable(identityType=IdentityType.DATASTORE)
-@javax.jdo.annotations.DatastoreIdentity(
-        strategy=javax.jdo.annotations.IdGeneratorStrategy.IDENTITY,
+@PersistenceCapable(identityType=IdentityType.DATASTORE)
+@DatastoreIdentity(
+        strategy=IdGeneratorStrategy.IDENTITY,
          column="id")
-@javax.jdo.annotations.Version(
-        strategy=VersionStrategy.VERSION_NUMBER, 
-        column="version")
-@javax.jdo.annotations.Queries({
-        @javax.jdo.annotations.Query(
+@Queries({
+        @Query(
                 name = "find", language = "JDOQL",
                 value = "SELECT "
                         + "FROM au.com.scds.chats.dom.module.activity.Provider "),
-        @javax.jdo.annotations.Query(
+        @Query(
                 name = "findByName", language = "JDOQL",
                 value = "SELECT "
                         + "FROM au.com.scds.chats.dom.module.activity.Provider "
                         + "WHERE name.indexOf(:name) >= 0 ")
 })
-@javax.jdo.annotations.Unique(name="Provider_name_UNQ", members = {"name"})
+@Unique(name="Provider_name_UNQ", members = {"name"})
 @DomainObject(
         objectType = "PROVIDER"
 )

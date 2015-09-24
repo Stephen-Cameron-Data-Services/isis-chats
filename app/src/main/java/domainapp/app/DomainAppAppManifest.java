@@ -26,7 +26,8 @@ import java.util.Map;
 import org.apache.isis.applib.AppManifest;
 import org.apache.isis.applib.fixturescripts.FixtureScript;
 
-import domainapp.dom.DomainAppDomainModule;
+import au.com.scds.chats.dom.DomainAppDomainModule;
+
 import domainapp.fixture.DomainAppFixtureModule;
 
 /**

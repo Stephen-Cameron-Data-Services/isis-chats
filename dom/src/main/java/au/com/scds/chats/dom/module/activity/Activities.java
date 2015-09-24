@@ -20,61 +20,89 @@ package au.com.scds.chats.dom.module.activity;
 
 import java.util.List;
 import org.apache.isis.applib.DomainObjectContainer;
-import org.apache.isis.applib.annotation.Action;
-import org.apache.isis.applib.annotation.ActionLayout;
-import org.apache.isis.applib.annotation.BookmarkPolicy;
-import org.apache.isis.applib.annotation.CollectionLayout;
-import org.apache.isis.applib.annotation.DomainService;
-import org.apache.isis.applib.annotation.DomainServiceLayout;
-import org.apache.isis.applib.annotation.RenderType;
+import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
-import org.apache.isis.applib.annotation.MemberOrder;
-import org.apache.isis.applib.annotation.ParameterLayout;
-import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
+import org.joda.time.DateTime;
 
 @DomainService(repositoryFor = ActivityEvent.class)
-@DomainServiceLayout(named = "Activities", menuBar = MenuBar.PRIMARY, menuOrder = "10")
+@DomainServiceLayout(named = "Activities", menuOrder = "10")
 public class Activities {
 
-	// region > listAll (action)
-	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	// {{ createRecurringActivity (action)
+    @Action(semantics = SemanticsOf.SAFE)
 	@MemberOrder(sequence = "1")
-	@CollectionLayout(paged = 20, render = RenderType.EAGERLY)
-	public List<ActivityEvent> listAll() {
-		return container.allInstances(ActivityEvent.class);
-	}
-
-	// endregion
-
-	// region > findByName (action)
-	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-	@MemberOrder(sequence = "2")
-	public List<ActivityEvent> findByName(
-			@ParameterLayout(named = "Name") final String name) {
-		return container.allMatches(new QueryDefault<>(ActivityEvent.class,
-				"findByName", "name", name));
-	}
-
-	// endregion
-
-	// region > create (action)
-	@MemberOrder(sequence = "3")
-	public ActivityEvent create(final @ParameterLayout(named = "Name") String name) {
-		final ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
+	public RecurringActivity createRecurringActivity(@Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Activity name") final String name, @Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Start date time") final DateTime startDateTime) {
+		final RecurringActivity obj = container.newTransientInstance(RecurringActivity.class);
 		obj.setName(name);
+		obj.setStartDateTime(startDateTime);
 		container.persistIfNotAlready(obj);
+		container.flush();
 		return obj;
 	}
 
-	// endregion
+	// }}
 
-	// region > injected services
+	// listAllRecurringActivities (action)
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@MemberOrder(sequence = "2")
+	@CollectionLayout(paged = 20, render = RenderType.EAGERLY)
+	public List<RecurringActivity> listAllRecurringActivities() {
+		return container.allInstances(RecurringActivity.class);
+	}
+
+	// }}
+
+	// findByRecurringActivityName (action)
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@MemberOrder(sequence = "3")
+	public List<RecurringActivity> findByRecurringActivityByName(@ParameterLayout(named = "Name") final String name) {
+		return container.allMatches(new QueryDefault<>(RecurringActivity.class, "findByRecurringActivityByName", "name", name));
+	}
+
+	// {{ createOneOffActivity (action)
+	@MemberOrder(sequence = "5")
+	public ActivityEvent createOneOffActivity(@Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Activity name") final String name, @Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Start date time") final DateTime startDateTime) {
+		final ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
+		obj.setName(name);
+		obj.setStartDateTime(startDateTime);
+		container.persistIfNotAlready(obj);
+		container.flush();
+		return obj;
+	}
+
+	// }}
+
+	// findOneOffActivityByName (action)
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@MemberOrder(sequence = "6")
+	public List<ActivityEvent> findOneOffActivityByName(@ParameterLayout(named = "Name") final String name) {
+		return container.allMatches(new QueryDefault<>(ActivityEvent.class, "findOneOffActivityByName", "name", name));
+	}
+
+	// listAllFutureActivities (action)
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@MemberOrder(sequence = "10")
+	public List<ActivityEvent> listAllFutureActivities() {
+		return container.allMatches(new QueryDefault<>(ActivityEvent.class, "findAllFutureActivities", "currentDateTime", new DateTime()));
+	}
+
+	// listAllPastActivities (action)
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@MemberOrder(sequence = "10")
+	public List<ActivityEvent> listAllPastActivities() {
+		return container.allMatches(new QueryDefault<>(ActivityEvent.class, "findAllPastActivities","currentDateTime", new DateTime()));
+	}
+
+	// injected services
 
 	@javax.inject.Inject
 	DomainObjectContainer container;
 
-	// endregion
+
 }

@@ -22,29 +22,30 @@ import java.util.List;
 
 import org.apache.isis.applib.annotation.ViewModel;
 
-import domainapp.dom.simple.SimpleObject;
-import domainapp.dom.simple.SimpleObjects;
+import au.com.scds.chats.dom.module.note.Note;
+import au.com.scds.chats.dom.module.note.Notes;
+
 
 @ViewModel
 public class HomePageViewModel {
 
     //region > title
     public String title() {
-        return getObjects().size() + " objects";
+        return getNotes().size() + " notes";
     }
     //endregion
 
     //region > object (collection)
     @org.apache.isis.applib.annotation.HomePage
-    public List<SimpleObject> getObjects() {
-        return simpleObjects.listAll();
+    public List<Note> getNotes() {
+        return notes.listAll();
     }
     //endregion
 
     //region > injected services
 
     @javax.inject.Inject
-    SimpleObjects simpleObjects;
+    Notes notes;
 
     //endregion
 }

@@ -9,7 +9,7 @@ import javax.persistence.EntityManager;
 import org.apache.isis.applib.DomainObjectContainer;
 
 import au.com.scds.chats.dom.module.general.Location;
-import au.com.scds.chats.dom.module.general.codes.Region;
+import au.com.scds.chats.dom.module.general.names.Region;
 
 public class RegionMap extends BaseMap{
 
@@ -20,7 +20,7 @@ public class RegionMap extends BaseMap{
 		this.em = em;
 	}
 
-	public au.com.scds.chats.dom.module.general.codes.Region map(int id) {
+	public au.com.scds.chats.dom.module.general.names.Region map(int id) {
 		Integer regionId = Integer.valueOf(id);
 		if (regionId == null)
 			return null;

@@ -94,7 +94,7 @@ public class ParticipationMap extends BaseMap {
 					} catch (Exception e) {
 						System.out.println(i++ + " " + e.getMessage());
 					}
-					System.out.println(i++ + " Participation(Person(" + p.getParticipant().getFullName() + ") Activity(" + p.getActivityName() + "))");
+					System.out.println(i++ + " Participation(Person(" + p.getParticipant().getFullName() + ") Activity(" + p.getActivity().getName() + "))");
 				} else {
 					System.out.println(i++ + " Unknown Activity:" + ap.getActivityId());
 				}

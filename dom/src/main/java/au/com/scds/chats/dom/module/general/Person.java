@@ -1,6 +1,5 @@
 package au.com.scds.chats.dom.module.general;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,47 +7,29 @@ import javax.jdo.annotations.Column;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
-import javax.jdo.annotations.Sequence;
-//import javax.jdo.annotations.DiscriminatorStrategy;
 import javax.jdo.annotations.IdentityType;
-//import javax.jdo.annotations.InheritanceStrategy;
-import javax.jdo.annotations.PrimaryKey;
 
 import org.apache.isis.applib.DomainObjectContainer;
-import org.apache.isis.applib.annotation.Action;
-import org.apache.isis.applib.annotation.BookmarkPolicy;
-import org.apache.isis.applib.annotation.DomainObject;
-import org.apache.isis.applib.annotation.DomainObjectLayout;
-import org.apache.isis.applib.annotation.Editing;
-import org.apache.isis.applib.annotation.MemberGroupLayout;
-import org.apache.isis.applib.annotation.MemberOrder;
-import org.apache.isis.applib.annotation.Optionality;
-import org.apache.isis.applib.annotation.Parameter;
-import org.apache.isis.applib.annotation.ParameterLayout;
-import org.apache.isis.applib.annotation.Programmatic;
-import org.apache.isis.applib.annotation.Property;
-import org.apache.isis.applib.annotation.PropertyLayout;
-import org.apache.isis.applib.annotation.SemanticsOf;
-import org.apache.isis.applib.annotation.Where;
+import org.apache.isis.applib.annotation.*;
 import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.module.general.Person;
-import au.com.scds.chats.dom.module.general.codes.ContactType;
-import au.com.scds.chats.dom.module.general.codes.ContactTypes;
-import au.com.scds.chats.dom.module.general.codes.EnglishSkill;
-import au.com.scds.chats.dom.module.general.codes.Region;
-import au.com.scds.chats.dom.module.general.codes.Regions;
-import au.com.scds.chats.dom.module.general.codes.Salutation;
-import au.com.scds.chats.dom.module.general.codes.Salutations;
+import au.com.scds.chats.dom.module.general.names.ContactType;
+import au.com.scds.chats.dom.module.general.names.ContactTypes;
+import au.com.scds.chats.dom.module.general.names.EnglishSkill;
+import au.com.scds.chats.dom.module.general.names.Region;
+import au.com.scds.chats.dom.module.general.names.Regions;
+import au.com.scds.chats.dom.module.general.names.Salutation;
+import au.com.scds.chats.dom.module.general.names.Salutations;
 
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
-//@javax.jdo.annotations.Unique(name = "Person_name_UNQ", members = { "firstname", "middlename", "surname" })
+@javax.jdo.annotations.Unique(name = "Person_name_UNQ", members = { "firstname", "middlename", "surname" })
 @Queries({ @Query(name = "findBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.general.Person " + "WHERE surname == :surname"), })
 @DomainObject(objectType = "PERSON")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = "General", middle = { "Contact Details", "Admin" })
-public class Person {
+public class Person implements Comparable<Person>{
 
 	private Long oldId;
 	private Salutation salutation;
@@ -58,13 +39,15 @@ public class Person {
 	private String middlename;
 	private String surname;
 	private String preferredname;
-	private DateTime birthdate;
-	private Long createdbyUserId;
-	private DateTime createdDttm;
-	private Long lastmodifiedbyUserId;
-	private DateTime lastmodifiedDttm;
-	private DateTime deletedDttm;
+	private Date birthdate;
 	private Region region;
+	
+	@Override
+	public int compareTo(Person o) {
+		String thisName = getSurname().toUpperCase() + getFirstname().toUpperCase();
+		String otherName = o.getSurname().toUpperCase() + o.getFirstname().toUpperCase();
+		return thisName.compareTo(otherName);
+	}
 
 	@Column(allowsNull = "true")
 	@Programmatic
@@ -82,7 +65,7 @@ public class Person {
 
 	@Programmatic
 	public String getFullname() {
-		return this.getFirstname() + " " + this.getMiddlename() + " " + this.getSurname();
+		return this.getFirstname() + " " + (this.getPreferredname() != null ? "(" + this.getPreferredname() + ") " : "") + (this.getMiddlename() != null ? this.getMiddlename() + " " : "") + this.getSurname();
 	}
 
 	@Column()
@@ -115,7 +98,7 @@ public class Person {
 		return salutations.allNames();
 	}
 
-	@Column(allowsNull = "true", length = 100)
+	@Column(allowsNull = "false", length = 100)
 	@MemberOrder(sequence = "2")
 	@PropertyLayout(named = "First Name")
 	public String getFirstname() {
@@ -137,7 +120,7 @@ public class Person {
 		this.middlename = middlename;
 	}
 
-	@Column(allowsNull = "true", length = 100)
+	@Column(allowsNull = "false", length = 100)
 	@MemberOrder(sequence = "4")
 	public String getSurname() {
 		return this.surname;
@@ -160,11 +143,11 @@ public class Person {
 
 	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "6")
-	public DateTime getBirthdate() {
+	public Date getBirthdate() {
 		return this.birthdate;
 	}
 
-	public void setBirthdate(DateTime birthdate) {
+	public void setBirthdate(Date birthdate) {
 		this.birthdate = birthdate;
 	}
 
@@ -501,6 +484,8 @@ public class Person {
 
 	@javax.inject.Inject
 	private DomainObjectContainer container;
+
+
 
 	// endregion
 

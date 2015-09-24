@@ -18,28 +18,34 @@
  */
 package au.com.scds.chats.dom.module.participant;
 
-import javax.jdo.annotations.*;
-import org.apache.isis.applib.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
+
+import javax.jdo.annotations.*;
+
+import com.google.common.collect.ComparisonChain;
+
+
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.Identifier;
+import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
 import org.apache.isis.applib.services.i18n.TranslatableString;
+
+import au.com.scds.chats.dom.AbstractChatsDomainEntity;
+import au.com.scds.chats.dom.module.note.NoteLinkable;
 import au.com.scds.chats.dom.module.activity.Activity;
-import au.com.scds.chats.dom.module.activity.ActivityEvent;
-import au.com.scds.chats.dom.module.general.Note;
 import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.Status;
 
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
-@DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
+@javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
+@javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
 @Queries({ @Query(name = "listByStatus", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE status == :status"),
 		@Query(name = "findBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE person.surname == :surname"), })
 @DomainObject(objectType = "PARTICIPANT")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-public class Participant {
+@MemberGroupLayout(columnSpans = { 3, 3, 0, 6 }, left = { "General" }, middle = { "Scheduling", "Admin" })
+public class Participant extends AbstractChatsDomainEntity implements NoteLinkable, Comparable<Participant> {
 
 	// region > identificatiom
 	public TranslatableString title() {
@@ -264,7 +270,6 @@ public class Participant {
 
 	// {{ Activities (Collection)
 	// THIS COLLECTION IS VIEWED VIA THE PARTICIPATION_VIEW 'FAKE TAB' ACTION
-	@Persistent(mappedBy="participant")
 	private List<Participation> participations = new ArrayList<Participation>();
 
 	// @MemberOrder(sequence = "5")
@@ -326,16 +331,15 @@ public class Participant {
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Finds the Participation for a specific Activity
-	 * Called from Activity
+	 * Finds the Participation for a specific Activity Called from Activity
 	 * 
 	 * @param activity
 	 * @return
 	 */
 	@Programmatic
-	public Participation getParticipation(ActivityEvent activity) {
+	public Participation findParticipation(Activity activity) {
 		for (Participation p : participations) {
 			if (p.getActivity().equals(activity)) {
 				return p;
@@ -344,125 +348,93 @@ public class Participant {
 		return null;
 	}
 
-	
-
 	// {{ Calls (Collection)
-	private List<ParticipantPhoneCall> calls = new ArrayList<ParticipantPhoneCall>();
-
-	@MemberOrder(sequence = "6")
-	@Property(hidden = Where.ALL_TABLES)
-	@CollectionLayout(paged = 10, render = RenderType.EAGERLY)
-	public List<ParticipantPhoneCall> getCalls() {
-		return calls;
+	/*
+	 * private List<ParticipantPhoneCall> calls = new
+	 * ArrayList<ParticipantPhoneCall>();
+	 * 
+	 * @MemberOrder(sequence = "6")
+	 * 
+	 * @Property(hidden = Where.ALL_TABLES)
+	 * 
+	 * @CollectionLayout(paged = 10, render = RenderType.EAGERLY) public
+	 * List<ParticipantPhoneCall> getCalls() { return calls; }
+	 * 
+	 * public void setCalls(final List<ParticipantPhoneCall> calls) { this.calls
+	 * = calls; }
+	 */
+	/*
+	 * @MemberOrder(name = "calls", sequence = "1")
+	 * 
+	 * @ActionLayout(named="Add") public Participant
+	 * addCall(@ParameterLayout(named = "Subject", describedAs =
+	 * "The subject (heading) of the conversation, displayed in table view")
+	 * final String subject,
+	 * 
+	 * @ParameterLayout(named = "Notes", describedAs =
+	 * "Notes about the conversation. ") final String notes) {
+	 * ParticipantPhoneCall call =
+	 * container.newTransientInstance(ParticipantPhoneCall.class);
+	 * call.setDate(new Date()); call.setSubject(subject); call.setNotes(notes);
+	 * call.setStaffMember(container.getUser().getName());
+	 * container.persist(call); addToCalls(call); return this; }
+	 * 
+	 * @Programmatic public void addToCalls(final ParticipantPhoneCall call) {
+	 * // check for no-op if (call == null || getCalls().contains(call)) {
+	 * return; } // dissociate arg from its current parent (if any). //
+	 * conversation.clearParticipant(); // associate arg
+	 * call.setParticipant(this); getCalls().add(call); // additional business
+	 * logic // onAddToConversations(conversation); }
+	 * 
+	 * @Programmatic public Participant removeCall(final ParticipantPhoneCall
+	 * call) { // check for no-op if (call == null ||
+	 * !getCalls().contains(call)) { return this; } // dissociate arg
+	 * getCalls().remove(call); // additional business logic //
+	 * onRemoveFromConversations(conversation); // kill the conversation!
+	 * container.remove(call); return this; }
+	 * 
+	 * // }}
+	 * 
+	 * // {{ Notes (Collection) private List<Note> notes = new
+	 * ArrayList<Note>();
+	 * 
+	 * @MemberOrder(sequence = "6")
+	 * 
+	 * @Property(hidden = Where.ALL_TABLES)
+	 * 
+	 * @CollectionLayout(paged = 10, render = RenderType.EAGERLY) public
+	 * List<Note> getNotes() { return notes; }
+	 * 
+	 * public void setNotes(final List<Note> notes) { this.notes = notes; }
+	 * 
+	 * @MemberOrder(name = "notes", sequence = "1")
+	 * 
+	 * @ActionLayout(named="Add") public Participant
+	 * addNote(@ParameterLayout(named = "Text", describedAs =
+	 * "The content of the Note", multiLine = 5) final String text) { Note note
+	 * = container.newTransientInstance(Note.class); note.setDate(new Date());
+	 * note.setText(text); note.setStaffMember(container.getUser().getName());
+	 * container.persist(note); addToNotes(note); return this; }
+	 * 
+	 * @Programmatic public void addToNotes(final Note call) { // check for
+	 * no-op if (call == null || getNotes().contains(call)) { return; } //
+	 * dissociate arg from its current parent (if any). //
+	 * conversation.clearParticipant(); // associate arg
+	 * call.setParticipant(this); getNotes().add(call); // additional business
+	 * logic // onAddToConversations(conversation); }
+	 * 
+	 * @Programmatic public Participant removeNote(final Note call) { // check
+	 * for no-op if (call == null || !getNotes().contains(call)) { return this;
+	 * } // dissociate arg getNotes().remove(call); // additional business logic
+	 * // onRemoveFromConversations(conversation); // kill the conversation!
+	 * container.remove(call); return this; }
+	 * 
+	 * // }}
+	 */
+	@Override
+	public int compareTo(final Participant o) {
+		return ComparisonChain.start().compare(getFullName(), o.getFullName()).result();
 	}
-
-	public void setCalls(final List<ParticipantPhoneCall> calls) {
-		this.calls = calls;
-	}
-
-	@MemberOrder(name = "calls", sequence = "1")
-	@ActionLayout(named="Add")
-	public Participant addCall(@ParameterLayout(named = "Subject", describedAs = "The subject (heading) of the conversation, displayed in table view") final String subject,
-			@ParameterLayout(named = "Notes", describedAs = "Notes about the conversation. ") final String notes) {
-		ParticipantPhoneCall call = container.newTransientInstance(ParticipantPhoneCall.class);
-		call.setDate(new Date());
-		call.setSubject(subject);
-		call.setNotes(notes);
-		call.setStaffMember(container.getUser().getName());
-		container.persist(call);
-		addToCalls(call);
-		return this;
-	}
-
-	@Programmatic
-	public void addToCalls(final ParticipantPhoneCall call) {
-		// check for no-op
-		if (call == null || getCalls().contains(call)) {
-			return;
-		}
-		// dissociate arg from its current parent (if any).
-		// conversation.clearParticipant();
-		// associate arg
-		call.setParticipant(this);
-		getCalls().add(call);
-		// additional business logic
-		// onAddToConversations(conversation);
-	}
-
-	@Programmatic
-	public Participant removeCall(final ParticipantPhoneCall call) {
-		// check for no-op
-		if (call == null || !getCalls().contains(call)) {
-			return this;
-		}
-		// dissociate arg
-		getCalls().remove(call);
-		// additional business logic
-		// onRemoveFromConversations(conversation);
-		// kill the conversation!
-		container.remove(call);
-		return this;
-	}
-
-	// }}
-
-	// {{ Notes (Collection)
-	private List<Note> notes = new ArrayList<Note>();
-
-	@MemberOrder(sequence = "6")
-	@Property(hidden = Where.ALL_TABLES)
-	@CollectionLayout(paged = 10, render = RenderType.EAGERLY)
-	public List<Note> getNotes() {
-		return notes;
-	}
-
-	public void setNotes(final List<Note> notes) {
-		this.notes = notes;
-	}
-
-	@MemberOrder(name = "notes", sequence = "1")
-	@ActionLayout(named="Add")
-	public Participant addNote(@ParameterLayout(named = "Text", describedAs = "The content of the Note", multiLine = 5) final String text) {
-		Note note = container.newTransientInstance(Note.class);
-		note.setDate(new Date());
-		note.setText(text);
-		note.setStaffMember(container.getUser().getName());
-		container.persist(note);
-		addToNotes(note);
-		return this;
-	}
-
-	@Programmatic
-	public void addToNotes(final Note call) {
-		// check for no-op
-		if (call == null || getNotes().contains(call)) {
-			return;
-		}
-		// dissociate arg from its current parent (if any).
-		// conversation.clearParticipant();
-		// associate arg
-		call.setParticipant(this);
-		getNotes().add(call);
-		// additional business logic
-		// onAddToConversations(conversation);
-	}
-
-	@Programmatic
-	public Participant removeNote(final Note call) {
-		// check for no-op
-		if (call == null || !getNotes().contains(call)) {
-			return this;
-		}
-		// dissociate arg
-		getNotes().remove(call);
-		// additional business logic
-		// onRemoveFromConversations(conversation);
-		// kill the conversation!
-		container.remove(call);
-		return this;
-	}
-
-	// }}
 
 	// region > injected services
 
@@ -470,6 +442,5 @@ public class Participant {
 	@SuppressWarnings("unused")
 	private DomainObjectContainer container;
 
-	// endregion
 
 }

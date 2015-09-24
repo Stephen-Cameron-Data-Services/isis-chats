@@ -16,7 +16,6 @@ import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
 
-import au.com.scds.chats.dom.module.participant.Participant;
 
 @DomainService(repositoryFor = Location.class)
 @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.9")
