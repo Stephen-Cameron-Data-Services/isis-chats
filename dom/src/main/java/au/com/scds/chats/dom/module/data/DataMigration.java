@@ -18,7 +18,7 @@ public class DataMigration {
 	public void RunMigration() {
 		DataMapper mapper = new DataMapper();
 		try {
-			mapper.doProcess(null);
+			mapper.doProcess(container);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

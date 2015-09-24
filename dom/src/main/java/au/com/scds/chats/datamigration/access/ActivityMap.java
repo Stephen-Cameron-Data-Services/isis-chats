@@ -12,37 +12,37 @@ import org.apache.isis.applib.DomainObjectContainer;
 
 import au.com.scds.chats.datamigration.access.ActivityMap;
 import au.com.scds.chats.datamigration.access.ActivityTypeMap;
-import au.com.scds.chats.dom.module.activity.Activity;
+import au.com.scds.chats.dom.module.activity.ActivityEvent;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 public class ActivityMap extends BaseMap{
 
 	EntityManager em;
 	ActivityTypeMap activityTypes;
 	RegionMap regions;
-	Map<BigInteger, Activity> map = new HashMap<BigInteger, Activity>();
+	LocationMap locations;
+	Map<BigInteger, ActivityEvent> map = new HashMap<BigInteger, ActivityEvent>();
 
 	// Gson gson = new
 	// GsonBuilder().serializeNulls().setDateFormat(DateFormat.FULL,
 	// DateFormat.FULL).create();
 
-	ActivityMap(EntityManager em, ActivityTypeMap activityTypes, RegionMap regions) {
+	ActivityMap(EntityManager em, ActivityTypeMap activityTypes, RegionMap regions, LocationMap locations) {
 		this.em = em;
 		this.activityTypes = activityTypes;
 		this.regions = regions;
+		this.locations = locations;
 	}
 
 	public void init(DomainObjectContainer container) {
-		Activity n;
+		ActivityEvent n;
 		List<au.com.scds.chats.datamigration.model.Activity> activities = this.em.createQuery("select activity from Activity activity", au.com.scds.chats.datamigration.model.Activity.class).getResultList();
 		for (au.com.scds.chats.datamigration.model.Activity o : activities) {
 			if (!map.containsKey(o.getId())) {
 				if (container != null) {
-					n = container.newTransientInstance(Activity.class);
+					n = container.newTransientInstance(ActivityEvent.class);
 				} else {
-					n = new Activity();
+					n = new ActivityEvent();
 				}
 				n.setOldId(o.getId().longValue());
 				n.setActivityType(activityTypes.map(o.getActivitytypeId()));
@@ -52,20 +52,21 @@ public class ActivityMap extends BaseMap{
 				n.setCreatedByUserId(BigInt2Long(o.getCreatedbyUserId()));
 				n.setCreatedDateTime(new org.joda.time.DateTime(o.getCreatedDTTM()));
 				n.setDeletedDateTime(new org.joda.time.DateTime(o.getDeletedDTTM()));
-				n.setDescription(o.getDescription());
+				n.setDescription(TrimToLength(o.getDescription(),255));
 				n.setLastModifiedByUserId(BigInt2Long(o.getLastmodifiedbyUserId()));
 				n.setLastModifiedDateTime(new org.joda.time.DateTime(o.getLastmodifiedDTTM()));
 				n.setActivityType(activityTypes.map(o.getActivitytypeId()));
-				n.setNotes(o.getNotes());
+				n.setNotes(TrimToLength(o.getNotes(),255));
 				n.setRegion(regions.map(o.getRegion()));
+				n.setLocation(locations.map(TrimToLength(o.getLocation().replace("@", "at"),255)));
 				n.setIsRestricted(o.getRestricted() != 0);
 				n.setScheduleId(BigInt2Long(o.getScheduleId()));
 				n.setStartDateTime(new org.joda.time.DateTime(o.getStartDTTM()));
-				n.setName(o.getTitle());
+				n.setName(TrimToLength(o.getTitle(),100));
+				map.put(o.getId(), n);
 				if (container != null) {
 					container.persistIfNotAlready(n);
 				}
-				map.put(o.getId(), n);
 				System.out.println("Activity(" + n.getName() + ")");
 			}
 		}
@@ -75,7 +76,7 @@ public class ActivityMap extends BaseMap{
 		return this.map.containsKey(key);
 	}
 	
-	public Activity get(BigInteger key){
+	public ActivityEvent get(BigInteger key){
 		return this.map.get(key);
 	}
 }

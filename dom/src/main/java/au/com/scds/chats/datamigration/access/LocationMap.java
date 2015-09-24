@@ -10,7 +10,7 @@ import org.apache.isis.applib.DomainObjectContainer;
 
 import au.com.scds.chats.dom.module.general.Location;
 
-public class LocationMap {
+public class LocationMap extends BaseMap {
 
 	EntityManager em;
 	Map<String, Location> map = new HashMap<String, Location>();
@@ -27,18 +27,27 @@ public class LocationMap {
 				return map.get(location);
 			else {
 				System.out.println("Location(" + location + ") not found");
+				return null;
 			}
 		}
-		return map.get(location);
 	}
 
 	public void init(DomainObjectContainer container) {
+		Location l = null;
 		List<String> locations = this.em.createQuery("select distinct(a.location) from Activity a", String.class).getResultList();
 		for (String location : locations) {
+			location = TrimToLength(location.replace("@", "at"),254);
 			if (!map.containsKey(location)) {
-				Location l = new Location();
+				if(container != null){
+					l = container.newTransientInstance(Location.class);
+				}else{
+					l = new Location();
+				}
 				l.setName(location);
 				map.put(location, l);
+				if(container != null){
+					container.persistIfNotAlready(l);
+				}			
 				System.out.println("Location("+location+")");
 			}
 		}

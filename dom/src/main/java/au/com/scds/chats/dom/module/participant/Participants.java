@@ -43,8 +43,16 @@ import au.com.scds.chats.dom.module.general.Status;
 @DomainServiceLayout(named="Participants", menuBar = MenuBar.PRIMARY, menuOrder = "20")
 public class Participants {
 
-	// region > listActive (action)
+	public Participants(){
+		super();
+	}	
+	
+	public Participants(DomainObjectContainer container){
+		super();
+		this.container = container;
+	}
 
+	// region > listActive (action)
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "1")

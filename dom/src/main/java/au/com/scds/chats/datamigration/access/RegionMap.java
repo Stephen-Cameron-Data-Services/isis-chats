@@ -11,7 +11,7 @@ import org.apache.isis.applib.DomainObjectContainer;
 import au.com.scds.chats.dom.module.general.Location;
 import au.com.scds.chats.dom.module.general.codes.Region;
 
-public class RegionMap {
+public class RegionMap extends BaseMap{
 
 	EntityManager em;
 	Map<Integer, Region> map = new HashMap<Integer, Region>();
@@ -29,19 +29,27 @@ public class RegionMap {
 				return map.get(regionId);
 			else {
 				System.out.println("Region(" + regionId + ") not found");
+				return null;
 			}
 		}
-		return map.get(regionId);
 	}
 
 	public void init(DomainObjectContainer container) {
+		Region r = null;
 		List<au.com.scds.chats.datamigration.model.Region> regions = this.em.createQuery("select region from Region region", au.com.scds.chats.datamigration.model.Region.class).getResultList();
 		for (au.com.scds.chats.datamigration.model.Region region : regions) {
 			if (!map.containsKey(region)) {
-				au.com.scds.chats.dom.module.general.codes.Region newRegion = new au.com.scds.chats.dom.module.general.codes.Region();
-				newRegion.setName(region.getRegion());
-				map.put(region.getId(), newRegion);
-				System.out.println("Region(" + newRegion.getName() + ")");
+				if(container!=null){
+					r = container.newTransientInstance(Region.class);
+				}else{
+					r = new Region();
+				}
+				r.setName(region.getRegion());
+				map.put(region.getId(), r);
+				if(container!=null){
+					container.persistIfNotAlready(r);
+				}
+				System.out.println("Region(" + r.getName() + ")");
 			}
 		}
 	}

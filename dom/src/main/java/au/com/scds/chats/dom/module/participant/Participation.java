@@ -2,9 +2,7 @@ package au.com.scds.chats.dom.module.participant;
 
 import java.util.Date;
 
-import javax.jdo.annotations.Column;
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.NotPersistent;
+import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
@@ -17,9 +15,10 @@ import org.apache.isis.applib.annotation.Where;
 import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.module.activity.Activity;
+import au.com.scds.chats.dom.module.activity.ActivityEvent;
 
-@javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
-@javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
 @DomainObject(objectType = "PARTICIPATION")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 public class Participation {

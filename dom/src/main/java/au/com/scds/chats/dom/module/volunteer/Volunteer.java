@@ -26,7 +26,7 @@ import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
 import org.apache.isis.applib.services.i18n.TranslatableString;
 
-import au.com.scds.chats.dom.module.activity.Activity;
+import au.com.scds.chats.dom.module.activity.ActivityEvent;
 import au.com.scds.chats.dom.module.general.Note;
 import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.Status;

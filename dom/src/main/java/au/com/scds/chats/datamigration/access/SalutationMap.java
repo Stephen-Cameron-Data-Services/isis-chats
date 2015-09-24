@@ -9,10 +9,11 @@ import javax.persistence.EntityManager;
 
 import org.apache.isis.applib.DomainObjectContainer;
 
+import au.com.scds.chats.dom.module.general.codes.Region;
 import au.com.scds.chats.dom.module.general.codes.Salutation;
 
-public class SalutationMap{
-	
+public class SalutationMap extends BaseMap {
+
 	EntityManager em;
 	Map<BigInteger, Salutation> map = new HashMap<BigInteger, Salutation>();
 
@@ -28,19 +29,34 @@ public class SalutationMap{
 				return map.get(id);
 			else {
 				System.out.println("Salutation(" + id + ") not found");
+				return null;
 			}
 		}
-		return map.get(id);
 	}
 
 	public void init(DomainObjectContainer container) {
-		List<au.com.scds.chats.datamigration.model.Salutation> salutations = this.em.createQuery("select salutation from Salutation salutation", au.com.scds.chats.datamigration.model.Salutation.class).getResultList();
+		Salutation s = null;
+		Map<String, Salutation> distinct = new HashMap<String, Salutation>();
+		List<au.com.scds.chats.datamigration.model.Salutation> salutations = this.em
+				.createQuery("select salutation from Salutation salutation", au.com.scds.chats.datamigration.model.Salutation.class).getResultList();
 		for (au.com.scds.chats.datamigration.model.Salutation salutation : salutations) {
 			if (!map.containsKey(salutation.getId())) {
-				au.com.scds.chats.dom.module.general.codes.Salutation newSalutation = new au.com.scds.chats.dom.module.general.codes.Salutation();
-				newSalutation.setName(salutation.getCode());
-				map.put(salutation.getId(), newSalutation);
-				System.out.println("Salutation(" + newSalutation.getName() + ")");
+				if (!distinct.containsKey(salutation.getCode())) {
+					if (container != null) {
+						s = container.newTransientInstance(Salutation.class);
+					} else {
+						s = new Salutation();
+					}
+					distinct.put(salutation.getCode(),s);
+				} else {
+					s = distinct.get(salutation.getCode());
+				}
+				s.setName(salutation.getCode());
+				map.put(salutation.getId(), s);
+				if (container != null) {
+					container.persistIfNotAlready(s);
+				}
+				System.out.println("Salutation(" + s.getName() + ")");
 			}
 		}
 	}

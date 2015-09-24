@@ -19,7 +19,7 @@ import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.annotation.Where;
 
-import au.com.scds.chats.dom.module.activity.Activity;
+import au.com.scds.chats.dom.module.activity.ActivityEvent;
 
 //FAKE TAB
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)

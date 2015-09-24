@@ -18,21 +18,22 @@
  */
 package au.com.scds.chats.dom.module.activity;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.BookmarkPolicy;
+import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
+import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
 
-@DomainService(repositoryFor = Activity.class)
+@DomainService(repositoryFor = ActivityEvent.class)
 @DomainServiceLayout(named = "Activities", menuBar = MenuBar.PRIMARY, menuOrder = "10")
 public class Activities {
 
@@ -40,8 +41,9 @@ public class Activities {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "1")
-	public List<Activity> listAll() {
-		return container.allInstances(Activity.class);
+	@CollectionLayout(paged = 20, render = RenderType.EAGERLY)
+	public List<ActivityEvent> listAll() {
+		return container.allInstances(ActivityEvent.class);
 	}
 
 	// endregion
@@ -50,9 +52,9 @@ public class Activities {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "2")
-	public List<Activity> findByName(
+	public List<ActivityEvent> findByName(
 			@ParameterLayout(named = "Name") final String name) {
-		return container.allMatches(new QueryDefault<>(Activity.class,
+		return container.allMatches(new QueryDefault<>(ActivityEvent.class,
 				"findByName", "name", name));
 	}
 
@@ -60,8 +62,8 @@ public class Activities {
 
 	// region > create (action)
 	@MemberOrder(sequence = "3")
-	public Activity create(final @ParameterLayout(named = "Name") String name) {
-		final Activity obj = container.newTransientInstance(Activity.class);
+	public ActivityEvent create(final @ParameterLayout(named = "Name") String name) {
+		final ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 		obj.setName(name);
 		container.persistIfNotAlready(obj);
 		return obj;

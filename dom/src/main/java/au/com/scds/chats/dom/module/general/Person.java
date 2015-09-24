@@ -43,7 +43,7 @@ import au.com.scds.chats.dom.module.general.codes.Salutations;
 
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
-@javax.jdo.annotations.Unique(name = "Person_name_UNQ", members = { "firstname", "middlename", "surname" })
+//@javax.jdo.annotations.Unique(name = "Person_name_UNQ", members = { "firstname", "middlename", "surname" })
 @Queries({ @Query(name = "findBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.general.Person " + "WHERE surname == :surname"), })
 @DomainObject(objectType = "PERSON")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
@@ -58,7 +58,7 @@ public class Person {
 	private String middlename;
 	private String surname;
 	private String preferredname;
-	private Date birthdate;
+	private DateTime birthdate;
 	private Long createdbyUserId;
 	private DateTime createdDttm;
 	private Long lastmodifiedbyUserId;
@@ -160,11 +160,11 @@ public class Person {
 
 	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "6")
-	public Date getBirthdate() {
+	public DateTime getBirthdate() {
 		return this.birthdate;
 	}
 
-	public void setBirthdate(Date birthdate) {
+	public void setBirthdate(DateTime birthdate) {
 		this.birthdate = birthdate;
 	}
 

@@ -278,6 +278,10 @@
 			<artifactId>togglz-console</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.isisaddons.module.security</groupId>
+			<artifactId>isis-module-security-dom</artifactId>
+		</dependency>
 	</dependencies>
 
 	<profiles>

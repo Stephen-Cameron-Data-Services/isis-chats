@@ -47,7 +47,7 @@ public class DataMapper {
 		final RegionMap regions = new RegionMap(em);
 		final SalutationMap salutations = new SalutationMap(em);
 		final ActivityTypeMap activityTypes = new ActivityTypeMap(em);
-		final ActivityMap activities = new ActivityMap(em, activityTypes, regions);
+		final ActivityMap activities = new ActivityMap(em, activityTypes, regions, locations);
 		final PersonMap persons = new PersonMap(em, salutations, regions);
 		final ParticipationMap participants = new ParticipationMap(em, persons, activities);
 
@@ -60,6 +60,7 @@ public class DataMapper {
 		persons.init(container);
 		participants.init(container);
 		em.close();
+		container.flush();
 
 		System.out.println("Finished");
 	}

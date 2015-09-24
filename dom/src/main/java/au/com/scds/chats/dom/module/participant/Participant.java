@@ -18,57 +18,23 @@
  */
 package au.com.scds.chats.dom.module.participant;
 
-import java.math.BigDecimal;
+import javax.jdo.annotations.*;
+import org.apache.isis.applib.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.Date;
-//import org.apache.isis.applib.value.DateTime;
-
-import javax.jdo.annotations.Column;
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.Queries;
-import javax.jdo.annotations.Query;
-import javax.jdo.annotations.VersionStrategy;
-import javax.validation.GroupSequence;
-
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.Identifier;
-import org.apache.isis.applib.annotation.Action;
-import org.apache.isis.applib.annotation.ActionLayout;
-import org.apache.isis.applib.annotation.BookmarkPolicy;
-import org.apache.isis.applib.annotation.Collection;
-import org.apache.isis.applib.annotation.CollectionLayout;
-import org.apache.isis.applib.annotation.DomainObject;
-import org.apache.isis.applib.annotation.DomainObjectLayout;
-import org.apache.isis.applib.annotation.Editing;
-import org.apache.isis.applib.annotation.Hidden;
-import org.apache.isis.applib.annotation.MemberGroupLayout;
-import org.apache.isis.applib.annotation.MemberOrder;
-import org.apache.isis.applib.annotation.Optionality;
-import org.apache.isis.applib.annotation.Parameter;
-import org.apache.isis.applib.annotation.ParameterLayout;
-import org.apache.isis.applib.annotation.Programmatic;
-import org.apache.isis.applib.annotation.Property;
-import org.apache.isis.applib.annotation.PropertyLayout;
-import org.apache.isis.applib.annotation.RenderType;
-import org.apache.isis.applib.annotation.SemanticsOf;
-import org.apache.isis.applib.annotation.Title;
-import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
 import org.apache.isis.applib.services.i18n.TranslatableString;
-import org.apache.isis.applib.util.ObjectContracts;
-import org.joda.time.LocalDate;
-
 import au.com.scds.chats.dom.module.activity.Activity;
-import au.com.scds.chats.dom.module.general.Address;
+import au.com.scds.chats.dom.module.activity.ActivityEvent;
 import au.com.scds.chats.dom.module.general.Note;
 import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.Status;
 
-@javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
-@javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
 @Queries({ @Query(name = "listByStatus", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE status == :status"),
 		@Query(name = "findBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE person.surname == :surname"), })
 @DomainObject(objectType = "PARTICIPANT")
@@ -298,6 +264,7 @@ public class Participant {
 
 	// {{ Activities (Collection)
 	// THIS COLLECTION IS VIEWED VIA THE PARTICIPATION_VIEW 'FAKE TAB' ACTION
+	@Persistent(mappedBy="participant")
 	private List<Participation> participations = new ArrayList<Participation>();
 
 	// @MemberOrder(sequence = "5")
@@ -368,7 +335,7 @@ public class Participant {
 	 * @return
 	 */
 	@Programmatic
-	public Participation getParticipation(Activity activity) {
+	public Participation getParticipation(ActivityEvent activity) {
 		for (Participation p : participations) {
 			if (p.getActivity().equals(activity)) {
 				return p;

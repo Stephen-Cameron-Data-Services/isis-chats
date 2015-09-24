@@ -35,7 +35,7 @@ public class PersonMap extends BaseMap {
 					n = new Person();
 				}
 				n.setOldId(BigInt2Long(o.getId()));
-				n.setBirthdate(o.getBirthdate());
+				n.setBirthdate(new org.joda.time.DateTime(o.getBirthdate()));
 				// ALLNULL n.setContacttypeId(o.getContacttypeId() );
 				n.setCreatedByUserId(BigInt2Long(o.getCreatedbyUserId()));
 				n.setCreatedDateTime(new org.joda.time.DateTime(o.getCreatedDTTM()));
@@ -50,10 +50,11 @@ public class PersonMap extends BaseMap {
 				n.setSalutation(salutations.map(o.getSalutationId()));
 				n.setSurname(o.getSurname());
 				// public List<Person> getActivities() );
+				map.put(o.getId(), n);
 				if (container != null) {
 					container.persistIfNotAlready(n);
 				}
-				map.put(o.getId(), n);
+
 				System.out.println("Person(" + n.getFullname() + ")");
 			}
 		}

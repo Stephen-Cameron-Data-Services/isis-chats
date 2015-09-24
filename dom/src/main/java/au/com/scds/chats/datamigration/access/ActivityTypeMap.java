@@ -11,8 +11,9 @@ import org.apache.isis.applib.DomainObjectContainer;
 
 import au.com.scds.chats.dom.module.general.Location;
 import au.com.scds.chats.dom.module.general.codes.ActivityType;
+import au.com.scds.chats.dom.module.general.codes.Region;
 
-public class ActivityTypeMap {
+public class ActivityTypeMap extends BaseMap {
 
 	EntityManager em;
 	Map<BigInteger, ActivityType> map = new HashMap<BigInteger, ActivityType>();
@@ -27,23 +28,38 @@ public class ActivityTypeMap {
 		else {
 			if (map.containsKey(id))
 				return map.get(id);
-			else if (id.intValueExact()==0) {
+			else if (id.intValueExact() == 0) {
 				return null;
 			} else {
 				System.out.println("ActivityType(" + id + ") not found");
+				return null;
 			}
 		}
-		return map.get(id);
 	}
 
 	public void init(DomainObjectContainer container) {
-		List<au.com.scds.chats.datamigration.model.Activitytype> activityTypes = this.em.createQuery("select activityType from Activitytype activityType", au.com.scds.chats.datamigration.model.Activitytype.class).getResultList();
+		ActivityType a = null;
+		Map<String, ActivityType> distinct = new HashMap<String, ActivityType>();
+		List<au.com.scds.chats.datamigration.model.Activitytype> activityTypes = this.em.createQuery("select activityType from Activitytype activityType",
+				au.com.scds.chats.datamigration.model.Activitytype.class).getResultList();
 		for (au.com.scds.chats.datamigration.model.Activitytype activityType : activityTypes) {
 			if (!map.containsKey(activityType.getId())) {
-				au.com.scds.chats.dom.module.general.codes.ActivityType newActivityType = new au.com.scds.chats.dom.module.general.codes.ActivityType();
-				newActivityType.setName(activityType.getTitle());
-				map.put(activityType.getId(), newActivityType);
-				System.out.println("ActivityType(" + newActivityType.getName() + ")");
+				if (!distinct.containsKey(activityType.getTitle().trim())) {
+					if (container != null) {
+						a = container.newTransientInstance(ActivityType.class);
+					} else {
+						a = new ActivityType();
+					}
+					distinct.put(activityType.getTitle().trim(), a);
+				} else {
+					a=distinct.get(activityType.getTitle().trim());
+				}
+				a.setName(activityType.getTitle());
+				map.put(activityType.getId(), a);
+				if (container != null) {
+					container.persistIfNotAlready(a);
+				}
+				System.out.println("ActivityType(" + a.getName() + ")");
 			}
 		}
 	}
