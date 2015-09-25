@@ -29,17 +29,17 @@ msgstr ""
 
 #: domainapp.dom.modules.simple.SimpleObjects#create()
 msgid "Create"
-msgstr ""
+msgstr "Creëren"
 
 
 #: org.apache.isis.applib.fixturescripts.FixtureScript#discoverable
 msgid "Discoverable"
-msgstr ""
+msgstr "Discoverable"
 
 
 #: org.apache.isis.applib.fixtures.FixtureType#DOMAIN_OBJECTS
 msgid "Domain Objects"
-msgstr ""
+msgstr "Domain Objects"
 
 
 #: org.apache.isis.core.runtime.services.i18n.po.TranslationServicePoMenu#downloadTranslations()
@@ -54,7 +54,7 @@ msgstr ""
 
 #: domainapp.dom.modules.simple.SimpleObjects#findByName()
 msgid "Find By Name"
-msgstr ""
+msgstr "Zoek op Naam"
 
 
 #: org.apache.isis.applib.fixturescripts.FixtureResult#fixtureScriptClassName
@@ -67,11 +67,6 @@ msgid "Friendly Name"
 msgstr ""
 
 
-#: domainapp.dom.modules.simple.SimpleObject
-msgid "General"
-msgstr "Common"
-
-
 #: domainapp.dom.app.homepage.HomePageService#homePage()
 msgid "Home Page"
 msgstr ""
@@ -79,7 +74,7 @@ msgstr ""
 
 #: domainapp.dom.modules.simple.SimpleObjects#listAll()
 msgid "List All"
-msgstr ""
+msgstr "Lijst Alle"
 
 
 #: org.apache.isis.applib.fixturescripts.FixtureScript#localName
@@ -97,12 +92,12 @@ msgstr ""
 #: domainapp.dom.modules.simple.SimpleObjects#create(java.lang.String)
 #: domainapp.dom.modules.simple.SimpleObjects#findByName(java.lang.String)
 msgid "Name"
-msgstr ""
+msgstr "Naam"
 
 
 #: domainapp.dom.modules.simple.SimpleObject#updateName(java.lang.String)
 msgid "New name"
-msgstr ""
+msgstr "Nieuwe naam"
 
 
 #: org.apache.isis.applib.services.bookmark.BookmarkHolderAssociationContributions#object()
@@ -117,12 +112,12 @@ msgstr ""
 
 #: domainapp.dom.app.homepage.HomePageViewModel#objects
 msgid "Objects"
-msgstr ""
+msgstr "Objects"
 
 
 #: org.apache.isis.applib.fixtures.FixtureType#OTHER
 msgid "Other"
-msgstr ""
+msgstr "Other"
 
 
 #: domainapp.fixture.DomainAppFixturesService#runFixtureScript(org.apache.isis.applib.fixturescripts.FixtureScript,java.lang.String)
@@ -176,7 +171,7 @@ msgstr ""
 
 #: domainapp.dom.modules.simple.SimpleObjects#title()
 msgid "Simple Objects"
-msgstr ""
+msgstr "Eenvoudige Objecten"
 
 
 #: org.apache.isis.core.runtime.services.i18n.po.TranslationServicePoMenu#switchToReadingTranslations()
@@ -196,7 +191,7 @@ msgstr ""
 
 #: domainapp.dom.modules.simple.SimpleObject#updateName()
 msgid "Update Name"
-msgstr ""
+msgstr "Updaten Naam"
 
 
 #: domainapp.dom.modules.simple.SimpleObject

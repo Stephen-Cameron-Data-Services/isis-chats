@@ -20,13 +20,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>isis-chats</artifactId>
         <groupId>au.com.scds</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <artifactId>isis-chats</artifactId>
+        <version>0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>isis-chats-integtests</artifactId>
-    <name>Chats Data Management Application Tests</name>
+    <name>Chats App Integration Tests</name>
 
     <build>
         <testResources>
@@ -46,11 +46,10 @@
     </build>
     <dependencies>
 
-        <!-- other modules in this project -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>isis-chats-fixture</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <artifactId>chats-app</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -73,12 +72,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.isis.core</groupId>
-            <artifactId>isis-core-wrapper</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.isis.core</groupId>
-            <artifactId>isis-core-runtime</artifactId>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

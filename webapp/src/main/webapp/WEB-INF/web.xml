@@ -21,9 +21,7 @@
     xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-    <display-name>Chats app</display-name>
-    
-
+    <display-name>Simple app</display-name>
 
     <welcome-file-list>
         <welcome-file>about/index.html</welcome-file>
@@ -77,10 +75,7 @@
         <param-value>wicket,restfulobjects</param-value>
     </context-param>
 
-    <context-param>
-      <param-name>org.eclipse.jetty.websocket.jsr356</param-name>
-      <param-value>Boolean.FALSE</param-value>
-    </context-param>
+
 
     <!-- 
     for diagnostics
@@ -183,7 +178,7 @@
         <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
         <init-param>
             <param-name>applicationClassName</param-name>
-            <param-value>au.com.scds.chats.webapp.SimpleApplication</param-value>
+            <param-value>domainapp.webapp.DomainApplication</param-value>
         </init-param>
     </filter>
     <filter-mapping>
@@ -217,7 +212,7 @@
 
     <context-param>
         <param-name>deploymentType</param-name>
-        <param-value>SERVER_EXPLORATION</param-value>
+        <param-value>SERVER_PROTOTYPE</param-value>
     </context-param>
 
     <context-param>

@@ -21,9 +21,9 @@
 
     <groupId>au.com.scds</groupId>
     <artifactId>isis-chats</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
 
-    <name>Simple App</name>
+    <name>Chats App</name>
 
     <packaging>pom</packaging>
 
@@ -31,39 +31,13 @@
         <maven>3.0.4</maven>
     </prerequisites>
 
-	<properties>
+    <properties>
         <isis.version>1.9.0</isis.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <assertj-core.version>2.0.0</assertj-core.version>
-	
-		<isis-metamodel-paraname8.version>1.9.0-SNAPSHOT</isis-metamodel-paraname8.version>
-		<isis-module-audit.version>1.9.0-SNAPSHOT</isis-module-audit.version>
-		<isis-module-command.version>1.9.0-SNAPSHOT</isis-module-command.version>
-		<isis-module-publishing.version>1.9.0-SNAPSHOT</isis-module-publishing.version>
-		<isis-module-security.version>1.9.0-SNAPSHOT</isis-module-security.version>
-		<isis-module-sessionlogger.version>1.9.0-SNAPSHOT</isis-module-sessionlogger.version>
-		<isis-module-settings.version>1.9.0-SNAPSHOT</isis-module-settings.version>
-		<isis-module-togglz.version>1.9.0-SNAPSHOT</isis-module-togglz.version>
-
-		<isis-module-devutils.version>1.9.0-SNAPSHOT</isis-module-devutils.version>
-		<isis-module-docx.version>1.8.1</isis-module-docx.version>
-
-		<isis-wicket-excel.version>1.9.0-SNAPSHOT</isis-wicket-excel.version>
-
-		<jbcrypt.version>0.3m</jbcrypt.version>
-		<assertj-core.version>2.0.0</assertj-core.version>
-		<orika-core.version>1.4.5</orika-core.version>
-
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-		<togglz.version>2.1.0.Final</togglz.version>
-		<isis-wicket-fullcalendar2.version>1.9.0-SNAPSHOT</isis-wicket-fullcalendar2.version>
-		<isis-wicket-gmap3.version>1.9.0-SNAPSHOT</isis-wicket-gmap3.version>
-	</properties>
-
-
-
-
+    </properties>
 
     <repositories>
         <repository>
@@ -355,172 +329,48 @@
         <dependencies>
 
             <dependency>
+                <groupId>org.apache.isis.core</groupId>
+                <artifactId>isis</artifactId>
+                <version>${isis.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.isis.viewer</groupId>
+                <artifactId>isis-viewer-wicket</artifactId>
+                <version>${isis.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>${assertj-core.version}</version>
             </dependency>
-			<dependency>
-				<groupId>org.apache.isis.core</groupId>
-				<artifactId>isis</artifactId>
-				<version>${isis.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.isis.viewer</groupId>
-				<artifactId>isis-viewer-wicket</artifactId>
-				<version>${isis.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>org.assertj</groupId>
-				<artifactId>assertj-core</artifactId>
-				<version>${assertj-core.version}</version>
-			</dependency>
-
-			<!-- this project's own modules -->
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>isis-chats-dom</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>isis-chats-fixture</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>isis-chats-webapp</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.isisaddons.metamodel.paraname8</groupId>
-				<artifactId>isis-metamodel-paraname8-dom</artifactId>
-				<version>${isis-metamodel-paraname8.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.isisaddons.module.audit</groupId>
-				<artifactId>isis-module-audit-dom</artifactId>
-				<version>${isis-module-audit.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.isisaddons.module.command</groupId>
-				<artifactId>isis-module-command-dom</artifactId>
-				<version>${isis-module-command.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.isisaddons.module.devutils</groupId>
-				<artifactId>isis-module-devutils-dom</artifactId>
-				<version>${isis-module-devutils.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.isisaddons.module.security</groupId>
-				<artifactId>isis-module-security-dom</artifactId>
-				<version>${isis-module-security.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.isisaddons.module.sessionlogger</groupId>
-				<artifactId>isis-module-sessionlogger-dom</artifactId>
-				<version>${isis-module-sessionlogger.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.isisaddons.module.settings</groupId>
-				<artifactId>isis-module-settings-dom</artifactId>
-				<version>${isis-module-settings.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.isisaddons.module.publishing</groupId>
-				<artifactId>isis-module-publishing-dom</artifactId>
-				<version>${isis-module-publishing.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.isisaddons.module.docx</groupId>
-				<artifactId>isis-module-docx-dom</artifactId>
-				<version>${isis-module-docx.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.isisaddons.module.togglz</groupId>
-				<artifactId>isis-module-togglz-glue</artifactId>
-				<version>${isis-module-togglz.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.isisaddons.wicket.excel</groupId>
-				<artifactId>isis-wicket-excel-cpt</artifactId>
-				<version>${isis-wicket-excel.version}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>org.isisaddons.wicket.fullcalendar2</groupId>
-				<artifactId>isis-wicket-fullcalendar2-cpt</artifactId>
-				<version>${isis-wicket-fullcalendar2.version}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>org.isisaddons.wicket.gmap3</groupId>
-				<artifactId>isis-wicket-gmap3-cpt</artifactId>
-				<version>${isis-wicket-gmap3.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.mindrot</groupId>
-				<artifactId>jbcrypt</artifactId>
-				<version>${jbcrypt.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>ma.glasnost.orika</groupId>
-				<artifactId>orika-core</artifactId>
-				<version>${orika-core.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.togglz</groupId>
-				<artifactId>togglz-core</artifactId>
-				<version>${togglz.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.togglz</groupId>
-				<artifactId>togglz-junit</artifactId>
-				<version>${togglz.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.togglz</groupId>
-				<artifactId>togglz-servlet</artifactId>
-				<version>${togglz.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.togglz</groupId>
-				<artifactId>togglz-console</artifactId>
-				<version>${togglz.version}</version>
-			</dependency>
+            
 
             <!-- this project's own modules -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>isis-chats-app</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <artifactId>chats-app</artifactId>
+                <version>0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>isis-chats-dom</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <artifactId>chats-dom</artifactId>
+                <version>0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>isis-chats-fixture</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <artifactId>chats-fixture</artifactId>
+                <version>0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>isis-chats-webapp</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <artifactId>chats-webapp</artifactId>
+                <version>0.1-SNAPSHOT</version>
             </dependency>
 
         </dependencies>
@@ -543,11 +393,9 @@
 
   <modules>
     <module>app</module>
-    <module>dom</module>
-    <!--module>fixture</module>
-    <module>integtests</module-->
-    <module>webapp</module>
+  	<module>dom</module>
     <module>fixture</module>
     <module>integtests</module>
+    <module>webapp</module>
   </modules>
 </project>
