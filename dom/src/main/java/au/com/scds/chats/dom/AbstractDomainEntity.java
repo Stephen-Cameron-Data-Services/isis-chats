@@ -19,7 +19,7 @@ import org.joda.time.DateTime;
  */
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public abstract class AbstractChatsDomainEntity {
+public abstract class AbstractDomainEntity {
 
 	private Long createdByUserId;
 

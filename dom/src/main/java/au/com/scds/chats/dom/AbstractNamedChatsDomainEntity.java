@@ -14,7 +14,7 @@ import javax.jdo.annotations.InheritanceStrategy;
  */
 
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public abstract class AbstractNamedChatsDomainEntity extends AbstractChatsDomainEntity {
+public abstract class AbstractNamedChatsDomainEntity extends AbstractDomainEntity {
 
 	private String name;
 

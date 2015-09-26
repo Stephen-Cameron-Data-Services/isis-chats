@@ -43,7 +43,7 @@ import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.i18n.TranslatableString;
 import org.apache.isis.applib.util.ObjectContracts;
 
-import au.com.scds.chats.dom.AbstractChatsDomainEntity;
+import au.com.scds.chats.dom.AbstractDomainEntity;
 
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
@@ -55,7 +55,7 @@ import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 		@javax.jdo.annotations.Query(name = "findByTitle", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.note.Note " + "WHERE title.indexOf(:title) >= 0 ") })
 @DomainObject(objectType = "Note")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-public class Note extends AbstractChatsDomainEntity implements NoteLinkable, Comparable<Note> {
+public class Note extends AbstractDomainEntity implements NoteLinkable, Comparable<Note> {
 
 	// region > identificatiom
 	@PropertyLayout(hidden = Where.ALL_TABLES)

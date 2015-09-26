@@ -6,9 +6,12 @@ import javax.jdo.annotations.IdentityType;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.util.TitleBuffer;
 
+import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
+import org.isisaddons.wicket.gmap3.cpt.applib.Location;
+
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
-public class Address {
+public class Address implements Locatable{
 
 	public String title() {
 		final TitleBuffer buf = new TitleBuffer();
@@ -86,5 +89,16 @@ public class Address {
 		this.postcode = postcode;
 	}
 	// }}
+	
+    private Location location;
+
+	@Column(allowsNull = "true")
+    @MemberOrder(sequence = "5")
+    public Location getLocation() { 
+        return location;
+    }
+    public void setLocation(Location location) {
+        this.location = location;
+    }	
 
 }

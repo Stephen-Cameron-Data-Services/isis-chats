@@ -126,7 +126,7 @@ public class ActivitiesIntegTest extends DomainAppIntegTest {
     	@Test
         public void listAllPastActivities() {
         	List<ActivityEvent> list = wrap(activities).listAllPastActivities();
-        	assertThat(list.size()).isEqualTo(0);
+        	assertThat(list.size()).isEqualTo(1);
         }
     }
     

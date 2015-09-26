@@ -43,7 +43,8 @@ public class DomainAppAppManifest implements AppManifest {
         return Arrays.asList(
                 DomainAppDomainModule.class,  // domain (entities and repositories)
                 DomainAppFixtureModule.class, // fixtures
-                DomainAppAppModule.class      // home page service etc
+                DomainAppAppModule.class,      // home page service etc
+                org.isisaddons.wicket.gmap3.cpt.service.Gmap3ServiceModule.class //Google Gmap Geocoding Service
         );
     }
 

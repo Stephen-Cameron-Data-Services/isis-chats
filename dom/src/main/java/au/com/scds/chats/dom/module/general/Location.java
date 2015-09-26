@@ -6,13 +6,10 @@ import javax.jdo.annotations.PrimaryKey;
 import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
 
-import org.apache.isis.applib.annotation.Action;
-import org.apache.isis.applib.annotation.ActionLayout;
-import org.apache.isis.applib.annotation.DomainServiceLayout;
-import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.PropertyLayout;
-//TODO Make Location a full blown entity, with link to Address
+import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
+
 @javax.jdo.annotations.PersistenceCapable(
          identityType=IdentityType.APPLICATION)
 @Queries({
@@ -22,8 +19,10 @@ import org.apache.isis.applib.annotation.PropertyLayout;
 	@Query(name = "findAll", language = "JDOQL", value = "SELECT "
 			+ "FROM au.com.scds.chats.dom.module.general.Location "
 			+ "ORDER BY name")})
-public class Location {
-	
+public class Location extends org.isisaddons.wicket.gmap3.cpt.applib.Location implements Locatable {
+
+	private static final long serialVersionUID = 1L;
+
 	public String title(){
 		return getName();
 	}
@@ -40,5 +39,10 @@ public class Location {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
+		return this;
 	}
 }

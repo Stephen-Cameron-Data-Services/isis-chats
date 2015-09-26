@@ -11,8 +11,12 @@ import javax.jdo.annotations.IdentityType;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
+import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
+import org.isisaddons.wicket.gmap3.cpt.applib.Location;
+import org.isisaddons.wicket.gmap3.cpt.service.LocationLookupService;
 import org.joda.time.DateTime;
 
+import au.com.scds.chats.dom.AbstractDomainEntity;
 import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.names.ContactType;
 import au.com.scds.chats.dom.module.general.names.ContactTypes;
@@ -29,7 +33,7 @@ import au.com.scds.chats.dom.module.general.names.Salutations;
 @DomainObject(objectType = "PERSON")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = "General", middle = { "Contact Details", "Admin" })
-public class Person implements Comparable<Person>{
+public class Person extends AbstractDomainEntity implements Locatable, Comparable<Person> {
 
 	private Long oldId;
 	private Salutation salutation;
@@ -41,7 +45,7 @@ public class Person implements Comparable<Person>{
 	private String preferredname;
 	private Date birthdate;
 	private Region region;
-	
+
 	@Override
 	public int compareTo(Person o) {
 		String thisName = getSurname().toUpperCase() + getFirstname().toUpperCase();
@@ -65,7 +69,8 @@ public class Person implements Comparable<Person>{
 
 	@Programmatic
 	public String getFullname() {
-		return this.getFirstname() + " " + (this.getPreferredname() != null ? "(" + this.getPreferredname() + ") " : "") + (this.getMiddlename() != null ? this.getMiddlename() + " " : "") + this.getSurname();
+		return this.getFirstname() + " " + (this.getPreferredname() != null ? "(" + this.getPreferredname() + ") " : "") + (this.getMiddlename() != null ? this.getMiddlename() + " " : "")
+				+ this.getSurname();
 	}
 
 	@Column()
@@ -240,12 +245,17 @@ public class Person implements Comparable<Person>{
 		newAddress.setPostcode(postcode);
 		newAddress.setSuburb(suburb);
 		Address oldAddress = getStreetAddress();
-		container.persist(newAddress);
+		container.persistIfNotAlready(newAddress);
 		setStreetAddress(newAddress);
 		if (oldAddress != null)
 			container.removeIfNotAlready(oldAddress);
 		if (isMailAddress != null && isMailAddress == true)
 			setMailAddress(newAddress);
+		//See if the address can be translated to a Location
+		//TODO should we be using the service to validate the address before saving?
+		Location location = locationLookupService.lookup(getFullStreetAddress().replace(',',' ')+ "  Australia");
+		if(location != null)
+			newAddress.setLocation(location);
 		return this;
 	}
 
@@ -388,87 +398,12 @@ public class Person implements Comparable<Person>{
 		this.englishSkill = englishSkill;
 	}
 
-	// {{ CreatedByUserId (property)
-	private Long createdByUserId;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(name = "Admin", sequence = "1")
-	@Property(editing = Editing.DISABLED)
-	@PropertyLayout(named = "Created by User Id")
-	public Long getCreatedByUserId() {
-		return createdByUserId;
-	}
-
-	public void setCreatedByUserId(final Long createdByUserId) {
-		this.createdByUserId = createdByUserId;
-	}
-
-	// }}
-
-	// {{ CreatedDateTime (property)
-	private DateTime createdDateTime;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(name = "Admin", sequence = "2")
-	@Property(editing = Editing.DISABLED)
-	@PropertyLayout(named = "Created Date & Time")
-	public DateTime getCreatedDateTime() {
-		return createdDateTime;
-	}
-
-	public void setCreatedDateTime(final DateTime createdDateTime) {
-		this.createdDateTime = createdDateTime;
-	}
-
-	// }}
-
-	// {{ DeletedDateTime (property)
-	private DateTime deletedDateTime;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(name = "Admin", sequence = "5")
-	@Property(editing = Editing.DISABLED)
-	@PropertyLayout(hidden = Where.EVERYWHERE, named = "Deleted Date & Time")
-	public DateTime getDeletedDateTime() {
-		return deletedDateTime;
-	}
-
-	public void setDeletedDateTime(final DateTime deletedDateTime) {
-		this.deletedDateTime = deletedDateTime;
-	}
-
-	// }}
-
-	// {{ ModifiedbyUserId (property)
-	private Long lastModifiedbyUserId;
-
-	@Column(allowsNull = "true")
-	@Property(editing = Editing.DISABLED)
-	@MemberOrder(name = "Admin", sequence = "3")
-	@PropertyLayout(named = "Modified by User Id")
-	public Long getLastModifiedByUserId() {
-		return lastModifiedbyUserId;
-	}
-
-	public void setLastModifiedByUserId(Long lastModifiedByUserId) {
-		this.lastModifiedbyUserId = lastModifiedByUserId;
-	}
-
-	// }}
-
-	// {{ ModifiedDateTime (property)
-	private DateTime lastModifiedDateTime;
-
-	@Column(allowsNull = "true")
-	@Property(editing = Editing.DISABLED)
-	@MemberOrder(name = "Admin", sequence = "4")
-	@PropertyLayout(named = "Last Modified")
-	public DateTime getLastModifiedDateTime() {
-		return lastModifiedDateTime;
-	}
-
-	public void setLastModifiedDateTime(DateTime lastModifiedDateTime) {
-		this.lastModifiedDateTime = lastModifiedDateTime;
+	@NotPersistent
+	public Location getLocation() {
+		if (getStreetAddress() != null)
+			return getStreetAddress().getLocation();
+		else
+			return null;
 	}
 
 	// region > injected services
@@ -484,8 +419,9 @@ public class Person implements Comparable<Person>{
 
 	@javax.inject.Inject
 	private DomainObjectContainer container;
-
-
+	
+	@javax.inject.Inject
+	private LocationLookupService locationLookupService;
 
 	// endregion
 

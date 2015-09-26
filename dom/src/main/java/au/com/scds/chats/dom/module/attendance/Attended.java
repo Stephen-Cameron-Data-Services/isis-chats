@@ -19,14 +19,14 @@ import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.actinvoc.ActionInvocationContext;
 
-import au.com.scds.chats.dom.AbstractChatsDomainEntity;
+import au.com.scds.chats.dom.AbstractDomainEntity;
 import au.com.scds.chats.dom.module.activity.ActivityEvent;
 import au.com.scds.chats.dom.module.participant.Participant;
 
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @DomainObjectLayout(bookmarking = BookmarkPolicy.NEVER)
 @MemberGroupLayout(columnSpans = { 6, 3, 0, 3 }, left = "General", middle = { "Admin" })
-public class Attended extends AbstractChatsDomainEntity implements Comparable<Attended>{
+public class Attended extends AbstractDomainEntity implements Comparable<Attended>{
 
 	public String title(){
 		return getParticipant().getFullName() + (getAttended() ? " did attend " : " did NOT attend ") + getActivity().getName() + " on " + getActivity().getStartDateTime().toString("dd MMMM yyyy");

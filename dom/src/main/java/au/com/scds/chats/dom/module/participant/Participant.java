@@ -31,8 +31,10 @@ import org.apache.isis.applib.Identifier;
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
 import org.apache.isis.applib.services.i18n.TranslatableString;
+import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
+import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 
-import au.com.scds.chats.dom.AbstractChatsDomainEntity;
+import au.com.scds.chats.dom.AbstractDomainEntity;
 import au.com.scds.chats.dom.module.note.NoteLinkable;
 import au.com.scds.chats.dom.module.activity.Activity;
 import au.com.scds.chats.dom.module.general.Person;
@@ -45,7 +47,7 @@ import au.com.scds.chats.dom.module.general.Status;
 @DomainObject(objectType = "PARTICIPANT")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 3, 3, 0, 6 }, left = { "General" }, middle = { "Scheduling", "Admin" })
-public class Participant extends AbstractChatsDomainEntity implements NoteLinkable, Comparable<Participant> {
+public class Participant extends AbstractDomainEntity implements NoteLinkable, Locatable, Comparable<Participant> {
 
 	// region > identificatiom
 	public TranslatableString title() {
@@ -333,7 +335,7 @@ public class Participant extends AbstractChatsDomainEntity implements NoteLinkab
 	}
 
 	/**
-	 * Finds the Participation for a specific Activity Called from Activity
+	 * Finds the Participation for a specific Activity, called from Activity
 	 * 
 	 * @param activity
 	 * @return
@@ -346,6 +348,11 @@ public class Participant extends AbstractChatsDomainEntity implements NoteLinkab
 			}
 		}
 		return null;
+	}
+	
+	@NotPersistent
+	public Location getLocation() {
+		return getPerson().getLocation();
 	}
 
 	// {{ Calls (Collection)
@@ -441,6 +448,8 @@ public class Participant extends AbstractChatsDomainEntity implements NoteLinkab
 	@javax.inject.Inject
 	@SuppressWarnings("unused")
 	private DomainObjectContainer container;
+
+
 
 
 }
