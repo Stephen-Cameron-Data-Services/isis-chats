@@ -2,8 +2,11 @@ package au.com.scds.chats.dom.module.general;
 
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.NotPersistent;
 
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Property;
+import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.util.TitleBuffer;
 
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
@@ -11,13 +14,13 @@ import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
-public class Address implements Locatable{
+public class Address implements Locatable {
 
 	public String title() {
 		final TitleBuffer buf = new TitleBuffer();
 		buf.append(getStreet1());
 		buf.append(" ", getStreet2());
-		buf.append(",",getSuburb());
+		buf.append(",", getSuburb());
 		buf.append(",", getPostcode());
 		// TODO: append to TitleBuffer, typically value properties
 		return buf.toString();
@@ -80,7 +83,7 @@ public class Address implements Locatable{
 	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "4")
 	public String getPostcode() {
-		if(postcode == null)
+		if (postcode == null)
 			postcode = "";
 		return postcode;
 	}
@@ -88,17 +91,45 @@ public class Address implements Locatable{
 	public void setPostcode(final String postcode) {
 		this.postcode = postcode;
 	}
+
 	// }}
-	
-    private Location location;
+
+	@MemberOrder(sequence = "5")
+	@NotPersistent
+	public Location getLocation() {
+		if (getLatitude() != null && getLongitude() != null)
+			return new Location(getLatitude(), getLongitude());
+		else
+			return null;
+	}
+
+	// {{ Latitude (property)
+	private Double latitude;
 
 	@Column(allowsNull = "true")
-    @MemberOrder(sequence = "5")
-    public Location getLocation() { 
-        return location;
-    }
-    public void setLocation(Location location) {
-        this.location = location;
-    }	
+	@Property(hidden = Where.ANYWHERE)
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(final Double latitude) {
+		this.latitude = latitude;
+	}
+
+	// }}
+
+	// {{ Latitude (property)
+	private Double longitude;
+
+	@Column(allowsNull = "true")
+	@Property(hidden = Where.ANYWHERE)
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(final Double longitude) {
+		this.longitude = longitude;
+	}
+	// }}
 
 }

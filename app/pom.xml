@@ -60,6 +60,16 @@
             <artifactId>isis-core-runtime</artifactId>
         </dependency>
 
+        <dependency>
+        	<groupId>org.isisaddons.module.security</groupId>
+        	<artifactId>isis-module-security-dom</artifactId>
+        	<version>1.9.0</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.mindrot</groupId>
+        	<artifactId>jbcrypt</artifactId>
+        	<version>0.3m</version>
+        </dependency>
     </dependencies>
 
 </project>

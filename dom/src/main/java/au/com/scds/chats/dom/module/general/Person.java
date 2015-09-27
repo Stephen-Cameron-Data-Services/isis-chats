@@ -1,5 +1,8 @@
 package au.com.scds.chats.dom.module.general;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
@@ -9,11 +12,22 @@ import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
 import javax.jdo.annotations.IdentityType;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 import org.isisaddons.wicket.gmap3.cpt.service.LocationLookupService;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.AbstractDomainEntity;
@@ -244,6 +258,11 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		newAddress.setStreet2(street2);
 		newAddress.setPostcode(postcode);
 		newAddress.setSuburb(suburb);
+		Location location = locationLookupService.lookup(newAddress.getStreet1() + ", " + newAddress.getSuburb() + ", Australia");
+		if(location != null){
+			newAddress.setLatitude(location.getLatitude());
+			newAddress.setLongitude(location.getLongitude());
+		}
 		Address oldAddress = getStreetAddress();
 		container.persistIfNotAlready(newAddress);
 		setStreetAddress(newAddress);
@@ -251,11 +270,6 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 			container.removeIfNotAlready(oldAddress);
 		if (isMailAddress != null && isMailAddress == true)
 			setMailAddress(newAddress);
-		//See if the address can be translated to a Location
-		//TODO should we be using the service to validate the address before saving?
-		Location location = locationLookupService.lookup(getFullStreetAddress().replace(',',' ')+ "  Australia");
-		if(location != null)
-			newAddress.setLocation(location);
 		return this;
 	}
 

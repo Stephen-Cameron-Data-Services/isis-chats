@@ -25,6 +25,8 @@ import java.util.Map;
 
 import org.apache.isis.applib.AppManifest;
 import org.apache.isis.applib.fixturescripts.FixtureScript;
+import org.isisaddons.module.security.dom.DomainAppSecurityDomModule;
+import org.isisaddons.module.security.seed.DomainAppSecuritySeedModule;
 
 import au.com.scds.chats.dom.DomainAppDomainModule;
 
@@ -44,6 +46,8 @@ public class DomainAppAppManifest implements AppManifest {
                 DomainAppDomainModule.class,  // domain (entities and repositories)
                 DomainAppFixtureModule.class, // fixtures
                 DomainAppAppModule.class,      // home page service etc
+                DomainAppSecurityDomModule.class,  //security
+                DomainAppSecuritySeedModule.class, //seeds the security admin user
                 org.isisaddons.wicket.gmap3.cpt.service.Gmap3ServiceModule.class //Google Gmap Geocoding Service
         );
     }
@@ -53,7 +57,11 @@ public class DomainAppAppManifest implements AppManifest {
      */
     @Override
     public List<Class<?>> getAdditionalServices() {
-        return Collections.emptyList();
+        //return Collections.emptyList();
+        return Arrays.asList(
+                org.isisaddons.module.security.dom.password.PasswordEncryptionServiceUsingJBcrypt.class,
+                org.isisaddons.module.security.dom.permission.PermissionsEvaluationServiceAllowBeatsVeto.class
+        );
     }
 
     /**
