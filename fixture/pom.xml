@@ -26,7 +26,7 @@
     </parent>
 
     <artifactId>chats-fixture</artifactId>
-    <name>Simple App Fixtures</name>
+    <name>Chats App Fixtures</name>
 
     <dependencies>
         <dependency>

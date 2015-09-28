@@ -58,9 +58,8 @@ import au.com.scds.chats.dom.AbstractDomainEntity;
 public class Note extends AbstractDomainEntity implements NoteLinkable, Comparable<Note> {
 
 	// region > identificatiom
-	@PropertyLayout(hidden = Where.ALL_TABLES)
 	public String title() {
-		return "Note: " + getSubject();
+		return getSubject();
 	}
 
 	// endregion
@@ -71,6 +70,7 @@ public class Note extends AbstractDomainEntity implements NoteLinkable, Comparab
 
 	@Column(allowsNull = "false", length = 40)
 	@MemberOrder(sequence = "1")
+	@PropertyLayout(hidden = Where.ALL_TABLES)
 	public String getSubject() {
 		return subject;
 	}

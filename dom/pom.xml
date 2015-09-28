@@ -27,7 +27,7 @@
 	</parent>
 
 	<artifactId>chats-dom</artifactId>
-	<name>Simple App DOM</name>
+	<name>Chats App DOM</name>
 
 	<build>
 		<resources>
@@ -97,6 +97,11 @@
 			<groupId>org.mindrot</groupId>
 			<artifactId>jbcrypt</artifactId>
 			<version>0.3m</version>
+		</dependency>
+		<dependency>
+			<groupId>org.isisaddons.module.security</groupId>
+			<artifactId>isis-module-security-dom</artifactId>
+			<version>1.9.0</version>
 		</dependency>
 	</dependencies>
 

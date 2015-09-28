@@ -59,7 +59,7 @@ import au.com.scds.chats.dom.module.note.NoteLinkable;
 // })
 @DomainObject(objectType = "ACTIVITY")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-@MemberGroupLayout(columnSpans = { 3, 3, 0, 6 }, left = { "General" }, middle = { "Admin" })
+@MemberGroupLayout(columnSpans = { 4, 2, 0, 6 }, left = { "General" }, middle = { "Admin" })
 public class ActivityEvent extends Activity implements NoteLinkable, CalendarEventable {
 
 	private RecurringActivity parent;
@@ -86,7 +86,7 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 	private AttendanceList attendances;
 
 	@Column(allowsNull = "true")
-	@Property()
+	@Property(hidden=Where.ALL_TABLES)
 	@PropertyLayout(named="Attendance List")
 	@MemberOrder(sequence = "1")
 	public AttendanceList getAttendances() {

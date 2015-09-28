@@ -20,32 +20,37 @@ package domainapp.app.services.homepage;
 
 import java.util.List;
 
+import org.apache.isis.applib.annotation.CollectionLayout;
+import org.apache.isis.applib.annotation.HomePage;
+import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.annotation.ViewModel;
 
 import au.com.scds.chats.dom.module.note.Note;
 import au.com.scds.chats.dom.module.note.Notes;
 
-
 @ViewModel
 public class HomePageViewModel {
 
-    //region > title
-    public String title() {
-        return getNotes().size() + " notes";
-    }
-    //endregion
+	// region > title
+	public String title() {
+		return getNotes().size() + " notes";
+	}
 
-    //region > object (collection)
-    @org.apache.isis.applib.annotation.HomePage
-    public List<Note> getNotes() {
-        return notes.listAll();
-    }
-    //endregion
+	// endregion
 
-    //region > injected services
+	// region > object (collection)
+	@HomePage
+	@CollectionLayout(render = RenderType.EAGERLY, paged = 10)
+	public List<Note> getNotes() {
+		return notes.listAll();
+	}
 
-    @javax.inject.Inject
-    Notes notes;
+	// endregion
 
-    //endregion
+	// region > injected services
+
+	@javax.inject.Inject
+	Notes notes;
+
+	// endregion
 }

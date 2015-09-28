@@ -1,13 +1,18 @@
 package au.com.scds.chats.dom;
 
+import javax.jdo.InstanceCallbacks;
 import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 import org.joda.time.DateTime;
+
+import au.com.scds.chats.dom.user.CreateTrackedEntity;
+import au.com.scds.chats.dom.user.ModifyTrackedEntity;
 
 /**
  * Base class of the Chats Entity Inheritance Tree.
@@ -19,76 +24,94 @@ import org.joda.time.DateTime;
  */
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public abstract class AbstractDomainEntity {
+public abstract class AbstractDomainEntity /*implements  InstanceCallbacks, CreateTrackedEntity, ModifyTrackedEntity*/ {
 
-	private Long createdByUserId;
+	private String createdBy;
 
 	@Column(allowsNull = "true")
 	@MemberOrder(name = "Admin", sequence = "1")
 	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Created by")
-	public Long getCreatedByUserId() {
-		return createdByUserId;
+	public String getCreatedBy() {
+		return createdBy;
 	}
 
-	public void setCreatedByUserId(final Long createdByUserId) {
-		this.createdByUserId = createdByUserId;
+	public void setCreatedBy(final String createdBy) {
+		this.createdBy = createdBy;
 	}
 
-	private DateTime createdDateTime;
+	private DateTime createdOn;
 
 	@Column(allowsNull = "true")
 	@MemberOrder(name = "Admin", sequence = "2")
 	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Created On")
-	public DateTime getCreatedDateTime() {
-		return createdDateTime;
+	public DateTime getCreatedOn() {
+		return createdOn;
 	}
 
-	public void setCreatedDateTime(final DateTime createdDateTime) {
-		this.createdDateTime = createdDateTime;
+	public void setCreatedOn(final DateTime createdOn) {
+		this.createdOn = createdOn;
 	}
 
-	private DateTime deletedDateTime;
+	private DateTime deletedOn;
 
 	@Column(allowsNull = "true")
 	@MemberOrder(name = "Admin", sequence = "3")
 	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Deleted On")
-	public DateTime getDeletedDateTime() {
-		return deletedDateTime;
+	public DateTime getDeletedOn() {
+		return deletedOn;
 	}
 
-	public void setDeletedDateTime(final DateTime deletedDateTime) {
-		this.deletedDateTime = deletedDateTime;
+	public void setDeletedOn(final DateTime deletedOn) {
+		this.deletedOn = deletedOn;
 	}
 
-	private Long lastModifiedbyUserId;
+	private String lastModifiedBy;
 
 	@Column(allowsNull = "true")
 	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	@MemberOrder(name = "Admin", sequence = "4")
 	@PropertyLayout(named = "Modified By")
-	public Long getLastModifiedByUserId() {
-		return lastModifiedbyUserId;
+	public String getLastModifiedBy() {
+		return lastModifiedBy;
 	}
 
-	public void setLastModifiedByUserId(Long lastModifiedByUserId) {
-		this.lastModifiedbyUserId = lastModifiedByUserId;
+	public void setLastModifiedBy(String lastModifiedBy) {
+		this.lastModifiedBy = lastModifiedBy;
 	}
 
-	private DateTime lastModifiedDateTime;
+	private DateTime lastModifiedOn;
 
 	@Column(allowsNull = "true")
 	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	@MemberOrder(name = "Admin", sequence = "5")
 	@PropertyLayout(named = "Last Modified")
-	public DateTime getLastModifiedDateTime() {
-		return lastModifiedDateTime;
+	public DateTime getLastModifiedOn() {
+		return lastModifiedOn;
 	}
 
-	public void setLastModifiedDateTime(DateTime lastModifiedDateTime) {
-		this.lastModifiedDateTime = lastModifiedDateTime;
+	public void setLastModifiedOn(DateTime lastModifiedOn) {
+		this.lastModifiedOn = lastModifiedOn;
 	}
-
+	
+/*	@Programmatic
+    public void jdoPostLoad() {
+		System.out.println("postLoad");
+	}
+	@Programmatic
+    public void jdoPreClear() {
+		System.out.println("preClear");
+	}
+	@Programmatic
+    public void jdoPreStore() {
+		System.out.println("preStore");
+	}
+	@Programmatic
+    public void jdoPreDelete()
+    {
+		System.out.println("preDelete");
+    }
+*/
 }

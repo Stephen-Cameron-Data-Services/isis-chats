@@ -30,7 +30,9 @@ import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.services.i18n.TranslatableString;
 import org.apache.isis.applib.util.ObjectContracts;
+
 import au.com.scds.chats.dom.AbstractDomainEntity;
+import au.com.scds.chats.dom.AbstractTenantedDomainEntity;
 import au.com.scds.chats.dom.module.general.Location;
 import au.com.scds.chats.dom.module.general.Locations;
 import au.com.scds.chats.dom.module.general.names.ActivityType;
@@ -234,37 +236,7 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		return locations.allNames();
 	}
 
-	protected Region region;
 
-	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "12")
-	@PropertyLayout(hidden = Where.EVERYWHERE)
-	public Region getRegion() {
-		return this.region;
-	}
-
-	public void setRegion(Region region) {
-		this.region = region;
-	}
-
-	public List<Region> choicesRegion() {
-		return regions.listAllRegions();
-	}
-
-	@MemberOrder(sequence = "7")
-	@PropertyLayout(hidden = Where.ALL_TABLES)
-	@NotPersistent
-	public String getRegionName() {
-		return regions.nameForRegion(getRegion());
-	}
-
-	public void setRegionName(String name) {
-		setRegion(regions.regionForName(name));
-	}
-
-	public List<String> choicesRegionName() {
-		return regions.allNames();
-	}
 
 	protected Boolean isRestricted;
 
@@ -386,9 +358,6 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	@javax.inject.Inject
 	@SuppressWarnings("unused")
 	protected Locations locations;
-
-	@javax.inject.Inject
-	protected Regions regions;
 
 	@Inject
 	private Participations participationsRepo;

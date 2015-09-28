@@ -23,7 +23,7 @@
     <artifactId>chats</artifactId>
     <version>0.1-SNAPSHOT</version>
 
-    <name>Simple App</name>
+    <name>Chats</name>
 
     <packaging>pom</packaging>
 

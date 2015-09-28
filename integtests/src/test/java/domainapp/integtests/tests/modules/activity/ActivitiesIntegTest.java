@@ -62,7 +62,7 @@ public class ActivitiesIntegTest extends DomainAppIntegTest {
             assertThat(obj.getParentActivity()).isNull();
             assertThat(obj.getActivityType()).isNull();
             assertThat(obj.getActivityTypeName()).isNull();
-            assertThat(obj.getRegion()).isNull();
+            //TODO assertThat(obj.getRegion()).isNull();
             assertThat(obj.getLocation()).isNull();
             assertThat(obj.getLocationName()).isNull();
             assertThat(obj.getDescription()).isNull();
