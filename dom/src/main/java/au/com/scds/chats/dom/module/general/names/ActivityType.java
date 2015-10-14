@@ -17,7 +17,16 @@ import au.com.scds.chats.dom.AbstractNamedChatsDomainEntity;
 			+ "ORDER BY name")})
 public class ActivityType extends ClassificationValue{
 
-	@PropertyLayout(named="Contact Type")
+	public ActivityType() {
+		super();
+	}
+	
+	//use for testing only
+	public ActivityType(String name) {
+		super(name);
+	}
+
+	@PropertyLayout(named="Activity Type")
 	@MemberOrder(sequence = "1")
 	@Override
 	public String getName() {

@@ -29,9 +29,12 @@ import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEvent;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEventable;
+import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.module.attendance.AttendanceList;
+import au.com.scds.chats.dom.module.general.Location;
 import au.com.scds.chats.dom.module.general.Persons;
+import au.com.scds.chats.dom.module.general.names.ActivityType;
 import au.com.scds.chats.dom.module.note.NoteLinkable;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
@@ -45,7 +48,7 @@ import au.com.scds.chats.dom.module.participant.Participations;
  * (spawned) as a child of a <code>RecurrentActivity</code>.
  * 
  * If an event spawned from a RecurrentActivity, it properties will generally be
- * those of its spawning parent, other that the DateTime of the specific
+ * those of its spawning parent, in-fact accessed and displayed from its parent, other that the DateTime of the specific
  * ActivityEvent.
  * 
  * However this parent/child relationship provides the chance for the child to
@@ -53,9 +56,9 @@ import au.com.scds.chats.dom.module.participant.Participations;
  * 
  * For example, we can add <code>Participations</code> to the parent and these
  * will be those of its children too, unless we override by adding an equivalent
- * Participation to a child. In this specific case, an absence from a specific
- * ActivityEvent by a Participant can be recorded in this 'over-ride'
- * Participation.
+ * Participation to a child.
+ * 
+ * Note that participation and attendance are handled separately, the later via Attended records.
  * 
  */
 @PersistenceCapable()
@@ -64,8 +67,7 @@ import au.com.scds.chats.dom.module.participant.Participations;
 		@Query(name = "findOneOffActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE name.indexOf(:name) >= 0 "),
 		@Query(name = "findActivitiesWithoutAttendanceList", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE attendances == null "),
 		@Query(name = "findAllFutureActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE startDateTime > :currentDateTime "),
-		@Query(name = "findAllPastActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE startDateTime <= :currentDateTime ")})
-
+		@Query(name = "findAllPastActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE startDateTime <= :currentDateTime ") })
 // @Unique(name = "Activity_name_UNQ", members = { "name"
 // })
 @DomainObject(objectType = "ACTIVITY")
@@ -74,12 +76,12 @@ import au.com.scds.chats.dom.module.participant.Participations;
 public class ActivityEvent extends Activity implements NoteLinkable, CalendarEventable {
 
 	private RecurringActivity parent;
-	
-	public ActivityEvent(){
+
+	public ActivityEvent() {
 		super();
 	}
 
-	//for mock testing
+	// for mock testing
 	public ActivityEvent(DomainObjectContainer container, Participants participants, Participations participations) {
 		super();
 		this.container = container;
@@ -109,8 +111,8 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 	private AttendanceList attendances;
 
 	@Column(allowsNull = "true")
-	@Property(hidden=Where.ALL_TABLES)
-	@PropertyLayout(named="Attendance List")
+	@Property(hidden = Where.ALL_TABLES)
+	@PropertyLayout(named = "Attendance List")
 	@MemberOrder(sequence = "1")
 	public AttendanceList getAttendances() {
 		return attendances;
@@ -139,78 +141,93 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 		return new CalendarEvent(getStartDateTime().withTimeAtStartOfDay(), getCalendarName(), title());
 	}
 
-	//@Override
-	/*public List<Participant> getParticipants(){
-		List<Participant> participants = new ArrayList<>();
-		for(Participant p : parent.getParticipants()){
-			participants.add(p);
-		}
-		for(Participant p : super.getParticipants()){
-			participants.add(p);
-		}
-		return participants;
-	}*/
+	////// Overrides //////
 	
+	/**
+	 * Participations list for an ActivityEvent is the list of its parent
+	 * RecurringActivity, if present, plus any locally added.
+	 * 
+	 * Note: this Participation list is used to generate a Participant list in
+	 * {@link Activity#getParticipants()}.
+	 */
 	@Override
 	public SortedSet<Participation> getParticipations() {
 		SortedSet<Participation> temp = new TreeSet<Participation>();
-		for(Participation p : parent.getParticipations()){
-			temp.add(p);
+		if (getParentActivity() != null) {
+			for (Participation p : getParentActivity().getParticipations()) {
+				temp.add(p);
+			}
 		}
-		for(Participation p : super.getParticipations()){
+		for (Participation p : super.getParticipations()) {
 			temp.add(p);
 		}
 		return temp;
 	}
 
-	// //Overides
-	// TODO test all this with integtests , grrr!!!!
-	/*
-	 * @Property(hidden = Where.EVERYWHERE)
-	 * 
-	 * @Override //TODO runtime error array index out of bounds public
-	 * ActivityType getActivityType() { if(getParentActivity() != null &&
-	 * activityType == null){ return getParentActivity().getActivityType(); }
-	 * return activityType; }
-	 * 
-	 * @Override public DateTime getStartDateTime() { if(getParentActivity() !=
-	 * null && startDateTime == null){ return
-	 * getParentActivity().getStartDateTime(); } return this.startDateTime; }
-	 * 
-	 * @Override public DateTime getApproximateEndDateTime() {
-	 * if(getParentActivity() != null && approximateEndDateTime == null){ return
-	 * getParentActivity().getApproximateEndDateTime(); } return
-	 * approximateEndDateTime; }
-	 * 
-	 * @Override public String getCostForParticipant() { if(getParentActivity()
-	 * != null && costForParticipant == null){ return
-	 * getParentActivity().getCostForParticipant(); } return costForParticipant;
-	 * }
-	 * 
-	 * @Override public String getDescription() { if(getParentActivity() != null
-	 * && description == null){ return getParentActivity().getDescription(); }
-	 * return description; }
-	 * 
-	 * @Override
-	 * 
-	 * @Property(hidden = Where.EVERYWHERE) //see Activity#getLocationName()
-	 * //TODO runtime error array index out of bounds public Location
-	 * getLocation() { if(getParentActivity() != null && location == null){
-	 * return getParentActivity().getLocation(); } return location; }
-	 * 
-	 * @Override
-	 * 
-	 * @Property(hidden = Where.EVERYWHERE) //TODO runtime error array index out
-	 * of bounds public Region getRegion() { if(getParentActivity() != null &&
-	 * region == null){ return getParentActivity().getRegion(); } return region;
-	 * }
-	 * 
-	 * @Override public Boolean getIsRestricted() { if(getParentActivity() !=
-	 * null && isRestricted == null){ return
-	 * getParentActivity().getIsRestricted(); } return isRestricted; }
-	 * 
-	 * @Override public Long getScheduleId() { if(getParentActivity() != null &&
-	 * scheduleId == null){ return getParentActivity().getScheduleId(); } return
-	 * scheduleId; }
-	 */
+	@Property(hidden = Where.EVERYWHERE)
+	@Override
+	public ActivityType getActivityType() {
+		if (getParentActivity() != null && super.getActivityType() == null) {
+			return getParentActivity().getActivityType();
+		}
+		return super.getActivityType();
+	}
+
+	@Override
+	public DateTime getStartDateTime() {
+		if (getParentActivity() != null && super.getStartDateTime() == null) {
+			return getParentActivity().getStartDateTime();
+		}
+		return super.getStartDateTime();
+	}
+
+	@Override
+	public DateTime getApproximateEndDateTime() {
+		if (getParentActivity() != null && super.getApproximateEndDateTime() == null) {
+			return getParentActivity().getApproximateEndDateTime();
+		}
+		return super.getApproximateEndDateTime();
+	}
+
+	@Override
+	public String getCostForParticipant() {
+		if (getParentActivity() != null && super.getCostForParticipant() == null) {
+			return getParentActivity().getCostForParticipant();
+		}
+		return super.getCostForParticipant();
+	}
+
+	@Override
+	public String getDescription() {
+		if (getParentActivity() != null && super.getDescription() == null) {
+			return getParentActivity().getDescription();
+		}
+		return super.getDescription();
+	}
+
+	@Override
+	@Property(hidden = Where.EVERYWHERE)
+	public Location getLocation() {
+		if (getParentActivity() != null && super.getLocation() == null) {
+			return getParentActivity().getLocation();
+		}
+		return super.getLocation();
+	}
+
+	@Override
+	public Boolean getIsRestricted() {
+		if (getParentActivity() != null && super.getIsRestricted() == null) {
+			return getParentActivity().getIsRestricted();
+		}
+		return super.getIsRestricted();
+	}
+
+	@Override
+	public Long getScheduleId() {
+		if (getParentActivity() != null && super.getScheduleId() == null) {
+			return getParentActivity().getScheduleId();
+		}
+		return super.getScheduleId();
+	}
+
 }

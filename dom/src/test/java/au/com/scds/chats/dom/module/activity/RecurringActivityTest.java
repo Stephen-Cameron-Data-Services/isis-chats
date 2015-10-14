@@ -2,6 +2,9 @@ package au.com.scds.chats.dom.module.activity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.core.unittestsupport.jmocking.JUnitRuleMockery2;
 import org.apache.isis.core.unittestsupport.jmocking.JUnitRuleMockery2.Mode;
@@ -15,6 +18,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import au.com.scds.chats.dom.module.general.Person;
+import au.com.scds.chats.dom.module.general.names.ActivityType;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.dom.module.participant.Participation;
@@ -145,6 +149,47 @@ public class RecurringActivityTest {
 			assertThat(event1.getParticipants().size()).isEqualTo(1);
 			assertThat(event2.getParticipants().size()).isEqualTo(2);
 			//
+		}
+
+		@Test
+		/**
+		 * The properties of an ActivityEvent take the value of it parent
+		 * unless over-ridden by setting them specifically on the ActivityEvent.
+		 */
+		public void allCascadedProperties() throws Exception {
+
+			// given
+			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo, participationsRepo);
+			final ActivityEvent event1 = new ActivityEvent();
+			final ActivityEvent event2 = new ActivityEvent();
+
+			context.checking(new Expectations() {
+				{
+					// adding two child ActivityEvents
+					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					will(returnValue(event1));
+					oneOf(mockContainer).persistIfNotAlready(event1);
+					oneOf(mockContainer).flush();
+					// adding two child ActivityEvents
+					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					will(returnValue(event2));
+					oneOf(mockContainer).persistIfNotAlready(event2);
+					oneOf(mockContainer).flush();
+				}
+			});
+
+			// when
+			parent.addNextScheduledActivity();
+			parent.addNextScheduledActivity();
+			parent.setActivityType(new ActivityType("TEST1"));
+			parent.getActivityEvents().first().setActivityType(new ActivityType("TEST2"));
+			
+			//then
+			assertThat(parent.getActivityType().getName()).isEqualTo("TEST1");
+			//event1 has its own value
+			assertThat(event2.getActivityType().getName()).isEqualTo("TEST2");
+			//event2 has parent value
+			assertThat(event1.getActivityType().getName()).isEqualTo("TEST1");
 		}
 	}
 }

@@ -121,7 +121,7 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		return activityProviders.listAllProviders();
 	}
 
-	protected ActivityType activityType;
+	private ActivityType activityType;
 
 	@Column(allowsNull = "true")
 	// @MemberOrder(sequence = "5")

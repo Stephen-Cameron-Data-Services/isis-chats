@@ -25,6 +25,12 @@ import au.com.scds.chats.dom.AbstractNamedChatsDomainEntity;
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
 public abstract class ClassificationValue {
+	
+	public ClassificationValue(){}
+	
+	public ClassificationValue(String name){
+		this.name = name;
+	}
 
 	private String name;
 
@@ -54,6 +60,6 @@ public abstract class ClassificationValue {
 
 	@Override
 	public String toString() {
-		return this.getClass().getName() + ":" + this.getName();
+		return this.getClass().getSimpleName() + ":" + this.getName();
 	}
 }
