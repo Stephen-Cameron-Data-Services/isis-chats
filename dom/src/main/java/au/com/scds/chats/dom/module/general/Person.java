@@ -29,6 +29,7 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.AbstractDomainEntity;
 import au.com.scds.chats.dom.module.general.Person;
@@ -42,8 +43,8 @@ import au.com.scds.chats.dom.module.general.names.Salutations;
 
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
-@javax.jdo.annotations.Unique(name = "Person_name_UNQ", members = { "firstname", "middlename", "surname" })
-@Queries({ @Query(name = "findBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.general.Person " + "WHERE surname == :surname"), })
+@javax.jdo.annotations.Unique(name = "Person_UNQ", members = { "firstname", "surname", "birthdate" })
+@Queries({ @Query(name = "findPersonsBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.general.Person " + "WHERE surname == :surname"), })
 @DomainObject(objectType = "PERSON")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = "General", middle = { "Contact Details", "Admin" })
@@ -57,14 +58,14 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 	private String middlename;
 	private String surname;
 	private String preferredname;
-	private Date birthdate;
+	private LocalDate birthdate;
 	private Region region;
 
 	@Override
 	public int compareTo(Person o) {
-		String thisName = getSurname().toUpperCase() + getFirstname().toUpperCase();
-		String otherName = o.getSurname().toUpperCase() + o.getFirstname().toUpperCase();
-		return thisName.compareTo(otherName);
+		String thisNameAndBirthdate = getSurname().toUpperCase() + getFirstname().toUpperCase() + getBirthdate();
+		String otherNameAndBirthdate = o.getSurname().toUpperCase() + o.getFirstname().toUpperCase() + o.getBirthdate();;
+		return thisNameAndBirthdate.compareTo(otherNameAndBirthdate);
 	}
 
 	@Column(allowsNull = "true")
@@ -162,12 +163,12 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 
 	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "6")
-	public Date getBirthdate() {
+	public LocalDate getBirthdate() {
 		return this.birthdate;
 	}
 
-	public void setBirthdate(Date birthdate) {
-		this.birthdate = birthdate;
+	public void setBirthdate(LocalDate localDate) {
+		this.birthdate = localDate;
 	}
 
 	@Column(name = "region", allowsNull = "true")

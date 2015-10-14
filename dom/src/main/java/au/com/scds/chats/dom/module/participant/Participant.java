@@ -42,12 +42,22 @@ import au.com.scds.chats.dom.module.general.Status;
 
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
-@Queries({ @Query(name = "listByStatus", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE status == :status"),
-		@Query(name = "findBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE person.surname == :surname"), })
+@Queries({ @Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE status == :status"),
+		@Query(name = "findParticipantsBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE person.surname == :surname"), })
 @DomainObject(objectType = "PARTICIPANT")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 3, 3, 0, 6 }, left = { "General" }, middle = { "Scheduling", "Admin" })
 public class Participant extends AbstractDomainEntity implements NoteLinkable, Locatable, Comparable<Participant> {
+
+	public Participant(){
+		super();
+	}
+	
+	//use for testing only
+	public Participant(Person person) {
+		super();
+		setPerson(person);
+	}
 
 	// region > identificatiom
 	public TranslatableString title() {
@@ -440,7 +450,7 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 	 */
 	@Override
 	public int compareTo(final Participant o) {
-		return ComparisonChain.start().compare(getFullName(), o.getFullName()).result();
+		return this.getPerson().compareTo(o.getPerson());
 	}
 
 	// region > injected services

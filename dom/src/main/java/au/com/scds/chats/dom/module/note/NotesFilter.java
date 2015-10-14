@@ -5,13 +5,10 @@ import java.util.List;
 import javax.jdo.annotations.NotPersistent;
 
 import org.apache.isis.applib.DomainObjectContainer;
-import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.DomainObject;
-import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Nature;
-import org.apache.isis.applib.annotation.NatureOfService;
-import org.apache.isis.applib.annotation.NotPersisted;
+
 import org.joda.time.LocalDate;
 
 @DomainObject(nature = Nature.VIEW_MODEL)

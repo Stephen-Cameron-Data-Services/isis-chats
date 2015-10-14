@@ -14,14 +14,15 @@ O *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package domainapp.integtests.specglue;
+package au.com.scds.chats.integtests.specglue;
 
 import org.apache.isis.core.specsupport.scenarios.ScenarioExecutionScope;
 import org.apache.isis.core.specsupport.specs.CukeGlueAbstract;
 
+import au.com.scds.chats.integtests.bootstrap.DomainAppSystemInitializer;
+
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
-import domainapp.integtests.bootstrap.DomainAppSystemInitializer;
 
 public class BootstrappingGlue extends CukeGlueAbstract {
 

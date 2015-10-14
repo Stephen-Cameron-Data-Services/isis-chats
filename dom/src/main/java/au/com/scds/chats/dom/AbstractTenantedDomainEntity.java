@@ -11,6 +11,7 @@ import org.apache.isis.applib.annotation.Where;
 
 import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
 import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
+import org.isisaddons.module.security.dom.user.ApplicationUser;
 
 import au.com.scds.chats.dom.module.general.names.Region;
 import au.com.scds.chats.dom.module.general.names.Regions;
@@ -56,13 +57,29 @@ public abstract class AbstractTenantedDomainEntity extends AbstractDomainEntity 
 	public List<String> choicesRegionName() {
 		return regions.allNames();
 	}
-	
-	public ApplicationTenancy getApplicationTenancy(){
+
+	public ApplicationTenancy getApplicationTenancy() {
 		ApplicationTenancy tenancy = new ApplicationTenancy();
-		tenancy.setPath("/"+getRegion());
+		tenancy.setPath("/" + getRegion());
 		return tenancy;
 	}
-	
+
+	@Override
+	public void created() {
+		super.created();
+		if (applicationUserRepository != null) {
+			ApplicationUser user = applicationUserRepository.findUserByUsername(container.getUser().getName());
+			if (user != null) {
+				System.out.println("preStore5");
+				String tenancyPath = user.getTenancy().getPath();
+				if (tenancyPath.startsWith("/"))
+					tenancyPath = tenancyPath.substring(1);
+				Region region = regions.regionForName(tenancyPath);
+				setRegion(region);
+			}
+		}
+	}
+
 	@javax.inject.Inject
 	protected Regions regions;
 

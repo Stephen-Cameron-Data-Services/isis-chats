@@ -16,19 +16,21 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package domainapp.integtests.tests;
+package au.com.scds.chats.integtests.tests;
 
 import org.junit.BeforeClass;
 
 import org.apache.isis.core.integtestsupport.IntegrationTestAbstract;
 import org.apache.isis.core.integtestsupport.scenarios.ScenarioExecutionForIntegration;
 
-import domainapp.integtests.bootstrap.DomainAppSystemInitializer;
+import au.com.scds.chats.integtests.bootstrap.DomainAppSystemInitializer;
+
 
 public abstract class DomainAppIntegTest extends IntegrationTestAbstract {
 
     @BeforeClass
     public static void initClass() {
+    	System.out.println(">>> initClass <<<");
         org.apache.log4j.PropertyConfigurator.configure("logging.properties");
         DomainAppSystemInitializer.initIsft();
 

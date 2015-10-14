@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package domainapp.integtests.specs;
+package au.com.scds.chats.integtests.specs;
 
 import org.junit.runner.RunWith;
 

@@ -10,6 +10,7 @@ import java.util.TreeSet;
 
 import javax.jdo.annotations.*;
 
+import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.DomainObject;
@@ -27,6 +28,8 @@ import au.com.scds.chats.dom.module.general.Location;
 import au.com.scds.chats.dom.module.general.names.ActivityType;
 import au.com.scds.chats.dom.module.general.names.Region;
 import au.com.scds.chats.dom.module.note.NoteLinkable;
+import au.com.scds.chats.dom.module.participant.Participants;
+import au.com.scds.chats.dom.module.participant.Participations;
 
 /**
  * 
@@ -47,6 +50,15 @@ import au.com.scds.chats.dom.module.note.NoteLinkable;
 @MemberGroupLayout(columnSpans = { 3, 3, 0, 6 }, left = { "General" }, middle = { "Scheduling", "Admin" })
 @DomainObject(objectType = "RECURRING_ACTIVITY")
 public class RecurringActivity extends Activity implements NoteLinkable {
+
+	public RecurringActivity() {
+		super();
+	}
+	
+	//use for testing only
+	public RecurringActivity(DomainObjectContainer container, Participants participantsRepo, Participations participationsRepo) {
+		super(container,participantsRepo,participationsRepo,null,null,null);
+	}
 
 	@Override
 	public String title() {

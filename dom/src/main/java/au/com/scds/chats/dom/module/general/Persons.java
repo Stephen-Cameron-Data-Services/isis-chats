@@ -20,6 +20,12 @@ import au.com.scds.chats.dom.module.general.Person;
 @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100")
 public class Persons {
 	
+	public Persons(){}
+	
+	public Persons(DomainObjectContainer mockContainer) {
+		this.container = container;
+	}
+
 	// region > listAll (action)
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)

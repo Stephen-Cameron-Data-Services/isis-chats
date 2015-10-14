@@ -29,7 +29,6 @@ import org.joda.time.DateTime;
 @DomainServiceLayout(named = "Activities", menuOrder = "10")
 public class Activities {
 
-	// {{ createRecurringActivity (action)
     @Action(semantics = SemanticsOf.SAFE)
 	@MemberOrder(sequence = "1")
 	public RecurringActivity createRecurringActivity(@Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Activity name") final String name, @Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Start date time") final DateTime startDateTime) {
@@ -41,9 +40,6 @@ public class Activities {
 		return obj;
 	}
 
-	// }}
-
-	// listAllRecurringActivities (action)
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "2")
@@ -52,9 +48,6 @@ public class Activities {
 		return container.allInstances(RecurringActivity.class);
 	}
 
-	// }}
-
-	// findByRecurringActivityName (action)
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "3")
@@ -62,7 +55,6 @@ public class Activities {
 		return container.allMatches(new QueryDefault<>(RecurringActivity.class, "findByRecurringActivityByName", "name", name));
 	}
 
-	// {{ createOneOffActivity (action)
 	@MemberOrder(sequence = "5")
 	public ActivityEvent createOneOffActivity(@Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Activity name") final String name, @Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Start date time") final DateTime startDateTime) {
 		final ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
@@ -73,9 +65,6 @@ public class Activities {
 		return obj;
 	}
 
-	// }}
-
-	// findOneOffActivityByName (action)
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "6")
@@ -83,7 +72,6 @@ public class Activities {
 		return container.allMatches(new QueryDefault<>(ActivityEvent.class, "findOneOffActivityByName", "name", name));
 	}
 
-	// listAllFutureActivities (action)
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "10")
@@ -91,7 +79,6 @@ public class Activities {
 		return container.allMatches(new QueryDefault<>(ActivityEvent.class, "findAllFutureActivities", "currentDateTime", new DateTime()));
 	}
 
-	// listAllPastActivities (action)
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "10")

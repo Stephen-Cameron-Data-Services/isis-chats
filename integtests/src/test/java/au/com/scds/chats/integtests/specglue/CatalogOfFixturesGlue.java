@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package domainapp.integtests.specglue;
+package au.com.scds.chats.integtests.specglue;
 
 import org.apache.isis.core.specsupport.specs.CukeGlueAbstract;
 

@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package domainapp.integtests.tests.modules.activity;
+package au.com.scds.chats.integtests.tests.module.activity;
 
 import java.util.List;
 
@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import au.com.scds.chats.dom.module.activity.Activities;
 import au.com.scds.chats.dom.module.activity.ActivityEvent;
+import au.com.scds.chats.integtests.tests.DomainAppIntegTest;
 
 
 import com.google.common.base.Throwables;
@@ -36,7 +37,6 @@ import org.junit.Test;
 
 import org.apache.isis.applib.fixturescripts.FixtureScripts;
 
-import domainapp.integtests.tests.DomainAppIntegTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ActivitiesIntegTest extends DomainAppIntegTest {

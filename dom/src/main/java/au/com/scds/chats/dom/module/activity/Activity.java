@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+
 import javax.inject.Inject;
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.DomainObjectContainer;
@@ -48,6 +50,18 @@ import au.com.scds.chats.dom.module.participant.Participations;
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.CLASS_NAME, column = "class")
 public abstract class Activity extends AbstractDomainEntity implements Comparable<Activity> {
+
+	public Activity() {
+	}
+
+	public Activity(DomainObjectContainer container, Participants participantsRepo, Participations participationsRepo, Providers activityProviders, ActivityTypes activityTypes, Locations locations) {
+		this.container = container;
+		this.participantsRepo = participantsRepo;
+		this.participationsRepo = participationsRepo;
+		this.activityProviders = activityProviders;
+		this.activityTypes = activityTypes;
+		this.locations = locations;
+	}
 
 	public String title() {
 		return "Activity: " + getName();
@@ -106,7 +120,6 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	public List<Provider> choicesProvider() {
 		return activityProviders.listAllProviders();
 	}
-
 
 	protected ActivityType activityType;
 
@@ -236,8 +249,6 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		return locations.allNames();
 	}
 
-
-
 	protected Boolean isRestricted;
 
 	@Column(allowsNull = "true")
@@ -265,10 +276,9 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	public void setScheduleId(Long scheduleId) {
 		this.scheduleId = scheduleId;
 	}
-	
-	
-	//COLLECTIONS 
-	
+
+	// COLLECTIONS
+
 	// region > participations (collection)
 
 	@Persistent(mappedBy = "activity")
@@ -289,7 +299,7 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	@Programmatic
 	public Participation findParticipation(Participant participant) {
 		for (Participation p : getParticipations()) {
-			if (p.getParticipant().equals(participant))
+			if (p.getParticipant().compareTo(participant) == 0)
 				return p;
 		}
 		return null;
@@ -307,22 +317,27 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	@MemberOrder(name = "participations", sequence = "1")
 	@ActionLayout(named = "Add")
 	public Activity addParticipant(final Participant participant) {
-		participationsRepo.newParticipation(this, participant);
+		if (findParticipation(participant) == null) {
+			Participation p = participationsRepo.newParticipation(this, participant);
+			this.participations.add(p);
+		} else {
+			container.informUser("A Participant (" + participant.getFullName() + ") is already participating in this Activity");
+		}
 		return this;
 	}
 
 	@MemberOrder(name = "participations", sequence = "2")
 	@ActionLayout(named = "Add New")
-	public Activity addNewParticipant(final @ParameterLayout(named = "First name") String firstname,
-			final @ParameterLayout(named = "Middle name(s)") @Parameter(optionality = Optionality.OPTIONAL) String middlename, final @ParameterLayout(named = "Surname") String surname) {
-		addParticipant(participantsRepo.create(firstname, middlename, surname));
+	public Activity addNewParticipant(final @ParameterLayout(named = "First name") String firstname, final @ParameterLayout(named = "Surname") String surname,
+			final @ParameterLayout(named = "Date of Birth") LocalDate dob) {
+		addParticipant(participantsRepo.newParticipant(firstname, surname, dob));
 		return this;
 	}
 
 	@MemberOrder(name = "participations", sequence = "3")
 	@ActionLayout(named = "Remove")
 	public Activity removeParticipant(final Participant participant) {
-		// removeFromParticipants(participant);
+		//TODO removeFromParticipants(participant);
 		return this;
 	}
 
@@ -342,28 +357,26 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	// participationList.remove(participant.removeParticipation(this));
 	// }
 
-
 	// region > injected services
-	@javax.inject.Inject
+	@Inject
+	protected DomainObjectContainer container;
+	
+	@Inject
 	protected Participants participantsRepo;
 
-	@javax.inject.Inject
-	@SuppressWarnings("unused")
+	@Inject
 	protected Providers activityProviders;
 
-	@javax.inject.Inject
-	@SuppressWarnings("unused")
+	@Inject
 	protected ActivityTypes activityTypes;
 
-	@javax.inject.Inject
-	@SuppressWarnings("unused")
+	@Inject
 	protected Locations locations;
 
 	@Inject
-	private Participations participationsRepo;
+	protected Participations participationsRepo;
 
-	@javax.inject.Inject
-	protected DomainObjectContainer container;
+
 
 	// endregion
 

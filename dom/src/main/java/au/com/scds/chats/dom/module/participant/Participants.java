@@ -42,9 +42,16 @@ import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.Status;
 
 @DomainService(repositoryFor = Participant.class)
-@DomainServiceLayout(named = "Participants",  menuOrder = "20")
+@DomainServiceLayout(named = "Participants", menuOrder = "20")
 public class Participants {
-	
+
+	public Participants() {
+	}
+
+	public Participants(DomainObjectContainer container) {
+		this.container = container;
+	}
+
 	@Programmatic
 	public List<Participant> listAll() {
 		return container.allInstances(Participant.class);
@@ -91,38 +98,44 @@ public class Participants {
 
 	// region > create (action)
 	@MemberOrder(sequence = "4")
-	public Participant create(final @ParameterLayout(named = "First name") String firstname,
-			final @ParameterLayout(named = "Middle name(s)") @Parameter(optionality = Optionality.OPTIONAL) String middlename, final @ParameterLayout(named = "Surname") String surname) {
+	public Participant create(final @ParameterLayout(named = "First name") String firstname, final @ParameterLayout(named = "Family name") String surname,
+			final @ParameterLayout(named = "Date of Birth") LocalDate dob) {
+		return newParticipant(firstname, surname, dob);
+	}
+
+	@Programmatic
+	public Participant newParticipant(final String firstname, final String surname, final LocalDate dob) {
 		// check of existing Participant
-		/*List<Participant> participants = container.allMatches(new QueryDefault<>(Participant.class, "findBySurname", "surname", surname));
+		List<Participant> participants = container.allMatches(new QueryDefault<>(Participant.class, "findParticipantsBySurname", "surname", surname));
 		for (Participant participant : participants) {
-			if (participant.getPerson().getFirstname().equalsIgnoreCase(firstname) && participant.getPerson().getMiddlename().equalsIgnoreCase(middlename)) {
-				container.informUser("The following Participant with the same names already exists!");
+			if (participant.getPerson().getFirstname().equalsIgnoreCase(firstname) && participant.getPerson().getBirthdate().equals(dob)) {
+				container.informUser("An existing Participant with same first-name, surname and date-of-birth properties has been found");
 				return participant;
 			}
 		}
 		// check if existing Person
-		List<Person> persons = container.allMatches(new QueryDefault<>(Person.class, "findBySurname", "surname", surname));
+		List<Person> persons = container.allMatches(new QueryDefault<>(Person.class, "findPersonsBySurname", "surname", surname));
 		Person person = null;
 		for (Person p : persons) {
-			if (p.getFirstname().equalsIgnoreCase(firstname) && p.getMiddlename().equalsIgnoreCase(middlename)) {
+			if (p.getFirstname().equalsIgnoreCase(firstname) && p.getBirthdate().equals(dob)) {
 				// use this found person
 				person = p;
 				break;
 			}
-		}*/
-		Person person = null;
+		}
 		// create new Person?
 		if (person == null) {
 			person = container.newTransientInstance(Person.class);
 			person.setFirstname(firstname);
-			person.setMiddlename(middlename);
 			person.setSurname(surname);
+			person.setBirthdate(dob);
 			container.persistIfNotAlready(person);
+			container.flush();
 		}
 		final Participant participant = container.newTransientInstance(Participant.class);
 		participant.setPerson(person);
 		container.persistIfNotAlready(participant);
+		container.flush();
 		return participant;
 	}
 
@@ -143,24 +156,15 @@ public class Participants {
 
 		container.persist(p);
 		container.flush();
-
 		return p;
 	}
 
-	// used in data migration
-	// makes the person into a Participant
 	@Programmatic
-	public Participant newParticipant(final Person person, final DomainObjectContainer cont) {
-		Participant p;
-		if (cont != null) {
-			p = cont.newTransientInstance(Participant.class);
-			p.setPerson(person);
-			cont.persist(p);
-		} else {
-			// testing only
-			p = new Participant();
-			p.setPerson(person);
-		}
+	public Participant newParticipant(final Person person) {
+		Participant p = container.newTransientInstance(Participant.class);
+		p.setPerson(person);
+		container.persistIfNotAlready(p);
+		container.flush();
 		return p;
 	}
 

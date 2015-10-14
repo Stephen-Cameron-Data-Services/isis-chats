@@ -1,4 +1,4 @@
-package domainapp.integtests.tests.modules.volunteer;
+package au.com.scds.chats.integtests.tests.modules.volunteer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.apache.isis.applib.fixturescripts.FixtureScripts;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Test;
 
 import au.com.scds.chats.dom.module.participant.Participant;
@@ -13,9 +14,9 @@ import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.dom.module.volunteer.ScheduledCall;
 import au.com.scds.chats.dom.module.volunteer.Volunteer;
 import au.com.scds.chats.dom.module.volunteer.Volunteers;
+import au.com.scds.chats.integtests.tests.DomainAppIntegTest;
 
 
-import domainapp.integtests.tests.DomainAppIntegTest;
 
 public class VolunteersIntegTest extends DomainAppIntegTest {
 
@@ -34,7 +35,7 @@ public class VolunteersIntegTest extends DomainAppIntegTest {
 
         // when
         Volunteer v = wrap(volunteers).create("Joe","","Volunteer");
-        Participant p = wrap(participants).create("Mary", "", "Participant");
+        Participant p = wrap(participants).newParticipant("Mary", "Participant", new LocalDate());
 
         // then
         //assertThat(v.getPerson().getFullname()).isEqualTo("Joe Volunteer");

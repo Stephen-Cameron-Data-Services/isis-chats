@@ -63,7 +63,7 @@ public class AttendanceListTest {
             final AttendanceList obj = attendanceLists.createActivityAttendanceList(activity);
             // then
             assertThat(obj).isEqualTo(list);
-            //assertThat(obj.getAttendances().size()).isEqualTo(0);
+            assertThat(obj.getAttendeds().size()).isEqualTo(0);
 
         }
     }

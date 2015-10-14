@@ -18,14 +18,25 @@
  */
 package au.com.scds.chats.dom.module.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import javax.jdo.annotations.*;
 
+import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEvent;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEventable;
 
 import au.com.scds.chats.dom.module.attendance.AttendanceList;
+import au.com.scds.chats.dom.module.general.Persons;
 import au.com.scds.chats.dom.module.note.NoteLinkable;
+import au.com.scds.chats.dom.module.participant.Participant;
+import au.com.scds.chats.dom.module.participant.Participants;
+import au.com.scds.chats.dom.module.participant.Participation;
+import au.com.scds.chats.dom.module.participant.Participations;
 
 /**
  * ActivityEvents are individual Activities that appear on a calendar.
@@ -63,6 +74,18 @@ import au.com.scds.chats.dom.module.note.NoteLinkable;
 public class ActivityEvent extends Activity implements NoteLinkable, CalendarEventable {
 
 	private RecurringActivity parent;
+	
+	public ActivityEvent(){
+		super();
+	}
+
+	//for mock testing
+	public ActivityEvent(DomainObjectContainer container, Participants participants, Participations participations) {
+		super();
+		this.container = container;
+		this.participantsRepo = participants;
+		this.participationsRepo = participations;
+	}
 
 	public String title() {
 		if (parent != null && getName() == null)
@@ -116,9 +139,29 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 		return new CalendarEvent(getStartDateTime().withTimeAtStartOfDay(), getCalendarName(), title());
 	}
 
-	// TODO override getParticipations(), needs to add the parents
-	// Participations
-	// to ones added just for this event.
+	//@Override
+	/*public List<Participant> getParticipants(){
+		List<Participant> participants = new ArrayList<>();
+		for(Participant p : parent.getParticipants()){
+			participants.add(p);
+		}
+		for(Participant p : super.getParticipants()){
+			participants.add(p);
+		}
+		return participants;
+	}*/
+	
+	@Override
+	public SortedSet<Participation> getParticipations() {
+		SortedSet<Participation> temp = new TreeSet<Participation>();
+		for(Participation p : parent.getParticipations()){
+			temp.add(p);
+		}
+		for(Participation p : super.getParticipations()){
+			temp.add(p);
+		}
+		return temp;
+	}
 
 	// //Overides
 	// TODO test all this with integtests , grrr!!!!

@@ -21,6 +21,7 @@ import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 
 import au.com.scds.chats.dom.module.activity.Activity;
+import au.com.scds.chats.dom.module.activity.ActivityEvent;
 
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
@@ -29,7 +30,14 @@ import au.com.scds.chats.dom.module.activity.Activity;
 @MemberGroupLayout(columnSpans = { 3, 3, 0, 6 }, left = { "General" }, middle = { "Admin" })
 public class Participation implements Comparable<Participation> {
 
-	// //General
+	public Participation() {
+	}
+
+	// use for testing only
+	public Participation(Activity activity, Participant participant) {
+		setActivity(activity);
+		setParticipant(participant);
+	}
 
 	public String title() {
 		if (getParticipant() != null && getParticipant().getPerson() != null && getActivity() != null) {
@@ -43,7 +51,7 @@ public class Participation implements Comparable<Participation> {
 
 	@Column(allowsNull = "false")
 	@Property(hidden = Where.REFERENCES_PARENT)
-	@MemberOrder(sequence="1")
+	@MemberOrder(sequence = "1")
 	public Participant getParticipant() {
 		return participant;
 	}
