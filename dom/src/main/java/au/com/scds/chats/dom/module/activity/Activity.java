@@ -221,9 +221,8 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 
 	protected Location location;
 
-	@Column(allowsNull = "true")
-	// @MemberOrder(sequence = "5")
 	@Property(hidden = Where.EVERYWHERE)
+	@Column(allowsNull = "true")
 	public Location getLocation() {
 		return location;
 	}
@@ -282,7 +281,7 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	// region > participations (collection)
 
 	@Persistent(mappedBy = "activity")
-	private SortedSet<Participation> participations = new TreeSet<Participation>();
+	protected SortedSet<Participation> participations = new TreeSet<Participation>();
 
 	@MemberOrder(sequence = "100")
 	@CollectionLayout(named = "Participation", render = RenderType.EAGERLY)
@@ -318,7 +317,7 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	@ActionLayout(named = "Add")
 	public Activity addParticipant(final Participant participant) {
 		if (findParticipation(participant) == null) {
-			Participation p = participationsRepo.newParticipation(this, participant);
+			Participation p = participationsRepo.createParticipation(this, participant);
 			this.participations.add(p);
 		} else {
 			container.informUser("A Participant (" + participant.getFullName() + ") is already participating in this Activity");
@@ -337,7 +336,14 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	@MemberOrder(name = "participations", sequence = "3")
 	@ActionLayout(named = "Remove")
 	public Activity removeParticipant(final Participant participant) {
-		//TODO removeFromParticipants(participant);
+		if(participant == null)
+			return this;
+		Participation participation = findParticipation(participant);
+		if(participation!=null){
+			participations.remove(participation);
+			container.removeIfNotAlready(participation);
+			container.flush();
+		}
 		return this;
 	}
 

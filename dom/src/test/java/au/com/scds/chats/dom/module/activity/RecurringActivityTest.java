@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.isis.applib.DomainObjectContainer;
+import org.apache.isis.applib.annotation.Property;
+import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.core.unittestsupport.jmocking.JUnitRuleMockery2;
 import org.apache.isis.core.unittestsupport.jmocking.JUnitRuleMockery2.Mode;
 import org.jmock.Expectations;
@@ -17,6 +19,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import au.com.scds.chats.dom.module.general.Location;
 import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.names.ActivityType;
 import au.com.scds.chats.dom.module.participant.Participant;
@@ -134,21 +137,30 @@ public class RecurringActivityTest {
 					will(returnValue(participation2));
 					oneOf(mockContainer).persistIfNotAlready(participation2);
 					oneOf(mockContainer).flush();
+					oneOf(mockContainer).removeIfNotAlready(participation2);
+					oneOf(mockContainer).flush();
 				}
 			});
 
 			// when
 			parent.addParticipant(participant1);
+			parent.setStartDateTime(new DateTime());
 			parent.addNextScheduledActivity();
 			parent.addNextScheduledActivity();
 			event2.participationsRepo = participationsRepo;
 			event2.addParticipant(participant2);
+			
+			//then
 			assertThat(parent.getActivityEvents().first()).isEqualTo(event2);
 			assertThat(parent.getActivityEvents().last()).isEqualTo(event1);
 			assertThat(parent.getParticipants().size()).isEqualTo(1);
 			assertThat(event1.getParticipants().size()).isEqualTo(1);
 			assertThat(event2.getParticipants().size()).isEqualTo(2);
-			//
+			//only allow to remove participants from ActivityEvent local list
+			assertThat(event2.choices0RemoveParticipant().size()).isEqualTo(1);
+			assertThat(event2.choices0RemoveParticipant().get(0)).isEqualTo(participant2);
+			event2.removeParticipant(participant2);
+			assertThat(event2.getParticipants().size()).isEqualTo(1);
 		}
 
 		@Test
@@ -179,17 +191,62 @@ public class RecurringActivityTest {
 			});
 
 			// when
+			parent.setStartDateTime(new DateTime());
 			parent.addNextScheduledActivity();
 			parent.addNextScheduledActivity();
+
+			assertThat(parent.getActivityType()).isNull(); 
+			//assertThat(parent.getApproximateEndDateTime()).isNull(); 
+			assertThat(parent.getCostForParticipant()).isNull(); 
+			assertThat(parent.getDescription()).isNull(); 
+			assertThat(parent.getLocation()).isNull(); 
+			assertThat(parent.getIsRestricted()).isNull(); 
+			assertThat(parent.getScheduleId()).isNull();
+			
+			assertThat(event1.getActivityType()).isNull(); 
+			//assertThat(event1.getApproximateEndDateTime()).isNull(); 
+			assertThat(event1.getCostForParticipant()).isNull(); 
+			assertThat(event1.getDescription()).isNull(); 
+			assertThat(event1.getLocation()).isNull(); 
+			assertThat(event1.getIsRestricted()).isNull(); 
+			assertThat(event1.getScheduleId()).isNull(); 
+			
+			assertThat(event2.getActivityType()).isNull(); 			
+			//assertThat(event2.getApproximateEndDateTime()).isNull(); 
+			assertThat(event2.getCostForParticipant()).isNull(); 
+			assertThat(event2.getDescription()).isNull(); 
+			assertThat(event2.getLocation()).isNull(); 
+			assertThat(event2.getIsRestricted()).isNull(); 
+			assertThat(event2.getScheduleId()).isNull();
+			
+			//// ActivityType
 			parent.setActivityType(new ActivityType("TEST1"));
 			parent.getActivityEvents().first().setActivityType(new ActivityType("TEST2"));
-			
-			//then
 			assertThat(parent.getActivityType().getName()).isEqualTo("TEST1");
-			//event1 has its own value
 			assertThat(event2.getActivityType().getName()).isEqualTo("TEST2");
-			//event2 has parent value
 			assertThat(event1.getActivityType().getName()).isEqualTo("TEST1");
+
+			//// Location			
+			parent.setLocation(new Location("TEST1"));
+			parent.getActivityEvents().first().setLocation(new Location("TEST2"));
+			assertThat(parent.getLocation().getName()).isEqualTo("TEST1");
+			assertThat(event2.getLocation().getName()).isEqualTo("TEST2");
+			assertThat(event1.getLocation().getName()).isEqualTo("TEST1");
+			
+			//// CostForParticipant			
+			parent.setCostForParticipant("10.00");
+			parent.getActivityEvents().first().setCostForParticipant("20.00");
+			assertThat(parent.getCostForParticipant()).isEqualTo("10.00");
+			assertThat(event2.getCostForParticipant()).isEqualTo("20.00");
+			assertThat(event1.getCostForParticipant()).isEqualTo("10.00");
+			
+			//// Description			
+			parent.setDescription("parent");
+			parent.getActivityEvents().first().setDescription("child");
+			assertThat(parent.getDescription()).isEqualTo("parent");
+			assertThat(event2.getDescription()).isEqualTo("child");
+			assertThat(event1.getDescription()).isEqualTo("parent");
+		
 		}
 	}
 }

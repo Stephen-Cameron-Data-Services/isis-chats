@@ -22,6 +22,14 @@ import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 public class Location extends org.isisaddons.wicket.gmap3.cpt.applib.Location implements Locatable {
 
 	private static final long serialVersionUID = 1L;
+	
+	public Location() {
+		this.name = name;
+	}
+
+	public Location(String name) {
+		this.name = name;
+	}
 
 	public String title(){
 		return getName();

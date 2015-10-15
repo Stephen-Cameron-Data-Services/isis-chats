@@ -9,6 +9,7 @@ public class QueryDefaultMatcher extends TypeSafeMatcher<QueryDefault> {
 
 	Class typeClass;
 	String queryName;
+	String reasons = "";
 	
 	QueryDefaultMatcher(Class typeClass, String queryName){
 		this.typeClass = typeClass;
@@ -17,19 +18,33 @@ public class QueryDefaultMatcher extends TypeSafeMatcher<QueryDefault> {
 
 	@Override
 	public void describeTo(Description description) {
-		description.appendText("a query ");
+		description.appendText(reasons);
 	}
 
 	@Override
 	protected boolean matchesSafely(QueryDefault query) {
-		System.out.println(query.getQueryName());
-		System.out.println(queryName);
-		if(query.getResultType().getCanonicalName().equals(typeClass.getCanonicalName())){
-			if(query.getQueryName().equals(queryName)){
-				return true;
-			}
+		boolean matches = true;
+		if(typeClass == null){
+			reasons += " typeClass parameter is null, ";
+			matches = false;
 		}
-		return false;
+		if(queryName == null){
+			reasons += " queryName parameter is null, ";
+			matches = false;
+		}
+		if(query == null){
+			reasons += " QueryDefault parameter is null, ";
+			matches = false;			
+		}
+		if(!query.getResultType().getCanonicalName().equals(typeClass.getCanonicalName())){
+			reasons += " typeClass is not as expected (was " + query.getResultType().getCanonicalName() + " but expected " + typeClass.getCanonicalName() + ")";
+			matches = false;
+		}
+		if(!query.getQueryName().equals(queryName)){
+			reasons += " queryName is not as expected (was " + query.getQueryName() + " but expected " + queryName + ")";
+			matches = false;
+		}
+		return matches;
 	}
 }
 

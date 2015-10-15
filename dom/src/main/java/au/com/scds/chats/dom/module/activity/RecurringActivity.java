@@ -47,25 +47,23 @@ import au.com.scds.chats.dom.module.participant.Participations;
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Queries({ @Query(name = "find", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.RecurringActivity "),
 		@Query(name = "findRecurringActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.RecurringActivity WHERE name.indexOf(:name) >= 0 ") })
-@MemberGroupLayout(columnSpans = { 3, 3, 0, 6 }, left = { "General" }, middle = { "Scheduling", "Admin" })
+@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Scheduling", "Admin" })
 @DomainObject(objectType = "RECURRING_ACTIVITY")
 public class RecurringActivity extends Activity implements NoteLinkable {
 
 	public RecurringActivity() {
 		super();
 	}
-	
-	//use for testing only
+
+	// use for testing only
 	public RecurringActivity(DomainObjectContainer container, Participants participantsRepo, Participations participationsRepo) {
-		super(container,participantsRepo,participationsRepo,null,null,null);
+		super(container, participantsRepo, participationsRepo, null, null, null);
 	}
 
 	@Override
 	public String title() {
 		return "Recurring Activity: " + getName();
 	}
-
-	private List<ActivityEvent> children;
 
 	private Periodicity periodicity = Periodicity.WEEKLY;
 
@@ -147,13 +145,27 @@ public class RecurringActivity extends Activity implements NoteLinkable {
 	@MemberOrder(name = "startdatetime", sequence = "1")
 	@ActionLayout(named = "Add Next Event")
 	public RecurringActivity addNextScheduledActivity() {
-		ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
-		obj.setParentActivity(this);
-		DateTime last = (events.size() > 0) ? events.first().getStartDateTime() : new DateTime();
-		obj.setStartDateTime(last.plus(getPeriodicity().getDuration()));
-		events.add(obj);
-		container.persistIfNotAlready(obj);
-		container.flush();
+		DateTime origin = null;
+		//find last event from which to schedule next
+		if (events.size() == 0) {
+			if (getStartDateTime() == null) {
+				container.warnUser("Please set 'Start date time' for this Recurring Activity (as starting time from which to schedule more activity events)");
+			} else {
+				origin = getStartDateTime();
+			}
+		} else {
+			//first should be last in chronological order
+			origin = events.first().getStartDateTime();
+		}
+		// proceed if valid origin
+		if (origin != null) {
+			ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
+			obj.setParentActivity(this);
+			obj.setStartDateTime(origin.plus(getPeriodicity().getDuration()));
+			events.add(obj);
+			container.persistIfNotAlready(obj);
+			container.flush();
+		}
 		return this;
 	}
 

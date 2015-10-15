@@ -20,6 +20,7 @@ package au.com.scds.chats.dom.module.activity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -48,8 +49,8 @@ import au.com.scds.chats.dom.module.participant.Participations;
  * (spawned) as a child of a <code>RecurrentActivity</code>.
  * 
  * If an event spawned from a RecurrentActivity, it properties will generally be
- * those of its spawning parent, in-fact accessed and displayed from its parent, other that the DateTime of the specific
- * ActivityEvent.
+ * those of its spawning parent, in-fact accessed and displayed from its parent,
+ * other that the DateTime of the specific ActivityEvent.
  * 
  * However this parent/child relationship provides the chance for the child to
  * override the properties of its parent.
@@ -58,7 +59,8 @@ import au.com.scds.chats.dom.module.participant.Participations;
  * will be those of its children too, unless we override by adding an equivalent
  * Participation to a child.
  * 
- * Note that participation and attendance are handled separately, the later via Attended records.
+ * Note that participation and attendance are handled separately, the later via
+ * Attended records.
  * 
  */
 @PersistenceCapable()
@@ -141,8 +143,8 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 		return new CalendarEvent(getStartDateTime().withTimeAtStartOfDay(), getCalendarName(), title());
 	}
 
-	////// Overrides //////
-	
+	//>>> Overrides <<<//
+
 	/**
 	 * Participations list for an ActivityEvent is the list of its parent
 	 * RecurringActivity, if present, plus any locally added.
@@ -163,8 +165,39 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 		}
 		return temp;
 	}
+	
+	/**
+	 * Participants & Participations lists are combined list, but only want to
+	 * remove Participants from local list.
+	 */
+	@Override
+	public ActivityEvent removeParticipant(final Participant participant) {
+		if(participant == null)
+			return this;
+		for(Participation p : super.getParticipations()){
+			if(p.getParticipant().equals(participant)){
+				participations.remove(p);
+				participationsRepo.deleteParticipation(p);
+				break;
+			}
+		}
+		return this;
+	}
+
+	/**
+	 * Only want to remove Participants from local list.
+	 */
+	@Override
+	public List<Participant> choices0RemoveParticipant() {
+		List<Participant> list = new ArrayList();
+		for(Participation p : super.getParticipations()){
+			list.add(p.getParticipant());
+		}
+		return list;
+	}
 
 	@Property(hidden = Where.EVERYWHERE)
+	@NotPersistent
 	@Override
 	public ActivityType getActivityType() {
 		if (getParentActivity() != null && super.getActivityType() == null) {
@@ -173,7 +206,9 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 		return super.getActivityType();
 	}
 
+	@Property(hidden = Where.ALL_TABLES)
 	@Override
+	@Column(allowsNull = "true")
 	public DateTime getStartDateTime() {
 		if (getParentActivity() != null && super.getStartDateTime() == null) {
 			return getParentActivity().getStartDateTime();
@@ -181,7 +216,9 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 		return super.getStartDateTime();
 	}
 
+	@Property(hidden = Where.ALL_TABLES)
 	@Override
+	@Column(allowsNull = "true")
 	public DateTime getApproximateEndDateTime() {
 		if (getParentActivity() != null && super.getApproximateEndDateTime() == null) {
 			return getParentActivity().getApproximateEndDateTime();
@@ -189,7 +226,9 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 		return super.getApproximateEndDateTime();
 	}
 
+	@Property(hidden = Where.ALL_TABLES)
 	@Override
+	@Column(allowsNull = "true")
 	public String getCostForParticipant() {
 		if (getParentActivity() != null && super.getCostForParticipant() == null) {
 			return getParentActivity().getCostForParticipant();
@@ -197,7 +236,9 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 		return super.getCostForParticipant();
 	}
 
+	@Property(hidden = Where.ALL_TABLES)
 	@Override
+	@Column(allowsNull = "true")
 	public String getDescription() {
 		if (getParentActivity() != null && super.getDescription() == null) {
 			return getParentActivity().getDescription();
@@ -205,8 +246,9 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 		return super.getDescription();
 	}
 
-	@Override
 	@Property(hidden = Where.EVERYWHERE)
+	@NotPersistent
+	@Override
 	public Location getLocation() {
 		if (getParentActivity() != null && super.getLocation() == null) {
 			return getParentActivity().getLocation();
@@ -214,7 +256,9 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 		return super.getLocation();
 	}
 
+	@Property(hidden = Where.ALL_TABLES)
 	@Override
+	@Column(allowsNull = "true")
 	public Boolean getIsRestricted() {
 		if (getParentActivity() != null && super.getIsRestricted() == null) {
 			return getParentActivity().getIsRestricted();
@@ -222,7 +266,9 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 		return super.getIsRestricted();
 	}
 
+	@Property(hidden = Where.ALL_TABLES)
 	@Override
+	@Column(allowsNull = "true")
 	public Long getScheduleId() {
 		if (getParentActivity() != null && super.getScheduleId() == null) {
 			return getParentActivity().getScheduleId();

@@ -18,7 +18,7 @@ public class Participations {
 		this.container = container;
 	}
 
-	public Participation newParticipation(Activity activity, Participant participant) {
+	public Participation createParticipation(Activity activity, Participant participant) {
 		Participation participation = container.newTransientInstance(Participation.class);
 		participation.setActivity(activity);
 		participation.setParticipant(participant);
@@ -27,6 +27,11 @@ public class Participations {
 		return participation;
 	}
 
+	public void deleteParticipation(Participation participation) {
+		container.removeIfNotAlready(participation);
+		container.flush();
+	}
+	
 	@Inject
 	DomainObjectContainer container;
 }

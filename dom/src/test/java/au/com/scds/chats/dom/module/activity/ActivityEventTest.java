@@ -232,6 +232,52 @@ public class ActivityEventTest {
 			assertThat(activity.findParticipation(participant)).isEqualTo(participation);
 			assertThat(activity.getParticipants().get(0).getPerson()).isEqualTo(person);
 		}
+		
+		@Test
+		public void removeParticipant() throws Exception{
+			
+			//empty Participants list
+			final List<Participant> participants = new ArrayList<Participant>();
+			//Persons list with one Person
+			Person person = new Person();
+			person.setFirstname("Joe");
+			person.setSurname("Blow");
+			person.setBirthdate(new LocalDate("1940-10-10"));
+			final List<Person> persons = new ArrayList<Person>();
+			persons.add(person);
+			//new Participant and new Participation
+			final Participant participant = new Participant();
+			final Participation participation = new Participation();
+
+			context.checking(new Expectations() {
+				{
+					// see if existing Participant
+					oneOf(mockContainer).allMatches(with(aQueryDefault(Participant.class, "findParticipantsBySurname")));
+					will(returnValue(participants));
+					// see if existing Person
+					oneOf(mockContainer).allMatches(with(aQueryDefault(Person.class, "findPersonsBySurname")));
+					will(returnValue(persons));
+					//create new Participant and Participation
+					oneOf(mockContainer).newTransientInstance(Participant.class);
+					will(returnValue(participant));
+					oneOf(mockContainer).persistIfNotAlready(participant);
+					oneOf(mockContainer).flush();
+					oneOf(mockContainer).newTransientInstance(Participation.class);
+					will(returnValue(participation));
+					oneOf(mockContainer).persistIfNotAlready(participation);
+					oneOf(mockContainer).flush();
+					oneOf(mockContainer).removeIfNotAlready(participation);
+					oneOf(mockContainer).flush();
+				}
+			});
+
+			activity.addNewParticipant(person.getFirstname(), person.getSurname(), person.getBirthdate());
+			assertThat(activity.getParticipants().size()).isEqualTo(1);
+			assertThat(activity.getParticipants().get(0)).isEqualTo(participant);
+			assertThat(activity.findParticipation(participant)).isEqualTo(participation);
+			activity.removeParticipant(participant);
+			assertThat(activity.getParticipants().size()).isEqualTo(0);
+		}
 	}
 
 	@Factory
