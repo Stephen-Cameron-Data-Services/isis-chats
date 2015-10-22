@@ -28,8 +28,18 @@ import org.joda.time.DateTime;
 @DomainService(repositoryFor = ActivityEvent.class)
 @DomainServiceLayout(named = "Activities", menuOrder = "10")
 public class Activities {
+	
+	public Activities(){
+		
+	}
 
-    @Action(semantics = SemanticsOf.SAFE)
+	//used for testing
+    public Activities(DomainObjectContainer container) {
+		this.container = container;
+	}
+
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "1")
 	public RecurringActivity createRecurringActivity(@Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Activity name") final String name, @Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Start date time") final DateTime startDateTime) {
 		final RecurringActivity obj = container.newTransientInstance(RecurringActivity.class);
@@ -43,7 +53,6 @@ public class Activities {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "2")
-	@CollectionLayout(paged = 20, render = RenderType.EAGERLY)
 	public List<RecurringActivity> listAllRecurringActivities() {
 		return container.allInstances(RecurringActivity.class);
 	}
@@ -55,6 +64,8 @@ public class Activities {
 		return container.allMatches(new QueryDefault<>(RecurringActivity.class, "findByRecurringActivityByName", "name", name));
 	}
 
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "5")
 	public ActivityEvent createOneOffActivity(@Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Activity name") final String name, @Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Start date time") final DateTime startDateTime) {
 		final ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
@@ -81,15 +92,12 @@ public class Activities {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-	@MemberOrder(sequence = "10")
+	@MemberOrder(sequence = "11")
 	public List<ActivityEvent> listAllPastActivities() {
 		return container.allMatches(new QueryDefault<>(ActivityEvent.class, "findAllPastActivities","currentDateTime", new DateTime()));
 	}
 
-	// injected services
-
 	@javax.inject.Inject
 	DomainObjectContainer container;
-
 
 }

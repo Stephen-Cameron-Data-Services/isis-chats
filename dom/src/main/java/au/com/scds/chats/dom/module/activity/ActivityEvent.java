@@ -40,7 +40,6 @@ import au.com.scds.chats.dom.module.note.NoteLinkable;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.dom.module.participant.Participation;
-import au.com.scds.chats.dom.module.participant.Participations;
 
 /**
  * ActivityEvents are individual Activities that appear on a calendar.
@@ -77,18 +76,18 @@ import au.com.scds.chats.dom.module.participant.Participations;
 @MemberGroupLayout(columnSpans = { 4, 2, 0, 6 }, left = { "General" }, middle = { "Admin" })
 public class ActivityEvent extends Activity implements NoteLinkable, CalendarEventable {
 
-	private RecurringActivity parent;
+	protected RecurringActivity parent;
+	protected AttendanceList attendances;
 
 	public ActivityEvent() {
 		super();
 	}
 
 	// for mock testing
-	public ActivityEvent(DomainObjectContainer container, Participants participants, Participations participations) {
+	public ActivityEvent(DomainObjectContainer container, Participants participants) {
 		super();
 		this.container = container;
 		this.participantsRepo = participants;
-		this.participationsRepo = participations;
 	}
 
 	public String title() {
@@ -98,9 +97,9 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 			return "Activity: " + getName();
 	}
 
-	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "1")
 	@Property(hidden = Where.EVERYWHERE)
+	@MemberOrder(sequence = "1")
+	@Column(allowsNull = "true")
 	public final RecurringActivity getParentActivity() {
 		return parent;
 	}
@@ -109,26 +108,21 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 		this.parent = activity;
 	}
 
-	// {{ AttendanceList (property)
-	private AttendanceList attendances;
-
-	@Column(allowsNull = "true")
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Attendance List")
 	@MemberOrder(sequence = "1")
+	@Column(allowsNull = "true")
 	public AttendanceList getAttendances() {
 		return attendances;
 	}
 
+	// used by AttendanceLists.createAttendanceList(activity)
 	public void setAttendances(final AttendanceList attendances) {
 		// can only be set once
-		// used by AttendanceLists.createAttendanceList(activity)
 		if (this.attendances != null)
 			return;
 		this.attendances = attendances;
 	}
-
-	// }}
 
 	// CalendarEventable methods
 	@Programmatic
@@ -146,7 +140,7 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 	//>>> Overrides <<<//
 
 	/**
-	 * Participations list for an ActivityEvent is the list of its parent
+	 * List of Participations for an ActivityEvent is the list of its parent
 	 * RecurringActivity, if present, plus any locally added.
 	 * 
 	 * Note: this Participation list is used to generate a Participant list in
@@ -177,7 +171,7 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 		for(Participation p : super.getParticipations()){
 			if(p.getParticipant().equals(participant)){
 				participations.remove(p);
-				participationsRepo.deleteParticipation(p);
+				participantsRepo.deleteParticipation(p);
 				break;
 			}
 		}

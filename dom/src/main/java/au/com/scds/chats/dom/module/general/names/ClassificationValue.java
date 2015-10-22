@@ -7,7 +7,7 @@ import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.PrimaryKey;
 
-import au.com.scds.chats.dom.AbstractNamedChatsDomainEntity;
+//import au.com.scds.chats.dom.AbstractNamedChatsDomainEntity;
 
 /**
  * Base class for the 'name' types.

@@ -1,4 +1,4 @@
-package au.com.scds.chats.dom.module.activity;
+package au.com.scds.chats.dom.test;
 
 import org.apache.isis.applib.query.Query;
 import org.apache.isis.applib.query.QueryDefault;
@@ -11,7 +11,7 @@ public class QueryDefaultMatcher extends TypeSafeMatcher<QueryDefault> {
 	String queryName;
 	String reasons = "";
 	
-	QueryDefaultMatcher(Class typeClass, String queryName){
+	public QueryDefaultMatcher(Class typeClass, String queryName){
 		this.typeClass = typeClass;
 		this.queryName = queryName;
 	}

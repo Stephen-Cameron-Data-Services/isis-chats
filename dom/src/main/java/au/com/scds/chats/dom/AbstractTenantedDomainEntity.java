@@ -6,6 +6,7 @@ import java.util.List;
 import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 
@@ -19,8 +20,6 @@ import au.com.scds.chats.dom.module.general.names.Regions;
 /**
  * Adds Tenanting to AbstractDomainEntity based on region
  * 
- * @author steve cameron
- * 
  */
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
@@ -28,9 +27,10 @@ public abstract class AbstractTenantedDomainEntity extends AbstractDomainEntity 
 
 	protected Region region;
 
-	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "12")
+	@Property()
 	@PropertyLayout(hidden = Where.EVERYWHERE)
+	@MemberOrder(sequence = "12")
+	@Column(allowsNull = "true")
 	public Region getRegion() {
 		return this.region;
 	}

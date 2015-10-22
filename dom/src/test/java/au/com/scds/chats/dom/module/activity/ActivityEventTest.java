@@ -29,7 +29,7 @@ import au.com.scds.chats.dom.module.general.Persons;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.dom.module.participant.Participation;
-import au.com.scds.chats.dom.module.participant.Participations;
+import au.com.scds.chats.dom.test.QueryDefaultMatcher;
 
 public class ActivityEventTest {
 
@@ -42,15 +42,13 @@ public class ActivityEventTest {
 	ActivityEvent activity;
 	Persons personsRepo;
 	Participants participantsRepo;
-	Participations participationsRepo;
 	Activities activitiesRepo;
 
 	@Before
 	public void setUp() throws Exception {
 		personsRepo = new Persons(mockContainer);
 		participantsRepo = new Participants(mockContainer);
-		participationsRepo = new Participations(mockContainer);
-		activity = new ActivityEvent(mockContainer, participantsRepo, participationsRepo);
+		activity = new ActivityEvent(mockContainer, participantsRepo);
 	}
 
 	public static class ActivityEventTest_Tests extends ActivityEventTest {

@@ -60,6 +60,17 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 	private String preferredname;
 	private LocalDate birthdate;
 	private Region region;
+	
+	public Person(){
+		super();
+	}
+
+	public Person(String firstName, String surname, LocalDate birthdate) {
+		super();
+		this.firstname = firstName;
+		this.surname = surname;
+		this.birthdate = birthdate;
+	}
 
 	@Override
 	public int compareTo(Person o) {

@@ -3,6 +3,7 @@ package au.com.scds.chats.dom.module.volunteer;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.inject.Inject;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.DatastoreIdentity;
 import javax.jdo.annotations.IdGeneratorStrategy;
@@ -29,7 +30,6 @@ import org.joda.time.LocalTime;
  * A manager of ScheduledCall objects for a specific Calendar day, usually for a
  * specific Volunteer .
  * 
- * @author Stephen Cameron Data Services
  * 
  */
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
@@ -39,13 +39,16 @@ import org.joda.time.LocalTime;
 @DomainObject(objectType = "CALENDAR_DAY_CALL_SCHEDULE")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 public class CalendarDayCallSchedule implements CalendarEventable, Comparable<CalendarDayCallSchedule> {
-
+	
+	private LocalDate calendarDate;
+	private Volunteer allocatedVolunteer;
+	private Integer totalCalls = 0;
+	private Integer completedCalls = 0;
+	private SortedSet<ScheduledCall> scheduledCalls = new TreeSet<>();
+	
 	public String title() {
 		return "Total: " + getTotalCalls() + "; Completed: " + getCompletedCalls();
 	}
-
-	// {{ CalendarDay (property)
-	private LocalDate calendarDate;
 
 	@Column(allowsNull = "false")
 	@MemberOrder(sequence = "1")
@@ -57,11 +60,6 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 		this.calendarDate = calendarDate;
 	}
 
-	// }}
-
-	// {{ AllocatedVolunteer (property)
-	private Volunteer allocatedVolunteer;
-
 	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "2")
 	public Volunteer getAllocatedVolunteer() {
@@ -71,11 +69,6 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	void setAllocatedVolunteer(final Volunteer allocatedVolunteer) {
 		this.allocatedVolunteer = allocatedVolunteer;
 	}
-
-	// }}
-
-	// {{ TotalCalls (property)
-	private Integer totalCalls = 0;
 
 	@Column(allowsNull = "false")
 	@MemberOrder(sequence = "3")
@@ -88,12 +81,6 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 		this.totalCalls = total;
 	}
 
-	// }}
-
-	// {{ CompletedCalls (property)
-	// tracks a count of calls in this schedule for display in calendar
-	private Integer completedCalls = 0;
-
 	@Column(allowsNull = "false")
 	@MemberOrder(sequence = "4")
 	public Integer getCompletedCalls() {
@@ -104,17 +91,10 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 		this.completedCalls = completed;
 	}
 
-	// }}
-
-	// {{ ScheduledCalls (property)
-	private SortedSet<ScheduledCall> scheduledCalls = new TreeSet<>();
-
 	@CollectionLayout(paged = 20, render = RenderType.EAGERLY)
 	public SortedSet<ScheduledCall> getScheduledCalls() {
 		return scheduledCalls;
 	}
-
-	// }}
 
 	// ACTIONS
 	public synchronized ScheduledCall scheduleCall(final LocalTime time) throws Exception {
@@ -168,7 +148,6 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	@Override
 	@Programmatic
 	public CalendarEvent toCalendarEvent() {
-		// TODO Auto-generated method stub
 		return new CalendarEvent(getCalendarDate().toDateTimeAtStartOfDay(), getCalendarName(), title().toString());
 	}
 
@@ -177,6 +156,6 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 		return this.getCalendarDate().compareTo(o.getCalendarDate());
 	}
 
-	@javax.inject.Inject()
+	@Inject()
 	CallSchedules callScheduler;
 }

@@ -1,7 +1,11 @@
 package au.com.scds.chats.dom.module.participant;
 
+import javax.inject.Inject;
 import javax.jdo.annotations.Column;
+import javax.jdo.annotations.DatastoreIdentity;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Version;
 import javax.jdo.annotations.VersionStrategy;
 
 import org.apache.isis.applib.DomainObjectContainer;
@@ -11,26 +15,28 @@ import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
-import org.apache.isis.applib.annotation.Where;
-import org.apache.isis.applib.util.TitleBuffer;
+import org.apache.isis.applib.annotation.PropertyLayout;
 
-@javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
-@javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
-@javax.jdo.annotations.Version(strategy = VersionStrategy.VERSION_NUMBER, column = "version")
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
 @DomainObject(objectType = "LIFE-HISTORY")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 public class LifeHistory {
 
+	private Participant parent;
+	private String lifeStory;
+	private String experiences;
+	private String hobbies;
+	private String interests;
+	
 	public String title() {
 		return "Life History of Participant: " + parent.getPerson().getFullname() ;
 	}
 	
-	// {{ ParentParticipant (property)
-	private Participant parent;
-
-	@Column(allowsNull = "false")
-	@Property(editing=Editing.DISABLED)
+	@Property()
+	@PropertyLayout()
 	@MemberOrder(sequence = "100")
+	@Column(allowsNull = "false")
 	public Participant getParentParticipant() {
 		return parent;
 	}
@@ -40,11 +46,10 @@ public class LifeHistory {
 			this.parent = participant;
 	}
 
-	// {{ LifeStory (property)
-	private String lifeStory;
-
-	@Column(allowsNull="true")
+	@Property(editing=Editing.DISABLED)
+	@PropertyLayout()
 	@MemberOrder(sequence = "1")
+	@Column(allowsNull="true")
 	public String getLifeStory() {
 		return lifeStory;
 	}
@@ -53,13 +58,10 @@ public class LifeHistory {
 		this.lifeStory = lifeStory;
 	}
 
-	// }}
-
-	// {{ LifeExperiences (property)
-	private String experiences;
-
-	@Column(allowsNull="true")
+	@Property()
+	@PropertyLayout()
 	@MemberOrder(sequence = "2")
+	@Column(allowsNull="true")
 	public String getLifeExperiences() {
 		return experiences;
 	}
@@ -68,13 +70,10 @@ public class LifeHistory {
 		this.experiences = experiences;
 	}
 
-	// }}
-
-	// {{ Hobbies (property)
-	private String hobbies;
-
-	@Column(allowsNull="true")
+	@Property()
+	@PropertyLayout()
 	@MemberOrder(sequence = "3")
+	@Column(allowsNull="true")
 	public String getHobbies() {
 		return hobbies;
 	}
@@ -83,13 +82,10 @@ public class LifeHistory {
 		this.hobbies = hobbies;
 	}
 
-	// }}
-
-	// {{ Interests (property)
-	private String interests;
-
-	@Column(allowsNull="true")
+	@Property()
+	@PropertyLayout()
 	@MemberOrder(sequence = "4")
+	@Column(allowsNull="true")
 	public String getInterests() {
 		return interests;
 	}
@@ -98,12 +94,7 @@ public class LifeHistory {
 		this.interests = interests;
 	}
 
-	// }}
-
-	@javax.inject.Inject
+	@Inject
 	@SuppressWarnings("unused")
 	private DomainObjectContainer container;
-
-
-
 }

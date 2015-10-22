@@ -13,10 +13,10 @@ import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 @javax.jdo.annotations.PersistenceCapable(
          identityType=IdentityType.APPLICATION)
 @Queries({
-	@Query(name = "findByName", language = "JDOQL", value = "SELECT "
+	@Query(name = "findLocationByName", language = "JDOQL", value = "SELECT "
 			+ "FROM au.com.scds.chats.dom.module.general.Location "
 			+ "WHERE name == :name"), 
-	@Query(name = "findAll", language = "JDOQL", value = "SELECT "
+	@Query(name = "findAllLocations", language = "JDOQL", value = "SELECT "
 			+ "FROM au.com.scds.chats.dom.module.general.Location "
 			+ "ORDER BY name")})
 public class Location extends org.isisaddons.wicket.gmap3.cpt.applib.Location implements Locatable {

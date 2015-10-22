@@ -44,20 +44,33 @@ import au.com.scds.chats.dom.module.general.names.Regions;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.dom.module.participant.Participation;
-import au.com.scds.chats.dom.module.participant.Participations;
 
 @PersistenceCapable(table = "activity", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.CLASS_NAME, column = "class")
 public abstract class Activity extends AbstractDomainEntity implements Comparable<Activity> {
 
+	private Long oldId; //id copied from old system
+	protected String name;
+	protected Provider provider;
+	protected ActivityType activityType;
+	protected DateTime approximateEndDateTime;
+	protected Long copiedFromActivityId;
+	protected String costForParticipant;
+	protected String description;
+	protected DateTime startDateTime;
+	protected Location location;
+	protected Boolean isRestricted;
+	protected Long scheduleId;
+	@Persistent(mappedBy = "activity")
+	protected SortedSet<Participation> participations = new TreeSet<Participation>();
+	
 	public Activity() {
 	}
 
-	public Activity(DomainObjectContainer container, Participants participantsRepo, Participations participationsRepo, Providers activityProviders, ActivityTypes activityTypes, Locations locations) {
+	public Activity(DomainObjectContainer container, Participants participantsRepo,  Providers activityProviders, ActivityTypes activityTypes, Locations locations) {
 		this.container = container;
 		this.participantsRepo = participantsRepo;
-		this.participationsRepo = participationsRepo;
 		this.activityProviders = activityProviders;
 		this.activityTypes = activityTypes;
 		this.locations = locations;
@@ -67,10 +80,8 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		return "Activity: " + getName();
 	}
 
-	private Long oldId;
-
-	@Column(allowsNull = "true")
 	@Programmatic
+	@Column(allowsNull = "true")
 	public Long getOldId() {
 		return oldId;
 	}
@@ -79,11 +90,9 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		this.oldId = id;
 	}
 
-	protected String name;
-
-	@Column(allowsNull = "true", length = 100)
 	@Property(hidden = Where.NOWHERE)
 	@MemberOrder(sequence = "1")
+	@Column(allowsNull = "true", length = 100)
 	public String getName() {
 		return name;
 	}
@@ -104,11 +113,9 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		 */
 	}
 
-	protected Provider provider;
-
-	@Column(allowsNull = "true")
 	@Property(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "3")
+	@Column(allowsNull = "true")
 	public Provider getProvider() {
 		return provider;
 	}
@@ -121,11 +128,8 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		return activityProviders.listAllProviders();
 	}
 
-	private ActivityType activityType;
-
-	@Column(allowsNull = "true")
-	// @MemberOrder(sequence = "5")
 	@Property(hidden = Where.EVERYWHERE)
+	@Column(allowsNull = "true")
 	public ActivityType getActivityType() {
 		return activityType;
 	}
@@ -135,8 +139,8 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "5")
 	@PropertyLayout(named = "Activity Type")
+	@MemberOrder(sequence = "5")
 	@NotPersistent
 	public String getActivityTypeName() {
 		return getActivityType() != null ? this.getActivityType().getName() : null;
@@ -150,12 +154,10 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		return activityTypes.allNames();
 	}
 
-	protected DateTime approximateEndDateTime;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "6")
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Approximate End Date & Time")
+	@MemberOrder(sequence = "6")
+	@Column(allowsNull = "true")
 	public DateTime getApproximateEndDateTime() {
 		return approximateEndDateTime;
 	}
@@ -164,12 +166,10 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		this.approximateEndDateTime = approximateEndDateTime;
 	}
 
-	private Long copiedFromActivityId;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "7")
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Copied From AbstractActivity Id")
+	@MemberOrder(sequence = "7")
+	@Column(allowsNull = "true")
 	public Long getCopiedFromActivityId() {
 		return copiedFromActivityId;
 	}
@@ -178,12 +178,10 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		this.copiedFromActivityId = copiedFromActivityId;
 	}
 
-	protected String costForParticipant;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "8")
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Cost For Participant")
+	@MemberOrder(sequence = "8")
+	@Column(allowsNull = "true")
 	public String getCostForParticipant() {
 		return costForParticipant;
 	}
@@ -192,12 +190,9 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		this.costForParticipant = costForParticipant;
 	}
 
-	protected String description;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "9")
 	@Property(hidden = Where.ALL_TABLES)
-	@PropertyLayout()
+	@MemberOrder(sequence = "9")
+	@Column(allowsNull = "true")
 	public String getDescription() {
 		return description;
 	}
@@ -206,11 +201,10 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		this.description = description;
 	}
 
-	protected DateTime startDateTime;
-
-	@Column(allowsNull = "false")
-	@MemberOrder(sequence = "10")
 	@Property(hidden = Where.NOWHERE)
+	@PropertyLayout()
+	@MemberOrder(sequence = "10")
+	@Column(allowsNull = "false")
 	public DateTime getStartDateTime() {
 		return this.startDateTime;
 	}
@@ -219,9 +213,9 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		this.startDateTime = startDateTime;
 	}
 
-	protected Location location;
-
 	@Property(hidden = Where.EVERYWHERE)
+	//@PropertyLayout()
+	//@MemberOrder(sequence = "11")
 	@Column(allowsNull = "true")
 	public Location getLocation() {
 		return location;
@@ -231,8 +225,8 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		this.location = location;
 	}
 
-	@MemberOrder(sequence = "10")
 	@PropertyLayout(named = "Location", hidden = Where.ALL_TABLES)
+	@MemberOrder(sequence = "11")
 	@NotPersistent
 	public String getLocationName() {
 		return (getLocation() != null) ? getLocation().getName() : null;
@@ -248,12 +242,10 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		return locations.allNames();
 	}
 
-	protected Boolean isRestricted;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "13")
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Is Restricted")
+	@MemberOrder(sequence = "13")
+	@Column(allowsNull = "true")
 	public Boolean getIsRestricted() {
 		return isRestricted;
 	}
@@ -262,12 +254,10 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		this.isRestricted = isRestricted;
 	}
 
-	protected Long scheduleId;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "14")
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Schedule Id")
+	@MemberOrder(sequence = "14")
+	@Column(allowsNull = "true")
 	public Long getScheduleId() {
 		return scheduleId;
 	}
@@ -276,13 +266,7 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		this.scheduleId = scheduleId;
 	}
 
-	// COLLECTIONS
-
-	// region > participations (collection)
-
-	@Persistent(mappedBy = "activity")
-	protected SortedSet<Participation> participations = new TreeSet<Participation>();
-
+	@Property()
 	@MemberOrder(sequence = "100")
 	@CollectionLayout(named = "Participation", render = RenderType.EAGERLY)
 	public SortedSet<Participation> getParticipations() {
@@ -292,8 +276,6 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	public void setParticipations(final SortedSet<Participation> participations) {
 		this.participations = participations;
 	}
-
-	// endregion
 
 	@Programmatic
 	public Participation findParticipation(Participant participant) {
@@ -313,11 +295,12 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		return participants;
 	}
 
-	@MemberOrder(name = "participations", sequence = "1")
+	@Action()
 	@ActionLayout(named = "Add")
+	@MemberOrder(name = "participations", sequence = "1")
 	public Activity addParticipant(final Participant participant) {
 		if (findParticipation(participant) == null) {
-			Participation p = participationsRepo.createParticipation(this, participant);
+			Participation p = participantsRepo.createParticipation(this, participant);
 			this.participations.add(p);
 		} else {
 			container.informUser("A Participant (" + participant.getFullName() + ") is already participating in this Activity");
@@ -325,16 +308,18 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		return this;
 	}
 
-	@MemberOrder(name = "participations", sequence = "2")
+	@Action()
 	@ActionLayout(named = "Add New")
+	@MemberOrder(name = "participations", sequence = "2")
 	public Activity addNewParticipant(final @ParameterLayout(named = "First name") String firstname, final @ParameterLayout(named = "Surname") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob) {
 		addParticipant(participantsRepo.newParticipant(firstname, surname, dob));
 		return this;
 	}
 
-	@MemberOrder(name = "participations", sequence = "3")
+	@Action()
 	@ActionLayout(named = "Remove")
+	@MemberOrder(name = "participations", sequence = "3")
 	public Activity removeParticipant(final Participant participant) {
 		if(participant == null)
 			return this;
@@ -355,20 +340,14 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		return getParticipants();
 	}
 
-	// private void removeFromParticipants(final Participant participant) {
-	// // check for no-op
-	// if (participant == null || !participant.hasParticipation(this)) {
-	// return;
-	// }
-	// participationList.remove(participant.removeParticipation(this));
-	// }
-
-	// region > injected services
 	@Inject
 	protected DomainObjectContainer container;
 	
 	@Inject
 	protected Participants participantsRepo;
+	
+	//@Inject
+	//protected Participations participationsRepo;
 
 	@Inject
 	protected Providers activityProviders;
@@ -378,12 +357,4 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 
 	@Inject
 	protected Locations locations;
-
-	@Inject
-	protected Participations participationsRepo;
-
-
-
-	// endregion
-
 }

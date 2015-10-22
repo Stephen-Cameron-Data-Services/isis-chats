@@ -5,8 +5,6 @@ import javax.jdo.annotations.*;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.PropertyLayout;
 
-import au.com.scds.chats.dom.AbstractNamedChatsDomainEntity;
-
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Queries({
 	@Query(name = "findByName", language = "JDOQL", value = "SELECT "

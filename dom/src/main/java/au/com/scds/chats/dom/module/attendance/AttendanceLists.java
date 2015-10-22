@@ -3,6 +3,7 @@ package au.com.scds.chats.dom.module.attendance;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.jdo.annotations.Column;
 
 import org.apache.isis.applib.DomainObjectContainer;
@@ -26,10 +27,16 @@ import au.com.scds.chats.dom.module.participant.Participant;
 @DomainServiceLayout(named = "Attendances", menuOrder = "40")
 public class AttendanceLists {
 
+	public AttendanceLists(DomainObjectContainer container) {
+		this.container = container;
+	}
+
 	@Action()
 	@ActionLayout(named = "Create Attendance List")
 	@MemberOrder(sequence = "10")
 	public AttendanceList createActivityAttendanceList(@ParameterLayout(named = "Activity") final ActivityEvent activityEvent) {
+		if (activityEvent == null)
+			return null;
 		AttendanceList attendanceList = container.newTransientInstance(AttendanceList.class);
 		attendanceList.setParentActivity(activityEvent);
 		container.persistIfNotAlready(attendanceList);
@@ -51,20 +58,20 @@ public class AttendanceLists {
 
 	@Programmatic
 	public Attended createAttended(final ActivityEvent activity, final Participant participant, final Boolean attended) {
-		if(activity == null || participant == null)
+		if (activity == null || participant == null)
 			return null;
 		Attended attendance = container.newTransientInstance(Attended.class);
 		attendance.setActivity(activity);
-		attendance.setParticipant(participant);		
+		attendance.setParticipant(participant);
 		attendance.setAttended(attended);
 		container.persistIfNotAlready(attendance);
 		container.flush();
 		return attendance;
 	}
-	
+
 	@Programmatic
 	public void deleteAttended(Attended attended) {
-		if(attended!= null)
+		if (attended != null)
 			container.removeIfNotAlready(attended);
 	}
 
@@ -75,12 +82,7 @@ public class AttendanceLists {
 		return container.allInstances(AttendanceList.class);
 	}
 
-	@javax.inject.Inject
-	Activities activitiesRepo;
-
-	@javax.inject.Inject
+	@Inject
 	DomainObjectContainer container;
-
-
 
 }

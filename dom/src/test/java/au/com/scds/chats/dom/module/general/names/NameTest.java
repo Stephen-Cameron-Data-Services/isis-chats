@@ -19,8 +19,6 @@ package au.com.scds.chats.dom.module.general.names;
 import org.junit.Before;
 import org.junit.Test;
 
-import au.com.scds.chats.dom.AbstractNamedChatsDomainEntity;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class NameTest {

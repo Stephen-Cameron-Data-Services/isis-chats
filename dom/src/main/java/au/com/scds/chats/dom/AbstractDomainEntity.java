@@ -25,21 +25,27 @@ import au.com.scds.chats.dom.user.ModifyTrackedEntity;
 /**
  * Base class of the Chats Entity Inheritance Tree.
  * 
- * Has Admin related properties.
- * 
- * @author steve cameron
+ * Has the 'Admin' section properties.
  * 
  */
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public abstract class AbstractDomainEntity /*implements  InstanceCallbacks, CreateTrackedEntity, ModifyTrackedEntity*/ {
+public abstract class AbstractDomainEntity /*
+											 * implements InstanceCallbacks,
+											 * CreateTrackedEntity,
+											 * ModifyTrackedEntity
+											 */{
 
 	private String createdBy;
+	private DateTime createdOn;
+	private DateTime deletedOn;
+	private String lastModifiedBy;
+	private DateTime lastModifiedOn;
 
-	@Column(allowsNull = "true")
-	@MemberOrder(name = "Admin", sequence = "1")
 	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Created by")
+	@MemberOrder(name = "Admin", sequence = "1")
+	@Column(allowsNull = "true")
 	public String getCreatedBy() {
 		return createdBy;
 	}
@@ -48,12 +54,10 @@ public abstract class AbstractDomainEntity /*implements  InstanceCallbacks, Crea
 		this.createdBy = createdBy;
 	}
 
-	private DateTime createdOn;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(name = "Admin", sequence = "2")
 	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Created On")
+	@MemberOrder(name = "Admin", sequence = "2")
+	@Column(allowsNull = "true")
 	public DateTime getCreatedOn() {
 		return createdOn;
 	}
@@ -62,12 +66,10 @@ public abstract class AbstractDomainEntity /*implements  InstanceCallbacks, Crea
 		this.createdOn = createdOn;
 	}
 
-	private DateTime deletedOn;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(name = "Admin", sequence = "3")
 	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Deleted On")
+	@MemberOrder(name = "Admin", sequence = "3")
+	@Column(allowsNull = "true")
 	public DateTime getDeletedOn() {
 		return deletedOn;
 	}
@@ -76,12 +78,10 @@ public abstract class AbstractDomainEntity /*implements  InstanceCallbacks, Crea
 		this.deletedOn = deletedOn;
 	}
 
-	private String lastModifiedBy;
-
-	@Column(allowsNull = "true")
 	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
-	@MemberOrder(name = "Admin", sequence = "4")
 	@PropertyLayout(named = "Modified By")
+	@MemberOrder(name = "Admin", sequence = "4")
+	@Column(allowsNull = "true")
 	public String getLastModifiedBy() {
 		return lastModifiedBy;
 	}
@@ -90,12 +90,10 @@ public abstract class AbstractDomainEntity /*implements  InstanceCallbacks, Crea
 		this.lastModifiedBy = lastModifiedBy;
 	}
 
-	private DateTime lastModifiedOn;
-
-	@Column(allowsNull = "true")
 	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
-	@MemberOrder(name = "Admin", sequence = "5")
 	@PropertyLayout(named = "Last Modified")
+	@MemberOrder(name = "Admin", sequence = "5")
+	@Column(allowsNull = "true")
 	public DateTime getLastModifiedOn() {
 		return lastModifiedOn;
 	}
@@ -103,45 +101,40 @@ public abstract class AbstractDomainEntity /*implements  InstanceCallbacks, Crea
 	public void setLastModifiedOn(DateTime lastModifiedOn) {
 		this.lastModifiedOn = lastModifiedOn;
 	}
-	
-/*	@Programmatic
-    public void jdoPostLoad() {
-		System.out.println("postLoad");
-	}
+
+	/*
+	 * @Programmatic public void jdoPostLoad() { System.out.println("postLoad");
+	 * }
+	 * 
+	 * @Programmatic public void jdoPreClear() { System.out.println("preClear");
+	 * }
+	 * 
+	 * @Programmatic public void jdoPreStore() { System.out.println("preStore");
+	 * }
+	 * 
+	 * @Programmatic public void jdoPreDelete() {
+	 * System.out.println("preDelete"); }
+	 */
+
 	@Programmatic
-    public void jdoPreClear() {
-		System.out.println("preClear");
-	}
-	@Programmatic
-    public void jdoPreStore() {
-		System.out.println("preStore");
-	}
-	@Programmatic
-    public void jdoPreDelete()
-    {
-		System.out.println("preDelete");
-    }
-*/
-	
-	@Programmatic
-	public void created(){
+	public void created() {
 		setCreatedBy(container.getUser().getName());
-		setCreatedOn(clockService.nowAsDateTime());	
+		setCreatedOn(clockService.nowAsDateTime());
 	}
-	
-	/*@Programmatic
-	public void updating(){
-		setLastModifiedBy(container.getUser().getName());
-		setLastModifiedOn(clockService.nowAsDateTime());			
-	}*/
-	
+
+	/*
+	 * @Programmatic public void updating(){ System.out.println(">>>>updating");
+	 * setLastModifiedBy(container.getUser().getName());
+	 * setLastModifiedOn(clockService.nowAsDateTime()); }
+	 */
+
 	@Inject
 	protected DomainObjectContainer container;
-	
+
 	@Inject
 	protected ClockService clockService;
 
 	@Inject
 	protected ApplicationUsers applicationUserRepository;
-	
+
 }

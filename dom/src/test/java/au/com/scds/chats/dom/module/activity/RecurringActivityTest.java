@@ -25,7 +25,6 @@ import au.com.scds.chats.dom.module.general.names.ActivityType;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.dom.module.participant.Participation;
-import au.com.scds.chats.dom.module.participant.Participations;
 
 public class RecurringActivityTest {
 
@@ -36,12 +35,10 @@ public class RecurringActivityTest {
 	DomainObjectContainer mockContainer;
 
 	Participants participantsRepo;
-	Participations participationsRepo;
 
 	@Before
 	public void setUp() throws Exception {
 		participantsRepo = new Participants(mockContainer);
-		participationsRepo = new Participations(mockContainer);
 	}
 
 	public static class RecurringActivityTest_Tests extends RecurringActivityTest {
@@ -74,7 +71,7 @@ public class RecurringActivityTest {
 			});
 
 			// when
-			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo, participationsRepo);
+			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo);
 			obj.setName("Foobar");
 			obj.setStartDateTime(dateTime);
 			obj.addNextScheduledActivity();
@@ -100,7 +97,7 @@ public class RecurringActivityTest {
 		public void addParticipantToParent() throws Exception {
 
 			// given
-			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo, participationsRepo);
+			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo);
 			final ActivityEvent event1 = new ActivityEvent();
 			final ActivityEvent event2 = new ActivityEvent();
 			// create Participant to register for parent RecurringActivity
@@ -147,7 +144,7 @@ public class RecurringActivityTest {
 			parent.setStartDateTime(new DateTime());
 			parent.addNextScheduledActivity();
 			parent.addNextScheduledActivity();
-			event2.participationsRepo = participationsRepo;
+			event2.participantsRepo = participantsRepo;
 			event2.addParticipant(participant2);
 			
 			//then
@@ -171,7 +168,7 @@ public class RecurringActivityTest {
 		public void allCascadedProperties() throws Exception {
 
 			// given
-			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo, participationsRepo);
+			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo);
 			final ActivityEvent event1 = new ActivityEvent();
 			final ActivityEvent event2 = new ActivityEvent();
 

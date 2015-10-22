@@ -22,11 +22,11 @@ public class Persons {
 	
 	public Persons(){}
 	
+	//for testing only
 	public Persons(DomainObjectContainer mockContainer) {
 		this.container = container;
 	}
 
-	// region > listAll (action)
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "1")
@@ -34,9 +34,6 @@ public class Persons {
 		return container.allInstances(Person.class);
 	}
 
-	// endregion
-
-	// region > findBySurname (action)
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "2")
@@ -46,10 +43,6 @@ public class Persons {
 				"findBySurname", "surname", surname));
 	}
 
-	// region > injected services
-
 	@javax.inject.Inject
 	DomainObjectContainer container;
-
-	// endregion
 }

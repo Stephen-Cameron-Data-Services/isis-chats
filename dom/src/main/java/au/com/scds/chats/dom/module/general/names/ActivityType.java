@@ -5,14 +5,12 @@ import javax.jdo.annotations.*;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.PropertyLayout;
 
-import au.com.scds.chats.dom.AbstractNamedChatsDomainEntity;
-
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Queries({
-	@Query(name = "findByName", language = "JDOQL", value = "SELECT "
+	@Query(name = "findActivityTypeByName", language = "JDOQL", value = "SELECT "
 			+ "FROM au.com.scds.chats.dom.module.general.names.ActivityType "
 			+ "WHERE name == :name"), 
-	@Query(name = "findAll", language = "JDOQL", value = "SELECT "
+	@Query(name = "findAllActivityTypes", language = "JDOQL", value = "SELECT "
 			+ "FROM  au.com.scds.chats.dom.module.general.names.ActivityType "
 			+ "ORDER BY name")})
 public class ActivityType extends ClassificationValue{

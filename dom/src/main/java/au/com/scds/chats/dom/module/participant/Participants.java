@@ -38,6 +38,7 @@ import org.apache.isis.applib.query.QueryDefault;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
 import org.joda.time.LocalDate;
 
+import au.com.scds.chats.dom.module.activity.Activity;
 import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.Status;
 
@@ -166,6 +167,20 @@ public class Participants {
 		container.persistIfNotAlready(p);
 		container.flush();
 		return p;
+	}
+	
+	public Participation createParticipation(Activity activity, Participant participant) {
+		Participation participation = container.newTransientInstance(Participation.class);
+		participation.setActivity(activity);
+		participation.setParticipant(participant);
+		container.persistIfNotAlready(participation);
+		container.flush();
+		return participation;
+	}
+
+	public void deleteParticipation(Participation participation) {
+		container.removeIfNotAlready(participation);
+		container.flush();
 	}
 
 	// region > injected services

@@ -3,12 +3,14 @@ package au.com.scds.chats.dom.module.attendance;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.DatastoreIdentity;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.IdGeneratorStrategy;
 
+import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
 
 import org.joda.time.LocalDate;
@@ -26,25 +28,36 @@ import au.com.scds.chats.dom.module.participant.Participation;
  * aggregate information, by Activity and Attended (Participant).
  * 
  * Rather than link Attended to an Activity directly, this class takes
- * responsibility. Doing it this way provides for the task of maintaining
- * attendee data to be assigned to a Volunteer and that Volunteer doesn't have
- * to be given update access to the Activity record.
+ * responsibility.
  * 
- * @author Stephen Cameron Data Services
+ * This provides for the task of maintaining attendee data to be assigned to a
+ * Volunteer and that Volunteer does not have to be given update access to the
+ * Activity record.
  * 
  */
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
 public class AttendanceList {
 
+	private ActivityEvent activity;
+	public List<Attended> attendeds = new ArrayList<>();
+	
+	public AttendanceList(){}
+
+	//used for testing only
+	public AttendanceList(AttendanceLists attendanceListsRepo, Participants participantsRepo) {
+		this.attendanceListsRepo = attendanceListsRepo;
+		this.participantsRepo = participantsRepo;
+	}
+
 	public String title() {
 		return "Attendance for Activity: " + getParentActivity().getName();
 	}
 
-	private ActivityEvent activity;
-
-	@Column(allowsNull = "true")
+	@Property()
+	@PropertyLayout()
 	@MemberOrder(sequence = "1")
+	@Column(allowsNull = "true")
 	public ActivityEvent getParentActivity() {
 		return activity;
 	}
@@ -53,10 +66,9 @@ public class AttendanceList {
 		this.activity = activity;
 	}
 
-	public List<Attended> attendeds = new ArrayList<>();
-
-	@MemberOrder(sequence = "101")
+	@Property()
 	@CollectionLayout(render = RenderType.EAGERLY, named = "Attendance")
+	@MemberOrder(sequence = "101")
 	public final List<Attended> getAttendeds() {
 		return attendeds;
 	}
@@ -109,21 +121,21 @@ public class AttendanceList {
 		}
 		return temp;
 	}
-	
+
 	@Action
 	@ActionLayout(named = "Add New")
 	@MemberOrder(name = "attendeds", sequence = "3")
-	public AttendanceList addNewParticipantAndAttended(final @ParameterLayout(named = "First name") String firstname,
-			final @ParameterLayout(named = "Family name") String surname, final @ParameterLayout(named = "Date of Birth") LocalDate dob)  {
+	public AttendanceList addNewParticipantAndAttended(final @ParameterLayout(named = "First name") String firstname, final @ParameterLayout(named = "Family name") String surname,
+			final @ParameterLayout(named = "Date of Birth") LocalDate dob) {
 		Participant p = participantsRepo.newParticipant(firstname, surname, dob);
 		addAttended(p);
 		return this;
 	}
-	
+
 	@Action
 	@ActionLayout(named = "Do Bulk Updates")
 	@MemberOrder(name = "attendeds", sequence = "4")
-	public List<Attended> bulkAction(){
+	public List<Attended> bulkAction() {
 		return getAttendeds();
 	}
 
@@ -137,10 +149,10 @@ public class AttendanceList {
 
 	}
 
-	@javax.inject.Inject
+	@Inject
 	AttendanceLists attendanceListsRepo;
 
-	@javax.inject.Inject
+	@Inject
 	Participants participantsRepo;
 
 }

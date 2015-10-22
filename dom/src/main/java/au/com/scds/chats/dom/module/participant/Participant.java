@@ -49,6 +49,12 @@ import au.com.scds.chats.dom.module.general.Status;
 @MemberGroupLayout(columnSpans = { 3, 3, 0, 6 }, left = { "General" }, middle = { "Scheduling", "Admin" })
 public class Participant extends AbstractDomainEntity implements NoteLinkable, Locatable, Comparable<Participant> {
 
+	private Person person;
+	private Status status = Status.ACTIVE;
+	private LifeHistory lifeHistory;
+	private SocialFactors socialFactors;
+	private Loneliness loneliness;
+	
 	public Participant(){
 		super();
 	}
@@ -59,17 +65,13 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		setPerson(person);
 	}
 
-	// region > identificatiom
 	public TranslatableString title() {
 		return TranslatableString.tr("Participant: {fullname}", "fullname", getPerson().getFullname());
 	}
 
-	// {{ Person (property)
-	private Person person;
-
-	@Column()
-	@MemberOrder(sequence = "1")
 	@Property(hidden = Where.ALL_TABLES)
+	@MemberOrder(sequence = "1")
+	@Column(allowsNull="false")
 	public Person getPerson() {
 		return person;
 	}
@@ -78,45 +80,44 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		this.person = person;
 	}
 
-	@MemberOrder(sequence = "1.1")
 	@Property(hidden = Where.OBJECT_FORMS)
+	@MemberOrder(sequence = "1.1")
 	public String getFullName() {
 		return getPerson().getFullname();
 	}
 
+	@Property()
 	@MemberOrder(sequence = "2")
 	public String getHomePhoneNumber() {
 		return getPerson().getHomePhoneNumber();
 	}
 
+	@Property()
 	@MemberOrder(sequence = "3")
 	public String getMobilePhoneNumber() {
 		return getPerson().getMobilePhoneNumber();
 	}
 
-	@MemberOrder(sequence = "4")
 	@Property(hidden = Where.PARENTED_TABLES)
+	@MemberOrder(sequence = "4")
 	public String getStreetAddress() {
 		return getPerson().getFullStreetAddress();
 	}
 
-	@MemberOrder(sequence = "5")
 	@Property(hidden = Where.PARENTED_TABLES)
+	@MemberOrder(sequence = "5")
 	public String getMailAddress() {
 		return getPerson().getFullMailAddress();
 	}
 
-	@MemberOrder(sequence = "6")
 	@Property(hidden = Where.PARENTED_TABLES)
+	@MemberOrder(sequence = "6")
 	public String getEMailAddress() {
 		return getPerson().getEmailAddress();
 	}
 
-	// {{ Status (property)
-	private Status status = Status.ACTIVE;
-
-	@Column(allowsNull = "false")
 	@Property(hidden = Where.PARENTED_TABLES)
+	@Column(allowsNull = "false")
 	public Status getStatus() {
 		return status;
 	}
@@ -125,13 +126,8 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		this.status = status;
 	}
 
-	// }}
-
-	// {{ LifeHistory (property)
-	private LifeHistory lifeHistory;
-
-	@Column(allowsNull = "true")
 	@Property(hidden = Where.EVERYWHERE)
+	@Column(allowsNull = "true")
 	public LifeHistory getLifeHistory() {
 		return lifeHistory;
 	}
@@ -145,9 +141,9 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		}
 	}
 
-	@MemberOrder(sequence = "10")
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
 	@ActionLayout(named = "Life History")
+	@MemberOrder(sequence = "10")
 	public LifeHistory updateLifeHistory() {
 		if (getLifeHistory() == null) {
 			setLifeHistory(container.newTransientInstance(LifeHistory.class));
@@ -155,13 +151,8 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		return getLifeHistory();
 	}
 
-	// }}
-
-	// {{ SocialFactors (property)
-	private SocialFactors socialFactors;
-
-	@Column(allowsNull = "true")
 	@Property(hidden = Where.EVERYWHERE)
+	@Column(allowsNull = "true")
 	public SocialFactors getSocialFactors() {
 		return socialFactors;
 	}
@@ -175,9 +166,9 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		}
 	}
 
-	@MemberOrder(sequence = "11")
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
 	@ActionLayout(named = "Social Factors")
+	@MemberOrder(sequence = "11")
 	public SocialFactors updateSocialFactors() {
 		if (getSocialFactors() == null) {
 			setSocialFactors(container.newTransientInstance(SocialFactors.class));
@@ -185,13 +176,8 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		return getSocialFactors();
 	}
 
-	// }}
-
-	// {{ Loneliness (property)
-	private Loneliness loneliness;
-
-	@Column(allowsNull = "true")
 	@Property(hidden = Where.EVERYWHERE)
+	@Column(allowsNull = "true")
 	public Loneliness getLoneliness() {
 		return loneliness;
 	}
@@ -205,9 +191,9 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		}
 	}
 
-	@MemberOrder(sequence = "12")
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
 	@ActionLayout(named = "Loneliness")
+	@MemberOrder(sequence = "12")
 	public Loneliness updateLoneliness() {
 		if (getLoneliness() == null) {
 			setLoneliness(container.newTransientInstance(Loneliness.class));
@@ -215,14 +201,11 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		return getLoneliness();
 	}
 
-	// }}
-
-	// {{ Participation (property)
 	// FAKE TAB
 	private ParticipationView participationsView;
 
-	@Column(allowsNull = "true")
 	@Property(hidden = Where.EVERYWHERE)
+	@Column(allowsNull = "true")
 	public ParticipationView getParticipationsView() {
 		return participationsView;
 	}
@@ -236,9 +219,9 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		}
 	}
 
-	@MemberOrder(sequence = "12")
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
 	@ActionLayout(named = "Participation")
+	@MemberOrder(sequence = "12")
 	public ParticipationView updateParticipations() {
 		if (getParticipationsView() == null) {
 			setParticipationsView(container.newTransientInstance(ParticipationView.class));
@@ -254,39 +237,12 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		}
 	}
 
-	/*
-	 * @Action(domainEvent = UpdateNameDomainEvent.class) public Participant
-	 * updateFullName(
-	 * 
-	 * @Parameter(maxLength = 40) @ParameterLayout(named = "New full name")
-	 * final String name) { setFullname(name); return this; }
-	 * 
-	 * public String default0UpdateFullName() { return getFullname(); }
-	 * 
-	 * 
-	 * public TranslatableString validateUpdateFullName(final String name) {
-	 * return name.contains("!") ? TranslatableString
-	 * .tr("Exclamation mark is not allowed") : null; }
-	 */
-
-	// endregion
-
-	// region > compareTo
-
-	/*
-	 * @Override public int compareTo(final Participant other) { return
-	 * ObjectContracts.compare(this, other, "name"); }
-	 */
-
-	// endregion
 
 	// {{ Activities (Collection)
 	// THIS COLLECTION IS VIEWED VIA THE PARTICIPATION_VIEW 'FAKE TAB' ACTION
 	private List<Participation> participations = new ArrayList<Participation>();
 
-	// @MemberOrder(sequence = "5")
 	@Collection(hidden = Where.EVERYWHERE)
-	// @CollectionLayout(paged = 10, render = RenderType.EAGERLY)
 	public List<Participation> getParticipations() {
 		return participations;
 	}
@@ -365,101 +321,8 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		return getPerson().getLocation();
 	}
 
-	// {{ Calls (Collection)
-	/*
-	 * private List<ParticipantPhoneCall> calls = new
-	 * ArrayList<ParticipantPhoneCall>();
-	 * 
-	 * @MemberOrder(sequence = "6")
-	 * 
-	 * @Property(hidden = Where.ALL_TABLES)
-	 * 
-	 * @CollectionLayout(paged = 10, render = RenderType.EAGERLY) public
-	 * List<ParticipantPhoneCall> getCalls() { return calls; }
-	 * 
-	 * public void setCalls(final List<ParticipantPhoneCall> calls) { this.calls
-	 * = calls; }
-	 */
-	/*
-	 * @MemberOrder(name = "calls", sequence = "1")
-	 * 
-	 * @ActionLayout(named="Add") public Participant
-	 * addCall(@ParameterLayout(named = "Subject", describedAs =
-	 * "The subject (heading) of the conversation, displayed in table view")
-	 * final String subject,
-	 * 
-	 * @ParameterLayout(named = "Notes", describedAs =
-	 * "Notes about the conversation. ") final String notes) {
-	 * ParticipantPhoneCall call =
-	 * container.newTransientInstance(ParticipantPhoneCall.class);
-	 * call.setDate(new Date()); call.setSubject(subject); call.setNotes(notes);
-	 * call.setStaffMember(container.getUser().getName());
-	 * container.persist(call); addToCalls(call); return this; }
-	 * 
-	 * @Programmatic public void addToCalls(final ParticipantPhoneCall call) {
-	 * // check for no-op if (call == null || getCalls().contains(call)) {
-	 * return; } // dissociate arg from its current parent (if any). //
-	 * conversation.clearParticipant(); // associate arg
-	 * call.setParticipant(this); getCalls().add(call); // additional business
-	 * logic // onAddToConversations(conversation); }
-	 * 
-	 * @Programmatic public Participant removeCall(final ParticipantPhoneCall
-	 * call) { // check for no-op if (call == null ||
-	 * !getCalls().contains(call)) { return this; } // dissociate arg
-	 * getCalls().remove(call); // additional business logic //
-	 * onRemoveFromConversations(conversation); // kill the conversation!
-	 * container.remove(call); return this; }
-	 * 
-	 * // }}
-	 * 
-	 * // {{ Notes (Collection) private List<Note> notes = new
-	 * ArrayList<Note>();
-	 * 
-	 * @MemberOrder(sequence = "6")
-	 * 
-	 * @Property(hidden = Where.ALL_TABLES)
-	 * 
-	 * @CollectionLayout(paged = 10, render = RenderType.EAGERLY) public
-	 * List<Note> getNotes() { return notes; }
-	 * 
-	 * public void setNotes(final List<Note> notes) { this.notes = notes; }
-	 * 
-	 * @MemberOrder(name = "notes", sequence = "1")
-	 * 
-	 * @ActionLayout(named="Add") public Participant
-	 * addNote(@ParameterLayout(named = "Text", describedAs =
-	 * "The content of the Note", multiLine = 5) final String text) { Note note
-	 * = container.newTransientInstance(Note.class); note.setDate(new Date());
-	 * note.setText(text); note.setStaffMember(container.getUser().getName());
-	 * container.persist(note); addToNotes(note); return this; }
-	 * 
-	 * @Programmatic public void addToNotes(final Note call) { // check for
-	 * no-op if (call == null || getNotes().contains(call)) { return; } //
-	 * dissociate arg from its current parent (if any). //
-	 * conversation.clearParticipant(); // associate arg
-	 * call.setParticipant(this); getNotes().add(call); // additional business
-	 * logic // onAddToConversations(conversation); }
-	 * 
-	 * @Programmatic public Participant removeNote(final Note call) { // check
-	 * for no-op if (call == null || !getNotes().contains(call)) { return this;
-	 * } // dissociate arg getNotes().remove(call); // additional business logic
-	 * // onRemoveFromConversations(conversation); // kill the conversation!
-	 * container.remove(call); return this; }
-	 * 
-	 * // }}
-	 */
 	@Override
 	public int compareTo(final Participant o) {
 		return this.getPerson().compareTo(o.getPerson());
 	}
-
-	// region > injected services
-
-	@javax.inject.Inject
-	@SuppressWarnings("unused")
-	private DomainObjectContainer container;
-
-
-
-
 }

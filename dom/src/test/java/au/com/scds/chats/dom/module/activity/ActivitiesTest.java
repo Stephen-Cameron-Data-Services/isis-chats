@@ -34,8 +34,7 @@ public class ActivitiesTest {
 
     @Before
     public void setUp() throws Exception {
-    	activities = new Activities();
-    	activities.container = mockContainer;
+    	activities = new Activities(mockContainer);
     }
 
     public static class ActivitiesTest_Tests extends ActivitiesTest  {
@@ -47,18 +46,12 @@ public class ActivitiesTest {
             final ActivityEvent activity = new ActivityEvent();
             final DateTime dateTime = new DateTime();
 
-            final Sequence seq = context.sequence("create");
             context.checking(new Expectations() {
                 {
                     oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
-                    inSequence(seq);
                     will(returnValue(activity));
-
                     oneOf(mockContainer).persistIfNotAlready(activity);
-                    inSequence(seq);
-                    
                     oneOf(mockContainer).flush();
-                    inSequence(seq);
                 }
             });
 

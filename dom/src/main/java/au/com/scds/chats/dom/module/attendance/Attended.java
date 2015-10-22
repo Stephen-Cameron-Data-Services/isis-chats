@@ -2,6 +2,7 @@ package au.com.scds.chats.dom.module.attendance;
 
 import java.text.DecimalFormat;
 
+import javax.inject.Inject;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.NotPersistent;
@@ -34,28 +35,38 @@ import au.com.scds.chats.dom.module.participant.Participant;
 public class Attended extends AbstractDomainEntity implements Comparable<Attended> {
 
 	private static DecimalFormat hoursFormat = new DecimalFormat("#,##0.00");
+	private ActivityEvent activity;
+	private Participant participant;
+	protected DateTime endDateTime;
+	protected DateTime startDateTime;
+	protected Boolean attended = false;
+
+	public Attended() {
+		super();
+	}
+
+	public Attended(DomainObjectContainer container) {
+		this.container = container;
+	}
 
 	public String title() {
 		return getParticipant().getFullName() + (getAttended() ? " did attend " : " did NOT attend ") + getActivity().getName() + " on " + getActivity().getStartDateTime().toString("dd MMMM yyyy");
 	}
 
-	private ActivityEvent activity;
-
-	@Column(allowsNull = "false")
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "This is a non-modifiable property")
 	@PropertyLayout(describedAs = "The Activity attended", hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "1")
+	@Column(allowsNull = "false")
 	public ActivityEvent getActivity() {
 		return activity;
 	}
 
 	void setActivity(final ActivityEvent activity) {
+		// only set once
 		if (activity == null || this.activity != null)
 			return;
 		this.activity = activity;
 	}
-
-	private Participant participant;
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "This is a non-modifiable property")
 	@PropertyLayout(describedAs = "The Participant in the Activity", hidden = Where.ALL_TABLES)
@@ -77,8 +88,6 @@ public class Attended extends AbstractDomainEntity implements Comparable<Attende
 		return getParticipant().getFullName();
 	}
 
-	private DateTime startDateTime;
-
 	@Property(editing = Editing.AS_CONFIGURED)
 	@PropertyLayout(describedAs = "When the Participant joined the Activity", hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "3.1")
@@ -88,10 +97,13 @@ public class Attended extends AbstractDomainEntity implements Comparable<Attende
 	}
 
 	public void setStartDateTime(final DateTime startDateTime) {
-		this.startDateTime = startDateTime;
+		if (startDateTime == null)
+			return;
+		if (getEndDateTime() != null)
+			setDateAndTimes(startDateTime, getEndDateTime());
+		else
+			this.startDateTime = startDateTime;
 	}
-
-	private DateTime endDateTime;
 
 	@Property(editing = Editing.AS_CONFIGURED)
 	@PropertyLayout(describedAs = "When the Participant left the Activity", hidden = Where.ALL_TABLES)
@@ -102,7 +114,12 @@ public class Attended extends AbstractDomainEntity implements Comparable<Attende
 	}
 
 	public void setEndDateTime(final DateTime endDateTime) {
-		this.endDateTime = endDateTime;
+		if (endDateTime == null)
+			return;
+		if (getStartDateTime() != null)
+			setDateAndTimes(getStartDateTime(), endDateTime);
+		else
+			this.endDateTime = endDateTime;
 	}
 
 	@Property(editing = Editing.DISABLED, notPersisted = true)
@@ -117,8 +134,6 @@ public class Attended extends AbstractDomainEntity implements Comparable<Attende
 		} else
 			return null;
 	}
-
-	private Boolean attended = false;
 
 	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(hidden = Where.EVERYWHERE)
@@ -139,20 +154,6 @@ public class Attended extends AbstractDomainEntity implements Comparable<Attende
 	public String getWasAttended() {
 		return (getAttended() ? "YES" : "NO");
 	}
-
-	/*
-	 * private String comments;
-	 * 
-	 * @Column(allowsNull = "true")
-	 * 
-	 * @MemberOrder(sequence = "7")
-	 * 
-	 * @PropertyLayout(multiLine = 20, labelPosition = LabelPosition.TOP, hidden
-	 * = Where.ALL_TABLES) public String getComments() { return comments; }
-	 * 
-	 * public void setComments(final String contents) { this.comments =
-	 * contents; }
-	 */
 
 	@Action(invokeOn = InvokeOn.OBJECT_ONLY)
 	@MemberOrder(sequence = "20.1")
@@ -191,14 +192,14 @@ public class Attended extends AbstractDomainEntity implements Comparable<Attende
 				container.warnUser("end date and start date are different days of the week");
 				return (isColl ? null : this);
 			}
-			Period period = new Period(getStartDateTime().toLocalDateTime(), getEndDateTime().toLocalDateTime());
+			Period period = new Period(start.toLocalDateTime(), end.toLocalDateTime());
 			Float hours = ((float) period.toStandardMinutes().getMinutes()) / 60;
 			if (hours > 12.0) {
 				container.warnUser("end date & time and start date & time are not in the same 12 hour period");
 				return (isColl ? null : this);
 			}
-			setStartDateTime(start);
-			setEndDateTime(end);
+			startDateTime = start;
+			endDateTime = end;
 		}
 		return (isColl ? null : this);
 	}
@@ -209,10 +210,7 @@ public class Attended extends AbstractDomainEntity implements Comparable<Attende
 		return getParticipant().getPerson().compareTo(o.getParticipant().getPerson());
 	}
 
-	@javax.inject.Inject
-	private ActionInvocationContext actionInvocationContext;
-
-	@javax.inject.Inject
-	private DomainObjectContainer container;
+	@Inject
+	ActionInvocationContext actionInvocationContext;
 
 }

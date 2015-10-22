@@ -4,6 +4,8 @@ import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
 
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Property;
+import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.util.TitleBuffer;
 
 import au.com.scds.chats.dom.module.general.Address;
@@ -11,6 +13,11 @@ import au.com.scds.chats.dom.module.general.Address;
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
 public class ContactDetails {
+	
+	private Address streetAddress;
+	private Address mailAddress;
+	private String homePhoneNumber;
+	private String mobilePhoneNumber;
 
 	public String title() {
 		final TitleBuffer buf = new TitleBuffer();
@@ -24,11 +31,10 @@ public class ContactDetails {
 		return buf.toString();
 	}
 
-	// {{ Street Address (property)
-	private Address streetAddress;
-
-	@Column(allowsNull = "true")
+	@Property()
+	@PropertyLayout()
 	@MemberOrder(sequence = "1")
+	@Column(allowsNull = "true")
 	public Address getStreetAddress() {
 		return streetAddress;
 	}
@@ -37,13 +43,10 @@ public class ContactDetails {
 		this.streetAddress = streetAddress;
 	}
 
-	// }}
-
-	// {{ Mail Address (property)
-	private Address mailAddress;
-
-	@Column(allowsNull = "true")
+	@Property()
+	@PropertyLayout()
 	@MemberOrder(sequence = "2")
+	@Column(allowsNull = "true")
 	public Address getMailAddress() {
 		return mailAddress;
 	}
@@ -52,13 +55,10 @@ public class ContactDetails {
 		this.mailAddress = mailAddress;
 	}
 
-	// }}
-
-	// {{ HomePhoneNumber (property)
-	private String homePhoneNumber;
-
-	@Column(allowsNull = "true")
+	@Property()
+	@PropertyLayout()
 	@MemberOrder(sequence = "3")
+	@Column(allowsNull = "true")
 	public String getHomePhoneNumber() {
 		return homePhoneNumber;
 	}
@@ -67,11 +67,8 @@ public class ContactDetails {
 		this.homePhoneNumber = homePhoneNumber;
 	}
 
-	// }}
-
-	// {{ MobilePhoneNumber (property)
-	private String mobilePhoneNumber;
-
+	@Property()
+	@PropertyLayout()
 	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "4")
 	public String getMobilePhoneNumber() {
@@ -81,6 +78,4 @@ public class ContactDetails {
 	public void setMobilePhoneNumber(final String mobilePhoneNumber) {
 		this.mobilePhoneNumber = mobilePhoneNumber;
 	}
-	// }}
-
 }
