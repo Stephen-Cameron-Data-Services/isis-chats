@@ -7,10 +7,10 @@ import org.apache.isis.applib.annotation.PropertyLayout;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Queries({
-	@Query(name = "findByName", language = "JDOQL", value = "SELECT "
+	@Query(name = "findSalutationByName", language = "JDOQL", value = "SELECT "
 			+ "FROM au.com.scds.chats.dom.module.general.names.Salutation "
 			+ "WHERE name == :name"), 
-	@Query(name = "findAll", language = "JDOQL", value = "SELECT "
+	@Query(name = "findAllSalutations", language = "JDOQL", value = "SELECT "
 			+ "FROM au.com.scds.chats.dom.module.general.names.Salutation "
 			+ "ORDER BY name")})
 public class Salutation extends ClassificationValue{

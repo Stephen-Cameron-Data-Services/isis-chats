@@ -39,9 +39,10 @@ import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
 
+/*SC not needed
 @DomainService(
         nature = NatureOfService.VIEW_CONTRIBUTIONS_ONLY
-)
+)*/
 public class NoteLinkableContributions {
 
     @ActionLayout(

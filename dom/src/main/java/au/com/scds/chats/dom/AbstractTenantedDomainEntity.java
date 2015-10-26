@@ -64,7 +64,7 @@ public abstract class AbstractTenantedDomainEntity extends AbstractDomainEntity 
 		return tenancy;
 	}
 
-	@Override
+	/*@Override
 	public void created() {
 		super.created();
 		if (applicationUserRepository != null) {
@@ -78,7 +78,7 @@ public abstract class AbstractTenantedDomainEntity extends AbstractDomainEntity 
 				setRegion(region);
 			}
 		}
-	}
+	}*/
 
 	@javax.inject.Inject
 	protected Regions regions;

@@ -16,7 +16,7 @@ public class Salutations {
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "1")
 	public List<Salutation> listAllSalutations() {
-		List<Salutation> list = container.allMatches(new QueryDefault<>(Salutation.class, "findAll"));
+		List<Salutation> list = container.allMatches(new QueryDefault<>(Salutation.class, "findAllSalutations"));
 		return list;
 	}
 
@@ -49,7 +49,7 @@ public class Salutations {
 		if (name == null)
 			return null;
 		else
-			return container.firstMatch(new QueryDefault<>(Salutation.class, "findByName", "name", name));
+			return container.firstMatch(new QueryDefault<>(Salutation.class, "findSalutationByName", "name", name));
 	}
 
 	@javax.inject.Inject

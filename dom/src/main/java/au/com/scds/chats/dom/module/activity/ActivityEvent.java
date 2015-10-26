@@ -73,7 +73,7 @@ import au.com.scds.chats.dom.module.participant.Participation;
 // })
 @DomainObject(objectType = "ACTIVITY")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-@MemberGroupLayout(columnSpans = { 4, 2, 0, 6 }, left = { "General" }, middle = { "Admin" })
+@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 public class ActivityEvent extends Activity implements NoteLinkable, CalendarEventable {
 
 	protected RecurringActivity parent;

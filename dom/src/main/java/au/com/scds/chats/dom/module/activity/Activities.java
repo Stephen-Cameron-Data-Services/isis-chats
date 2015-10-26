@@ -29,9 +29,7 @@ import org.joda.time.DateTime;
 @DomainServiceLayout(named = "Activities", menuOrder = "10")
 public class Activities {
 	
-	public Activities(){
-		
-	}
+	public Activities(){}
 
 	//used for testing
     public Activities(DomainObjectContainer container) {
@@ -60,8 +58,8 @@ public class Activities {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "3")
-	public List<RecurringActivity> findByRecurringActivityByName(@ParameterLayout(named = "Name") final String name) {
-		return container.allMatches(new QueryDefault<>(RecurringActivity.class, "findByRecurringActivityByName", "name", name));
+	public List<RecurringActivity> findRecurringActivityByName(@ParameterLayout(named = "Name") final String name) {
+		return container.allMatches(new QueryDefault<>(RecurringActivity.class, "findRecurringActivityByName", "name", name));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)

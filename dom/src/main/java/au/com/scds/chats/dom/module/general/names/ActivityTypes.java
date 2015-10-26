@@ -15,7 +15,7 @@ public class ActivityTypes {
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "1")
 	public List<ActivityType> listAllActivityTypes() {
-		List<ActivityType> list = container.allMatches(new QueryDefault<>(ActivityType.class, "findAll"));
+		List<ActivityType> list = container.allMatches(new QueryDefault<>(ActivityType.class, "findAllActivityTypes"));
 		return list;
 	}
 
@@ -54,7 +54,7 @@ public class ActivityTypes {
 		if (name == null)
 			return null;
 		else
-			return container.firstMatch(new QueryDefault<>(ActivityType.class, "findByName", "name", name));
+			return container.firstMatch(new QueryDefault<>(ActivityType.class, "findActivityTypeByName", "name", name));
 	}
 
 	@javax.inject.Inject

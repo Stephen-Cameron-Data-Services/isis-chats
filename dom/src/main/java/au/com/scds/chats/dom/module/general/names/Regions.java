@@ -15,7 +15,7 @@ public class Regions {
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "1")
 	public List<Region> listAllRegions() {
-		List<Region> list = container.allMatches(new QueryDefault<>(Region.class, "findAll"));
+		List<Region> list = container.allMatches(new QueryDefault<>(Region.class, "findAllRegions"));
 		return list;
 	}
 
@@ -48,7 +48,7 @@ public class Regions {
 		if (name == null)
 			return null;
 		else
-			return container.firstMatch(new QueryDefault<>(Region.class, "findByName", "name", name));
+			return container.firstMatch(new QueryDefault<>(Region.class, "findRegionByName", "name", name));
 	}
 
 	@javax.inject.Inject

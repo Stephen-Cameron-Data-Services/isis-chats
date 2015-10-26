@@ -113,8 +113,8 @@ public class RecurringActivity extends Activity implements NoteLinkable {
 	}
 
 	@Action
-	@ActionLayout(named = "Add Next Event")
-	@MemberOrder(name = "startdatetime", sequence = "1")
+	@ActionLayout(named = "Add Next")
+	@MemberOrder(name = "futureActivities", sequence = "1")
 	public RecurringActivity addNextScheduledActivity() {
 		DateTime origin = null;
 		//find last event from which to schedule next

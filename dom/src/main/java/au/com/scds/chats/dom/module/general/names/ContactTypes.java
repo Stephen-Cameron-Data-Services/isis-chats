@@ -26,7 +26,7 @@ public class ContactTypes {
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "1")
 	public List<ContactType> listAllContactTypes() {
-		List<ContactType> list = container.allMatches(new QueryDefault<>(ContactType.class, "findAll"));
+		List<ContactType> list = container.allMatches(new QueryDefault<>(ContactType.class, "findAllContactTypes"));
 		return list;
 	}
 
@@ -59,7 +59,7 @@ public class ContactTypes {
 		if (name == null)
 			return null;
 		else
-			return container.firstMatch(new QueryDefault<>(ContactType.class, "findByName", "name", name));
+			return container.firstMatch(new QueryDefault<>(ContactType.class, "findContactTypeByName", "name", name));
 	}
 
 	@javax.inject.Inject

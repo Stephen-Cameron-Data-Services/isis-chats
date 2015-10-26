@@ -65,7 +65,7 @@ public class Participants {
 	@MemberOrder(sequence = "1")
 	@SuppressWarnings("all")
 	public List<Participant> listActive() {
-		return container.allMatches(new QueryDefault<>(Participant.class, "listByStatus", "status", Status.ACTIVE));
+		return container.allMatches(new QueryDefault<>(Participant.class, "listByParticipantStatus", "status", Status.ACTIVE));
 		/*
 		 * TODO replace all queries with typesafe final QParticipant p =
 		 * QParticipant.candidate(); return
@@ -82,7 +82,7 @@ public class Participants {
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "2")
 	public List<Participant> listExited() {
-		return container.allMatches(new QueryDefault<>(Participant.class, "listByStatus", "status", Status.EXCITED));
+		return container.allMatches(new QueryDefault<>(Participant.class, "listByParticipantStatus", "status", Status.EXCITED));
 	}
 
 	// endregion
@@ -169,6 +169,7 @@ public class Participants {
 		return p;
 	}
 	
+	@Programmatic
 	public Participation createParticipation(Activity activity, Participant participant) {
 		Participation participation = container.newTransientInstance(Participation.class);
 		participation.setActivity(activity);
@@ -178,6 +179,7 @@ public class Participants {
 		return participation;
 	}
 
+	@Programmatic
 	public void deleteParticipation(Participation participation) {
 		container.removeIfNotAlready(participation);
 		container.flush();

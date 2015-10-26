@@ -26,7 +26,12 @@ import au.com.scds.chats.dom.module.participant.Participant;
 @DomainService(repositoryFor = AttendanceList.class, nature = NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(named = "Attendances", menuOrder = "40")
 public class AttendanceLists {
+	
+	public AttendanceLists() {
 
+	}
+
+	//used for testing only
 	public AttendanceLists(DomainObjectContainer container) {
 		this.container = container;
 	}

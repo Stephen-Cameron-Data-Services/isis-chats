@@ -14,11 +14,11 @@ import org.apache.isis.applib.services.i18n.TranslatableString;
          column="id")
 @Queries({
         @Query(
-                name = "find", language = "JDOQL",
+                name = "listAllProviders", language = "JDOQL",
                 value = "SELECT "
                         + "FROM au.com.scds.chats.dom.module.activity.Provider "),
         @Query(
-                name = "findByName", language = "JDOQL",
+                name = "findProviderByName", language = "JDOQL",
                 value = "SELECT "
                         + "FROM au.com.scds.chats.dom.module.activity.Provider "
                         + "WHERE name.indexOf(:name) >= 0 ")

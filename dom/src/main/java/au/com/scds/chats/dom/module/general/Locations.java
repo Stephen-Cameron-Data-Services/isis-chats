@@ -25,7 +25,7 @@ public class Locations {
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "1")
 	public List<Location> listAllLocations() {
-		List<Location> list = container.allMatches(new QueryDefault<>(Location.class, "findAll"));
+		List<Location> list = container.allMatches(new QueryDefault<>(Location.class, "findAllLocations"));
 		return list;
 	}
 
@@ -58,7 +58,7 @@ public class Locations {
 		if (name == null)
 			return null;
 		else
-			return container.firstMatch(new QueryDefault<>(Location.class, "findByName", "name", name));
+			return container.firstMatch(new QueryDefault<>(Location.class, "findLocationByName", "name", name));
 	}
 
 	@javax.inject.Inject

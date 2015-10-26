@@ -34,7 +34,7 @@ public class VolunteersIntegTest extends DomainAppIntegTest {
     	DateTime startDateTime = new DateTime();
 
         // when
-        Volunteer v = wrap(volunteers).create("Joe","","Volunteer");
+        Volunteer v = wrap(volunteers).create("Joe","Volunteer",new LocalDate());
         Participant p = wrap(participants).newParticipant("Mary", "Participant", new LocalDate());
 
         // then

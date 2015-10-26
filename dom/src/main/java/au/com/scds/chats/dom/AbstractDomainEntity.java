@@ -13,6 +13,7 @@ import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.clock.ClockService;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
+import org.apache.isis.applib.services.timestamp.Timestampable;
 import org.isisaddons.module.security.dom.user.ApplicationUser;
 import org.isisaddons.module.security.dom.user.ApplicationUsers;
 import org.joda.time.DateTime;
@@ -30,15 +31,10 @@ import au.com.scds.chats.dom.user.ModifyTrackedEntity;
  */
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public abstract class AbstractDomainEntity /*
-											 * implements InstanceCallbacks,
-											 * CreateTrackedEntity,
-											 * ModifyTrackedEntity
-											 */{
+public abstract class AbstractDomainEntity implements Timestampable {
 
 	private String createdBy;
 	private DateTime createdOn;
-	private DateTime deletedOn;
 	private String lastModifiedBy;
 	private DateTime lastModifiedOn;
 
@@ -67,18 +63,6 @@ public abstract class AbstractDomainEntity /*
 	}
 
 	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
-	@PropertyLayout(named = "Deleted On")
-	@MemberOrder(name = "Admin", sequence = "3")
-	@Column(allowsNull = "true")
-	public DateTime getDeletedOn() {
-		return deletedOn;
-	}
-
-	public void setDeletedOn(final DateTime deletedOn) {
-		this.deletedOn = deletedOn;
-	}
-
-	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Modified By")
 	@MemberOrder(name = "Admin", sequence = "4")
 	@Column(allowsNull = "true")
@@ -102,31 +86,19 @@ public abstract class AbstractDomainEntity /*
 		this.lastModifiedOn = lastModifiedOn;
 	}
 
-	/*
-	 * @Programmatic public void jdoPostLoad() { System.out.println("postLoad");
-	 * }
-	 * 
-	 * @Programmatic public void jdoPreClear() { System.out.println("preClear");
-	 * }
-	 * 
-	 * @Programmatic public void jdoPreStore() { System.out.println("preStore");
-	 * }
-	 * 
-	 * @Programmatic public void jdoPreDelete() {
-	 * System.out.println("preDelete"); }
-	 */
-
-	@Programmatic
-	public void created() {
-		setCreatedBy(container.getUser().getName());
-		setCreatedOn(clockService.nowAsDateTime());
+	public void setUpdatedBy(String updatedBy) {
+		if (createdBy == null)
+			setCreatedBy(updatedBy);
+		else
+			setLastModifiedBy(updatedBy);
 	}
 
-	/*
-	 * @Programmatic public void updating(){ System.out.println(">>>>updating");
-	 * setLastModifiedBy(container.getUser().getName());
-	 * setLastModifiedOn(clockService.nowAsDateTime()); }
-	 */
+	public void setUpdatedAt(java.sql.Timestamp updatedAt) {
+		if (createdOn == null)
+			setCreatedOn(new DateTime(updatedAt));
+		else
+			setLastModifiedOn(new DateTime(updatedAt));
+	}
 
 	@Inject
 	protected DomainObjectContainer container;
