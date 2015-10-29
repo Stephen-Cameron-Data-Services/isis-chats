@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package domainapp.fixture;
+package au.com.scds.chats.fixture;
 
 public final class DomainAppFixtureModule {
 

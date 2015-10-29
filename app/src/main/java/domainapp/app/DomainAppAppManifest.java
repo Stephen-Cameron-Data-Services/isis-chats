@@ -25,11 +25,11 @@ import java.util.Map;
 
 import org.apache.isis.applib.AppManifest;
 import org.apache.isis.applib.fixturescripts.FixtureScript;
-import org.isisaddons.module.security.SecurityModule;
+//import org.isisaddons.module.security.SecurityModule;
 
 import au.com.scds.chats.dom.DomainAppDomainModule;
+import au.com.scds.chats.fixture.DomainAppFixtureModule;
 
-import domainapp.fixture.DomainAppFixtureModule;
 
 /**
  * Bootstrap the application.
