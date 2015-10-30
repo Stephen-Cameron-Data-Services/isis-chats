@@ -20,6 +20,8 @@ package au.com.scds.chats.dom.module.participant;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
@@ -58,10 +60,8 @@ public class Participants {
 		return container.allInstances(Participant.class);
 	}
 
-	// region > listActive (action)
-
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	@SuppressWarnings("all")
 	public List<Participant> listActive() {
@@ -74,30 +74,20 @@ public class Participants {
 		 */
 	}
 
-	// endregion
-
-	// region > listExited (action)
-
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
 	public List<Participant> listExited() {
 		return container.allMatches(new QueryDefault<>(Participant.class, "listByParticipantStatus", "status", Status.EXCITED));
 	}
 
-	// endregion
-
-	// region > findBySurname (action)
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "3")
 	public List<Participant> findBySurname(@ParameterLayout(named = "Surname") final String surname) {
 		return container.allMatches(new QueryDefault<>(Participant.class, "findBySurname", "surname", surname));
 	}
 
-	// endregion
-
-	// region > create (action)
 	@MemberOrder(sequence = "4")
 	public Participant create(final @ParameterLayout(named = "First name") String firstname, final @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob) {
@@ -140,10 +130,6 @@ public class Participants {
 		return participant;
 	}
 
-	// endregion
-
-	// region > helpers
-	// for use by fixtures
 	@Programmatic
 	public Participant newParticipant(final String fullName, final String preferredName, final String mobilePhoneNumber, final String homePhoneNumber, final String email, final LocalDate dob) {
 
@@ -185,13 +171,10 @@ public class Participants {
 		container.flush();
 	}
 
-	// region > injected services
-
-	@javax.inject.Inject
+	@Inject
 	DomainObjectContainer container;
 
-	@javax.inject.Inject
+	@Inject
 	private IsisJdoSupport isisJdoSupport;
-	// endregion
-	// endregion
+
 }

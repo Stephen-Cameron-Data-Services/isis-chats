@@ -1,8 +1,10 @@
 package au.com.scds.chats.dom.module.general;
 
 import javax.jdo.annotations.Column;
+import javax.jdo.annotations.DatastoreIdentity;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.NotPersistent;
+import javax.jdo.annotations.PersistenceCapable;
 
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
@@ -12,9 +14,16 @@ import org.apache.isis.applib.util.TitleBuffer;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 
-@javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
-@javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
 public class Address implements Locatable {
+	
+	private String street1;
+	private String street2;
+	private String suburb;
+	private String postcode;
+	private Double latitude;
+	private Double longitude;
 
 	public String title() {
 		final TitleBuffer buf = new TitleBuffer();
@@ -26,11 +35,8 @@ public class Address implements Locatable {
 		return buf.toString();
 	}
 
-	// {{ Street1 (property)
-	private String street1;
-
-	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "1")
+	@Column(allowsNull = "true")
 	public String getStreet1() {
 		if (street1 == null)
 			street1 = "";
@@ -41,13 +47,8 @@ public class Address implements Locatable {
 		this.street1 = street1;
 	}
 
-	// }}
-
-	// {{ Street2 (property)
-	private String street2;
-
-	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "2")
+	@Column(allowsNull = "true")
 	public String getStreet2() {
 		if (street2 == null)
 			street2 = "";
@@ -58,13 +59,8 @@ public class Address implements Locatable {
 		this.street2 = street2;
 	}
 
-	// }}
-
-	// {{ Suburb (property)
-	private String suburb;
-
-	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "3")
+	@Column(allowsNull = "true")
 	public String getSuburb() {
 		if (suburb == null)
 			suburb = "";
@@ -75,13 +71,8 @@ public class Address implements Locatable {
 		this.suburb = suburb;
 	}
 
-	// }}
-
-	// {{ Postcode (property)
-	private String postcode;
-
-	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "4")
+	@Column(allowsNull = "true")
 	public String getPostcode() {
 		if (postcode == null)
 			postcode = "";
@@ -92,8 +83,6 @@ public class Address implements Locatable {
 		this.postcode = postcode;
 	}
 
-	// }}
-
 	@MemberOrder(sequence = "5")
 	@NotPersistent
 	public Location getLocation() {
@@ -103,11 +92,8 @@ public class Address implements Locatable {
 			return null;
 	}
 
-	// {{ Latitude (property)
-	private Double latitude;
-
-	@Column(allowsNull = "true")
 	@Property(hidden = Where.ANYWHERE)
+	@Column(allowsNull = "true")
 	public Double getLatitude() {
 		return latitude;
 	}
@@ -116,13 +102,8 @@ public class Address implements Locatable {
 		this.latitude = latitude;
 	}
 
-	// }}
-
-	// {{ Latitude (property)
-	private Double longitude;
-
-	@Column(allowsNull = "true")
 	@Property(hidden = Where.ANYWHERE)
+	@Column(allowsNull = "true")
 	public Double getLongitude() {
 		return longitude;
 	}
@@ -130,6 +111,5 @@ public class Address implements Locatable {
 	public void setLongitude(final Double longitude) {
 		this.longitude = longitude;
 	}
-	// }}
 
 }

@@ -166,8 +166,8 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		this.approximateEndDateTime = approximateEndDateTime;
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
-	@PropertyLayout(named = "Copied From AbstractActivity Id")
+	/*@Property(hidden = Where.ALL_TABLES)
+	@PropertyLayout(named = "Copied From Activity Id")
 	@MemberOrder(sequence = "7")
 	@Column(allowsNull = "true")
 	public Long getCopiedFromActivityId() {
@@ -176,7 +176,7 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 
 	public void setCopiedFromActivityId(final Long copiedFromActivityId) {
 		this.copiedFromActivityId = copiedFromActivityId;
-	}
+	}*/
 
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Cost For Participant")

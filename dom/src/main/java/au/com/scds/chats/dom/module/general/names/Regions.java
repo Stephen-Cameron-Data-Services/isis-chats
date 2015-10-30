@@ -12,13 +12,15 @@ import org.apache.isis.applib.query.QueryDefault;
 public class Regions {
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	public List<Region> listAllRegions() {
 		List<Region> list = container.allMatches(new QueryDefault<>(Region.class, "findAllRegions"));
 		return list;
 	}
 
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
 	public List<Region> createRegion(final @ParameterLayout(named = "Region Name") String name) {
 		final Region obj = container.newTransientInstance(Region.class);

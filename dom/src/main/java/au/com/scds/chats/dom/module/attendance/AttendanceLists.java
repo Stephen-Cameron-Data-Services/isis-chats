@@ -9,6 +9,7 @@ import javax.jdo.annotations.Column;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
+import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
@@ -26,18 +27,16 @@ import au.com.scds.chats.dom.module.participant.Participant;
 @DomainService(repositoryFor = AttendanceList.class, nature = NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(named = "Attendances", menuOrder = "40")
 public class AttendanceLists {
-	
-	public AttendanceLists() {
 
-	}
+	public AttendanceLists() {}
 
-	//used for testing only
+	// used for testing only
 	public AttendanceLists(DomainObjectContainer container) {
 		this.container = container;
 	}
 
 	@Action()
-	@ActionLayout(named = "Create Attendance List")
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named = "Create Attendance List")
 	@MemberOrder(sequence = "10")
 	public AttendanceList createActivityAttendanceList(@ParameterLayout(named = "Activity") final ActivityEvent activityEvent) {
 		if (activityEvent == null)
@@ -81,6 +80,7 @@ public class AttendanceLists {
 	}
 
 	@Action()
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "20")
 	@CollectionLayout(paged = 20)
 	public List<AttendanceList> listAttendanceLists() {

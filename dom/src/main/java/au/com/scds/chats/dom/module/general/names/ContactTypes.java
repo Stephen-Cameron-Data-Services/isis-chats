@@ -23,13 +23,15 @@ import org.apache.isis.applib.query.QueryDefault;
 public class ContactTypes {
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	public List<ContactType> listAllContactTypes() {
 		List<ContactType> list = container.allMatches(new QueryDefault<>(ContactType.class, "findAllContactTypes"));
 		return list;
 	}
 
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
 	public List<ContactType> createContactType(final @ParameterLayout(named = "ContactType Name") String name) {
 		final ContactType obj = container.newTransientInstance(ContactType.class);

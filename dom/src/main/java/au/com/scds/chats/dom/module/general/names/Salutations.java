@@ -13,13 +13,15 @@ import org.apache.isis.applib.query.QueryDefault;
 public class Salutations {
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	public List<Salutation> listAllSalutations() {
 		List<Salutation> list = container.allMatches(new QueryDefault<>(Salutation.class, "findAllSalutations"));
 		return list;
 	}
 
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
 	public List<Salutation> createSalutation(final @ParameterLayout(named = "Salutation Name") String name) {
 		final Salutation obj = container.newTransientInstance(Salutation.class);

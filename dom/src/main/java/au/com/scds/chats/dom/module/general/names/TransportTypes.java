@@ -7,29 +7,29 @@ import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
 
-@DomainService(repositoryFor = ActivityType.class)
+@DomainService(repositoryFor = TransportType.class)
 @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.1")
-public class ActivityTypes {
+public class TransportTypes {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
-	public List<ActivityType> listAllActivityTypes() {
-		List<ActivityType> list = container.allMatches(new QueryDefault<>(ActivityType.class, "findAllActivityTypes"));
+	public List<TransportType> listAllTransportTypes() {
+		List<TransportType> list = container.allMatches(new QueryDefault<>(TransportType.class, "findAllTransportTypes"));
 		return list;
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
-	public List<ActivityType> createActivityType(final @ParameterLayout(named = "Activity Type Name") String name) {
-		final ActivityType obj = create(name);
-		return listAllActivityTypes();
+	public List<TransportType> createTransportType(final @ParameterLayout(named = "Activity Type Name") String name) {
+		final TransportType obj = create(name);
+		return listAllTransportTypes();
 	}
 	
 	@Programmatic
-	protected ActivityType create(String name){
-		final ActivityType obj = container.newTransientInstance(ActivityType.class);
+	protected TransportType create(String name){
+		final TransportType obj = container.newTransientInstance(TransportType.class);
 		obj.setName(name);
 		container.persistIfNotAlready(obj);
 		container.flush();
@@ -37,26 +37,26 @@ public class ActivityTypes {
 	}
 
 	@Programmatic
-	public String nameForActivityType(ActivityType activityType) {
+	public String nameForTransportType(TransportType activityType) {
 		return (activityType != null) ? activityType.getName() : null;
 	}
 
 	@Programmatic
 	public List<String> allNames() {
-		List<ActivityType> activityTypes = listAllActivityTypes();
+		List<TransportType> transportTypes = listAllTransportTypes();
 		List<String> names = new ArrayList<String>();
-		for (ActivityType a : activityTypes) {
+		for (TransportType a : transportTypes) {
 			names.add(a.getName());
 		}
 		return names;
 	}
 
 	@Programmatic
-	public ActivityType activityTypeForName(String name) {
+	public TransportType transportTypeForName(String name) {
 		if (name == null)
 			return null;
 		else
-			return container.firstMatch(new QueryDefault<>(ActivityType.class, "findActivityTypeByName", "name", name));
+			return container.firstMatch(new QueryDefault<>(TransportType.class, "findTransportTypeByName", "name", name));
 	}
 
 	@javax.inject.Inject

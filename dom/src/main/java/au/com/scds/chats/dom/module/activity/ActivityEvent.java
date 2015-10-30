@@ -97,7 +97,7 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 			return "Activity: " + getName();
 	}
 
-	@Property(hidden = Where.EVERYWHERE)
+	@Property(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "1")
 	@Column(allowsNull = "true")
 	public final RecurringActivity getParentActivity() {
@@ -198,6 +198,16 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 			return getParentActivity().getActivityType();
 		}
 		return super.getActivityType();
+	}
+	
+	@Property(hidden = Where.NOWHERE)
+	@Override
+	@Column(allowsNull = "true")
+	public String getName() {
+		if (getParentActivity() != null && super.getName() == null) {
+			return getParentActivity().getName();
+		}
+		return super.getName();
 	}
 
 	@Property(hidden = Where.ALL_TABLES)

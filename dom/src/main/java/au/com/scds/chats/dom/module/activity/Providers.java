@@ -33,48 +33,38 @@ import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
 
 @DomainService(repositoryFor = Provider.class)
-@DomainServiceLayout(named = "Activities", menuBar = MenuBar.PRIMARY, menuOrder = "10.1")
+@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "80.1")
 public class Providers {
 
-	// region > listAll (action)
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	public List<Provider> listAllProviders() {
 		return container.allInstances(Provider.class);
 	}
 
-	// endregion
+	/*
+	 * @Action(semantics = SemanticsOf.SAFE)
+	 * 
+	 * @ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	 * 
+	 * @MemberOrder(sequence = "2") public List<ActivityProvider> findByName(
+	 * 
+	 * @ParameterLayout(named = "Name") final String name) { return
+	 * container.allMatches(new QueryDefault<>(ActivityProvider.class,
+	 * "findByName", "name", name)); }
+	 */
 
-	// region > findByName (action)
-	/*@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-	@MemberOrder(sequence = "2")
-	public List<ActivityProvider> findByName(
-			@ParameterLayout(named = "Name") final String name) {
-		return container.allMatches(new QueryDefault<>(ActivityProvider.class,
-				"findByName", "name", name));
-	}*/
-
-	// endregion
-
-	// region > create (action)
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "3")
-	public Provider createProvider(
-			final @ParameterLayout(named = "Name") String name) {
-		final Provider obj = container
-				.newTransientInstance(Provider.class);
+	public Provider createProvider(final @ParameterLayout(named = "Name") String name) {
+		final Provider obj = container.newTransientInstance(Provider.class);
 		obj.setName(name);
 		container.persistIfNotAlready(obj);
 		return obj;
 	}
 
-	// endregion
-
-	// region > injected services
-
 	@javax.inject.Inject
 	DomainObjectContainer container;
-
-	// endregion
 }

@@ -8,8 +8,7 @@ public class RecurringActivitiesFixture extends FixtureScript {
 	@Override
 	@Programmatic
 	protected void execute(ExecutionContext ec) {
-		RecurringActivity rc = new 
-		
+		//RecurringActivity rc = new 
 	}
 
 }

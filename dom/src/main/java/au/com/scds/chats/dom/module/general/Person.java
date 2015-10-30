@@ -1,37 +1,29 @@
 package au.com.scds.chats.dom.module.general;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.net.URLEncoder;
-import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import javax.jdo.annotations.Column;
+import javax.jdo.annotations.DatastoreIdentity;
 import javax.jdo.annotations.NotPersistent;
+import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.Unique;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
+
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 import org.isisaddons.wicket.gmap3.cpt.service.LocationLookupService;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
-import org.joda.time.DateTime;
+
 import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.AbstractDomainEntity;
+import au.com.scds.chats.dom.RegexValidation;
 import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.names.ContactType;
 import au.com.scds.chats.dom.module.general.names.ContactTypes;
@@ -41,9 +33,9 @@ import au.com.scds.chats.dom.module.general.names.Regions;
 import au.com.scds.chats.dom.module.general.names.Salutation;
 import au.com.scds.chats.dom.module.general.names.Salutations;
 
-@javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
-@javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
-@javax.jdo.annotations.Unique(name = "Person_UNQ", members = { "firstname", "surname", "birthdate" })
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
+@Unique(name = "Person_UNQ", members = { "firstname", "surname", "birthdate" })
 @Queries({ @Query(name = "findPersonsBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.general.Person " + "WHERE surname == :surname"), })
 @DomainObject(objectType = "PERSON")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
@@ -60,6 +52,11 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 	private String preferredname;
 	private LocalDate birthdate;
 	private Region region;
+	private Address streetAddress;
+	private Address mailAddress;
+	private String homePhoneNumber;
+	private String mobilePhoneNumber;
+	private String email;
 	
 	public Person(){
 		super();
@@ -71,16 +68,14 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		this.surname = surname;
 		this.birthdate = birthdate;
 	}
-
-	@Override
-	public int compareTo(Person o) {
-		String thisNameAndBirthdate = getSurname().toUpperCase() + getFirstname().toUpperCase() + getBirthdate();
-		String otherNameAndBirthdate = o.getSurname().toUpperCase() + o.getFirstname().toUpperCase() + o.getBirthdate();;
-		return thisNameAndBirthdate.compareTo(otherNameAndBirthdate);
+	
+	public String title() {
+		return this.getFullname();
 	}
 
+	@Property()
+	@PropertyLayout(hidden=Where.EVERYWHERE)
 	@Column(allowsNull = "true")
-	@Programmatic
 	public Long getOldId() {
 		return this.oldId;
 	}
@@ -89,19 +84,16 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		this.oldId = id;
 	}
 
-	public String title() {
-		return this.getFullname();
-	}
-
 	@Programmatic
 	public String getFullname() {
 		return this.getFirstname() + " " + (this.getPreferredname() != null ? "(" + this.getPreferredname() + ") " : "") + (this.getMiddlename() != null ? this.getMiddlename() + " " : "")
 				+ this.getSurname();
 	}
 
-	@Column()
-	@Property(hidden = Where.EVERYWHERE)
+	@Property()
+	@PropertyLayout(hidden=Where.EVERYWHERE)
 	@MemberOrder(sequence = "1")
+	@Column(allowsNull="true")
 	public Salutation getSalutation() {
 		return this.salutation;
 	}
@@ -114,8 +106,9 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		return salutations.listAllSalutations();
 	}
 
-	@MemberOrder(sequence = "1")
+	@Property()
 	@PropertyLayout(named = "Salutation")
+	@MemberOrder(sequence = "1")
 	@NotPersistent
 	public String getSalutationName() {
 		return getSalutation() != null ? this.getSalutation().getName() : null;
@@ -129,9 +122,10 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		return salutations.allNames();
 	}
 
-	@Column(allowsNull = "false", length = 100)
-	@MemberOrder(sequence = "2")
+	@Property()
 	@PropertyLayout(named = "First Name")
+	@MemberOrder(sequence = "2")
+	@Column(allowsNull = "false", length = 100)
 	public String getFirstname() {
 		return this.firstname;
 	}
@@ -140,9 +134,10 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		this.firstname = firstname;
 	}
 
-	@Column(allowsNull = "true", length = 100)
-	@MemberOrder(sequence = "3")
+	@Property()
 	@PropertyLayout(named = "Middle Name(s)")
+	@MemberOrder(sequence = "3")
+	@Column(allowsNull = "true", length = 100)
 	public String getMiddlename() {
 		return this.middlename;
 	}
@@ -151,8 +146,10 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		this.middlename = middlename;
 	}
 
-	@Column(allowsNull = "false", length = 100)
+	@Property()
+	@PropertyLayout()
 	@MemberOrder(sequence = "4")
+	@Column(allowsNull = "false", length = 100)
 	public String getSurname() {
 		return this.surname;
 	}
@@ -161,9 +158,10 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		this.surname = surname;
 	}
 
-	@Column(allowsNull = "true", length = 100)
-	@MemberOrder(sequence = "5")
+	@Property()
 	@PropertyLayout(named = "Preferred Name")
+	@MemberOrder(sequence = "5")
+	@Column(allowsNull = "true", length = 100)
 	public String getPreferredname() {
 		return this.preferredname;
 	}
@@ -172,8 +170,10 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		this.preferredname = preferredname;
 	}
 
-	@Column(allowsNull = "true")
+	@Property()
+	@PropertyLayout()
 	@MemberOrder(sequence = "6")
+	@Column(allowsNull = "false")
 	public LocalDate getBirthdate() {
 		return this.birthdate;
 	}
@@ -181,10 +181,11 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 	public void setBirthdate(LocalDate localDate) {
 		this.birthdate = localDate;
 	}
-
+	
+	@Property()
+	@PropertyLayout(hidden = Where.EVERYWHERE)
+	@MemberOrder(sequence = "7")
 	@Column(name = "region", allowsNull = "true")
-	// @MemberOrder(sequence = "7")
-	@Property(hidden = Where.EVERYWHERE)
 	public Region getRegion() {
 		return this.region;
 	}
@@ -197,9 +198,10 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		return regions.listAllRegions();
 	}
 
-	@MemberOrder(sequence = "7")
-	@NotPersistent
+	@Property()
 	@PropertyLayout(named = "Region")
+	@MemberOrder(sequence = "7.1")
+	@NotPersistent
 	public String getRegionName() {
 		return regions.nameForRegion(getRegion());
 	}
@@ -212,9 +214,10 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		return regions.allNames();
 	}
 
-	@Column(allowsNull = "true")
-	@Property(hidden = Where.EVERYWHERE)
+	@Property()
+	@PropertyLayout(hidden = Where.EVERYWHERE)
 	@MemberOrder(sequence = "8")
+	@Column(allowsNull = "true")
 	public ContactType getContactType() {
 		return this.contactType;
 	}
@@ -223,8 +226,9 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		this.contactType = contacttypeId;
 	}
 
-	@MemberOrder(sequence = "8")
+	@Property()
 	@PropertyLayout(named = "Contact Type")
+	@MemberOrder(sequence = "8.1")
 	@NotPersistent
 	public String getContactTypeName() {
 		return getContactType() != null ? this.getContactType().getName() : null;
@@ -238,12 +242,11 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		return contactTypes.allNames();
 	}
 
-	// {{ Street Address (property)
-	private Address streetAddress;
 
-	@Column(allowsNull = "true")
+	@Property(editing = Editing.DISABLED)
+	@PropertyLayout(hidden = Where.ALL_TABLES)
 	@MemberOrder(name = "Contact Details", sequence = "1")
-	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
+	@Column(allowsNull = "true")
 	public Address getStreetAddress() {
 		return streetAddress;
 	}
@@ -260,8 +263,8 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 			return getStreetAddress().title();
 	}
 
-	@MemberOrder(name = "streetaddress", sequence = "1")
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
+	@MemberOrder(name = "streetaddress", sequence = "1")
 	public Person updateStreetAddress(@ParameterLayout(named = "Street 1") String street1, @Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
 			@ParameterLayout(named = "Suburb") String suburb, @ParameterLayout(named = "Postcode") String postcode,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Is Mail Address Too?") Boolean isMailAddress) {
@@ -305,14 +308,10 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		return false;
 	}
 
-	// }}
-
-	// {{ Mail Address (property)
-	private Address mailAddress;
-
-	@Column(allowsNull = "true")
+	@Property(editing = Editing.DISABLED)
+	@PropertyLayout(hidden = Where.ALL_TABLES)
 	@MemberOrder(name = "Contact Details", sequence = "2")
-	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
+	@Column(allowsNull = "true")
 	public Address getMailAddress() {
 		return mailAddress;
 	}
@@ -329,8 +328,8 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 			return getMailAddress().title();
 	}
 
-	@MemberOrder(name = "mailaddress", sequence = "1")
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
+	@MemberOrder(name = "mailaddress", sequence = "1")
 	public Person updateMailAddress(@ParameterLayout(named = "Street 1") String street1, @Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
 			@ParameterLayout(named = "Suburb") String suburb, @ParameterLayout(named = "Postcode") String postcode) {
 		Address newAddress = container.newTransientInstance(Address.class);
@@ -362,14 +361,10 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		return getMailAddress() != null ? getMailAddress().getPostcode() : null;
 	}
 
-	// }}
-
-	// {{ HomePhoneNumber (property)
-	private String homePhoneNumber;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(name = "Contact Details", sequence = "3")
+	@Property(regexPattern=RegexValidation.CommunicationChannel.PHONENUMBER)
 	@PropertyLayout(named = "Home Phone Number")
+	@MemberOrder(name = "Contact Details", sequence = "3")
+	@Column(allowsNull = "true")
 	public String getHomePhoneNumber() {
 		return homePhoneNumber;
 	}
@@ -378,14 +373,10 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		this.homePhoneNumber = homePhoneNumber;
 	}
 
-	// }}
-
-	// {{ MobilePhoneNumber (property)
-	private String mobilePhoneNumber;
-
-	@Column(allowsNull = "true")
-	@MemberOrder(name = "Contact Details", sequence = "4")
+	@Property(regexPattern=RegexValidation.CommunicationChannel.PHONENUMBER)
 	@PropertyLayout(named = "Mobile Phone Number")
+	@MemberOrder(name = "Contact Details", sequence = "4")
+	@Column(allowsNull = "true")
 	public String getMobilePhoneNumber() {
 		return mobilePhoneNumber;
 	}
@@ -394,15 +385,10 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		this.mobilePhoneNumber = mobilePhoneNumber;
 	}
 
-	// }}
-
-	// {{ EmailAddress (property)
-	private String email;
-
-	@Column(allowsNull = "true")
+	@Property(regexPattern=RegexValidation.CommunicationChannel.EMAIL)
+	@PropertyLayout(hidden = Where.ALL_TABLES, named = "Email Address")
 	@MemberOrder(name = "Contact Details", sequence = "5")
-	@Property(hidden = Where.ALL_TABLES)
-	@PropertyLayout(named = "Email Address")
+	@Column(allowsNull = "true")
 	public String getEmailAddress() {
 		return email;
 	}
@@ -411,11 +397,10 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		this.email = email;
 	}
 
-	// }}
-	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "16")
 	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(named = "English Skill")
+	@MemberOrder(sequence = "16")
+	@Column(allowsNull = "true")
 	public EnglishSkill getEnglishSkill() {
 		return this.englishSkill;
 	}
@@ -431,24 +416,27 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		else
 			return null;
 	}
+	
+	@Override
+	public int compareTo(Person o) {
+		String thisNameAndBirthdate = getSurname().toUpperCase() + getFirstname().toUpperCase() + getBirthdate();
+		String otherNameAndBirthdate = o.getSurname().toUpperCase() + o.getFirstname().toUpperCase() + o.getBirthdate();;
+		return thisNameAndBirthdate.compareTo(otherNameAndBirthdate);
+	}
 
-	// region > injected services
-
-	@javax.inject.Inject
+	@Inject
 	private Salutations salutations;
 
-	@javax.inject.Inject
+	@Inject
 	Regions regions;
 
-	@javax.inject.Inject
+	@Inject
 	ContactTypes contactTypes;
 
-	@javax.inject.Inject
+	@Inject
 	private DomainObjectContainer container;
 	
-	@javax.inject.Inject
+	@Inject
 	private LocationLookupService locationLookupService;
-
-	// endregion
 
 }

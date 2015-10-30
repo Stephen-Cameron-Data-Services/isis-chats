@@ -114,7 +114,7 @@ public class Note extends AbstractDomainEntity implements NoteLinkable, Comparab
 
 	private Boolean isActionable;
 
-	@Column(allowsNull = "false", defaultValue = "false")
+	@Column(allowsNull = "false")
 	@MemberOrder(sequence = "4")
 	public Boolean getIsActionable() {
 		return isActionable;

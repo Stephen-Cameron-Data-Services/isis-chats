@@ -22,7 +22,7 @@ import org.apache.isis.applib.query.QueryDefault;
 public class Locations {
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	public List<Location> listAllLocations() {
 		List<Location> list = container.allMatches(new QueryDefault<>(Location.class, "findAllLocations"));

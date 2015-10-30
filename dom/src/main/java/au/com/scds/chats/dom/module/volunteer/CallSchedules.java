@@ -65,7 +65,7 @@ public class CallSchedules {
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "3")
 	public List<ScheduledCall> listCallsToActiveParticipant(final Participant participant) {
-		return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findByParticipant", "participant", participant));
+		return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipant", "participant", participant));
 	}
 
 	public List<Participant> choices0ListCallsToActiveParticipant(){
@@ -76,7 +76,7 @@ public class CallSchedules {
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "4")
 	public List<ScheduledCall> listCallsToParticipant(final Participant participant) {
-		return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findByParticipant", "participant", participant));
+		return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipant", "participant", participant));
 	}
 
 	public List<Participant> choices0ListCallsToParticipant(){
@@ -87,7 +87,7 @@ public class CallSchedules {
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "5")
 	public List<ScheduledCall> listCallsByVolunteer(final Volunteer volunteer) {
-		return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findByVolunteer", "volunteer", volunteer));
+		return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByVolunteer", "volunteer", volunteer));
 	}
 	
 	public List<Volunteer> choices0ListCallsByVolunteer(){
@@ -98,7 +98,7 @@ public class CallSchedules {
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "6")
 	public List<ScheduledCall> listCallsToParticipantByVolunteer(final Participant participant, final Volunteer volunteer) {
-		return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findByParticipantAndVolunteer", "participant", participant, "volunteer", volunteer));
+		return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipantAndVolunteer", "participant", participant, "volunteer", volunteer));
 	}
 	
 	public List<Participant> choices0ListCallsToParticipantByVolunteer(){

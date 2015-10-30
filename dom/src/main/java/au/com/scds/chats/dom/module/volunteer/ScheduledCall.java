@@ -23,9 +23,9 @@ import au.com.scds.chats.dom.module.participant.Participant;
 @DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
 @Queries({
 		@Query(name = "find", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall "),
-		@Query(name = "findByVolunteer", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall WHERE volunteer == :volunteer "),
-		@Query(name = "findByParticipant", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall WHERE participant == :participant "),
-		@Query(name = "findByVolunteerAndParticipant", language = "JDOQL", value = "SELECT "
+		@Query(name = "findScheduledCallsByVolunteer", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall WHERE volunteer == :volunteer "),
+		@Query(name = "findScheduledCallsByParticipant", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall WHERE participant == :participant "),
+		@Query(name = "findScheduledCallsByVolunteerAndParticipant", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall WHERE participant == :participant AND volunteer == :volunteer ") })
 @DomainObject(objectType = "SCHEDULED_CALL")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
@@ -83,7 +83,7 @@ public class ScheduledCall implements NoteLinkable, Comparable<ScheduledCall> {
 	// {{ IsCompleted (property)
 	private Boolean isCompleted = false;
 
-	@Column(allowsNull = "false", defaultValue="false")
+	@Column(allowsNull = "false")
 	@MemberOrder(sequence = "4")
 	public Boolean getIsCompleted() {
 		return isCompleted;
