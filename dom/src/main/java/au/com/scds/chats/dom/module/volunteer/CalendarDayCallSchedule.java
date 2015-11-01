@@ -12,12 +12,19 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
 
+import org.apache.isis.applib.DomainObjectContainer;
+import org.apache.isis.applib.annotation.Action;
+import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Optionality;
+import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.Programmatic;
+import org.apache.isis.applib.annotation.Property;
+import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.services.i18n.TranslatableString;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEvent;
@@ -25,6 +32,8 @@ import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEventable;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
+
+import au.com.scds.chats.dom.module.participant.Participant;
 
 /**
  * A manager of ScheduledCall objects for a specific Calendar day, usually for a
@@ -39,19 +48,29 @@ import org.joda.time.LocalTime;
 @DomainObject(objectType = "CALENDAR_DAY_CALL_SCHEDULE")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 public class CalendarDayCallSchedule implements CalendarEventable, Comparable<CalendarDayCallSchedule> {
-	
+
 	private LocalDate calendarDate;
 	private Volunteer allocatedVolunteer;
 	private Integer totalCalls = 0;
 	private Integer completedCalls = 0;
 	private SortedSet<ScheduledCall> scheduledCalls = new TreeSet<>();
+
+	public CalendarDayCallSchedule() {
+
+	}	
 	
+	public CalendarDayCallSchedule(DomainObjectContainer container) {
+		this.container = container;
+	}
+
 	public String title() {
 		return "Total: " + getTotalCalls() + "; Completed: " + getCompletedCalls();
 	}
 
-	@Column(allowsNull = "false")
+	@Property()
+	@PropertyLayout()
 	@MemberOrder(sequence = "1")
+	@Column(allowsNull = "false")
 	public LocalDate getCalendarDate() {
 		return calendarDate;
 	}
@@ -60,8 +79,10 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 		this.calendarDate = calendarDate;
 	}
 
-	@Column(allowsNull = "true")
+	@Property()
+	@PropertyLayout()
 	@MemberOrder(sequence = "2")
+	@Column(allowsNull = "true")
 	public Volunteer getAllocatedVolunteer() {
 		return allocatedVolunteer;
 	}
@@ -70,8 +91,10 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 		this.allocatedVolunteer = allocatedVolunteer;
 	}
 
-	@Column(allowsNull = "false")
+	@Property()
+	@PropertyLayout()
 	@MemberOrder(sequence = "3")
+	@Column(allowsNull = "false")
 	public Integer getTotalCalls() {
 
 		return totalCalls;
@@ -81,8 +104,10 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 		this.totalCalls = total;
 	}
 
-	@Column(allowsNull = "false")
+	@Property()
+	@PropertyLayout()
 	@MemberOrder(sequence = "4")
+	@Column(allowsNull = "false")
 	public Integer getCompletedCalls() {
 		return completedCalls;
 	}
@@ -97,9 +122,17 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	}
 
 	// ACTIONS
+	@Action()
+	@ActionLayout()
+	public void scheduleNewCall(@Parameter(optionality = Optionality.MANDATORY) final Participant participant, @Parameter(optionality = Optionality.MANDATORY) final LocalTime time) throws Exception {
+		ScheduledCall call = scheduleCall(time);
+		call.setParticipant(participant);
+	}
+
+	@Programmatic
 	public synchronized ScheduledCall scheduleCall(final LocalTime time) throws Exception {
 		if (time == null) {
-			throw new IllegalArgumentException("time parameter is mandatory");
+			return null;
 		}
 		ScheduledCall call = callScheduler.createScheduledCall(this, time);
 		call.setAllocatedVolunteer(getAllocatedVolunteer());
@@ -110,27 +143,32 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 		return call;
 	}
 
+	@Programmatic
 	public synchronized ScheduledCall completeCall(ScheduledCall call, Boolean isComplete) throws Exception {
+		System.out.print(">>>1");
 		if (call == null)
 			return null;
 		if (isComplete == null)
 			return null;
 		if (scheduledCalls.contains(call)) {
 			if (!call.getIsCompleted() && isComplete) {
-				call.setIsCompletedWithSchedule(this, true);
+				System.out.print(">>>2->" + (getCompletedCalls() + 1));
+				call.setIsCompletedViaSchedule(this, true);
 				setCompletedCalls(getCompletedCalls() + 1);
 			} else if (call.getIsCompleted() && !isComplete) {
-				call.setIsCompletedWithSchedule(this, false);
+				System.out.print(">>>3->" + (getCompletedCalls() - 1));
+				call.setIsCompletedViaSchedule(this, false);
 				setCompletedCalls(getCompletedCalls() - 1);
 			}
 		}
 		return call;
 	}
 
+	@Programmatic
 	public synchronized void removeCall(ScheduledCall call) {
 		if (call != null && scheduledCalls.contains(call)) {
 			if (call.getIsCompleted()) {
-				// TODO show message that call is completed
+				container.informUser("call is completed and cannot be removed");
 			} else {
 				setTotalCalls(getTotalCalls() - 1);
 				scheduledCalls.remove(call);
@@ -158,4 +196,7 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 
 	@Inject()
 	CallSchedules callScheduler;
+
+	@Inject()
+	DomainObjectContainer container;
 }

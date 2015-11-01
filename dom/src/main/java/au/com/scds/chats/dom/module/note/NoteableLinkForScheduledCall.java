@@ -18,8 +18,8 @@ import org.incode.module.note.dom.impl.note.NoteRepository;
 import au.com.scds.chats.dom.module.volunteer.ScheduledCall;
 
 import com.google.common.eventbus.Subscribe;
-
-@DomainObject(objectType = "NoteableLinkForScheduledCall")
+public class NoteableLinkForScheduledCall {
+/*@DomainObject(objectType = "NoteableLinkForScheduledCall")
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class NoteableLinkForScheduledCall extends NotableLink {
@@ -54,4 +54,5 @@ public class NoteableLinkForScheduledCall extends NotableLink {
 
 	@javax.inject.Inject
 	private NoteRepository noteRepository;
+	*/
 }

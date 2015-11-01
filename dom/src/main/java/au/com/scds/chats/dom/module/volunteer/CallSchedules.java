@@ -2,6 +2,8 @@ package au.com.scds.chats.dom.module.volunteer;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
@@ -155,18 +157,18 @@ public class CallSchedules {
 	ScheduledCall createScheduledCall(CalendarDayCallSchedule callSchedule, LocalTime time) {
 		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
 		call.setCallSchedule(callSchedule);
-		call.setCallDateTime(callSchedule.getCalendarDate().toDateTime(time));
+		call.setScheduledDateTime(callSchedule.getCalendarDate().toDateTime(time));
 		container.persistIfNotAlready(call);
 		container.flush();
 		return call;
 	}
 
-	@javax.inject.Inject
+	@Inject
 	public DomainObjectContainer container;
 	
-	@javax.inject.Inject
+	@Inject
 	public Volunteers volunteers;
 	
-	@javax.inject.Inject
+	@Inject
 	public Participants participants;
 }

@@ -39,32 +39,27 @@ public class CallShedulingTest {
         public void createDailyCallSchedule() throws Exception {
 
             // given
-            final CalendarDayCallSchedule schedule = new CalendarDayCallSchedule();
+            final CalendarDayCallSchedule schedule = new CalendarDayCallSchedule(mockContainer);
             final LocalDate date = new LocalDate();
-            final ScheduledCall call = new ScheduledCall();
+            final ScheduledCall call = new ScheduledCall(mockContainer);
 
-            final Sequence seq = context.sequence("create");
             context.checking(new Expectations() {
                 {
                     oneOf(mockContainer).newTransientInstance(CalendarDayCallSchedule.class);
-                    inSequence(seq);
                     will(returnValue(schedule));
 
                     oneOf(mockContainer).persistIfNotAlready(schedule);
-                    inSequence(seq);
                     
                     oneOf(mockContainer).flush();
-                    inSequence(seq);
                     
                     oneOf(mockContainer).newTransientInstance(ScheduledCall.class);
-                    inSequence(seq);
                     will(returnValue(call));
 
                     oneOf(mockContainer).persistIfNotAlready(call);
-                    inSequence(seq);
                     
                     oneOf(mockContainer).flush();
-                    inSequence(seq);
+                    
+                    oneOf(mockContainer).informUser("call is completed and cannot be removed");
                 }
             });
 
