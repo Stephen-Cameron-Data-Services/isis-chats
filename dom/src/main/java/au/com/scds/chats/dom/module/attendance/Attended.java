@@ -11,11 +11,14 @@ import javax.jdo.annotations.PersistenceCapable;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.BookmarkPolicy;
+import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.InvokeOn;
 import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Optionality;
+import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
@@ -29,9 +32,10 @@ import au.com.scds.chats.dom.AbstractDomainEntity;
 import au.com.scds.chats.dom.module.activity.ActivityEvent;
 import au.com.scds.chats.dom.module.participant.Participant;
 
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@DomainObject()
 @DomainObjectLayout(bookmarking = BookmarkPolicy.NEVER)
-@MemberGroupLayout(columnSpans = { 5, 3, 0, 4 }, left = "General", middle = { "Admin" })
+@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
 public class Attended extends AbstractDomainEntity implements Comparable<Attended> {
 
 	private static DecimalFormat hoursFormat = new DecimalFormat("#,##0.00");
@@ -96,13 +100,8 @@ public class Attended extends AbstractDomainEntity implements Comparable<Attende
 		return startDateTime;
 	}
 
-	public void setStartDateTime(final DateTime startDateTime) {
-		if (startDateTime == null)
-			return;
-		if (getEndDateTime() != null)
-			setDateAndTimes(startDateTime, getEndDateTime());
-		else
-			this.startDateTime = startDateTime;
+	private void setStartDateTime(final DateTime startDateTime) {
+		this.startDateTime = startDateTime;
 	}
 
 	@Property(editing = Editing.AS_CONFIGURED)
@@ -113,13 +112,8 @@ public class Attended extends AbstractDomainEntity implements Comparable<Attende
 		return endDateTime;
 	}
 
-	public void setEndDateTime(final DateTime endDateTime) {
-		if (endDateTime == null)
-			return;
-		if (getStartDateTime() != null)
-			setDateAndTimes(getStartDateTime(), endDateTime);
-		else
-			this.endDateTime = endDateTime;
+	private void setEndDateTime(final DateTime endDateTime) {
+		this.endDateTime = endDateTime;
 	}
 
 	@Property(editing = Editing.DISABLED, notPersisted = true)
@@ -157,14 +151,14 @@ public class Attended extends AbstractDomainEntity implements Comparable<Attende
 
 	@Action(invokeOn = InvokeOn.OBJECT_ONLY)
 	@MemberOrder(sequence = "20.1")
-	public AttendanceList Delete() {
+	public Attended Delete() {
 		AttendanceList attendances = getActivity().getAttendances();
 		attendances.removeAttended(this);
-		return actionInvocationContext.getInvokedOn().isCollection() ? null : attendances;
+		return this;
 	}
 
 	@Action(invokeOn = InvokeOn.OBJECT_AND_COLLECTION)
-	@MemberOrder(sequence = "21.1")
+	@MemberOrder(name = "wasattended", sequence = "21.1")
 	public Attended wasAttended() {
 		if (!getAttended())
 			setAttended(true);
@@ -172,7 +166,7 @@ public class Attended extends AbstractDomainEntity implements Comparable<Attende
 	}
 
 	@Action(invokeOn = InvokeOn.OBJECT_AND_COLLECTION)
-	@MemberOrder(sequence = "22.1")
+	@MemberOrder(name = "wasattended", sequence = "22.1")
 	public Attended wasNotAttended() {
 		if (getAttended())
 			setAttended(false);
@@ -180,8 +174,8 @@ public class Attended extends AbstractDomainEntity implements Comparable<Attende
 	}
 
 	@Action(invokeOn = InvokeOn.OBJECT_AND_COLLECTION)
-	@MemberOrder(sequence = "23.1")
-	public Attended setDateAndTimes(DateTime start, DateTime end) {
+	@MemberOrder(name = "enddatetime", sequence = "23.1")
+	public Attended updateDatesAndTimes(@Parameter(optionality = Optionality.MANDATORY) DateTime start, @Parameter(optionality = Optionality.MANDATORY) DateTime end) {
 		boolean isColl = actionInvocationContext.getInvokedOn().isCollection();
 		if (start != null && end != null) {
 			if (end.isBefore(start)) {
@@ -198,10 +192,19 @@ public class Attended extends AbstractDomainEntity implements Comparable<Attende
 				container.warnUser("end date & time and start date & time are not in the same 12 hour period");
 				return (isColl ? null : this);
 			}
-			startDateTime = start;
-			endDateTime = end;
+			setStartDateTime(start);
+			setEndDateTime(end);
+			setAttended(true);
 		}
 		return (isColl ? null : this);
+	}
+	
+	public DateTime default0UpdateDatesAndTimes(){
+		return getStartDateTime();
+	}
+	
+	public DateTime default1UpdateDatesAndTimes(){
+		return getEndDateTime();
 	}
 
 	@Override

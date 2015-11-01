@@ -11,6 +11,7 @@ import org.apache.isis.applib.services.clock.ClockService;
 import org.incode.module.note.dom.api.notable.Notable;
 import org.joda.time.DateTime;
 import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
 import org.joda.time.Period;
 
 import au.com.scds.chats.dom.AbstractDomainEntity;
@@ -38,7 +39,7 @@ import au.com.scds.chats.dom.module.participant.Participant;
 				+ "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall WHERE participant == :participant AND volunteer == :volunteer ") })
 @DomainObject(objectType = "SCHEDULED_CALL")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-@MemberGroupLayout(columnSpans={6,6,0,12})
+@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 public class ScheduledCall extends AbstractDomainEntity implements Comparable<ScheduledCall> {
 
 	private Participant participant;
@@ -48,12 +49,12 @@ public class ScheduledCall extends AbstractDomainEntity implements Comparable<Sc
 	private Boolean isCompleted = false;
 	private DateTime startDateTime;
 	private DateTime endDateTime;
-	
+
 	private static DecimalFormat hoursFormat = new DecimalFormat("#,##0.00");
 
 	public ScheduledCall() {
 	}
-	
+
 	public ScheduledCall(DomainObjectContainer container) {
 		this.container = container;
 	}
@@ -62,7 +63,7 @@ public class ScheduledCall extends AbstractDomainEntity implements Comparable<Sc
 		return "Call to: " + getParticipant().getFullName();
 	}
 
-	@Property(hidden=Where.REFERENCES_PARENT)
+	@Property(hidden = Where.REFERENCES_PARENT)
 	@PropertyLayout()
 	@MemberOrder(sequence = "1")
 	@Column(allowsNull = "true")
@@ -74,7 +75,7 @@ public class ScheduledCall extends AbstractDomainEntity implements Comparable<Sc
 		this.participant = participant;
 	}
 
-	@Property(hidden=Where.ALL_TABLES)
+	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout()
 	@MemberOrder(sequence = "2")
 	@Column(allowsNull = "true")
@@ -87,7 +88,7 @@ public class ScheduledCall extends AbstractDomainEntity implements Comparable<Sc
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Value Set By Scheduler")
-	@PropertyLayout(named="Scheduled For")
+	@PropertyLayout(named = "Scheduled For")
 	@Column(allowsNull = "true")
 	@MemberOrder(sequence = "3")
 	public DateTime getScheduledDateTime() {
@@ -98,7 +99,7 @@ public class ScheduledCall extends AbstractDomainEntity implements Comparable<Sc
 		this.scheduledDateTime = dateTime;
 	}
 
-	@Property()
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Set Automatically")
 	@PropertyLayout()
 	@MemberOrder(sequence = "4")
 	@Column(allowsNull = "false")
@@ -106,31 +107,39 @@ public class ScheduledCall extends AbstractDomainEntity implements Comparable<Sc
 		return isCompleted;
 	}
 
-	public void setIsCompleted(final Boolean isCompleted) throws Exception {
+	// also used by DataNucleus
+	public void setIsCompleted(final Boolean isCompleted) {
+		this.isCompleted = isCompleted;
+	}
+
+	// used by the Application
+	public void setIsCompleted2(final Boolean isCompleted) throws Exception {
 		if (isCompleted == null)
 			return;
-		if (this.callSchedule != null)
-			this.callSchedule.completeCall(this, isCompleted);
+		if (getCallSchedule() != null)
+			getCallSchedule().completeCall(this, isCompleted);
 		else
-			this.isCompleted = isCompleted;
+			setIsCompleted(isCompleted);
+		if (!isCompleted)
+			setEndDateTime(null);
 	}
 
 	// used by CalendarDayCallSchedule
 	void setIsCompletedViaSchedule(final CalendarDayCallSchedule schedule, final Boolean isCompleted) throws Exception {
 		if (isCompleted == null)
 			return;
-		if (this.callSchedule != null) {
-			if (schedule != null && this.callSchedule.equals(schedule)) {
-				this.isCompleted = isCompleted;
+		if (getCallSchedule() != null) {
+			if (schedule != null && getCallSchedule().equals(schedule)) {
+				setIsCompleted(isCompleted);
 			} else {
 				throw new Exception("schedule must be the same as already set to change completed");
 			}
 		} else
-			this.isCompleted = isCompleted;
+			setIsCompleted(isCompleted);
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Use 'Start Call' to set")
-	@PropertyLayout(hidden=Where.PARENTED_TABLES)
+	@PropertyLayout(hidden = Where.PARENTED_TABLES)
 	@MemberOrder(sequence = "4")
 	@Column(allowsNull = "true")
 	public DateTime getStartDateTime() {
@@ -142,7 +151,7 @@ public class ScheduledCall extends AbstractDomainEntity implements Comparable<Sc
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Use 'End Call' to set")
-	@PropertyLayout(hidden=Where.PARENTED_TABLES)
+	@PropertyLayout(hidden = Where.PARENTED_TABLES)
 	@MemberOrder(sequence = "5")
 	@Column(allowsNull = "true")
 	public DateTime getEndDateTime() {
@@ -152,9 +161,9 @@ public class ScheduledCall extends AbstractDomainEntity implements Comparable<Sc
 	public void setEndDateTime(final DateTime endDateTime) {
 		this.endDateTime = endDateTime;
 	}
-	
+
 	@Property(editing = Editing.DISABLED, notPersisted = true)
-	@PropertyLayout(named="Call Length in Hours", describedAs = "The interval that the participant attended the activity in hours")
+	@PropertyLayout(named = "Call Length in Hours", describedAs = "The interval that the participant attended the activity in hours")
 	@MemberOrder(sequence = "6")
 	@NotPersistent
 	public String getCallLength() {
@@ -195,10 +204,28 @@ public class ScheduledCall extends AbstractDomainEntity implements Comparable<Sc
 		if (getEndDateTime() == null) {
 			setEndDateTime(clockService.nowAsDateTime());
 			try {
-				setIsCompleted(true);
+				setIsCompleted2(true);
 			} catch (Exception e) {
 				container.warnUser("Sorry, an error occurred as follows: " + e.getMessage());
 			}
+		}
+		return this;
+	}
+
+	@Action()
+	@ActionLayout(named = "Change End Date Time")
+	@MemberOrder(name = "isCompleted", sequence = "3")
+	public ScheduledCall ChangeEndTime(@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "New End Time") final DateTime endDateTime,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Confirm Change") final Boolean doUpdate) {
+		if (doUpdate) {
+			if (endDateTime == null) {
+				try {
+					setIsCompleted2(false);
+				} catch (Exception e) {
+					container.warnUser("Sorry, an error occurred as follows: " + e.getMessage());
+				}
+			}
+			setEndDateTime(endDateTime);
 		}
 		return this;
 	}
@@ -211,7 +238,7 @@ public class ScheduledCall extends AbstractDomainEntity implements Comparable<Sc
 
 	@Inject()
 	ClockService clockService;
-	
+
 	@Inject()
 	DomainObjectContainer container;
 

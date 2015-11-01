@@ -19,6 +19,7 @@ import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
+import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
@@ -26,6 +27,7 @@ import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.RenderType;
+import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.i18n.TranslatableString;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEvent;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEventable;
@@ -47,6 +49,7 @@ import au.com.scds.chats.dom.module.participant.Participant;
 		@Query(name = "findByVolunteer", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.CalendarDayCallSchedule WHERE allocatedVolunteer == :volunteer ") })
 @DomainObject(objectType = "CALENDAR_DAY_CALL_SCHEDULE")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 public class CalendarDayCallSchedule implements CalendarEventable, Comparable<CalendarDayCallSchedule> {
 
 	private LocalDate calendarDate;
@@ -57,8 +60,8 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 
 	public CalendarDayCallSchedule() {
 
-	}	
-	
+	}
+
 	public CalendarDayCallSchedule(DomainObjectContainer container) {
 		this.container = container;
 	}
@@ -80,7 +83,7 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	}
 
 	@Property()
-	@PropertyLayout()
+	@PropertyLayout(hidden = Where.REFERENCES_PARENT)
 	@MemberOrder(sequence = "2")
 	@Column(allowsNull = "true")
 	public Volunteer getAllocatedVolunteer() {
@@ -144,19 +147,16 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	}
 
 	@Programmatic
-	public synchronized ScheduledCall completeCall(ScheduledCall call, Boolean isComplete) throws Exception {
-		System.out.print(">>>1");
+	public synchronized ScheduledCall completeCall(final ScheduledCall call, final Boolean isComplete) throws Exception {
 		if (call == null)
 			return null;
 		if (isComplete == null)
 			return null;
 		if (scheduledCalls.contains(call)) {
 			if (!call.getIsCompleted() && isComplete) {
-				System.out.print(">>>2->" + (getCompletedCalls() + 1));
 				call.setIsCompletedViaSchedule(this, true);
 				setCompletedCalls(getCompletedCalls() + 1);
 			} else if (call.getIsCompleted() && !isComplete) {
-				System.out.print(">>>3->" + (getCompletedCalls() - 1));
 				call.setIsCompletedViaSchedule(this, false);
 				setCompletedCalls(getCompletedCalls() - 1);
 			}
@@ -165,7 +165,7 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	}
 
 	@Programmatic
-	public synchronized void removeCall(ScheduledCall call) {
+	public synchronized void removeCall(final ScheduledCall call) {
 		if (call != null && scheduledCalls.contains(call)) {
 			if (call.getIsCompleted()) {
 				container.informUser("call is completed and cannot be removed");

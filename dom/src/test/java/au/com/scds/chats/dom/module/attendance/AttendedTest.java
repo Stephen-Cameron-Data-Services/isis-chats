@@ -53,8 +53,7 @@ public class AttendedTest {
 		@Test
 		public void getAttendanceInterval_Test() throws Exception {
 
-			attended.setStartDateTime(new DateTime(2015, 10, 10, 12, 0, 0));
-			attended.setEndDateTime(new DateTime(2015, 10, 10, 13, 30, 0));
+			attended.updateDatesAndTimes(new DateTime(2015, 10, 10, 12, 0, 0),new DateTime(2015, 10, 10, 13, 30, 0));
 			assertThat(attended.getAttendanceInterval()).isEqualTo("1.50");
 		}
 
@@ -66,8 +65,7 @@ public class AttendedTest {
 					oneOf(mockContainer).warnUser("end date & time is earlier than start date & time");
 				}
 			});
-			attended.setStartDateTime(new DateTime(2015, 10, 10, 12, 0, 0));
-			attended.setEndDateTime(new DateTime(2015, 10, 10, 11, 0, 0));
+			attended.updateDatesAndTimes(new DateTime(2015, 10, 10, 12, 0, 0),new DateTime(2015, 10, 10, 11, 0, 0));
 		}
 
 		@Test
@@ -78,8 +76,7 @@ public class AttendedTest {
 					oneOf(mockContainer).warnUser("end date and start date are different days of the week");
 				}
 			});
-			attended.setStartDateTime(new DateTime(2015, 10, 10, 12, 0, 0));
-			attended.setEndDateTime(new DateTime(2015, 10, 11, 12, 0, 0));
+			attended.updateDatesAndTimes(new DateTime(2015, 10, 10, 12, 0, 0),new DateTime(2015, 10, 11, 12, 0, 0));
 		}
 
 		@Test
@@ -90,8 +87,7 @@ public class AttendedTest {
 					oneOf(mockContainer).warnUser("end date & time and start date & time are not in the same 12 hour period");
 				}
 			});
-			attended.setStartDateTime(new DateTime(2015, 10, 10, 9, 0, 0));
-			attended.setEndDateTime(new DateTime(2015, 10, 10, 22, 0, 0));
+			attended.updateDatesAndTimes(new DateTime(2015, 10, 10, 9, 0, 0),new DateTime(2015, 10, 10, 22, 0, 0));
 		}
 
 	}
