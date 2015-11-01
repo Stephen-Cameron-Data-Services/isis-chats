@@ -13,26 +13,32 @@ import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
+import org.apache.isis.applib.annotation.LabelPosition;
+import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
+import org.apache.isis.applib.annotation.Where;
 
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
-@DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
+import au.com.scds.chats.dom.AbstractDomainEntity;
+
 @DomainObject(objectType = "LIFE-HISTORY")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-public class LifeHistory {
+@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
+public class LifeHistory extends AbstractDomainEntity {
 
 	private Participant parent;
 	private String lifeStory;
 	private String experiences;
 	private String hobbies;
 	private String interests;
-	
+
 	public String title() {
-		return "Life History of Participant: " + parent.getPerson().getFullname() ;
+		return "Life History of Participant: " + parent.getPerson().getFullname();
 	}
-	
+
 	@Property()
 	@PropertyLayout()
 	@MemberOrder(sequence = "100")
@@ -40,16 +46,16 @@ public class LifeHistory {
 	public Participant getParentParticipant() {
 		return parent;
 	}
-	
+
 	public void setParentParticipant(Participant participant) {
 		if (this.parent == null && participant != null)
 			this.parent = participant;
 	}
 
-	@Property(editing=Editing.DISABLED)
-	@PropertyLayout()
+	@Property()
+	@PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP)
 	@MemberOrder(sequence = "1")
-	@Column(allowsNull="true")
+	@Column(allowsNull = "true")
 	public String getLifeStory() {
 		return lifeStory;
 	}
@@ -59,9 +65,9 @@ public class LifeHistory {
 	}
 
 	@Property()
-	@PropertyLayout()
+	@PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP)
 	@MemberOrder(sequence = "2")
-	@Column(allowsNull="true")
+	@Column(allowsNull = "true")
 	public String getLifeExperiences() {
 		return experiences;
 	}
@@ -71,9 +77,9 @@ public class LifeHistory {
 	}
 
 	@Property()
-	@PropertyLayout()
+	@PropertyLayout(multiLine = 2, labelPosition = LabelPosition.TOP)
 	@MemberOrder(sequence = "3")
-	@Column(allowsNull="true")
+	@Column(allowsNull = "true")
 	public String getHobbies() {
 		return hobbies;
 	}
@@ -83,9 +89,9 @@ public class LifeHistory {
 	}
 
 	@Property()
-	@PropertyLayout()
+	@PropertyLayout(multiLine = 2, labelPosition = LabelPosition.TOP)
 	@MemberOrder(sequence = "4")
-	@Column(allowsNull="true")
+	@Column(allowsNull = "true")
 	public String getInterests() {
 		return interests;
 	}

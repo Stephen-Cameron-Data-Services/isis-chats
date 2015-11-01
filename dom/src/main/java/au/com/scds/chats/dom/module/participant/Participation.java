@@ -215,7 +215,9 @@ public class Participation extends AbstractDomainEntity implements Comparable<Pa
 
 	@Override
 	public int compareTo(final Participation o) {
-		return ComparisonChain.start().compare(getActivity(), o.getActivity()).compare(getParticipant(), o.getParticipant()).result();
+		//TODO needs more testing
+		//return ComparisonChain.start().compare(getActivity(), o.getActivity()).compare(getParticipant(), o.getParticipant()).result();
+		return getParticipant().compareTo(o.getParticipant());
 	}
 	
 	@Inject

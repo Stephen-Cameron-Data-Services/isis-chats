@@ -24,16 +24,15 @@ import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.HomePage;
 import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.annotation.ViewModel;
-
-import au.com.scds.chats.dom.module.note.Note;
-import au.com.scds.chats.dom.module.note.Notes;
+import org.incode.module.note.dom.impl.note.Note;
+import org.incode.module.note.dom.impl.note.NoteRepository;
 
 @ViewModel
 public class HomePageViewModel {
 
 	// region > title
 	public String title() {
-		return getNotes().size() + " notes";
+		return noteRepository.allNotes().size() + " notes";
 	}
 
 	// endregion
@@ -42,7 +41,7 @@ public class HomePageViewModel {
 	@HomePage
 	@CollectionLayout(render = RenderType.EAGERLY, paged = 10)
 	public List<Note> getNotes() {
-		return notes.listAll();
+		return noteRepository.allNotes();
 	}
 
 	// endregion
@@ -50,7 +49,7 @@ public class HomePageViewModel {
 	// region > injected services
 
 	@javax.inject.Inject
-	Notes notes;
+	NoteRepository noteRepository;
 
 	// endregion
 }

@@ -22,7 +22,7 @@
     <parent>
         <groupId>au.com.scds</groupId>
         <artifactId>chats</artifactId>
-        <version>0.2-SNAPSHOT</version>
+        <version>0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>chats-app</artifactId>
@@ -69,6 +69,11 @@
         	<groupId>org.mindrot</groupId>
         	<artifactId>jbcrypt</artifactId>
         	<version>0.3m</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.incode.module.note</groupId>
+        	<artifactId>incode-module-note-dom</artifactId>
+        	<version>1.9.0</version>
         </dependency>
     </dependencies>
 

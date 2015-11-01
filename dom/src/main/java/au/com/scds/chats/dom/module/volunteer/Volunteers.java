@@ -11,6 +11,7 @@ import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.SemanticsOf;
@@ -60,7 +61,7 @@ public class Volunteers {
 		return container.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteerBySurname", "surname", surname));
 	}
 
-	public Volunteer create(final @ParameterLayout(named = "First name") String firstname, final @ParameterLayout(named = "Family name") String surname,
+	public Volunteer create(final @Parameter(maxLength=100) @ParameterLayout(named = "First name") String firstname, final @Parameter(maxLength=100) @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob) {
 		return newVolunteer(firstname, surname, dob);
 	}

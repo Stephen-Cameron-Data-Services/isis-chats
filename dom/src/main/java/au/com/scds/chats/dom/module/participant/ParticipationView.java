@@ -1,6 +1,7 @@
 package au.com.scds.chats.dom.module.participant;
 
 import java.util.List;
+import java.util.SortedSet;
 
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
@@ -42,7 +43,7 @@ public class ParticipationView {
 
 	@MemberOrder(sequence = "1")
 	@CollectionLayout(named="Activities", paged = 10, render = RenderType.EAGERLY)
-	public List<Participation> getParticipations() {
+	public SortedSet<Participation> getParticipations() {
 		return parent.getParticipations();
 	}
 	

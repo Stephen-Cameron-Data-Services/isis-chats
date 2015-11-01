@@ -18,42 +18,39 @@
  */
 package au.com.scds.chats.dom.module.participant;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.jdo.annotations.*;
 
-import com.google.common.collect.ComparisonChain;
-
-
-import org.apache.isis.applib.DomainObjectContainer;
-import org.apache.isis.applib.Identifier;
 import org.apache.isis.applib.annotation.*;
-import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
 import org.apache.isis.applib.services.i18n.TranslatableString;
+import org.incode.module.note.dom.api.notable.Notable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 
 import au.com.scds.chats.dom.AbstractDomainEntity;
-import au.com.scds.chats.dom.module.note.NoteLinkable;
+//import au.com.scds.chats.dom.module.note.NoteLinkable;
 import au.com.scds.chats.dom.module.activity.Activity;
 import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.Status;
 
-@javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
-@javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
-@Queries({ @Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE status == :status"),
-		@Query(name = "findParticipantsBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE person.surname == :surname"), })
 @DomainObject(objectType = "PARTICIPANT")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
-public class Participant extends AbstractDomainEntity implements NoteLinkable, Locatable, Comparable<Participant> {
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
+@Queries({ @Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE status == :status"),
+		@Query(name = "findParticipantsBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE person.surname == :surname"), })
+public class Participant extends AbstractDomainEntity implements Notable, Locatable, Comparable<Participant> {
 
 	private Person person;
 	private Status status = Status.ACTIVE;
 	private LifeHistory lifeHistory;
 	private SocialFactors socialFactors;
 	private Loneliness loneliness;
+	@Persistent(mappedBy = "participant")
+	protected SortedSet<Participation> participations = new TreeSet<Participation>();
 	
 	public Participant(){
 		super();
@@ -80,37 +77,38 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		this.person = person;
 	}
 
-	@Property(hidden = Where.OBJECT_FORMS)
+	@Property(hidden = Where.OBJECT_FORMS,editing=Editing.DISABLED, editingDisabledReason="Displayed from Person record")
 	@MemberOrder(sequence = "1.1")
 	public String getFullName() {
 		return getPerson().getFullname();
 	}
 
-	@Property()
+	@Property(editing=Editing.DISABLED, editingDisabledReason="Displayed from Person record")
 	@MemberOrder(sequence = "2")
 	public String getHomePhoneNumber() {
 		return getPerson().getHomePhoneNumber();
 	}
 
-	@Property()
+	@Property(editing=Editing.DISABLED, editingDisabledReason="Displayed from Person record")
 	@MemberOrder(sequence = "3")
 	public String getMobilePhoneNumber() {
 		return getPerson().getMobilePhoneNumber();
 	}
 
-	@Property(hidden = Where.PARENTED_TABLES)
+	@Property(hidden = Where.PARENTED_TABLES, editing=Editing.DISABLED, editingDisabledReason="Displayed from Person record")
 	@MemberOrder(sequence = "4")
 	public String getStreetAddress() {
 		return getPerson().getFullStreetAddress();
 	}
 
-	@Property(hidden = Where.PARENTED_TABLES)
+	@Property(hidden = Where.PARENTED_TABLES, editing=Editing.DISABLED, editingDisabledReason="Displayed from Person record")
+	@PropertyLayout()
 	@MemberOrder(sequence = "5")
 	public String getMailAddress() {
 		return getPerson().getFullMailAddress();
 	}
 
-	@Property(hidden = Where.PARENTED_TABLES)
+	@Property(hidden = Where.PARENTED_TABLES, editing=Editing.DISABLED, editingDisabledReason="Displayed from Person record")
 	@MemberOrder(sequence = "6")
 	public String getEMailAddress() {
 		return getPerson().getEmailAddress();
@@ -201,63 +199,17 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		return getLoneliness();
 	}
 
-	// FAKE TAB
-	private ParticipationView participationsView;
-
-	@Property(hidden = Where.EVERYWHERE)
-	@Column(allowsNull = "true")
-	public ParticipationView getParticipationsView() {
-		return participationsView;
-	}
-
-	public void setParticipationsView(final ParticipationView view) {
-		// only set participation once
-		if (this.participationsView == null && view != null) {
-			this.participationsView = view;
-			this.participationsView.setParentParticipant(this);
-			container.persistIfNotAlready(view);
-		}
-	}
-
-	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	@ActionLayout(named = "Participation")
-	@MemberOrder(sequence = "12")
-	public ParticipationView updateParticipations() {
-		if (getParticipationsView() == null) {
-			setParticipationsView(container.newTransientInstance(ParticipationView.class));
-		}
-		return getParticipationsView();
-	}
-
-	// region > updateName (action)
-	// not used, see @Action below
-	public static class UpdateNameDomainEvent extends ActionDomainEvent<Participant> {
-		public UpdateNameDomainEvent(final Participant source, final Identifier identifier, final Object... arguments) {
-			super(source, identifier, arguments);
-		}
-	}
-
-
-	// {{ Activities (Collection)
-	// THIS COLLECTION IS VIEWED VIA THE PARTICIPATION_VIEW 'FAKE TAB' ACTION
-	private List<Participation> participations = new ArrayList<Participation>();
-
-	@Collection(hidden = Where.EVERYWHERE)
-	public List<Participation> getParticipations() {
+	@Property()
+	@MemberOrder(sequence = "100")
+	@CollectionLayout(named = "Participation", render = RenderType.EAGERLY)
+	public SortedSet<Participation> getParticipations() {
 		return participations;
 	}
 
-	public void setParticipations(final List<Participation> participations) {
+	/*public void setParticipations(final SortedSet<Participation> participations) {
 		this.participations = participations;
 	}
 
-	/**
-	 * Creates a new Participation linking the Activity to the Participant
-	 * Called from Activity
-	 * 
-	 * @param activity
-	 * @return
-	 */
 	@Programmatic
 	public Participation addParticipation(Activity activity) {
 		if (!hasParticipation(activity)) {
@@ -270,7 +222,7 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		} else {
 			return null;
 		}
-	}
+	}*/
 
 	@Programmatic
 	public boolean hasParticipation(Activity activity) {
@@ -282,13 +234,7 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		return false;
 	}
 
-	/**
-	 * Removes an existing Participation linking the Activity to the Participant
-	 * Called from Activity
-	 * 
-	 * @param activity
-	 * @return
-	 */
+
 	@Programmatic
 	public Participation removeParticipation(Activity activity) {
 		for (Participation p : participations) {
@@ -300,12 +246,7 @@ public class Participant extends AbstractDomainEntity implements NoteLinkable, L
 		return null;
 	}
 
-	/**
-	 * Finds the Participation for a specific Activity, called from Activity
-	 * 
-	 * @param activity
-	 * @return
-	 */
+
 	@Programmatic
 	public Participation findParticipation(Activity activity) {
 		for (Participation p : participations) {

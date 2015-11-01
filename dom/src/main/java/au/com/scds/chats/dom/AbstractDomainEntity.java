@@ -1,27 +1,18 @@
 package au.com.scds.chats.dom;
 
 import javax.inject.Inject;
-import javax.jdo.InstanceCallbacks;
 import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
-import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.clock.ClockService;
-import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
-import org.apache.isis.applib.services.timestamp.Timestampable;
-import org.isisaddons.module.security.dom.user.ApplicationUser;
+//import org.apache.isis.applib.services.timestamp.Timestampable;
 import org.isisaddons.module.security.dom.user.ApplicationUsers;
 import org.joda.time.DateTime;
-
-import au.com.scds.chats.dom.module.general.names.Region;
-import au.com.scds.chats.dom.module.general.names.Regions;
-import au.com.scds.chats.dom.user.CreateTrackedEntity;
-import au.com.scds.chats.dom.user.ModifyTrackedEntity;
 
 /**
  * Base class of the Chats Entity Inheritance Tree.
@@ -31,7 +22,7 @@ import au.com.scds.chats.dom.user.ModifyTrackedEntity;
  */
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public abstract class AbstractDomainEntity implements Timestampable {
+public abstract class AbstractDomainEntity /*implements Timestampable*/ {
 
 	private String createdBy;
 	private DateTime createdOn;

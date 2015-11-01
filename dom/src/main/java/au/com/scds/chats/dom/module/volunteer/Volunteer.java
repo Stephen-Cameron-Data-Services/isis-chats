@@ -19,6 +19,7 @@ import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
 import org.apache.isis.applib.services.i18n.TranslatableString;
+import org.incode.module.note.dom.api.notable.Notable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 import org.joda.time.DateTime;
@@ -36,7 +37,7 @@ import au.com.scds.chats.dom.module.participant.Participation;
 @Queries({ @Query(name = "listVolunteersByStatus", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.Volunteer " + "WHERE status == :status"),
 		@Query(name = "findVolunteersBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.Volunteer " + "WHERE person.surname == :surname"), })
 @MemberGroupLayout(columnSpans = { 3, 3, 0, 6 }, left = { "General" }, middle = { "Admin" })
-public class Volunteer extends AbstractDomainEntity implements Locatable{
+public class Volunteer extends AbstractDomainEntity implements Notable, Locatable{
 
 	// region > identificatiom
 	public TranslatableString title() {

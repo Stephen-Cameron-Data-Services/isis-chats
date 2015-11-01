@@ -28,6 +28,7 @@ import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
+import org.incode.module.note.dom.api.notable.Notable;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEvent;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEventable;
 import org.joda.time.DateTime;
@@ -36,7 +37,7 @@ import au.com.scds.chats.dom.module.attendance.AttendanceList;
 import au.com.scds.chats.dom.module.general.Location;
 import au.com.scds.chats.dom.module.general.Persons;
 import au.com.scds.chats.dom.module.general.names.ActivityType;
-import au.com.scds.chats.dom.module.note.NoteLinkable;
+//import au.com.scds.chats.dom.module.note.NoteLinkable;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.dom.module.participant.Participation;
@@ -74,7 +75,7 @@ import au.com.scds.chats.dom.module.participant.Participation;
 @DomainObject(objectType = "ACTIVITY")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
-public class ActivityEvent extends Activity implements NoteLinkable, CalendarEventable {
+public class ActivityEvent extends Activity implements Notable, CalendarEventable {
 
 	protected RecurringActivity parent;
 	protected AttendanceList attendances;
@@ -98,7 +99,7 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "1")
+	@MemberOrder(sequence = "1.1")
 	@Column(allowsNull = "true")
 	public final RecurringActivity getParentActivity() {
 		return parent;
@@ -110,7 +111,7 @@ public class ActivityEvent extends Activity implements NoteLinkable, CalendarEve
 
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Attendance List")
-	@MemberOrder(sequence = "1")
+	@MemberOrder(sequence = "2.1")
 	@Column(allowsNull = "true")
 	public AttendanceList getAttendances() {
 		return attendances;

@@ -10,9 +10,9 @@ import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
+import org.incode.module.note.dom.api.notable.Notable;
 import org.joda.time.DateTime;
 
-import au.com.scds.chats.dom.module.note.NoteLinkable;
 import au.com.scds.chats.dom.module.participant.Participants;
 /**
  * 
@@ -30,7 +30,7 @@ import au.com.scds.chats.dom.module.participant.Participants;
 		@Query(name = "findRecurringActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.RecurringActivity WHERE name.indexOf(:name) >= 0 ") })
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Scheduling", "Admin" })
 @DomainObject(objectType = "RECURRING_ACTIVITY")
-public class RecurringActivity extends Activity implements NoteLinkable {
+public class RecurringActivity extends Activity implements Notable {
 
 	private Periodicity periodicity = Periodicity.WEEKLY;
 	@Persistent(mappedBy = "parent")

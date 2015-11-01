@@ -114,7 +114,7 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "3")
+	@MemberOrder(sequence = "2")
 	@Column(allowsNull = "true")
 	public Provider getProvider() {
 		return provider;

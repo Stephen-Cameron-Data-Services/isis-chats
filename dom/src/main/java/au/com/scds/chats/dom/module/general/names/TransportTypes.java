@@ -8,7 +8,7 @@ import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
 
 @DomainService(repositoryFor = TransportType.class)
-@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.1")
+@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.12")
 public class TransportTypes {
 
 	@Action(semantics = SemanticsOf.SAFE)

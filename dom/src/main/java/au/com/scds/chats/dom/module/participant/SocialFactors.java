@@ -1,7 +1,10 @@
 package au.com.scds.chats.dom.module.participant;
 
+import javax.inject.Inject;
 import javax.jdo.annotations.Column;
+import javax.jdo.annotations.DatastoreIdentity;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.VersionStrategy;
 
 import org.apache.isis.applib.DomainObjectContainer;
@@ -9,27 +12,45 @@ import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
+import org.apache.isis.applib.annotation.LabelPosition;
+import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
+import org.apache.isis.applib.annotation.PropertyLayout;
 import org.joda.time.LocalDate;
 
-@javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
-@javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
-@javax.jdo.annotations.Version(strategy = VersionStrategy.VERSION_NUMBER, column = "version")
+import au.com.scds.chats.dom.AbstractDomainEntity;
+
 @DomainObject(objectType = "SOCIAL-FACTORS")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-public class SocialFactors {
+@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General", "Involvement", "Friends and Relatives" }, middle = { "Limitations", "Driving", "Admin" })
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
+public class SocialFactors extends AbstractDomainEntity {
+
+	private Participant parent;
+	private String limitingHealthIssues;
+	private String otherLimitingFactors;
+	private String driversLicence;
+	private String drivingAbility;
+	private String drivingConfidence;
+	private String placeOfOrigin;
+	private LocalDate dateOfSettlement;
+	private String closeRelatives;
+	private Integer closeRlFrCount;
+	private String proximityOfRelatives;
+	private String proximityOfFriends;
+	private String involvementGC;
+	private String involvementIH;
 
 	public String title() {
 		return "Social Factors of Participant: " + parent.getPerson().getFullname();
 	}
 
-	// {{ ParentParticipant (property)
-	private Participant parent;
-
-	@Column(allowsNull = "false")
-	@Property(editing=Editing.DISABLED)
+	@Property(editing = Editing.DISABLED)
+	@PropertyLayout()
 	@MemberOrder(sequence = "100")
+	@Column(allowsNull = "false")
 	public Participant getParentParticipant() {
 		return parent;
 	}
@@ -39,13 +60,10 @@ public class SocialFactors {
 			this.parent = parent;
 	}
 
-	// }}
-
-	// {{ LimitingHealthIssues (property)
-	private String limitingHealthIssues;
-
+	@Property()
+	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Limitations", sequence = "1")
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "1")
 	public String getLimitingHealthIssues() {
 		return limitingHealthIssues;
 	}
@@ -54,13 +72,10 @@ public class SocialFactors {
 		this.limitingHealthIssues = limitingHealthIssues;
 	}
 
-	// }}
-
-	// {{ OtherLimitingFactors (property)
-	private String otherLimitingFactors;
-
+	@Property()
+	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Limitations", sequence = "2")
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "2")
 	public String getOtherLimitingFactors() {
 		return otherLimitingFactors;
 	}
@@ -69,13 +84,10 @@ public class SocialFactors {
 		this.otherLimitingFactors = otherLimitingFactors;
 	}
 
-	// }}
-
-	// {{ DriversLicence (property)
-	private String driversLicence;
-
+	@Property()
+	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Driving", sequence = "3")
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "3")
 	public String getDriversLicence() {
 		return driversLicence;
 	}
@@ -84,13 +96,10 @@ public class SocialFactors {
 		this.driversLicence = driversLicence;
 	}
 
-	// }}
-
-	// {{ DrivingAbility (property)
-	private String drivingAbility;
-
+	@Property()
+	@PropertyLayout(labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Driving", sequence = "4")
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "4")
 	public String getDrivingAbility() {
 		return drivingAbility;
 	}
@@ -99,13 +108,10 @@ public class SocialFactors {
 		this.drivingAbility = drivingAbility;
 	}
 
-	// }}
-
-	// {{ DrivingConfidence (property)
-	private String drivingConfidence;
-
+	@Property()
+	@PropertyLayout(labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Driving", sequence = "5")
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "5")
 	public String getDrivingConfidence() {
 		return drivingConfidence;
 	}
@@ -114,13 +120,10 @@ public class SocialFactors {
 		this.drivingConfidence = drivingConfidence;
 	}
 
-	// }}
-
-	// {{ PlaceOfOrigin (property)
-	private String placeOfOrigin;
-
-	@Column(allowsNull = "true")
+	@Property()
+	@PropertyLayout(labelPosition = LabelPosition.TOP)
 	@MemberOrder(sequence = "6")
+	@Column(allowsNull = "true")
 	public String getPlaceOfOrigin() {
 		return placeOfOrigin;
 	}
@@ -129,13 +132,10 @@ public class SocialFactors {
 		this.placeOfOrigin = placeOfOrigin;
 	}
 
-	// }}
-
-	// {{ DateofSettlement (property)
-	private LocalDate dateOfSettlement;
-
-	@Column(allowsNull = "true")
+	@Property()
+	@PropertyLayout(labelPosition = LabelPosition.TOP)
 	@MemberOrder(sequence = "7")
+	@Column(allowsNull = "true")
 	public LocalDate getDateofSettlement() {
 		return dateOfSettlement;
 	}
@@ -144,13 +144,10 @@ public class SocialFactors {
 		this.dateOfSettlement = dateOfSettlement;
 	}
 
-	// }}
-
-	// {{ closeRelatives (property)
-	private String closeRelatives;
-
+	@Property()
+	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Friends and Relatives", sequence = "8")
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "8")
 	public String getCloseRelatives() {
 		return closeRelatives;
 	}
@@ -159,29 +156,22 @@ public class SocialFactors {
 		this.closeRelatives = closeRelatives;
 	}
 
-	// }}
-
-	// {{ closeRelativeAndFriendCount (property)
-	private Integer closeRlFrCount;
-
+	@Property()
+	@PropertyLayout(labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Friends and Relatives", sequence = "9")
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "9")
 	public Integer getCloseRelativeAndFriendCount() {
 		return closeRlFrCount;
 	}
 
-	public void setCloseRelativeAndFriendCount(
-			final Integer closeRelativeAndFriendCount) {
-		this.closeRlFrCount = closeRelativeAndFriendCount;
+	public void setCloseRelativeAndFriendCount(Integer count) {
+		this.closeRlFrCount = count;
 	}
 
-	// }}
-
-	// {{ ProximityOfRelatives (property)
-	private String proximityOfRelatives;
-
+	@Property()
+	@PropertyLayout(labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Friends and Relatives", sequence = "10")
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "10")
 	public String getProximityOfRelatives() {
 		return proximityOfRelatives;
 	}
@@ -190,29 +180,22 @@ public class SocialFactors {
 		this.proximityOfRelatives = proximityOfRelatives;
 	}
 
-	// }}
-
-	// {{ ProximityOfFriends (property)
-	private String proximityOfFriends;
-
+	@Property()
+	@PropertyLayout(labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Friends and Relatives", sequence = "11")
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "11")
 	public String getProximityOfFriends() {
 		return proximityOfFriends;
 	}
 
-	@Column(allowsNull = "true")
 	public void setProximityOfFriends(final String proximityOfFriends) {
 		this.proximityOfFriends = proximityOfFriends;
 	}
 
-	// }}
-
-	// {{ InvolvementInGroupsClubs (property)
-	private String involvementGC;
-
+	@Property()
+	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Involvement", sequence = "12")
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "12")
 	public String getInvolvementInGroupsClubs() {
 		return involvementGC;
 	}
@@ -221,26 +204,15 @@ public class SocialFactors {
 		this.involvementGC = involvement;
 	}
 
-	// }}
-
-	// {{ involvementInInterestsHobbies (property)
-	private String involvementIH;
-
+	@Property()
+	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Involvement", sequence = "13")
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "13")
 	public String getInvolvementInInterestsHobbies() {
 		return involvementIH;
 	}
 
-	public void setInvolvementInInterestsHobbies(
-			final String involvmentInInterestsHobbies) {
+	public void setInvolvementInInterestsHobbies(final String involvmentInInterestsHobbies) {
 		this.involvementIH = involvmentInInterestsHobbies;
-	} // }}
-
-	// {{ injected dependencies
-	@javax.inject.Inject
-	@SuppressWarnings("unused")
-	private DomainObjectContainer container;
-	// }}
-
+	}
 }

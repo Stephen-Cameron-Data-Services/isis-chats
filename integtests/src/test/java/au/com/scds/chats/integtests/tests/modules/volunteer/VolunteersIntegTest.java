@@ -35,7 +35,7 @@ public class VolunteersIntegTest extends DomainAppIntegTest {
 
         // when
         Volunteer v = wrap(volunteers).create("Joe","Volunteer",new LocalDate());
-        Participant p = wrap(participants).newParticipant("Mary", "Participant", new LocalDate());
+        Participant p = wrap(participants).create("Mary", "Participant", new LocalDate());
 
         // then
         //assertThat(v.getPerson().getFullname()).isEqualTo("Joe Volunteer");

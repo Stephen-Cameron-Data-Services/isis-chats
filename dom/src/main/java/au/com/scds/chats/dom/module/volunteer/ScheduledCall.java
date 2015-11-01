@@ -3,9 +3,10 @@ package au.com.scds.chats.dom.module.volunteer;
 import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.annotation.*;
+import org.incode.module.note.dom.api.notable.Notable;
 import org.joda.time.DateTime;
 
-import au.com.scds.chats.dom.module.note.NoteLinkable;
+//import au.com.scds.chats.dom.module.note.NoteLinkable;
 import au.com.scds.chats.dom.module.participant.Participant;
 
 /**
@@ -29,7 +30,7 @@ import au.com.scds.chats.dom.module.participant.Participant;
 				+ "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall WHERE participant == :participant AND volunteer == :volunteer ") })
 @DomainObject(objectType = "SCHEDULED_CALL")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-public class ScheduledCall implements NoteLinkable, Comparable<ScheduledCall> {
+public class ScheduledCall implements Notable, Comparable<ScheduledCall> {
 
 	public String title() {
 		return "Call to: " + participant.getFullName();

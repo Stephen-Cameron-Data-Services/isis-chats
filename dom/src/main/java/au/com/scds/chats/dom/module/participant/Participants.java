@@ -65,7 +65,7 @@ public class Participants {
 	@MemberOrder(sequence = "1")
 	@SuppressWarnings("all")
 	public List<Participant> listActive() {
-		return container.allMatches(new QueryDefault<>(Participant.class, "listByParticipantStatus", "status", Status.ACTIVE));
+		return container.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.ACTIVE));
 		/*
 		 * TODO replace all queries with typesafe final QParticipant p =
 		 * QParticipant.candidate(); return
@@ -78,18 +78,18 @@ public class Participants {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
 	public List<Participant> listExited() {
-		return container.allMatches(new QueryDefault<>(Participant.class, "listByParticipantStatus", "status", Status.EXCITED));
+		return container.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.EXCITED));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "3")
 	public List<Participant> findBySurname(@ParameterLayout(named = "Surname") final String surname) {
-		return container.allMatches(new QueryDefault<>(Participant.class, "findBySurname", "surname", surname));
+		return container.allMatches(new QueryDefault<>(Participant.class, "findParticipantsBySurname", "surname", surname));
 	}
 
 	@MemberOrder(sequence = "4")
-	public Participant create(final @ParameterLayout(named = "First name") String firstname, final @ParameterLayout(named = "Family name") String surname,
+	public Participant create(final @Parameter(maxLength=100) @ParameterLayout(named = "First name") String firstname, final @Parameter(maxLength=100) @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob) {
 		return newParticipant(firstname, surname, dob);
 	}
