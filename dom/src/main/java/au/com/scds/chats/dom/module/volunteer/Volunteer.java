@@ -26,6 +26,9 @@ import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.AbstractDomainEntity;
 import au.com.scds.chats.dom.module.activity.Activity;
+import au.com.scds.chats.dom.module.call.CalendarDayCallSchedule;
+import au.com.scds.chats.dom.module.call.CallSchedules;
+import au.com.scds.chats.dom.module.call.ScheduledCall;
 import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.Status;
 import au.com.scds.chats.dom.module.participant.Participant;
@@ -35,7 +38,7 @@ import au.com.scds.chats.dom.module.participant.Participation;
 @javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
 @javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
 @Queries({ @Query(name = "listVolunteersByStatus", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.Volunteer " + "WHERE status == :status"),
-		@Query(name = "findVolunteersBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.Volunteer " + "WHERE person.surname == :surname"), })
+		@Query(name = "findVolunteersBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.Volunteer " + "WHERE person.surname.indexOf(:surname) >= 0"), })
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 public class Volunteer extends AbstractDomainEntity implements Notable, Locatable{
 

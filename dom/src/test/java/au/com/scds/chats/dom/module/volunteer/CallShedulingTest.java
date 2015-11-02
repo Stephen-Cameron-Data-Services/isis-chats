@@ -17,6 +17,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import au.com.scds.chats.dom.module.call.CalendarDayCallSchedule;
+import au.com.scds.chats.dom.module.call.CallSchedules;
+import au.com.scds.chats.dom.module.call.ScheduledCall;
+
 public class CallShedulingTest {
 
 	@Rule
@@ -39,7 +43,7 @@ public class CallShedulingTest {
         public void createDailyCallSchedule() throws Exception {
 
             // given
-            final CalendarDayCallSchedule schedule = new CalendarDayCallSchedule(mockContainer);
+            final CalendarDayCallSchedule schedule = new CalendarDayCallSchedule(mockContainer,callSchedules);
             final LocalDate date = new LocalDate();
             final ScheduledCall call = new ScheduledCall(mockContainer);
 
@@ -47,18 +51,12 @@ public class CallShedulingTest {
                 {
                     oneOf(mockContainer).newTransientInstance(CalendarDayCallSchedule.class);
                     will(returnValue(schedule));
-
                     oneOf(mockContainer).persistIfNotAlready(schedule);
-                    
                     oneOf(mockContainer).flush();
-                    
                     oneOf(mockContainer).newTransientInstance(ScheduledCall.class);
                     will(returnValue(call));
-
                     oneOf(mockContainer).persistIfNotAlready(call);
-                    
                     oneOf(mockContainer).flush();
-                    
                     oneOf(mockContainer).informUser("call is completed and cannot be removed");
                 }
             });
@@ -66,8 +64,7 @@ public class CallShedulingTest {
             // when
             CalendarDayCallSchedule _schedule = callSchedules.createCalendarDayCallSchedule(date,null);
             //CallSchedules is normally injected as Domain Service
-            _schedule.callScheduler = callSchedules;
-            
+
             // then
             assertThat(_schedule).isEqualTo(schedule);
             assertThat(_schedule.getCompletedCalls()).isEqualTo(0);

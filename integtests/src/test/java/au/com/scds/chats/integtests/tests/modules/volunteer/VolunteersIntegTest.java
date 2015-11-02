@@ -9,9 +9,9 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 
+import au.com.scds.chats.dom.module.call.ScheduledCall;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
-import au.com.scds.chats.dom.module.volunteer.ScheduledCall;
 import au.com.scds.chats.dom.module.volunteer.Volunteer;
 import au.com.scds.chats.dom.module.volunteer.Volunteers;
 import au.com.scds.chats.integtests.tests.DomainAppIntegTest;

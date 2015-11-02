@@ -15,8 +15,8 @@ import com.google.common.collect.Maps;
 
 import au.com.scds.chats.dom.module.activity.ActivityEvent;
 import au.com.scds.chats.dom.module.activity.RecurringActivity;
+import au.com.scds.chats.dom.module.call.ScheduledCall;
 import au.com.scds.chats.dom.module.participant.Participant;
-import au.com.scds.chats.dom.module.volunteer.ScheduledCall;
 import au.com.scds.chats.dom.module.volunteer.Volunteer;
 
 @DomainService(nature = NatureOfService.DOMAIN)

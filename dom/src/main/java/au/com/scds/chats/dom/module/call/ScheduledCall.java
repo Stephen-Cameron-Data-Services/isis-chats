@@ -1,4 +1,4 @@
-package au.com.scds.chats.dom.module.volunteer;
+package au.com.scds.chats.dom.module.call;
 
 import java.text.DecimalFormat;
 
@@ -17,6 +17,7 @@ import org.joda.time.Period;
 import au.com.scds.chats.dom.AbstractDomainEntity;
 //import au.com.scds.chats.dom.module.note.NoteLinkable;
 import au.com.scds.chats.dom.module.participant.Participant;
+import au.com.scds.chats.dom.module.volunteer.Volunteer;
 
 /**
  * ScheduledCall indicates a call to a Participant by a Volunteer to be made in
@@ -35,7 +36,7 @@ import au.com.scds.chats.dom.module.participant.Participant;
 		@Query(name = "find", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall "),
 		@Query(name = "findScheduledCallsByVolunteer", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall WHERE volunteer == :volunteer "),
 		@Query(name = "findScheduledCallsByParticipant", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall WHERE participant == :participant "),
-		@Query(name = "findScheduledCallsByVolunteerAndParticipant", language = "JDOQL", value = "SELECT "
+		@Query(name = "findScheduledCallsByParticipantAndVolunteer", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall WHERE participant == :participant AND volunteer == :volunteer ") })
 @DomainObject(objectType = "SCHEDULED_CALL")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
@@ -43,7 +44,7 @@ import au.com.scds.chats.dom.module.participant.Participant;
 public class ScheduledCall extends AbstractDomainEntity implements Comparable<ScheduledCall> {
 
 	private Participant participant;
-	private Volunteer allocatedVolunteer;
+	private Volunteer volunteer;
 	private CalendarDayCallSchedule callSchedule;
 	private DateTime scheduledDateTime;
 	private Boolean isCompleted = false;
@@ -80,11 +81,11 @@ public class ScheduledCall extends AbstractDomainEntity implements Comparable<Sc
 	@MemberOrder(sequence = "2")
 	@Column(allowsNull = "true")
 	public Volunteer getAllocatedVolunteer() {
-		return allocatedVolunteer;
+		return volunteer;
 	}
 
-	void setAllocatedVolunteer(final Volunteer allocatedVolunteer) {
-		this.allocatedVolunteer = allocatedVolunteer;
+	void setAllocatedVolunteer(final Volunteer volunteer) {
+		this.volunteer = volunteer;
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Value Set By Scheduler")

@@ -22,13 +22,7 @@ import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.Status;
 import au.com.scds.chats.dom.module.volunteer.Volunteer;
 
-/**
- * 
- * 
- * @author Steve Cameron Data Services
- * 
- */
-@DomainService(repositoryFor = Volunteer.class)
+@DomainService( repositoryFor = Volunteer.class)
 @DomainServiceLayout(menuOrder = "30")
 public class Volunteers {
 
@@ -58,7 +52,7 @@ public class Volunteers {
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "3")
 	public List<Volunteer> findBySurname(@ParameterLayout(named = "Surname") final String surname) {
-		return container.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteerBySurname", "surname", surname));
+		return container.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersBySurname", "surname", surname));
 	}
 
 	public Volunteer create(final @Parameter(maxLength=100) @ParameterLayout(named = "First name") String firstname, final @Parameter(maxLength=100) @ParameterLayout(named = "Family name") String surname,

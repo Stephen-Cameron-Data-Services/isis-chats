@@ -1,4 +1,4 @@
-package au.com.scds.chats.dom.module.volunteer;
+package au.com.scds.chats.dom.module.call;
 
 import java.util.List;
 
@@ -23,15 +23,16 @@ import org.joda.time.LocalTime;
 
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
+import au.com.scds.chats.dom.module.volunteer.Volunteer;
+import au.com.scds.chats.dom.module.volunteer.Volunteers;
 
 /**
  * 
  * @author Steve Cameron Data Services
  * 
  */
-@DomainService(repositoryFor = CalendarDayCallSchedule.class, nature = NatureOfService.VIEW_MENU_ONLY)
-@DomainServiceLayout(menuOrder = "50") 
-
+@DomainService(nature = NatureOfService.VIEW_MENU_ONLY, repositoryFor = CalendarDayCallSchedule.class)
+@DomainServiceLayout(named="Calls", menuOrder = "50") 
 public class CallSchedules {
 
 	/*@Action(semantics = SemanticsOf.SAFE)
@@ -112,7 +113,7 @@ public class CallSchedules {
 	}
 
 	@Programmatic
-	CalendarDayCallSchedule createCalendarDayCallSchedule(final @Parameter(optionality = Optionality.MANDATORY) LocalDate date, final Volunteer volunteer) {
+	public CalendarDayCallSchedule createCalendarDayCallSchedule(final @Parameter(optionality = Optionality.MANDATORY) LocalDate date, final Volunteer volunteer) {
 		CalendarDayCallSchedule schedule = container.newTransientInstance(CalendarDayCallSchedule.class);
 		schedule.setCalendarDate(date);
 		schedule.setAllocatedVolunteer(volunteer);
@@ -122,7 +123,7 @@ public class CallSchedules {
 	}
 
 	@Programmatic
-	ScheduledCall createScheduledCall(final Volunteer volunteer, final Participant participant, final DateTime dateTime) throws Exception {
+	public ScheduledCall createScheduledCall(final Volunteer volunteer, final Participant participant, final DateTime dateTime) throws Exception {
 		// see if there is a Schedule for this Volunteer on this day
 		if (dateTime == null) {
 			throw new IllegalArgumentException("dateTime is a mandatory argument");

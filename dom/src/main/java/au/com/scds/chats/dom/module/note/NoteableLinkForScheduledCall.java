@@ -15,7 +15,7 @@ import org.incode.module.note.dom.api.notable.Notable;
 import org.incode.module.note.dom.impl.notablelink.NotableLink;
 import org.incode.module.note.dom.impl.note.NoteRepository;
 
-import au.com.scds.chats.dom.module.volunteer.ScheduledCall;
+import au.com.scds.chats.dom.module.call.ScheduledCall;
 
 import com.google.common.eventbus.Subscribe;
 public class NoteableLinkForScheduledCall {

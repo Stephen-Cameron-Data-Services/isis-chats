@@ -211,7 +211,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		return super.getName();
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
+	@Property(hidden = Where.NOWHERE)
 	@Override
 	@Column(allowsNull = "true")
 	public DateTime getStartDateTime() {

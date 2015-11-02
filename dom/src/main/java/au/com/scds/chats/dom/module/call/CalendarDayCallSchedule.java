@@ -1,4 +1,4 @@
-package au.com.scds.chats.dom.module.volunteer;
+package au.com.scds.chats.dom.module.call;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -36,6 +36,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
 import au.com.scds.chats.dom.module.participant.Participant;
+import au.com.scds.chats.dom.module.volunteer.Volunteer;
 
 /**
  * A manager of ScheduledCall objects for a specific Calendar day, usually for a
@@ -62,8 +63,9 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 
 	}
 
-	public CalendarDayCallSchedule(DomainObjectContainer container) {
+	public CalendarDayCallSchedule(DomainObjectContainer container, CallSchedules callSchedules) {
 		this.container = container;
+		this.callScheduler = callSchedules;
 	}
 
 	public String title() {
@@ -190,8 +192,8 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	}
 
 	@Override
-	public int compareTo(CalendarDayCallSchedule o) {
-		return this.getCalendarDate().compareTo(o.getCalendarDate());
+	public int compareTo(CalendarDayCallSchedule other) {
+		return other.getCalendarDate().compareTo(this.getCalendarDate());
 	}
 
 	@Inject()
