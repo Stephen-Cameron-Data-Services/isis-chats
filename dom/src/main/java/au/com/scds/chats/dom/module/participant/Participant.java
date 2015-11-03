@@ -39,7 +39,6 @@ import au.com.scds.chats.dom.module.general.Status;
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-@DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
 @Queries({ @Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE status == :status"),
 		@Query(name = "findParticipantsBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE person.surname.indexOf(:surname) >= 0"), })
 public class Participant extends AbstractDomainEntity implements Notable, Locatable, Comparable<Participant> {

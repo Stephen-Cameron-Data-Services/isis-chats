@@ -34,7 +34,6 @@ import au.com.scds.chats.dom.module.general.names.Salutation;
 import au.com.scds.chats.dom.module.general.names.Salutations;
 
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-@DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
 @Unique(name = "Person_UNQ", members = { "firstname", "surname", "birthdate" })
 @Queries({ @Query(name = "findPersonsBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.general.Person " + "WHERE surname == :surname"), })
 @DomainObject(objectType = "PERSON")

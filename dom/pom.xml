@@ -23,7 +23,7 @@
 	<parent>
 		<groupId>au.com.scds</groupId>
 		<artifactId>chats</artifactId>
-		<version>0.1-SNAPSHOT</version>
+		<version>0.2-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>chats-dom</artifactId>
@@ -74,19 +74,19 @@
 		<dependency>
 			<groupId>org.isisaddons.wicket.fullcalendar2</groupId>
 			<artifactId>isis-wicket-fullcalendar2-cpt</artifactId>
-			<version>1.9.0</version>
+			<version>1.10.0-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.isisaddons.wicket.gmap3</groupId>
 			<artifactId>isis-wicket-gmap3-cpt</artifactId>
-			<version>1.9.0</version>
+			<version>1.10.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.isisaddons.wicket.excel</groupId>
 			<artifactId>isis-wicket-excel-cpt</artifactId>
-			<version>1.9.0</version>
+			<version>1.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mindrot</groupId>
@@ -96,12 +96,12 @@
 		<dependency>
 			<groupId>org.isisaddons.module.security</groupId>
 			<artifactId>isis-module-security-dom</artifactId>
-			<version>1.9.0</version>
+			<version>1.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.incode.module.note</groupId>
 			<artifactId>incode-module-note-dom</artifactId>
-			<version>1.9.0</version>
+			<version>1.10.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

@@ -8,7 +8,6 @@ import javax.jdo.annotations.Column;
 import javax.jdo.annotations.DatastoreIdentity;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.IdGeneratorStrategy;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
@@ -36,7 +35,6 @@ import au.com.scds.chats.dom.module.participant.Participation;
  * 
  */
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-@DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
 public class AttendanceList {
 
 	private ActivityEvent activity;

@@ -5,8 +5,6 @@ import java.util.TreeSet;
 
 import javax.inject.Inject;
 import javax.jdo.annotations.Column;
-import javax.jdo.annotations.DatastoreIdentity;
-import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Queries;
@@ -44,13 +42,12 @@ import au.com.scds.chats.dom.module.volunteer.Volunteer;
  * 
  * 
  */
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
-@DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
-@Queries({ @Query(name = "find", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.CalendarDayCallSchedule "),
-		@Query(name = "findByVolunteer", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.CalendarDayCallSchedule WHERE allocatedVolunteer == :volunteer ") })
 @DomainObject(objectType = "CALENDAR_DAY_CALL_SCHEDULE")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@Queries({ @Query(name = "findCallSchedule", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.CalendarDayCallSchedule "),
+		@Query(name = "findCallScheduleByVolunteer", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.CalendarDayCallSchedule WHERE allocatedVolunteer == :volunteer ") })
 public class CalendarDayCallSchedule implements CalendarEventable, Comparable<CalendarDayCallSchedule> {
 
 	private LocalDate calendarDate;

@@ -6,7 +6,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.DatastoreIdentity;
-import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
@@ -33,7 +32,6 @@ import au.com.scds.chats.dom.module.general.names.TransportTypes;
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-@DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
 public class Participation extends AbstractDomainEntity implements Comparable<Participation> {
 
 	private Participant participant;
@@ -215,7 +213,7 @@ public class Participation extends AbstractDomainEntity implements Comparable<Pa
 
 	@Override
 	public int compareTo(final Participation o) {
-		//TODO needs more testing
+		//TODO needs more 
 		//return ComparisonChain.start().compare(getActivity(), o.getActivity()).compare(getParticipant(), o.getParticipant()).result();
 		return getParticipant().compareTo(o.getParticipant());
 	}

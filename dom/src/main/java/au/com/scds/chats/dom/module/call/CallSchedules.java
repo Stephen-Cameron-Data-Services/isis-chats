@@ -46,7 +46,7 @@ public class CallSchedules {
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "2")
 	public List<CalendarDayCallSchedule> listDailyCallSchedulesForVolunteer(final Volunteer volunteer) {
-		return container.allMatches(new QueryDefault<>(CalendarDayCallSchedule.class, "findByVolunteer", "volunteer", volunteer));
+		return container.allMatches(new QueryDefault<>(CalendarDayCallSchedule.class, "findCallScheduleByVolunteer", "volunteer", volunteer));
 	}
 	
 	public List<Volunteer> choices0ListDailyCallSchedulesForVolunteer(){
@@ -57,7 +57,7 @@ public class CallSchedules {
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "1")
 	public List<CalendarDayCallSchedule> listDailyCallSchedulesForActiveVolunteer(@Parameter(optionality = Optionality.MANDATORY) final Volunteer volunteer) {
-		return container.allMatches(new QueryDefault<>(CalendarDayCallSchedule.class, "findByVolunteer", "volunteer", volunteer));
+		return container.allMatches(new QueryDefault<>(CalendarDayCallSchedule.class, "findCallScheduleByVolunteer", "volunteer", volunteer));
 	}
 	
 	public List<Volunteer> choices0ListDailyCallSchedulesForActiveVolunteer(){

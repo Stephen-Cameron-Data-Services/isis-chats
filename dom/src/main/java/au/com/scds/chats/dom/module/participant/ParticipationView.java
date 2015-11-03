@@ -5,6 +5,7 @@ import java.util.SortedSet;
 
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.PersistenceCapable;
 
 import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.CollectionLayout;
@@ -15,11 +16,9 @@ import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.RenderType;
 
-//FAKE TAB
-@javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
-@javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
 @DomainObject(objectType = "PARTICIPATION_VIEW")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
 public class ParticipationView {
 
 	public String title() {

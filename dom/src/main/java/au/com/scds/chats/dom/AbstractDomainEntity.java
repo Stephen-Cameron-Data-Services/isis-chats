@@ -1,6 +1,7 @@
 package au.com.scds.chats.dom;
 
 import javax.inject.Inject;
+
 import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.DomainObjectContainer;
@@ -10,8 +11,10 @@ import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.clock.ClockService;
-//import org.apache.isis.applib.services.timestamp.Timestampable;
+import org.apache.isis.applib.services.timestamp.Timestampable;
+
 import org.isisaddons.module.security.dom.user.ApplicationUsers;
+
 import org.joda.time.DateTime;
 
 /**
@@ -22,7 +25,7 @@ import org.joda.time.DateTime;
  */
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public abstract class AbstractDomainEntity /*implements Timestampable*/ {
+public abstract class AbstractDomainEntity implements Timestampable {
 
 	private String createdBy;
 	private DateTime createdOn;
@@ -78,14 +81,14 @@ public abstract class AbstractDomainEntity /*implements Timestampable*/ {
 	}
 
 	public void setUpdatedBy(String updatedBy) {
-		if (createdBy == null)
+		if (getCreatedBy() == null)
 			setCreatedBy(updatedBy);
 		else
 			setLastModifiedBy(updatedBy);
 	}
 
 	public void setUpdatedAt(java.sql.Timestamp updatedAt) {
-		if (createdOn == null)
+		if (getCreatedOn() == null)
 			setCreatedOn(new DateTime(updatedAt));
 		else
 			setLastModifiedOn(new DateTime(updatedAt));

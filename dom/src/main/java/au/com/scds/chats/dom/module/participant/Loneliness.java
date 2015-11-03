@@ -22,7 +22,6 @@ import au.com.scds.chats.dom.AbstractDomainEntity;
 @DomainObjectLayout()
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General"}, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-@DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
 public class Loneliness extends AbstractDomainEntity {
 
 	private Participant parent;

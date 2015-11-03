@@ -31,7 +31,6 @@ import au.com.scds.chats.dom.module.volunteer.Volunteer;
  * @author stevec
  */
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-@DatastoreIdentity(strategy = IdGeneratorStrategy.IDENTITY, column = "id")
 @Queries({
 		@Query(name = "find", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall "),
 		@Query(name = "findScheduledCallsByVolunteer", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall WHERE volunteer == :volunteer "),

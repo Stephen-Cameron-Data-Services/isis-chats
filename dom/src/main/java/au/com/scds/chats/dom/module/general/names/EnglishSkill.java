@@ -2,9 +2,9 @@ package au.com.scds.chats.dom.module.general.names;
 
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.PersistenceCapable;
 
-@javax.jdo.annotations.PersistenceCapable(identityType = IdentityType.DATASTORE)
-@javax.jdo.annotations.DatastoreIdentity(strategy = javax.jdo.annotations.IdGeneratorStrategy.IDENTITY, column = "id")
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
 public class EnglishSkill {
 
 	private String name;
