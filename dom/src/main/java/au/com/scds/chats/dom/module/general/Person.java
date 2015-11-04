@@ -272,11 +272,8 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		newAddress.setStreet2(street2);
 		newAddress.setPostcode(postcode);
 		newAddress.setSuburb(suburb);
-		Location location = locationLookupService.lookup(newAddress.getStreet1() + ", " + newAddress.getSuburb() + ", Australia");
-		if(location != null){
-			newAddress.setLatitude(location.getLatitude());
-			newAddress.setLongitude(location.getLongitude());
-		}
+		//do geocoding
+		newAddress.setPersistedLocation(locationsRepo.locationOfAddress(newAddress));
 		Address oldAddress = getStreetAddress();
 		container.persistIfNotAlready(newAddress);
 		setStreetAddress(newAddress);
@@ -409,7 +406,7 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 	}
 
 	@NotPersistent
-	public Location getLocation() {
+	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
 		if (getStreetAddress() != null)
 			return getStreetAddress().getLocation();
 		else
@@ -436,6 +433,6 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 	private DomainObjectContainer container;
 	
 	@Inject
-	private LocationLookupService locationLookupService;
+	private Locations locationsRepo;
 
 }

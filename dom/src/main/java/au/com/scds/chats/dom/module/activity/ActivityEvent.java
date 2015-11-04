@@ -251,14 +251,27 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		return super.getDescription();
 	}
 
-	@Property(hidden = Where.EVERYWHERE)
+	@Property()
+	@PropertyLayout(named="Name")
+	@MemberOrder(name = "Location", sequence = "1")
 	@NotPersistent
 	@Override
-	public Location getLocation() {
-		if (getParentActivity() != null && super.getLocation() == null) {
-			return getParentActivity().getLocation();
+	public String getAddressLocationName() {
+		if (getParentActivity() != null && super.getAddressLocationName() == null) {
+			return getParentActivity().getAddressLocationName();
 		}
-		return super.getLocation();
+		return super.getAddressLocationName();
+	}
+	
+	@Property()
+	@PropertyLayout(named="Address")
+	@MemberOrder(name = "Location", sequence = "2")
+	@NotPersistent
+	public String getFullAddress() {
+		if (getParentActivity() != null && super.getFullAddress() == null) {
+			return getParentActivity().getFullAddress();
+		}
+		return super.getFullAddress();
 	}
 
 	@Property(hidden = Where.ALL_TABLES)

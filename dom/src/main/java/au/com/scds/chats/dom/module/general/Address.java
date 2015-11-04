@@ -1,18 +1,15 @@
 package au.com.scds.chats.dom.module.general;
 
 import javax.jdo.annotations.Column;
-import javax.jdo.annotations.DatastoreIdentity;
 import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
-import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.util.TitleBuffer;
 
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
-import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 public class Address implements Locatable {
@@ -21,8 +18,7 @@ public class Address implements Locatable {
 	private String street2;
 	private String suburb;
 	private String postcode;
-	private Double latitude;
-	private Double longitude;
+	private Location location;
 
 	public String title() {
 		final TitleBuffer buf = new TitleBuffer();
@@ -82,33 +78,19 @@ public class Address implements Locatable {
 		this.postcode = postcode;
 	}
 
-	@MemberOrder(sequence = "5")
-	@NotPersistent
-	public Location getLocation() {
-		if (getLatitude() != null && getLongitude() != null)
-			return new Location(getLatitude(), getLongitude());
-		else
-			return null;
+	@Programmatic
+	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
+		return location.getLocation();
 	}
 
-	@Property(hidden = Where.ANYWHERE)
+	@Property()
+	//@MemberOrder(sequence = "5")
 	@Column(allowsNull = "true")
-	public Double getLatitude() {
-		return latitude;
+	public Location getPersistedLocation() {
+		return location;
 	}
 
-	public void setLatitude(final Double latitude) {
-		this.latitude = latitude;
+	public void setPersistedLocation(final Location location) {
+		this.location = location;
 	}
-
-	@Property(hidden = Where.ANYWHERE)
-	@Column(allowsNull = "true")
-	public Double getLongitude() {
-		return longitude;
-	}
-
-	public void setLongitude(final Double longitude) {
-		this.longitude = longitude;
-	}
-
 }

@@ -20,6 +20,7 @@ package domainapp.app;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -98,6 +99,8 @@ public class DomainAppAppManifest implements AppManifest {
      */
     @Override
     public Map<String, String> getConfigurationProperties() {
+    	//HashMap<String, String> config = new HashMap<>();
+    	//config.put("isis.services.eventbus.allowLateRegistration","true");
         return null;
     }
 

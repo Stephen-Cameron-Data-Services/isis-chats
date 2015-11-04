@@ -10,15 +10,24 @@ import javax.jdo.annotations.Query;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
+import org.apache.isis.applib.annotation.Where;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
+/**
+ * Has a name and a latitude and longitude
+ * 
+ * @author stevec
+ *
+ */
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Queries({ @Query(name = "findLocationByName", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.general.Location " + "WHERE name == :name"),
 		@Query(name = "findAllLocations", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.general.Location " + "ORDER BY name") })
-public class Location extends org.isisaddons.wicket.gmap3.cpt.applib.Location implements Locatable {
+public class Location implements Locatable {
 
 	private static final long serialVersionUID = 1L;
 	private String name;
+	private double latitude;
+	private double longitude;
 
 	public Location() {
 		this.name = name;
@@ -27,7 +36,12 @@ public class Location extends org.isisaddons.wicket.gmap3.cpt.applib.Location im
 	public Location(String name) {
 		this.name = name;
 	}
-
+	
+	public Location(org.isisaddons.wicket.gmap3.cpt.applib.Location location) {
+		setLatitude(location.getLatitude());
+		setLongitude(location.getLongitude());
+	}
+	
 	public String title() {
 		return getName();
 	}
@@ -35,8 +49,7 @@ public class Location extends org.isisaddons.wicket.gmap3.cpt.applib.Location im
 	@Property()
 	@PropertyLayout(named = "Location")
 	@MemberOrder(sequence = "1")
-	@PrimaryKey()
-	@Column(name = "location", allowsNull = "false")
+	@Column(allowsNull = "true")
 	public String getName() {
 		return name;
 	}
@@ -44,9 +57,29 @@ public class Location extends org.isisaddons.wicket.gmap3.cpt.applib.Location im
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	@Property(hidden = Where.ANYWHERE)
+	@Column(allowsNull = "true")
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(final double latitude) {
+		this.latitude = latitude;
+	}
+
+	@Property(hidden = Where.ANYWHERE)
+	@Column(allowsNull = "true")
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(final double longitude) {
+		this.longitude = longitude;
+	}
 
 	@Override
 	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
-		return this;
+		return new org.isisaddons.wicket.gmap3.cpt.applib.Location(getLatitude(),getLongitude()) ;
 	}
 }

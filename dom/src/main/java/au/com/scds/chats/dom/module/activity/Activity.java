@@ -35,8 +35,10 @@ import org.apache.isis.applib.util.ObjectContracts;
 
 import au.com.scds.chats.dom.AbstractDomainEntity;
 import au.com.scds.chats.dom.AbstractTenantedDomainEntity;
+import au.com.scds.chats.dom.module.general.Address;
 import au.com.scds.chats.dom.module.general.Location;
 import au.com.scds.chats.dom.module.general.Locations;
+import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.names.ActivityType;
 import au.com.scds.chats.dom.module.general.names.ActivityTypes;
 import au.com.scds.chats.dom.module.general.names.Region;
@@ -59,7 +61,7 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	protected String costForParticipant;
 	protected String description;
 	protected DateTime startDateTime;
-	protected Location location;
+	protected Address address;
 	protected Boolean isRestricted;
 	protected Long scheduleId;
 	@Persistent(mappedBy = "activity")
@@ -73,7 +75,7 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		this.participantsRepo = participantsRepo;
 		this.activityProviders = activityProviders;
 		this.activityTypes = activityTypes;
-		this.locations = locations;
+		this.locationsRepo = locations;
 	}
 
 	public String title() {
@@ -213,35 +215,83 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		this.startDateTime = startDateTime;
 	}
 
-	@Property(hidden = Where.EVERYWHERE)
-	//@PropertyLayout()
-	//@MemberOrder(sequence = "11")
+	@Property(editing = Editing.DISABLED)
+	//@PropertyLayout(hidden = Where.ALL_TABLES)
+	//@MemberOrder(name = "Location", sequence = "11")
 	@Column(allowsNull = "true")
-	public Location getLocation() {
-		return location;
+	public Address getAddress() {
+		return address;
 	}
 
-	public void setLocation(final Location location) {
-		this.location = location;
+	public void setAddress(final Address address) {
+		this.address = address;
 	}
-
-	@PropertyLayout(named = "Location", hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "11")
+	
+	@Property()
+	@PropertyLayout(named="Name")
+	@MemberOrder(name = "Location", sequence = "1")
 	@NotPersistent
-	public String getLocationName() {
-		return (getLocation() != null) ? getLocation().getName() : null;
+	public String getAddressLocationName() {
+		if (getAddress() == null)
+			return "Unknown";
+		if(getAddress().getLocation() == null)
+			return "Unknown";
+		else
+			return getAddress().getPersistedLocation().getName();
 	}
 
-	public void setLocationName(String name) {
-		Location location = locations.locationForName(name);
-		if (location != null)
-			this.setLocation(location);
+	@Property()
+	@PropertyLayout(named="Address")
+	@MemberOrder(name = "Location", sequence = "2")
+	@NotPersistent
+	public String getFullAddress() {
+		if (getAddress() == null)
+			return "Unknown";
+		else
+			return getAddress().title();
 	}
 
-	public List<String> choicesLocationName() {
-		return locations.allNames();
+	@Action(semantics = SemanticsOf.IDEMPOTENT)
+	@ActionLayout(named="New Location")
+	@MemberOrder(name = "fulladdress", sequence = "1")
+	public Activity updateAddress(@ParameterLayout(named = "Street 1") String street1, @Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
+			@ParameterLayout(named = "Suburb") String suburb, @ParameterLayout(named = "Postcode") String postcode,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Is Mail Address Too?") Boolean isMailAddress) {
+		Address newAddress = container.newTransientInstance(Address.class);
+		newAddress.setStreet1(street1);
+		newAddress.setStreet2(street2);
+		newAddress.setPostcode(postcode);
+		newAddress.setSuburb(suburb);
+		//do geocoding
+		newAddress.setPersistedLocation(locationsRepo.locationOfAddress(newAddress));
+		Address oldAddress = getAddress();
+		container.persistIfNotAlready(newAddress);
+		setAddress(newAddress);
+		if (oldAddress != null)
+			container.removeIfNotAlready(oldAddress);
+		return this;
 	}
 
+	public String default0UpdateAddress() {
+		return getAddress() != null ? getAddress().getStreet1() : null;
+	}
+
+	public String default1UpdateAddress() {
+		return getAddress() != null ? getAddress().getStreet2() : null;
+	}
+
+	public String default2UpdateAddress() {
+		return getAddress() != null ? getAddress().getSuburb() : null;
+	}
+
+	public String default3UpdateAddress() {
+		return getAddress() != null ? getAddress().getPostcode() : null;
+	}
+
+	public Boolean default4UpdateAddress() {
+		return false;
+	}
+	
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Is Restricted")
 	@MemberOrder(sequence = "13")
@@ -356,5 +406,5 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	protected ActivityTypes activityTypes;
 
 	@Inject
-	protected Locations locations;
+	protected Locations locationsRepo;
 }
