@@ -14,6 +14,8 @@ import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.clock.ClockService;
 import org.apache.isis.applib.services.timestamp.Timestampable;
 
+import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
+import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 import org.isisaddons.module.security.dom.user.ApplicationUser;
 import org.isisaddons.module.security.dom.user.ApplicationUserRepository;
 
@@ -30,15 +32,13 @@ import au.com.scds.chats.dom.module.general.names.Regions;
  */
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public abstract class AbstractDomainEntity implements Timestampable {
+public abstract class AbstractDomainEntity implements Timestampable, WithApplicationTenancy {
 
 	private String createdBy;
 	private DateTime createdOn;
 	private String lastModifiedBy;
 	private DateTime lastModifiedOn;
 	private Region region;
-
-
 
 	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Created by")
@@ -89,8 +89,8 @@ public abstract class AbstractDomainEntity implements Timestampable {
 	}
 
 	@Property(editing = Editing.DISABLED, hidden = Where.EVERYWHERE)
-	//@PropertyLayout(named = "Region")
-	//@MemberOrder(name = "Admin", sequence = "5")
+	// @PropertyLayout(named = "Region")
+	// @MemberOrder(name = "Admin", sequence = "5")
 	@Column(allowsNull = "true")
 	public Region getRegion() {
 		return region;
@@ -99,9 +99,9 @@ public abstract class AbstractDomainEntity implements Timestampable {
 	public void setRegion(Region region) {
 		this.region = region;
 	}
-	
-	@Property(editing = Editing.DISABLED)
-	@PropertyLayout(named="Region")
+
+	@Property(editing = Editing.DISABLED, hidden = Where.NOWHERE)
+	@PropertyLayout(named = "Region")
 	@MemberOrder(name = "Admin", sequence = "5")
 	@NotPersistent
 	public String getRegionName() {
@@ -110,16 +110,15 @@ public abstract class AbstractDomainEntity implements Timestampable {
 
 	@Programmatic
 	public void setUpdatedBy(String updatedBy) {
-		if (getCreatedBy() == null){
+		if (getCreatedBy() == null) {
 			setCreatedBy(updatedBy);
 			ApplicationUser user = userRepository.findByUsername(updatedBy);
-			if(user != null && user.getTenancy() != null){
+			if (user != null && user.getTenancy() != null) {
 				String path = user.getTenancy().getPath();
-				String name = path.substring(path.lastIndexOf("/")+1);
+				String name = path.substring(path.lastIndexOf("/") + 1);
 				setRegion(regions.regionForName(name));
 			}
-		}
-		else
+		} else
 			setLastModifiedBy(updatedBy);
 	}
 
@@ -130,6 +129,14 @@ public abstract class AbstractDomainEntity implements Timestampable {
 		else
 			setLastModifiedOn(new DateTime(updatedAt));
 	}
+	
+	@Programmatic
+	public ApplicationTenancy getApplicationTenancy(){
+		ApplicationTenancy tenancy = new ApplicationTenancy();
+		if(getRegion() != null)
+			tenancy.setPath("/"+getRegion().getName());
+		return tenancy; 
+	}
 
 	@Inject
 	protected DomainObjectContainer container;
@@ -139,7 +146,7 @@ public abstract class AbstractDomainEntity implements Timestampable {
 
 	@Inject
 	protected ApplicationUserRepository userRepository;
-	
+
 	@Inject
 	protected Regions regions;
 

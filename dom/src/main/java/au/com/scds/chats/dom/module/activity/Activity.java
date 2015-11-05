@@ -232,7 +232,7 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 	}
 
 	@Property()
-	@PropertyLayout(named = "Name")
+	@PropertyLayout(named = "Location")
 	@MemberOrder(name = "Location", sequence = "1")
 	@NotPersistent
 	public String getAddressLocationName() {
@@ -243,7 +243,7 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 	}
 
 	@Property()
-	@PropertyLayout(named = "Address")
+	@PropertyLayout(named = "Address",hidden=Where.ALL_TABLES)
 	@MemberOrder(name = "Location", sequence = "2")
 	@NotPersistent
 	public String getFullAddress() {
