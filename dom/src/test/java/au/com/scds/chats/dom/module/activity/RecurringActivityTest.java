@@ -10,6 +10,7 @@ import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.core.unittestsupport.jmocking.JUnitRuleMockery2;
 import org.apache.isis.core.unittestsupport.jmocking.JUnitRuleMockery2.Mode;
+import org.isisaddons.wicket.gmap3.cpt.service.LocationLookupService;
 import org.jmock.Expectations;
 import org.jmock.Sequence;
 import org.jmock.auto.Mock;
@@ -19,7 +20,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import au.com.scds.chats.dom.module.general.Address;
 import au.com.scds.chats.dom.module.general.Location;
+import au.com.scds.chats.dom.module.general.Locations;
 import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.names.ActivityType;
 import au.com.scds.chats.dom.module.participant.Participant;
@@ -35,6 +38,7 @@ public class RecurringActivityTest {
 	DomainObjectContainer mockContainer;
 
 	Participants participantsRepo;
+	
 
 	@Before
 	public void setUp() throws Exception {
@@ -71,7 +75,7 @@ public class RecurringActivityTest {
 			});
 
 			// when
-			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo);
+			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
 			obj.setName("Foobar");
 			obj.setStartDateTime(dateTime);
 			obj.addNextScheduledActivity();
@@ -97,7 +101,7 @@ public class RecurringActivityTest {
 		public void addParticipantToParent() throws Exception {
 
 			// given
-			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo);
+			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
 			final ActivityEvent event1 = new ActivityEvent();
 			final ActivityEvent event2 = new ActivityEvent();
 			// create Participant to register for parent RecurringActivity
@@ -168,7 +172,7 @@ public class RecurringActivityTest {
 		public void allCascadedProperties() throws Exception {
 
 			// given
-			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo);
+			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
 			final ActivityEvent event1 = new ActivityEvent();
 			final ActivityEvent event2 = new ActivityEvent();
 
@@ -244,6 +248,32 @@ public class RecurringActivityTest {
 			assertThat(event2.getDescription()).isEqualTo("child");
 			assertThat(event1.getDescription()).isEqualTo("parent");
 		
+		}
+		
+		@Test
+		public void updateAddress() throws Exception {
+
+			// given
+			Locations locations = new Locations(mockContainer, new LocationLookupService());
+			final Address address = new Address(locations);
+			final RecurringActivity activity= new RecurringActivity(mockContainer,null,null,null,locations);
+
+			context.checking(new Expectations() {
+				{
+					oneOf(mockContainer).newTransientInstance(Address.class);
+					will(returnValue(address));
+					oneOf(mockContainer).persistIfNotAlready(address);
+					oneOf(mockContainer).flush();
+				}
+			});
+
+			// when
+			activity.updateAddress("Headquarters", "66 Corinth Street", null, "Howrah", "7018");
+			
+			//then
+			assertThat(activity.getLocation()).isNotNull();
+			assertThat(activity.getLocation().getLatitude()).isEqualTo(-42.886763);
+			assertThat(activity.getLocation().getLongitude()).isEqualTo(147.408854);
 		}
 	}
 }

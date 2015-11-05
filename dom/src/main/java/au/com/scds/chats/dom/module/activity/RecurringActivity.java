@@ -13,6 +13,8 @@ import org.apache.isis.applib.annotation.*;
 import org.incode.module.note.dom.api.notable.Notable;
 import org.joda.time.DateTime;
 
+import au.com.scds.chats.dom.module.general.Locations;
+import au.com.scds.chats.dom.module.general.names.ActivityTypes;
 import au.com.scds.chats.dom.module.participant.Participants;
 /**
  * 
@@ -41,8 +43,8 @@ public class RecurringActivity extends Activity implements Notable {
 	}
 
 	// used for testing only
-	public RecurringActivity(DomainObjectContainer container, Participants participantsRepo) {
-		super(container, participantsRepo,  null, null, null);
+	public RecurringActivity(DomainObjectContainer container, Participants participantsRepo, Providers activityProviders, ActivityTypes activityTypes, Locations locations) {
+		super(container, participantsRepo,  activityProviders, activityTypes, locations);
 	}
 
 	@Override
