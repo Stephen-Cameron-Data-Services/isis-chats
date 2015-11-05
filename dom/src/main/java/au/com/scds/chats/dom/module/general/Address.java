@@ -27,7 +27,6 @@ public class Address extends Location {
 	private String street2;
 	private String suburb;
 	private String postcode;
-	private Location location;
 
 	public Address() {
 	}

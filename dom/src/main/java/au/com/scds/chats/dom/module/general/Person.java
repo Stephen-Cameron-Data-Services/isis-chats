@@ -181,7 +181,7 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		this.birthdate = localDate;
 	}
 	
-	@Property()
+/*	@Property()
 	@PropertyLayout(hidden = Where.EVERYWHERE)
 	@MemberOrder(sequence = "7")
 	@Column(name = "region", allowsNull = "true")
@@ -212,7 +212,7 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 	public List<String> choicesRegionName() {
 		return regions.allNames();
 	}
-
+*/
 	@Property()
 	@PropertyLayout(hidden = Where.EVERYWHERE)
 	@MemberOrder(sequence = "8")
@@ -425,8 +425,8 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 	@Inject
 	private Salutations salutations;
 
-	@Inject
-	Regions regions;
+	//@Inject
+	//Regions regions;
 
 	@Inject
 	ContactTypes contactTypes;

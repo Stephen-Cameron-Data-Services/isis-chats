@@ -88,9 +88,9 @@ public abstract class AbstractDomainEntity implements Timestampable {
 		this.lastModifiedOn = lastModifiedOn;
 	}
 
-	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
-	@PropertyLayout(named = "Region")
-	@MemberOrder(name = "Admin", sequence = "5")
+	@Property(editing = Editing.DISABLED, hidden = Where.EVERYWHERE)
+	//@PropertyLayout(named = "Region")
+	//@MemberOrder(name = "Admin", sequence = "5")
 	@Column(allowsNull = "true")
 	public Region getRegion() {
 		return region;
@@ -98,6 +98,14 @@ public abstract class AbstractDomainEntity implements Timestampable {
 
 	public void setRegion(Region region) {
 		this.region = region;
+	}
+	
+	@Property(editing = Editing.DISABLED)
+	@PropertyLayout(named="Region")
+	@MemberOrder(name = "Admin", sequence = "5")
+	@NotPersistent
+	public String getRegionName() {
+		return getRegion().getName();
 	}
 
 	@Programmatic
@@ -107,7 +115,7 @@ public abstract class AbstractDomainEntity implements Timestampable {
 			ApplicationUser user = userRepository.findByUsername(updatedBy);
 			if(user != null && user.getTenancy() != null){
 				String path = user.getTenancy().getPath();
-				String name = path.substring(path.lastIndexOf("/"));
+				String name = path.substring(path.lastIndexOf("/")+1);
 				setRegion(regions.regionForName(name));
 			}
 		}

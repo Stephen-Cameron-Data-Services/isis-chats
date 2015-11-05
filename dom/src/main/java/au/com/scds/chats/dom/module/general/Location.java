@@ -14,6 +14,7 @@ import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.AbstractDomainObject;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
@@ -34,8 +35,8 @@ import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 public class Location extends AbstractDomainObject implements Locatable {
 
 	private String name;
-	private double latitude = 0;
-	private double longitude = 0;
+	private Double latitude;
+	private Double longitude;
 
 	public Location() {
 		this.name = name;
@@ -57,7 +58,7 @@ public class Location extends AbstractDomainObject implements Locatable {
 	@Property()
 	@PropertyLayout(named = "Location")
 	@MemberOrder(sequence = "1")
-	@Column(allowsNull = "false")
+	@Column(allowsNull = "true")
 	public String getName() {
 		return name;
 	}
@@ -67,28 +68,28 @@ public class Location extends AbstractDomainObject implements Locatable {
 	}
 	
 	@Property(hidden = Where.ANYWHERE)
-	@Column(allowsNull = "false")
-	public double getLatitude() {
+	@Column(allowsNull = "true")
+	public Double getLatitude() {
 		return latitude;
 	}
 
-	public void setLatitude(final double latitude) {
+	public void setLatitude(final Double latitude) {
 		this.latitude = latitude;
 	}
 
 	@Property(hidden = Where.ANYWHERE)
-	@Column(allowsNull = "false")
-	public double getLongitude() {
+	@Column(allowsNull = "true")
+	public Double getLongitude() {
 		return longitude;
 	}
 
-	public void setLongitude(final double longitude) {
+	public void setLongitude(final Double longitude) {
 		this.longitude = longitude;
 	}
 
 	@Override
 	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
-		if(getLatitude() != 0 && getLongitude() != 0)
+		if(getLatitude() != null && getLongitude() != null)
 			return new org.isisaddons.wicket.gmap3.cpt.applib.Location(getLatitude(),getLongitude()) ;
 		else
 			return null;

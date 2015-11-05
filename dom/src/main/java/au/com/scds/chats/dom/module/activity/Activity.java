@@ -36,7 +36,6 @@ import org.apache.isis.applib.services.i18n.TranslatableString;
 import org.apache.isis.applib.util.ObjectContracts;
 
 import au.com.scds.chats.dom.AbstractDomainEntity;
-import au.com.scds.chats.dom.AbstractTenantedDomainEntity;
 import au.com.scds.chats.dom.RegexValidation;
 import au.com.scds.chats.dom.module.general.Address;
 import au.com.scds.chats.dom.module.general.Location;
@@ -256,7 +255,7 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 
 	@Action()
 	@ActionLayout(named = "Set Location") //Address extends Location
-	@MemberOrder(name = "fulladdress", sequence = "1")
+	@MemberOrder(name = "Location", sequence = "1")
 	public Activity updateAddress(@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Location") String name,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 1") String street1,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
