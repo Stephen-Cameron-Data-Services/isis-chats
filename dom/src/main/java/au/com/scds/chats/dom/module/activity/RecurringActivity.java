@@ -28,7 +28,7 @@ import au.com.scds.chats.dom.module.participant.Participants;
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Queries({ @Query(name = "find", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.RecurringActivity "),
 		@Query(name = "findRecurringActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.RecurringActivity WHERE name.indexOf(:name) >= 0 ") })
-@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Scheduling", "Admin" })
+@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Location", "Scheduling", "Admin" })
 @DomainObject(objectType = "RECURRING_ACTIVITY")
 public class RecurringActivity extends Activity implements Notable {
 

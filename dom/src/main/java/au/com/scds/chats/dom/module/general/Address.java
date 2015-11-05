@@ -1,29 +1,45 @@
 package au.com.scds.chats.dom.module.general;
 
+import javax.inject.Inject;
 import javax.jdo.annotations.Column;
+import javax.jdo.annotations.Discriminator;
+import javax.jdo.annotations.DiscriminatorStrategy;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.Inheritance;
+import javax.jdo.annotations.InheritanceStrategy;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
+import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.util.TitleBuffer;
 
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-public class Address implements Locatable {
-	
+@Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
+@Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, value = "ADDRESS")
+public class Address extends Location {
+
 	private String street1;
 	private String street2;
 	private String suburb;
 	private String postcode;
 	private Location location;
 
+	public Address() {
+	}
+
+	public Address(Locations locations) {
+		this.locationsRepo = locations;
+	}
+
 	public String title() {
 		final TitleBuffer buf = new TitleBuffer();
 		buf.append(getStreet1());
-		buf.append(" ", getStreet2());
+		buf.append(",", getStreet2());
 		buf.append(",", getSuburb());
 		buf.append(",", getPostcode());
 		// TODO: append to TitleBuffer, typically value properties
@@ -79,18 +95,15 @@ public class Address implements Locatable {
 	}
 
 	@Programmatic
-	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
-		return location.getLocation();
+	public void updateGeocodedLocation() {
+		String address = (getStreet1() != null ? getStreet1() + ", " : "") + (getStreet2() != null ? getStreet2() + ", " : "") + (getPostcode() != null ? getPostcode() + ", " : "") + ", Australia";
+		org.isisaddons.wicket.gmap3.cpt.applib.Location location = locationsRepo.locationOfAddressViaGmapLookup(address);
+		if (location != null) {
+			setLatitude(location.getLatitude());
+			setLongitude(location.getLongitude());
+		}
 	}
 
-	@Property()
-	//@MemberOrder(sequence = "5")
-	@Column(allowsNull = "true")
-	public Location getPersistedLocation() {
-		return location;
-	}
-
-	public void setPersistedLocation(final Location location) {
-		this.location = location;
-	}
+	@Inject
+	protected Locations locationsRepo;
 }

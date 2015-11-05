@@ -7,15 +7,20 @@ import javax.jdo.annotations.*;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.clock.ClockService;
 import org.apache.isis.applib.services.timestamp.Timestampable;
 
-import org.isisaddons.module.security.dom.user.ApplicationUsers;
+import org.isisaddons.module.security.dom.user.ApplicationUser;
+import org.isisaddons.module.security.dom.user.ApplicationUserRepository;
 
 import org.joda.time.DateTime;
+
+import au.com.scds.chats.dom.module.general.names.Region;
+import au.com.scds.chats.dom.module.general.names.Regions;
 
 /**
  * Base class of the Chats Entity Inheritance Tree.
@@ -31,6 +36,9 @@ public abstract class AbstractDomainEntity implements Timestampable {
 	private DateTime createdOn;
 	private String lastModifiedBy;
 	private DateTime lastModifiedOn;
+	private Region region;
+
+
 
 	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Created by")
@@ -58,7 +66,7 @@ public abstract class AbstractDomainEntity implements Timestampable {
 
 	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Modified By")
-	@MemberOrder(name = "Admin", sequence = "4")
+	@MemberOrder(name = "Admin", sequence = "3")
 	@Column(allowsNull = "true")
 	public String getLastModifiedBy() {
 		return lastModifiedBy;
@@ -70,7 +78,7 @@ public abstract class AbstractDomainEntity implements Timestampable {
 
 	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Last Modified")
-	@MemberOrder(name = "Admin", sequence = "5")
+	@MemberOrder(name = "Admin", sequence = "4")
 	@Column(allowsNull = "true")
 	public DateTime getLastModifiedOn() {
 		return lastModifiedOn;
@@ -80,13 +88,34 @@ public abstract class AbstractDomainEntity implements Timestampable {
 		this.lastModifiedOn = lastModifiedOn;
 	}
 
+	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
+	@PropertyLayout(named = "Region")
+	@MemberOrder(name = "Admin", sequence = "5")
+	@Column(allowsNull = "true")
+	public Region getRegion() {
+		return region;
+	}
+
+	public void setRegion(Region region) {
+		this.region = region;
+	}
+
+	@Programmatic
 	public void setUpdatedBy(String updatedBy) {
-		if (getCreatedBy() == null)
+		if (getCreatedBy() == null){
 			setCreatedBy(updatedBy);
+			ApplicationUser user = userRepository.findByUsername(updatedBy);
+			if(user != null && user.getTenancy() != null){
+				String path = user.getTenancy().getPath();
+				String name = path.substring(path.lastIndexOf("/"));
+				setRegion(regions.regionForName(name));
+			}
+		}
 		else
 			setLastModifiedBy(updatedBy);
 	}
 
+	@Programmatic
 	public void setUpdatedAt(java.sql.Timestamp updatedAt) {
 		if (getCreatedOn() == null)
 			setCreatedOn(new DateTime(updatedAt));
@@ -101,6 +130,9 @@ public abstract class AbstractDomainEntity implements Timestampable {
 	protected ClockService clockService;
 
 	@Inject
-	protected ApplicationUsers applicationUserRepository;
+	protected ApplicationUserRepository userRepository;
+	
+	@Inject
+	protected Regions regions;
 
 }

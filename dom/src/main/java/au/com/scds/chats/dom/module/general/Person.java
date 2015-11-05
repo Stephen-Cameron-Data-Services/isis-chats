@@ -264,8 +264,10 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
 	@MemberOrder(name = "streetaddress", sequence = "1")
-	public Person updateStreetAddress(@ParameterLayout(named = "Street 1") String street1, @Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
-			@ParameterLayout(named = "Suburb") String suburb, @ParameterLayout(named = "Postcode") String postcode,
+	public Person updateStreetAddress(@ParameterLayout(named = "Street 1") String street1, 
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Suburb") String suburb, 
+			@Parameter(optionality = Optionality.MANDATORY, regexPattern=RegexValidation.Address.POSTCODE) @ParameterLayout(named = "Postcode") String postcode,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Is Mail Address Too?") Boolean isMailAddress) {
 		Address newAddress = container.newTransientInstance(Address.class);
 		newAddress.setStreet1(street1);
@@ -273,7 +275,7 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 		newAddress.setPostcode(postcode);
 		newAddress.setSuburb(suburb);
 		//do geocoding
-		newAddress.setPersistedLocation(locationsRepo.locationOfAddress(newAddress));
+		newAddress.updateGeocodedLocation();
 		Address oldAddress = getStreetAddress();
 		container.persistIfNotAlready(newAddress);
 		setStreetAddress(newAddress);
@@ -431,8 +433,5 @@ public class Person extends AbstractDomainEntity implements Locatable, Comparabl
 
 	@Inject
 	private DomainObjectContainer container;
-	
-	@Inject
-	private Locations locationsRepo;
 
 }

@@ -38,12 +38,11 @@ public final class RegexValidation {
         public static final String INITIALS = "[A-Z]+";
     }
 
-    public static final class Property {
-        private Property() {
+    public static final class Address {
+        private Address() {
         }
 
-        /* Only 3 letters */
-        public static final String REFERENCE = "[A-Z]{3}";
+        public static final String POSTCODE = "[0-9]{4}";
     }
 
     public static final class BankAccount {

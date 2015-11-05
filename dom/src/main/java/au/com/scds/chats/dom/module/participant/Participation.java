@@ -41,7 +41,6 @@ public class Participation extends AbstractDomainEntity implements Comparable<Pa
 	private TransportType departingTransportType;
 	private Date dropoffTime;
 	private Date pickupTime;
-	private Integer region;
 	private Long roleId;
 	private String transportNotes;
 	
@@ -173,18 +172,6 @@ public class Participation extends AbstractDomainEntity implements Comparable<Pa
 
 	public void setPickupTime(Date pickupTime) {
 		this.pickupTime = pickupTime;
-	}
-
-	@Property()
-	@PropertyLayout(hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "8")
-	@Column(allowsNull = "true")
-	public Integer getRegion() {
-		return this.region;
-	}
-
-	public void setRegion(Integer region) {
-		this.region = region;
 	}
 
 	@Property()

@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -35,6 +37,7 @@ import org.apache.isis.applib.util.ObjectContracts;
 
 import au.com.scds.chats.dom.AbstractDomainEntity;
 import au.com.scds.chats.dom.AbstractTenantedDomainEntity;
+import au.com.scds.chats.dom.RegexValidation;
 import au.com.scds.chats.dom.module.general.Address;
 import au.com.scds.chats.dom.module.general.Location;
 import au.com.scds.chats.dom.module.general.Locations;
@@ -50,9 +53,9 @@ import au.com.scds.chats.dom.module.participant.Participation;
 @PersistenceCapable(table = "activity", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.CLASS_NAME, column = "class")
-public abstract class Activity extends AbstractDomainEntity implements Comparable<Activity> {
+public abstract class Activity extends AbstractDomainEntity implements Locatable, Comparable<Activity> {
 
-	private Long oldId; //id copied from old system
+	private Long oldId; // id copied from old system
 	protected String name;
 	protected Provider provider;
 	protected ActivityType activityType;
@@ -66,11 +69,11 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	protected Long scheduleId;
 	@Persistent(mappedBy = "activity")
 	protected SortedSet<Participation> participations = new TreeSet<Participation>();
-	
+
 	public Activity() {
 	}
 
-	public Activity(DomainObjectContainer container, Participants participantsRepo,  Providers activityProviders, ActivityTypes activityTypes, Locations locations) {
+	public Activity(DomainObjectContainer container, Participants participantsRepo, Providers activityProviders, ActivityTypes activityTypes, Locations locations) {
 		this.container = container;
 		this.participantsRepo = participantsRepo;
 		this.activityProviders = activityProviders;
@@ -168,17 +171,19 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		this.approximateEndDateTime = approximateEndDateTime;
 	}
 
-	/*@Property(hidden = Where.ALL_TABLES)
-	@PropertyLayout(named = "Copied From Activity Id")
-	@MemberOrder(sequence = "7")
-	@Column(allowsNull = "true")
-	public Long getCopiedFromActivityId() {
-		return copiedFromActivityId;
-	}
-
-	public void setCopiedFromActivityId(final Long copiedFromActivityId) {
-		this.copiedFromActivityId = copiedFromActivityId;
-	}*/
+	/*
+	 * @Property(hidden = Where.ALL_TABLES)
+	 * 
+	 * @PropertyLayout(named = "Copied From Activity Id")
+	 * 
+	 * @MemberOrder(sequence = "7")
+	 * 
+	 * @Column(allowsNull = "true") public Long getCopiedFromActivityId() {
+	 * return copiedFromActivityId; }
+	 * 
+	 * public void setCopiedFromActivityId(final Long copiedFromActivityId) {
+	 * this.copiedFromActivityId = copiedFromActivityId; }
+	 */
 
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Cost For Participant")
@@ -215,9 +220,9 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 		this.startDateTime = startDateTime;
 	}
 
-	@Property(editing = Editing.DISABLED)
+	@Property(hidden=Where.EVERYWHERE)
 	//@PropertyLayout(hidden = Where.ALL_TABLES)
-	//@MemberOrder(name = "Location", sequence = "11")
+	// @MemberOrder(name = "Location", sequence = "11")
 	@Column(allowsNull = "true")
 	public Address getAddress() {
 		return address;
@@ -226,22 +231,20 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	public void setAddress(final Address address) {
 		this.address = address;
 	}
-	
+
 	@Property()
-	@PropertyLayout(named="Name")
+	@PropertyLayout(named = "Name")
 	@MemberOrder(name = "Location", sequence = "1")
 	@NotPersistent
 	public String getAddressLocationName() {
 		if (getAddress() == null)
-			return "Unknown";
-		if(getAddress().getLocation() == null)
-			return "Unknown";
+			return null;
 		else
-			return getAddress().getPersistedLocation().getName();
+			return getAddress().getName();
 	}
 
 	@Property()
-	@PropertyLayout(named="Address")
+	@PropertyLayout(named = "Address")
 	@MemberOrder(name = "Location", sequence = "2")
 	@NotPersistent
 	public String getFullAddress() {
@@ -251,47 +254,49 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 			return getAddress().title();
 	}
 
-	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	@ActionLayout(named="New Location")
+	@Action()
+	@ActionLayout(named = "Set Location") //Address extends Location
 	@MemberOrder(name = "fulladdress", sequence = "1")
-	public Activity updateAddress(@ParameterLayout(named = "Street 1") String street1, @Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
-			@ParameterLayout(named = "Suburb") String suburb, @ParameterLayout(named = "Postcode") String postcode,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Is Mail Address Too?") Boolean isMailAddress) {
-		Address newAddress = container.newTransientInstance(Address.class);
-		newAddress.setStreet1(street1);
-		newAddress.setStreet2(street2);
-		newAddress.setPostcode(postcode);
-		newAddress.setSuburb(suburb);
-		//do geocoding
-		newAddress.setPersistedLocation(locationsRepo.locationOfAddress(newAddress));
+	public Activity updateAddress(@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Location") String name,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 1") String street1,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Suburb") String suburb,
+			@Parameter(optionality = Optionality.OPTIONAL, regexPattern = RegexValidation.Address.POSTCODE) @ParameterLayout(named = "Postcode") String postcode) {
+		Address address = locationsRepo.createAddress();
+		address.setName(name);
+		address.setStreet1(street1);
+		address.setStreet2(street2);
+		address.setPostcode(postcode);
+		address.setSuburb(suburb);
+		if (address.getStreet1() != null)
+			address.updateGeocodedLocation();
 		Address oldAddress = getAddress();
-		container.persistIfNotAlready(newAddress);
-		setAddress(newAddress);
+		setAddress(address);
 		if (oldAddress != null)
 			container.removeIfNotAlready(oldAddress);
 		return this;
 	}
-
+	
 	public String default0UpdateAddress() {
+		return getAddress() != null ? getAddress().getName() : null;
+	}
+	
+	public String default1UpdateAddress() {
 		return getAddress() != null ? getAddress().getStreet1() : null;
 	}
 
-	public String default1UpdateAddress() {
+	public String default2UpdateAddress() {
 		return getAddress() != null ? getAddress().getStreet2() : null;
 	}
 
-	public String default2UpdateAddress() {
+	public String default3UpdateAddress() {
 		return getAddress() != null ? getAddress().getSuburb() : null;
 	}
 
-	public String default3UpdateAddress() {
+	public String default4UpdateAddress() {
 		return getAddress() != null ? getAddress().getPostcode() : null;
 	}
 
-	public Boolean default4UpdateAddress() {
-		return false;
-	}
-	
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Is Restricted")
 	@MemberOrder(sequence = "13")
@@ -371,10 +376,10 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	@ActionLayout(named = "Remove")
 	@MemberOrder(name = "participations", sequence = "3")
 	public Activity removeParticipant(final Participant participant) {
-		if(participant == null)
+		if (participant == null)
 			return this;
 		Participation participation = findParticipation(participant);
-		if(participation!=null){
+		if (participation != null) {
 			participations.remove(participation);
 			container.removeIfNotAlready(participation);
 			container.flush();
@@ -389,22 +394,27 @@ public abstract class Activity extends AbstractDomainEntity implements Comparabl
 	public List<Participant> choices0RemoveParticipant() {
 		return getParticipants();
 	}
+	
+	@Programmatic
+	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation(){
+		if(getAddress() != null)
+			return getAddress().getLocation();
+		else
+			return null;
+	}
 
 	@Inject
 	protected DomainObjectContainer container;
-	
+
 	@Inject
 	protected Participants participantsRepo;
-	
-	//@Inject
-	//protected Participations participationsRepo;
 
+	@Inject
+	protected Locations locationsRepo;
+	
 	@Inject
 	protected Providers activityProviders;
 
 	@Inject
 	protected ActivityTypes activityTypes;
-
-	@Inject
-	protected Locations locationsRepo;
 }

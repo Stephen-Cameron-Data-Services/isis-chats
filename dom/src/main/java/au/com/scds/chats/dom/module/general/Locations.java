@@ -22,6 +22,14 @@ import org.isisaddons.wicket.gmap3.cpt.service.LocationLookupService;
 @DomainService(repositoryFor = Location.class)
 @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.9")
 public class Locations {
+	
+	public Locations(){}
+
+	//
+	public Locations(DomainObjectContainer container, LocationLookupService lookup) {
+		this.container = container;
+		this.locationLookupService = lookup;
+	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
@@ -43,6 +51,13 @@ public class Locations {
 	@Programmatic()
 	public Location createLocation() {
 		final Location obj = container.newTransientInstance(Location.class);
+		container.persistIfNotAlready(obj);
+		container.flush();
+		return obj;
+	}
+	
+	public Address createAddress() {
+		final Address obj = container.newTransientInstance(Address.class);
 		container.persistIfNotAlready(obj);
 		container.flush();
 		return obj;
@@ -72,14 +87,8 @@ public class Locations {
 	}
 	
 	@Programmatic 
-	public Location locationOfAddress(Address address){
-		org.isisaddons.wicket.gmap3.cpt.applib.Location location = locationLookupService.lookup(address.getStreet1() + ", " + address.getSuburb() + ", Australia");
-		Location persisted = createLocation();
-		if(location != null){
-			persisted.setLatitude(location.getLatitude());
-			persisted.setLongitude(location.getLongitude());
-		}
-		return persisted;
+	public org.isisaddons.wicket.gmap3.cpt.applib.Location locationOfAddressViaGmapLookup(String address){
+		return locationLookupService.lookup(address);
 	}
 
 	@Inject
@@ -87,5 +96,7 @@ public class Locations {
 	
 	@Inject
 	private LocationLookupService locationLookupService;
+
+
 
 }

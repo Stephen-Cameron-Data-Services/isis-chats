@@ -276,6 +276,7 @@ public class ActivityEventTest {
 			activity.removeParticipant(participant);
 			assertThat(activity.getParticipants().size()).isEqualTo(0);
 		}
+		
 	}
 
 	@Factory
