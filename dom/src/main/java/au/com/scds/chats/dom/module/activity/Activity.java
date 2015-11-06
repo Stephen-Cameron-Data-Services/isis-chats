@@ -232,7 +232,7 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 	}
 
 	@Property()
-	@PropertyLayout(named = "Location")
+	@PropertyLayout(named = "Location Name")
 	@MemberOrder(name = "Location", sequence = "1")
 	@NotPersistent
 	public String getAddressLocationName() {
@@ -253,9 +253,20 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 			return getAddress().title();
 	}
 
+	@Property()
+	@PropertyLayout(named = "Lat-Long")
+	@MemberOrder(name = "Location", sequence = "3")
+	@NotPersistent
+	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation(){
+		if(getAddress() != null)
+			return getAddress().getLocation();
+		else
+			return null;
+	}
+
 	@Action()
 	@ActionLayout(named = "Set Location") //Address extends Location
-	@MemberOrder(name = "Location", sequence = "1")
+	@MemberOrder(name = "location", sequence = "1")
 	public Activity updateAddress(@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Location") String name,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 1") String street1,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
@@ -394,13 +405,7 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 		return getParticipants();
 	}
 	
-	@Programmatic
-	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation(){
-		if(getAddress() != null)
-			return getAddress().getLocation();
-		else
-			return null;
-	}
+
 
 	@Inject
 	protected DomainObjectContainer container;

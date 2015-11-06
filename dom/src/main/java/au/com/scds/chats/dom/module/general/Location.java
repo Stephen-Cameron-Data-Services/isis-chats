@@ -9,6 +9,7 @@ import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.PrimaryKey;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
 
@@ -87,7 +88,8 @@ public class Location extends AbstractDomainObject implements Locatable {
 		this.longitude = longitude;
 	}
 
-	@Override
+	@Property()
+	@NotPersistent
 	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
 		if(getLatitude() != null && getLongitude() != null)
 			return new org.isisaddons.wicket.gmap3.cpt.applib.Location(getLatitude(),getLongitude()) ;
