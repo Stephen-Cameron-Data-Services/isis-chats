@@ -1,0 +1,40 @@
+-----> 2015-11-06 20:13:25.508 Column "deleteme1446801205496.unused" added to internal representation of table.
+
+-----> 2015-11-06 20:13:25.516 Creating table deleteme1446801205496
+
+-----> 2015-11-06 20:13:25.521 CREATE TABLE deleteme1446801205496
+(
+    unused INTEGER NOT NULL
+) ENGINE=INNODB
+
+-----> 2015-11-06 20:13:25.583 Execution Time = 62 ms
+
+-----> 2015-11-06 20:13:25.607 Schema Name could not be determined for this datastore
+
+-----> 2015-11-06 20:13:25.608 Dropping table deleteme1446801205496
+
+-----> 2015-11-06 20:13:25.608 DROP TABLE deleteme1446801205496
+
+-----> 2015-11-06 20:13:25.616 Execution Time = 8 ms
+
+-----> 2015-11-06 20:13:27.006 Column "deleteme1446801207006.unused" added to internal representation of table.
+
+-----> 2015-11-06 20:13:27.007 Creating table deleteme1446801207006
+
+-----> 2015-11-06 20:13:27.008 CREATE TABLE deleteme1446801207006
+(
+    unused INTEGER NOT NULL
+) ENGINE=INNODB
+
+-----> 2015-11-06 20:13:27.065 Execution Time = 57 ms
+
+-----> 2015-11-06 20:13:27.072 Schema Name could not be determined for this datastore
+
+-----> 2015-11-06 20:13:27.073 Dropping table deleteme1446801207006
+
+-----> 2015-11-06 20:13:27.073 DROP TABLE deleteme1446801207006
+
+-----> 2015-11-06 20:13:27.082 Execution Time = 7 ms
+
+-----> 2015-11-06 20:13:30.555 An error occurred while auto-creating schema elements - rolling back
+
