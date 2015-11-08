@@ -26,11 +26,11 @@ import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
  * Has a name and a latitude and longitude
  * 
  * @author stevec
- *
+ * 
  */
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-@Discriminator(strategy=DiscriminatorStrategy.VALUE_MAP, value="LOCATION")
+@Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, value = "LOCATION")
 @Queries({ @Query(name = "findLocationByName", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.general.Location " + "WHERE name == :name"),
 		@Query(name = "findAllLocations", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.general.Location " + "ORDER BY name") })
 public class Location extends AbstractDomainObject implements Locatable {
@@ -46,12 +46,14 @@ public class Location extends AbstractDomainObject implements Locatable {
 	public Location(String name) {
 		this.name = name;
 	}
-	
+
 	public Location(org.isisaddons.wicket.gmap3.cpt.applib.Location location) {
+		if (location == null)
+			return;
 		setLatitude(location.getLatitude());
 		setLongitude(location.getLongitude());
 	}
-	
+
 	public String title() {
 		return getName();
 	}
@@ -67,7 +69,7 @@ public class Location extends AbstractDomainObject implements Locatable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	@Property(hidden = Where.ANYWHERE)
 	@Column(allowsNull = "true")
 	public Double getLatitude() {
@@ -91,8 +93,8 @@ public class Location extends AbstractDomainObject implements Locatable {
 	@Property()
 	@NotPersistent
 	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
-		if(getLatitude() != null && getLongitude() != null)
-			return new org.isisaddons.wicket.gmap3.cpt.applib.Location(getLatitude(),getLongitude()) ;
+		if (getLatitude() != null && getLongitude() != null)
+			return new org.isisaddons.wicket.gmap3.cpt.applib.Location(getLatitude(), getLongitude());
 		else
 			return null;
 	}

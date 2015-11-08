@@ -12,12 +12,13 @@ import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.clock.ClockService;
-import org.apache.isis.applib.services.timestamp.Timestampable;
+//import org.apache.isis.applib.services.timestamp.Timestampable;
 
 import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
 import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 import org.isisaddons.module.security.dom.user.ApplicationUser;
-import org.isisaddons.module.security.dom.user.ApplicationUserRepository;
+//import org.isisaddons.module.security.dom.user.ApplicationUserRepository;
+import org.isisaddons.module.security.dom.user.ApplicationUsers;
 
 import org.joda.time.DateTime;
 
@@ -32,7 +33,7 @@ import au.com.scds.chats.dom.module.general.names.Regions;
  */
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public abstract class AbstractDomainEntity implements Timestampable, WithApplicationTenancy {
+public abstract class AbstractDomainEntity /*implements Timestampable, WithApplicationTenancy*/ {
 
 	private String createdBy;
 	private DateTime createdOn;
@@ -105,14 +106,18 @@ public abstract class AbstractDomainEntity implements Timestampable, WithApplica
 	@MemberOrder(name = "Admin", sequence = "5")
 	@NotPersistent
 	public String getRegionName() {
-		return getRegion().getName();
+		if (getRegion() == null)
+			return null;
+		else
+			return getRegion().getName();
 	}
 
 	@Programmatic
 	public void setUpdatedBy(String updatedBy) {
 		if (getCreatedBy() == null) {
 			setCreatedBy(updatedBy);
-			ApplicationUser user = userRepository.findByUsername(updatedBy);
+			//1.10ApplicationUser user = userRepository.findByUsername(updatedBy);
+			ApplicationUser user = userRepository.findUserByUsername(updatedBy);
 			if (user != null && user.getTenancy() != null) {
 				String path = user.getTenancy().getPath();
 				String name = path.substring(path.lastIndexOf("/") + 1);
@@ -129,14 +134,14 @@ public abstract class AbstractDomainEntity implements Timestampable, WithApplica
 		else
 			setLastModifiedOn(new DateTime(updatedAt));
 	}
-	
-	@Programmatic
-	public ApplicationTenancy getApplicationTenancy(){
+
+	//@Programmatic
+	/*public ApplicationTenancy getApplicationTenancy() {
 		ApplicationTenancy tenancy = new ApplicationTenancy();
-		if(getRegion() != null)
-			tenancy.setPath("/"+getRegion().getName());
-		return tenancy; 
-	}
+		if (getRegion() != null)
+			tenancy.setPath("/" + getRegion().getName());
+		return tenancy;
+	}*/
 
 	@Inject
 	protected DomainObjectContainer container;
@@ -145,7 +150,8 @@ public abstract class AbstractDomainEntity implements Timestampable, WithApplica
 	protected ClockService clockService;
 
 	@Inject
-	protected ApplicationUserRepository userRepository;
+	//protected ApplicationUserRepository userRepository;
+	protected ApplicationUsers userRepository;
 
 	@Inject
 	protected Regions regions;

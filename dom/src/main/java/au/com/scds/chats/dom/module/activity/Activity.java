@@ -51,7 +51,7 @@ import au.com.scds.chats.dom.module.participant.Participation;
 
 @PersistenceCapable(table = "activity", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-@Discriminator(strategy = DiscriminatorStrategy.CLASS_NAME, column = "class")
+@Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "class", value = "ACTIVITY")
 public abstract class Activity extends AbstractDomainEntity implements Locatable, Comparable<Activity> {
 
 	private Long oldId; // id copied from old system
@@ -219,8 +219,8 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 		this.startDateTime = startDateTime;
 	}
 
-	@Property(hidden=Where.EVERYWHERE)
-	//@PropertyLayout(hidden = Where.ALL_TABLES)
+	@Property(hidden = Where.EVERYWHERE)
+	// @PropertyLayout(hidden = Where.ALL_TABLES)
 	// @MemberOrder(name = "Location", sequence = "11")
 	@Column(allowsNull = "true")
 	public Address getAddress() {
@@ -243,7 +243,7 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 	}
 
 	@Property()
-	@PropertyLayout(named = "Address",hidden=Where.ALL_TABLES)
+	@PropertyLayout(named = "Address", hidden = Where.ALL_TABLES)
 	@MemberOrder(name = "Location", sequence = "2")
 	@NotPersistent
 	public String getFullAddress() {
@@ -257,15 +257,16 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 	@PropertyLayout(named = "Lat-Long")
 	@MemberOrder(name = "Location", sequence = "3")
 	@NotPersistent
-	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation(){
-		if(getAddress() != null)
+	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
+		if (getAddress() != null)
 			return getAddress().getLocation();
 		else
 			return null;
 	}
 
 	@Action()
-	@ActionLayout(named = "Set Location") //Address extends Location
+	@ActionLayout(named = "Set Location")
+	// Address extends Location
 	@MemberOrder(name = "location", sequence = "1")
 	public Activity updateAddress(@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Location") String name,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 1") String street1,
@@ -286,11 +287,11 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 			container.removeIfNotAlready(oldAddress);
 		return this;
 	}
-	
+
 	public String default0UpdateAddress() {
 		return getAddress() != null ? getAddress().getName() : null;
 	}
-	
+
 	public String default1UpdateAddress() {
 		return getAddress() != null ? getAddress().getStreet1() : null;
 	}
@@ -404,8 +405,6 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 	public List<Participant> choices0RemoveParticipant() {
 		return getParticipants();
 	}
-	
-
 
 	@Inject
 	protected DomainObjectContainer container;
@@ -415,7 +414,7 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 
 	@Inject
 	protected Locations locationsRepo;
-	
+
 	@Inject
 	protected Providers activityProviders;
 

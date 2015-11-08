@@ -26,12 +26,14 @@ import au.com.scds.chats.dom.module.participant.Participants;
  * occurring, that is a series of calendar events make up a recurring activity.
  * 
  */
+@DomainObject(objectType = "RECURRING_ACTIVITY")
+@DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Location", "Scheduling", "Admin" })
 @PersistenceCapable()
-@Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
+@Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
+@Discriminator(value = "RECURRING")
 @Queries({ @Query(name = "find", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.RecurringActivity "),
 		@Query(name = "findRecurringActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.RecurringActivity WHERE name.indexOf(:name) >= 0 ") })
-@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Location", "Scheduling", "Admin" })
-@DomainObject(objectType = "RECURRING_ACTIVITY")
 public class RecurringActivity extends Activity implements Notable {
 
 	private Periodicity periodicity = Periodicity.WEEKLY;

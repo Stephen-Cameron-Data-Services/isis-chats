@@ -3,7 +3,6 @@ package au.com.scds.chats.dom.module.report;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.DomainService;
@@ -17,25 +16,17 @@ import org.apache.isis.applib.query.QueryDefault;
 import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
-import au.com.scds.chats.dom.module.report.viewmodels.MailMergeData;
+import au.com.scds.chats.dom.module.report.viewmodels.InactiveParticipant;
+import au.com.scds.chats.dom.module.report.viewmodels.ParticipantActivityByMonth;
 
 @DomainService(nature=NatureOfService.VIEW_MENU_ONLY)
-@DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.10")
-public class MailMergeInputData {
-
-	public List<MailMergeData> allMailMergeData(){
-		return container.allMatches(new QueryDefault<>(MailMergeData.class,"listMailMergeData"));
-	}
+@DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "30")
+public class ParticipantActivity {
 	
-	public List<MailMergeData> allActiveParticipantsMailMergeInputData(){
-		return container.allMatches(new QueryDefault<>(MailMergeData.class,"listActiveParticipantMailMergeData"));
-	}
-	
-	public List<MailMergeData> allActiveVolunteerMailMergeInputData(){
-		return container.allMatches(new QueryDefault<>(MailMergeData.class,"listActiveVolunteerMailMergeData"));
+	public List<ParticipantActivityByMonth> inactiveParticipants(){
+		return container.allMatches(new QueryDefault<>(ParticipantActivityByMonth.class,"allParticipantActivityByMonth"));
 	}
 	
 	@Inject
 	DomainObjectContainer container;
-	
 }

@@ -44,7 +44,7 @@ public class DomainAppAppManifest implements AppManifest {
                 DomainAppDomainModule.class,  // domain (entities and repositories)
                 DomainAppFixtureModule.class, // fixtures
                 DomainAppAppModule.class,     // home page service etc
-                org.isisaddons.module.security.SecurityModule.class,         // security 
+                //org.isisaddons.module.security.SecurityModule.class,         // security 
                 org.isisaddons.wicket.gmap3.cpt.service.Gmap3ServiceModule.class, //Google Gmap Geocoding Service
                 org.incode.module.note.dom.NoteModule.class
         		);
@@ -55,11 +55,11 @@ public class DomainAppAppManifest implements AppManifest {
      */
     @Override
     public List<Class<?>> getAdditionalServices() {
-        //return Collections.emptyList();
-        return Arrays.asList(
-                org.isisaddons.module.security.dom.password.PasswordEncryptionServiceUsingJBcrypt.class,
-                org.isisaddons.module.security.dom.permission.PermissionsEvaluationServiceAllowBeatsVeto.class
-        );
+        return Collections.emptyList();
+        //return Arrays.asList(
+        //        org.isisaddons.module.security.dom.password.PasswordEncryptionServiceUsingJBcrypt.class,
+        //        org.isisaddons.module.security.dom.permission.PermissionsEvaluationServiceAllowBeatsVeto.class
+        //);
     }
 
     /**
@@ -72,6 +72,7 @@ public class DomainAppAppManifest implements AppManifest {
     @Override
     public String getAuthenticationMechanism() {
         return "shiro";
+        //return null;
     }
 
     /**
@@ -84,6 +85,7 @@ public class DomainAppAppManifest implements AppManifest {
     @Override
     public String getAuthorizationMechanism() {
         return "shiro";
+        //return null;
     }
 
     /**
