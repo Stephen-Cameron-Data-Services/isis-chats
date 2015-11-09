@@ -1,4 +1,4 @@
-package au.com.scds.chats.dom.module.report.viewmodels;
+package au.com.scds.chats.dom.module.report.view;
 
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdentityType;

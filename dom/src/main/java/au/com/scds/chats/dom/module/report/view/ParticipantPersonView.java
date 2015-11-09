@@ -1,4 +1,4 @@
-package au.com.scds.chats.dom.module.report.viewmodels;
+package au.com.scds.chats.dom.module.report.view;
 
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdentityType;
@@ -8,28 +8,21 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
 
-import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
-import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
-import org.apache.isis.applib.annotation.Where;
-import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
-import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 
 @ViewModel
 @DomainObject(editing = Editing.DISABLED)
 @PersistenceCapable(
 		identityType = IdentityType.NONDURABLE,
-		table = "InactiveParticipant",
+		table = "ParticipantPerson",
 		extensions = { @Extension(
 				vendorName = "datanucleus",
 				key = "view-definition",
-				value = "CREATE VIEW InactiveParticipant "
+				value = "CREATE VIEW ParticipantPerson "
 						+ "( "
 						+ "  {this.surname}, "
 						+ "  {this.firstname}, "
@@ -64,83 +57,84 @@ import org.joda.time.LocalDate;
 		@Query(name = "findInactiveParticipants", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.viewmodels.InactiveParticipant "),
 		@Query(name = "getParticipantActivity", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.viewmodels.InactiveParticipant WHERE firstname == :firstname && surname == :surname && birthdate == :birthdate") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class InactiveParticipant /* implements WithApplicationTenancy */{
+public class ParticipantPersonView {
 
-	private String surname;
-	private String firstname;
-	private LocalDate birthdate;
-	private String region;
-	private String activity;
-	private Integer daysSinceLastAttended;
+	private String fullname;
+	private String prefferedName;
+	private String address;
+	private String phoneNumber;
+	private String mobileNumber;
+	private String limitingHealthIssues;
+	private String otherLimitingFactors;
 
-	public String title() {
-		return "Last Attendance by " + getFirstname() + " " + getSurname() + " at " + getActivity() + " was " + getDaysSinceLastAttended() + " days previous";
-	}
-
-	@Property()
+	@Property(editing=Editing.DISABLED)
 	@MemberOrder(sequence = "1")
-	public String getSurname() {
-		return surname;
+	public String getFullname() {
+		return fullname;
 	}
 
-	public void setSurname(String surname) {
-		this.surname = surname;
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
 	}
 
-	@Property()
+	@Property(editing=Editing.DISABLED)
 	@MemberOrder(sequence = "2")
-	public String getFirstname() {
-		return firstname;
+	public String getPrefferedName() {
+		return prefferedName;
 	}
 
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
+	public void setPrefferedName(String prefferedName) {
+		this.prefferedName = prefferedName;
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
+	@Property(editing=Editing.DISABLED)
 	@MemberOrder(sequence = "3")
-	public LocalDate getBirthdate() {
-		return birthdate;
+	public String getAddress() {
+		return address;
 	}
 
-	public void setBirthdate(LocalDate birthdate) {
-		this.birthdate = birthdate;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
-	@Property()
+	@Property(editing=Editing.DISABLED)
 	@MemberOrder(sequence = "4")
-	public String getActivity() {
-		return activity;
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 
-	public void setActivity(String activity) {
-		this.activity = activity;
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
-	@Property()
+	@Property(editing=Editing.DISABLED)
 	@MemberOrder(sequence = "5")
-	public Integer getDaysSinceLastAttended() {
-		return daysSinceLastAttended;
+	public String getMobileNumber() {
+		return mobileNumber;
 	}
 
-	public void setDaysSinceLastAttended(Integer daysSinceLastAttended) {
-		this.daysSinceLastAttended = daysSinceLastAttended;
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
 	}
 
-	@Property()
+	@Property(editing=Editing.DISABLED)
 	@MemberOrder(sequence = "6")
-	public String getRegion() {
-		return region;
+	public String getLimitingHealthIssues() {
+		return limitingHealthIssues;
 	}
 
-	public void setRegion(String region) {
-		this.region = region;
+	public void setLimitingHealthIssues(String limitingHealthIssues) {
+		this.limitingHealthIssues = limitingHealthIssues;
 	}
 
-	/*
-	 * @Override public ApplicationTenancy getApplicationTenancy() {
-	 * ApplicationTenancy tenancy = new ApplicationTenancy(); if(getRegion() !=
-	 * null) tenancy.setPath("/"+getRegion()); else tenancy.setPath("/"); return
-	 * tenancy; }
-	 */
+	@Property(editing=Editing.DISABLED)
+	@MemberOrder(sequence = "7")
+	public String getOtherLimitingFactors() {
+		return otherLimitingFactors;
+	}
+
+	public void setOtherLimitingFactors(String otherLimitingFactors) {
+		this.otherLimitingFactors = otherLimitingFactors;
+	}
+
 }

@@ -14,17 +14,16 @@ import org.apache.isis.applib.annotation.Property;
 @DomainObjectLayout()
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 public class Reporting {
+	
+	private Participant parent;
 
 	public String title() {
 		return "Reporting of Participant: " + parent.getPerson().getFullname() ;
 	}
-	
-	// {{ ParentParticipant (property)
-	private Participant parent;
 
-	@Column(allowsNull = "false")
 	@Property(editing=Editing.DISABLED)
 	@MemberOrder(sequence = "100")
+	@Column(allowsNull = "participant_id")
 	public Participant getParentParticipant() {
 		return parent;
 	}
@@ -34,6 +33,5 @@ public class Reporting {
 		if (this.parent == null && parent != null)
 			this.parent = parent;
 	}
-	// }}
 
 }

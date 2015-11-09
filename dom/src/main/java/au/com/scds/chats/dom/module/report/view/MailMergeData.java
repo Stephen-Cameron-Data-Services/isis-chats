@@ -1,4 +1,4 @@
-package au.com.scds.chats.dom.module.report.viewmodels;
+package au.com.scds.chats.dom.module.report.view;
 
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdentityType;
@@ -45,7 +45,7 @@ import org.joda.time.LocalDate;
 						+ "  {this.postcode} "
 						+ ") AS "
 						+ "SELECT "
-						+ "  person.salutation_name_oid as salutation, "
+						+ "  person.salutation_id as salutation, "
 						+ "  person.surname, "
 						+ "  person.firstname, "
 						+ "  person.middlename, "
@@ -54,7 +54,7 @@ import org.joda.time.LocalDate;
 						+ "  person.homephonenumber, "
 						+ "  person.mobilephonenumber, "
 						+ "  person.emailaddress, "
-						+ "  person.region_name_oid as regionofperson, "
+						+ "  person.region_id as regionofperson, "
 						+ "  participant.status as participantstatus, "
 						+ "  volunteer.status as volunteerstatus, "
 						+ "  location.street1, "
@@ -66,15 +66,15 @@ import org.joda.time.LocalDate;
 						+ "LEFT OUTER JOIN "
 						+ "  participant "
 						+ "ON "
-						+ "  participant.person_person_id_oid = person.person_id  "
+						+ "  participant.person_id = person.person_id  "
 						+ "LEFT OUTER JOIN "
 						+ "  volunteer "
 						+ "ON "
-						+ "  volunteer.person_person_id_oid = person.person_id "
+						+ "  volunteer.person_id = person.person_id "
 						+ "LEFT OUTER JOIN "
 						+ "  location "
 						+ "ON "
-						+ "  location.location_id = person.mailaddress_location_id_oid; ") })
+						+ "  location.location_id = person.mailaddress_id; ") })
 @Queries({
 		@Query(name = "listMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.viewmodels.MailMergeData "),
 		@Query(name = "listActiveParticipantMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.viewmodels.MailMergeData WHERE participantStatus == 'ACTIVE'"),

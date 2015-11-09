@@ -17,7 +17,7 @@ import org.apache.isis.applib.query.QueryDefault;
 import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
-import au.com.scds.chats.dom.module.report.viewmodels.MailMergeData;
+import au.com.scds.chats.dom.module.report.view.MailMergeData;
 
 @DomainService(nature=NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.10")

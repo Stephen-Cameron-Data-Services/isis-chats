@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.inject.Inject;
 import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.DomainObjectContainer;
@@ -41,7 +42,9 @@ import au.com.scds.chats.dom.module.participant.Participation;
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 public class Volunteer extends AbstractDomainEntity implements Notable, Locatable{
 
-	// region > identificatiom
+	private Person person;
+	private Status status = Status.ACTIVE;
+	
 	public TranslatableString title() {
 		return TranslatableString.tr("Volunteer: {fullname}", "fullname", getPerson().getFullname());
 	}
@@ -72,13 +75,9 @@ public class Volunteer extends AbstractDomainEntity implements Notable, Locatabl
 		return list;
 	}
 
-	// }}
 
-	// {{ Person (property)
-	private Person person;
-
-	@Column()
 	@MemberOrder(sequence = "1")
+	@Column(allowsNull="false")
 	public Person getPerson() {
 		return person;
 	}
@@ -117,8 +116,6 @@ public class Volunteer extends AbstractDomainEntity implements Notable, Locatabl
 		return getPerson().getEmailAddress();
 	}
 
-	// {{ Status (property)
-	private Status status = Status.ACTIVE;
 
 	@Column(allowsNull = "false")
 	@Property(hidden = Where.PARENTED_TABLES)
@@ -129,36 +126,18 @@ public class Volunteer extends AbstractDomainEntity implements Notable, Locatabl
 	public void setStatus(final Status status) {
 		this.status = status;
 	}
-
-	// }}
 	
 	@NotPersistent
 	public Location getLocation() {
 		return getPerson().getLocation();
 	}
 
-	// region > updateName (action)
-	// not used, see @Action below
-	/*public static class UpdateNameDomainEvent extends ActionDomainEvent<Volunteer> {
-		public UpdateNameDomainEvent(final Volunteer source, final Identifier identifier, final Object... arguments) {
-			super(source, identifier, arguments);
-		}
-	}*/
-
-	// region > injected services
-	@javax.inject.Inject
-	@SuppressWarnings("unused")
+	@Inject
 	private CallSchedules schedulesRepo;
 
-	@javax.inject.Inject
-	@SuppressWarnings("unused")
+	@Inject
 	private DomainObjectContainer container;
 	
-	// region > injected services
-	@javax.inject.Inject
+	@Inject
 	protected Participants participantsRepo;
-
-
-
-	// endregion
 }
