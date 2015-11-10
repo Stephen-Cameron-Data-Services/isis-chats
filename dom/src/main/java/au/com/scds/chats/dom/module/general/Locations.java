@@ -20,7 +20,7 @@ import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
 import org.isisaddons.wicket.gmap3.cpt.service.LocationLookupService;
 
-@DomainService(repositoryFor = Location.class,nature=NatureOfService.VIEW_MENU_ONLY)
+@DomainService(repositoryFor = Location.class, nature=NatureOfService.DOMAIN)
 @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.9")
 public class Locations {
 	
@@ -57,6 +57,7 @@ public class Locations {
 		return obj;
 	}
 	
+	@Programmatic()
 	public Address createAddress() {
 		final Address obj = container.newTransientInstance(Address.class);
 		container.persistIfNotAlready(obj);

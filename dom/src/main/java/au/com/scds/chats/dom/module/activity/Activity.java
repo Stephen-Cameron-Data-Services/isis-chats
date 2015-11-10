@@ -253,7 +253,7 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 			return getAddress().title();
 	}
 
-	@Property()
+	@Property(hidden=Where.ALL_TABLES)
 	@PropertyLayout(named = "Lat-Long")
 	@MemberOrder(name = "Location", sequence = "3")
 	@NotPersistent

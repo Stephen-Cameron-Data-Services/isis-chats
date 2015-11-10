@@ -135,11 +135,11 @@ public class SocialFactors extends AbstractDomainEntity {
 	@PropertyLayout(labelPosition = LabelPosition.TOP)
 	@MemberOrder(sequence = "7")
 	@Column(allowsNull = "true")
-	public LocalDate getDateofSettlement() {
+	public LocalDate getDateOfSettlement() {
 		return dateOfSettlement;
 	}
 
-	public void setDateofSettlement(final LocalDate dateOfSettlement) {
+	public void setDateOfSettlement(final LocalDate dateOfSettlement) {
 		this.dateOfSettlement = dateOfSettlement;
 	}
 

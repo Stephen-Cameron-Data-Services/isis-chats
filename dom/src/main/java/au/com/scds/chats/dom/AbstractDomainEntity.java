@@ -101,7 +101,7 @@ public abstract class AbstractDomainEntity /*implements Timestampable, WithAppli
 		this.region = region;
 	}
 
-	@Property(editing = Editing.DISABLED, hidden = Where.NOWHERE)
+	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Region")
 	@MemberOrder(name = "Admin", sequence = "5")
 	@NotPersistent

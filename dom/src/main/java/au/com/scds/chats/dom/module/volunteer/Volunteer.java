@@ -11,6 +11,7 @@ import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.Identifier;
+import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
@@ -40,11 +41,11 @@ import au.com.scds.chats.dom.module.participant.Participation;
 		@Query(name = "findVolunteersBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.Volunteer " + "WHERE person.surname.indexOf(:surname) >= 0"), })
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-public class Volunteer extends AbstractDomainEntity implements Notable, Locatable{
+public class Volunteer extends AbstractDomainEntity implements Notable, Locatable {
 
 	private Person person;
 	private Status status = Status.ACTIVE;
-	
+
 	public TranslatableString title() {
 		return TranslatableString.tr("Volunteer: {fullname}", "fullname", getPerson().getFullname());
 	}
@@ -52,7 +53,7 @@ public class Volunteer extends AbstractDomainEntity implements Notable, Locatabl
 	@Persistent(mappedBy = "allocatedVolunteer")
 	private SortedSet<CalendarDayCallSchedule> callSchedules = new TreeSet<CalendarDayCallSchedule>();
 
-	@CollectionLayout(named="Call Schedules", paged = 20, render = RenderType.EAGERLY)
+	@CollectionLayout(named = "Call Schedules", paged = 20, render = RenderType.EAGERLY)
 	public SortedSet<CalendarDayCallSchedule> getScheduled() {
 		return callSchedules;
 	}
@@ -61,23 +62,24 @@ public class Volunteer extends AbstractDomainEntity implements Notable, Locatabl
 		this.callSchedules = callSchedules;
 	}
 
+	@Action()
+	@MemberOrder(name = "callschedules", sequence = "1")
 	public Volunteer addScheduledCall(final Participant participant, final DateTime dateTime) {
 		try {
 			ScheduledCall call = schedulesRepo.createScheduledCall(this, participant, dateTime);
 		} catch (Exception e) {
-			//TODO log this error
+			// TODO log this error
 		}
 		return this;
 	}
-	
-	public List<Participant> choices0AddScheduledCall(){
+
+	public List<Participant> choices0AddScheduledCall() {
 		List<Participant> list = participantsRepo.listActive();
 		return list;
 	}
 
-
 	@MemberOrder(sequence = "1")
-	@Column(allowsNull="false")
+	@Column(allowsNull = "false")
 	public Person getPerson() {
 		return person;
 	}
@@ -116,7 +118,6 @@ public class Volunteer extends AbstractDomainEntity implements Notable, Locatabl
 		return getPerson().getEmailAddress();
 	}
 
-
 	@Column(allowsNull = "false")
 	@Property(hidden = Where.PARENTED_TABLES)
 	public Status getStatus() {
@@ -126,7 +127,7 @@ public class Volunteer extends AbstractDomainEntity implements Notable, Locatabl
 	public void setStatus(final Status status) {
 		this.status = status;
 	}
-	
+
 	@NotPersistent
 	public Location getLocation() {
 		return getPerson().getLocation();
@@ -137,7 +138,7 @@ public class Volunteer extends AbstractDomainEntity implements Notable, Locatabl
 
 	@Inject
 	private DomainObjectContainer container;
-	
+
 	@Inject
 	protected Participants participantsRepo;
 }

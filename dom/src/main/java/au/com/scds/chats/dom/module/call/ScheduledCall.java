@@ -215,18 +215,16 @@ public class ScheduledCall extends AbstractDomainEntity implements Comparable<Sc
 	@Action()
 	@ActionLayout(named = "Change End Date Time")
 	@MemberOrder(name = "isCompleted", sequence = "3")
-	public ScheduledCall ChangeEndTime(@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "New End Time") final DateTime endDateTime,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Confirm Change") final Boolean doUpdate) {
-		if (doUpdate) {
-			if (endDateTime == null) {
-				try {
-					setIsCompleted2(false);
-				} catch (Exception e) {
-					container.warnUser("Sorry, an error occurred as follows: " + e.getMessage());
-				}
+	public ScheduledCall ChangeEndTime(@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "New End Time") final DateTime endDateTime) {
+
+		if (endDateTime == null) {
+			try {
+				setIsCompleted2(false);
+			} catch (Exception e) {
+				container.warnUser("Sorry, an error occurred as follows: " + e.getMessage());
 			}
-			setEndDateTime(endDateTime);
 		}
+		setEndDateTime(endDateTime);
 		return this;
 	}
 

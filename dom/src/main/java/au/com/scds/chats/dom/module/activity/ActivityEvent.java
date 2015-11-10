@@ -75,7 +75,7 @@ import au.com.scds.chats.dom.module.participant.Participation;
 // })
 @DomainObject(objectType = "ACTIVITY")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Location","Admin" })
+@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Location", "Admin" })
 public class ActivityEvent extends Activity implements Notable, CalendarEventable {
 
 	protected RecurringActivity parent;
@@ -139,7 +139,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		return new CalendarEvent(getStartDateTime().withTimeAtStartOfDay(), getCalendarName(), title());
 	}
 
-	//>>> Overrides <<<//
+	// >>> Overrides <<<//
 
 	/**
 	 * List of Participations for an ActivityEvent is the list of its parent
@@ -161,17 +161,17 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		}
 		return temp;
 	}
-	
+
 	/**
 	 * Participants & Participations lists are combined list, but only want to
 	 * remove Participants from local list.
 	 */
 	@Override
 	public ActivityEvent removeParticipant(final Participant participant) {
-		if(participant == null)
+		if (participant == null)
 			return this;
-		for(Participation p : super.getParticipations()){
-			if(p.getParticipant().equals(participant)){
+		for (Participation p : super.getParticipations()) {
+			if (p.getParticipant().equals(participant)) {
 				participations.remove(p);
 				participantsRepo.deleteParticipation(p);
 				break;
@@ -186,12 +186,24 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	@Override
 	public List<Participant> choices0RemoveParticipant() {
 		List<Participant> list = new ArrayList();
-		for(Participation p : super.getParticipations()){
+		for (Participation p : super.getParticipations()) {
 			list.add(p.getParticipant());
 		}
 		return list;
 	}
 
+	// // Properties that may Override Parent Values ////
+	@Property(hidden = Where.ALL_TABLES)
+	@Override
+	@Column(allowsNull = "true")
+	public Provider getProvider() {
+		if (getParentActivity() != null && super.getProvider() == null) {
+			return getParentActivity().getProvider();
+		}
+		return super.getProvider();
+	}
+
+	//TODO does this carry through
 	@Property(hidden = Where.EVERYWHERE)
 	@NotPersistent
 	@Override
@@ -201,7 +213,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		}
 		return super.getActivityType();
 	}
-	
+
 	@Property(hidden = Where.NOWHERE)
 	@Override
 	@Column(allowsNull = "true")
@@ -253,7 +265,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	}
 
 	@Property()
-	@PropertyLayout(named="Name")
+	@PropertyLayout(named = "Location Name")
 	@MemberOrder(name = "Location", sequence = "1")
 	@NotPersistent
 	@Override
@@ -263,9 +275,9 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		}
 		return super.getAddressLocationName();
 	}
-	
+
 	@Property()
-	@PropertyLayout(named="Address")
+	@PropertyLayout(named = "Address")
 	@MemberOrder(name = "Location", sequence = "2")
 	@NotPersistent
 	public String getFullAddress() {
