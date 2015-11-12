@@ -76,7 +76,7 @@ import au.com.scds.chats.dom.module.participant.Participation;
 @DomainObject(objectType = "ACTIVITY")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Location", "Admin" })
-public class ActivityEvent extends Activity implements Notable, CalendarEventable {
+public class ActivityEvent extends Activity /*implements Notable, CalendarEventable*/ {
 
 	protected RecurringActivity parent;
 	protected AttendanceList attendances;
@@ -128,13 +128,13 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	// CalendarEventable methods
 	@Programmatic
-	@Override
+	//@Override
 	public String getCalendarName() {
 		return "startDateTime";
 	}
 
 	@Programmatic
-	@Override
+	//@Override
 	public CalendarEvent toCalendarEvent() {
 		return new CalendarEvent(getStartDateTime().withTimeAtStartOfDay(), getCalendarName(), title());
 	}
