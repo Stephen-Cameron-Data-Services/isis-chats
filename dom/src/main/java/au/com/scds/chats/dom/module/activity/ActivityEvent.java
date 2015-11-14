@@ -63,6 +63,9 @@ import au.com.scds.chats.dom.module.participant.Participation;
  * Attended records.
  * 
  */
+@DomainObject(objectType = "ACTIVITY")
+@DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Location", "Admin" })
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "EVENT")
@@ -73,9 +76,6 @@ import au.com.scds.chats.dom.module.participant.Participation;
 		@Query(name = "findAllPastActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE startDateTime <= :currentDateTime ") })
 // @Unique(name = "Activity_name_UNQ", members = { "name"
 // })
-@DomainObject(objectType = "ACTIVITY")
-@DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Location", "Admin" })
 public class ActivityEvent extends Activity implements Notable, CalendarEventable {
 
 	protected RecurringActivity parent;
@@ -128,18 +128,16 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	// CalendarEventable methods
 	@Programmatic
-	//@Override
 	public String getCalendarName() {
 		return "startDateTime";
 	}
 
 	@Programmatic
-	//@Override
 	public CalendarEvent toCalendarEvent() {
 		return new CalendarEvent(getStartDateTime().withTimeAtStartOfDay(), getCalendarName(), title());
 	}
 
-	// >>> Overrides <<<//
+	// >>> Overrides <<< //
 
 	/**
 	 * List of Participations for an ActivityEvent is the list of its parent
@@ -192,10 +190,9 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		return list;
 	}
 
-	// // Properties that may Override Parent Values ////
 	@Property(hidden = Where.ALL_TABLES)
 	@Override
-	@Column(allowsNull = "true")
+	@NotPersistent
 	public Provider getProvider() {
 		if (getParentActivity() != null && super.getProvider() == null) {
 			return getParentActivity().getProvider();
@@ -203,10 +200,9 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		return super.getProvider();
 	}
 
-	//TODO does this carry through
 	@Property(hidden = Where.EVERYWHERE)
-	@NotPersistent
 	@Override
+	@NotPersistent
 	public ActivityType getActivityType() {
 		if (getParentActivity() != null && super.getActivityType() == null) {
 			return getParentActivity().getActivityType();
@@ -216,7 +212,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	@Property(hidden = Where.NOWHERE)
 	@Override
-	@Column(allowsNull = "true")
+	@NotPersistent
 	public String getName() {
 		if (getParentActivity() != null && super.getName() == null) {
 			return getParentActivity().getName();
@@ -226,7 +222,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	@Property(hidden = Where.NOWHERE)
 	@Override
-	@Column(allowsNull = "true")
+	@NotPersistent
 	public DateTime getStartDateTime() {
 		if (getParentActivity() != null && super.getStartDateTime() == null) {
 			return getParentActivity().getStartDateTime();
@@ -236,7 +232,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	@Property(hidden = Where.ALL_TABLES)
 	@Override
-	@Column(allowsNull = "true")
+	@NotPersistent
 	public DateTime getApproximateEndDateTime() {
 		if (getParentActivity() != null && super.getApproximateEndDateTime() == null) {
 			return getParentActivity().getApproximateEndDateTime();
@@ -246,7 +242,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	@Property(hidden = Where.ALL_TABLES)
 	@Override
-	@Column(allowsNull = "true")
+	@NotPersistent
 	public String getCostForParticipant() {
 		if (getParentActivity() != null && super.getCostForParticipant() == null) {
 			return getParentActivity().getCostForParticipant();
@@ -256,7 +252,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	@Property(hidden = Where.ALL_TABLES)
 	@Override
-	@Column(allowsNull = "true")
+	@NotPersistent
 	public String getDescription() {
 		if (getParentActivity() != null && super.getDescription() == null) {
 			return getParentActivity().getDescription();
@@ -289,7 +285,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	@Property(hidden = Where.ALL_TABLES)
 	@Override
-	@Column(allowsNull = "true")
+	@NotPersistent
 	public Boolean getIsRestricted() {
 		if (getParentActivity() != null && super.getIsRestricted() == null) {
 			return getParentActivity().getIsRestricted();
@@ -299,7 +295,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	@Property(hidden = Where.ALL_TABLES)
 	@Override
-	@Column(allowsNull = "true")
+	@NotPersistent
 	public Long getScheduleId() {
 		if (getParentActivity() != null && super.getScheduleId() == null) {
 			return getParentActivity().getScheduleId();

@@ -158,7 +158,7 @@ public class Participants {
 	@Programmatic
 	public Participation createParticipation(Activity activity, Participant participant) {
 		Participation participation = container.newTransientInstance(Participation.class);
-		participation.setActivity(activity);
+		//Not needed! participation.setActivity(activity);
 		participation.setParticipant(participant);
 		container.persistIfNotAlready(participation);
 		container.flush();
