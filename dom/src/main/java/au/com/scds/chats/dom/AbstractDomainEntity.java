@@ -135,12 +135,16 @@ public abstract class AbstractDomainEntity implements Timestampable, WithApplica
 			setLastModifiedOn(new DateTime(updatedAt));
 	}
 
-	// @Programmatic
+	@Programmatic
 	public ApplicationTenancy getApplicationTenancy() {
-		ApplicationTenancy tenancy = new ApplicationTenancy();
-		if (getRegion() != null)
+
+		if (getRegion() == null)
+			return null;
+		else {
+			ApplicationTenancy tenancy = new ApplicationTenancy();
 			tenancy.setPath("/" + getRegion().getName());
-		return tenancy;
+			return tenancy;
+		}
 	}
 
 	@Inject
