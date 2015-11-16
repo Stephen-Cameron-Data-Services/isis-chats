@@ -1,5 +1,6 @@
 package au.com.scds.chats.dom.module.call;
 
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -34,6 +35,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
 import au.com.scds.chats.dom.module.participant.Participant;
+import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.dom.module.volunteer.Volunteer;
 
 /**
@@ -60,9 +62,10 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 
 	}
 
-	public CalendarDayCallSchedule(DomainObjectContainer container, CallSchedules callSchedules) {
+	public CalendarDayCallSchedule(DomainObjectContainer container, CallSchedules schedules, Participants participants) {
 		this.container = container;
-		this.callScheduler = callSchedules;
+		this.callScheduler = schedules;
+		this.participantsRepo = participants;
 	}
 
 	public String title() {
@@ -126,9 +129,17 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	// ACTIONS
 	@Action()
 	@ActionLayout()
-	public void scheduleNewCall(@Parameter(optionality = Optionality.MANDATORY) final Participant participant, @Parameter(optionality = Optionality.MANDATORY) final LocalTime time) throws Exception {
-		ScheduledCall call = scheduleCall(time);
+	public void scheduleNewCall(@Parameter(optionality = Optionality.MANDATORY) final Participant participant, @Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) throws Exception {
+		ScheduledCall call = scheduleCall(dateTime.toLocalTime());
 		call.setParticipant(participant);
+	}
+	
+	public List<Participant> choices0ScheduleNewCall(){
+		return participantsRepo.listActive();
+	}
+	
+	public DateTime default1ScheduleNewCall(){
+		return new DateTime(getCalendarDate().toDateTimeAtCurrentTime());
 	}
 
 	@Programmatic
@@ -198,4 +209,7 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 
 	@Inject()
 	DomainObjectContainer container;
+	
+	@Inject()
+	Participants participantsRepo;
 }

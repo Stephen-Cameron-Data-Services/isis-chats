@@ -9,6 +9,7 @@ import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.incode.module.note.dom.api.notable.Notable;
 import org.incode.module.note.dom.spi.calendarname.CalendarNameRepository;
+import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEventable;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -22,7 +23,7 @@ import au.com.scds.chats.dom.module.volunteer.Volunteer;
 @DomainService(nature = NatureOfService.DOMAIN)
 public class CalendarNameRepositoryForChats implements CalendarNameRepository {
 
-	private final Map<Class<?>, List<String>> namesByClass = Maps.newHashMap();
+	private static final Map<Class<?>, List<String>> namesByClass = Maps.newHashMap();
 
 	public CalendarNameRepositoryForChats() {
 		setCalendarNames(RecurringActivity.class, "Recurring Activities");
@@ -40,5 +41,10 @@ public class CalendarNameRepositoryForChats implements CalendarNameRepository {
 	@Override
 	public Collection<String> calendarNamesFor(Notable notable) {
 		return namesByClass.get(notable.getClass());
+	}
+	
+	public static String calendarNameFor(CalendarEventable eventable){
+		List<String> names = namesByClass.get(eventable.getClass());
+		return (names != null && names.get(0) != null) ? names.get(0) : null ;
 	}
 }

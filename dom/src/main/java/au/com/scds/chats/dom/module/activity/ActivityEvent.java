@@ -33,6 +33,7 @@ import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEvent;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEventable;
 import org.joda.time.DateTime;
 
+import au.com.scds.chats.dom.CalendarNameRepositoryForChats;
 import au.com.scds.chats.dom.module.attendance.AttendanceList;
 import au.com.scds.chats.dom.module.general.Location;
 import au.com.scds.chats.dom.module.general.Persons;
@@ -92,12 +93,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		this.participantsRepo = participants;
 	}
 
-	public String title() {
-		if (parent != null && getName() == null)
-			return "Activity: " + parent.getName();
-		else
-			return "Activity: " + getName();
-	}
+
 
 	@Property(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "1.1")
@@ -129,7 +125,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	// CalendarEventable methods
 	@Programmatic
 	public String getCalendarName() {
-		return "startDateTime";
+		return CalendarNameRepositoryForChats.calendarNameFor(this);
 	}
 
 	@Programmatic
@@ -138,6 +134,12 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	}
 
 	// >>> Overrides <<< //
+	public String title() {
+		if (getParentActivity() != null && super.getName() == null) {
+			return "Activity: " + getParentActivity().getName();
+		}
+		return super.title();
+	}
 
 	/**
 	 * List of Participations for an ActivityEvent is the list of its parent
@@ -218,26 +220,6 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 			return getParentActivity().getName();
 		}
 		return super.getName();
-	}
-
-	@Property(hidden = Where.NOWHERE)
-	@Override
-	@NotPersistent
-	public DateTime getStartDateTime() {
-		if (getParentActivity() != null && super.getStartDateTime() == null) {
-			return getParentActivity().getStartDateTime();
-		}
-		return super.getStartDateTime();
-	}
-
-	@Property(hidden = Where.ALL_TABLES)
-	@Override
-	@NotPersistent
-	public DateTime getApproximateEndDateTime() {
-		if (getParentActivity() != null && super.getApproximateEndDateTime() == null) {
-			return getParentActivity().getApproximateEndDateTime();
-		}
-		return super.getApproximateEndDateTime();
 	}
 
 	@Property(hidden = Where.ALL_TABLES)

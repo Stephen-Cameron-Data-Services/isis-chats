@@ -25,6 +25,13 @@ import au.com.scds.chats.dom.module.volunteer.Volunteer;
 @DomainService( repositoryFor = Volunteer.class)
 @DomainServiceLayout(menuOrder = "30")
 public class Volunteers {
+	
+	public Volunteers() {
+	}
+
+	public Volunteers(DomainObjectContainer container) {
+		this.container = container;
+	}
 
 	@Programmatic
 	public List<Volunteer> listAll() {

@@ -136,7 +136,23 @@ public class RecurringActivity extends Activity implements Notable {
 		if (origin != null) {
 			ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 			obj.setParentActivity(this);
-			obj.setStartDateTime(origin.plus(getPeriodicity().getDuration()));
+			switch(getPeriodicity()){
+			case DAILY:
+				obj.setStartDateTime(origin.plusDays(1));
+				break;
+			case WEEKLY:
+				obj.setStartDateTime(origin.plusDays(7));
+				break;
+			case FORTNIGHTLY:
+				obj.setStartDateTime(origin.plusDays(14));
+				break;
+			case MONTHLY:
+				obj.setStartDateTime(origin.plusDays(28));
+				break;
+			case BIMONTHLY:
+				obj.setStartDateTime(origin.plusDays(56));
+				break;
+			}
 			childActivities.add(obj);
 			container.persistIfNotAlready(obj);
 			container.flush();

@@ -248,7 +248,7 @@ public abstract class Activity extends AbstractDomainEntity implements /*Locatab
 	@NotPersistent
 	public String getFullAddress() {
 		if (getAddress() == null)
-			return "Unknown";
+			return null;
 		else
 			return getAddress().title();
 	}

@@ -77,6 +77,7 @@ public class RecurringActivityTest {
 			// when
 			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
 			obj.setName("Foobar");
+			obj.setPeriodicity(Periodicity.WEEKLY);
 			obj.setStartDateTime(dateTime);
 			obj.addNextScheduledActivity();
 			obj.addNextScheduledActivity();
@@ -85,8 +86,8 @@ public class RecurringActivityTest {
 			// then
 			assertThat(event1.getStartDateTime()).isLessThan(event2.getStartDateTime());
 			assertThat(event2.getStartDateTime()).isLessThan(event3.getStartDateTime());
-			assertThat(event2.getStartDateTime()).isEqualTo(event1.getStartDateTime().plus(obj.getPeriodicity().getDuration()));
-			assertThat(event3.getStartDateTime()).isEqualTo(event2.getStartDateTime().plus(obj.getPeriodicity().getDuration()));
+			assertThat(event2.getStartDateTime()).isEqualTo(event1.getStartDateTime().plusDays(7));
+			assertThat(event3.getStartDateTime()).isEqualTo(event2.getStartDateTime().plusDays(7));
 			assertThat(obj.getFutureActivities().size()).isEqualTo(3);
 			assertThat(obj.getCompletedActivities().size()).isEqualTo(0);
 			assertThat(obj.getActivityEvents().first()).isEqualTo(event3);
@@ -96,6 +97,67 @@ public class RecurringActivityTest {
 			assertThat(obj.getFutureActivities().get(2)).isEqualTo(event3);
 			assertThat(obj.getFutureActivities().get(2).title().toString()).isEqualTo("Activity: Foobar");
 		}
+		
+		@Test
+		public void addNextScheduledActivityWithDifferentPeriodicity() throws Exception {
+
+			// given
+			final RecurringActivity activity = new RecurringActivity();
+			final ActivityEvent event1 = new ActivityEvent();
+			final ActivityEvent event2 = new ActivityEvent();
+			final ActivityEvent event3 = new ActivityEvent();
+			final ActivityEvent event4 = new ActivityEvent();
+			final ActivityEvent event5 = new ActivityEvent();
+			final DateTime dateTime = new DateTime();
+
+			context.checking(new Expectations() {
+				{
+					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					will(returnValue(event1));
+					oneOf(mockContainer).persistIfNotAlready(event1);
+					oneOf(mockContainer).flush();
+					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					will(returnValue(event2));
+					oneOf(mockContainer).persistIfNotAlready(event2);
+					oneOf(mockContainer).flush();
+					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					will(returnValue(event3));
+					oneOf(mockContainer).persistIfNotAlready(event3);
+					oneOf(mockContainer).flush();
+					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					will(returnValue(event4));
+					oneOf(mockContainer).persistIfNotAlready(event4);
+					oneOf(mockContainer).flush();
+					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					will(returnValue(event5));
+					oneOf(mockContainer).persistIfNotAlready(event5);
+					oneOf(mockContainer).flush();
+				}
+			});
+
+			// when
+			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
+			obj.setName("Foobar");
+			obj.setPeriodicity(Periodicity.DAILY);
+			obj.setStartDateTime(dateTime);
+			obj.addNextScheduledActivity();
+			obj.setPeriodicity(Periodicity.WEEKLY);
+			obj.addNextScheduledActivity();
+			obj.setPeriodicity(Periodicity.FORTNIGHTLY);
+			obj.addNextScheduledActivity();
+			obj.setPeriodicity(Periodicity.MONTHLY);
+			obj.addNextScheduledActivity();
+			obj.setPeriodicity(Periodicity.BIMONTHLY);
+			obj.addNextScheduledActivity();
+
+			// then
+			assertThat(event1.getStartDateTime()).isEqualTo(dateTime.plusDays(1));
+			assertThat(event2.getStartDateTime()).isEqualTo(dateTime.plusDays(1+7));
+			assertThat(event3.getStartDateTime()).isEqualTo(dateTime.plusDays(1+7+14));
+			assertThat(event4.getStartDateTime()).isEqualTo(dateTime.plusDays(1+7+14+28));
+			assertThat(event5.getStartDateTime()).isEqualTo(dateTime.plusDays(1+7+14+28+56));
+		}
+
 
 		@Test
 		public void addParticipantToParent() throws Exception {

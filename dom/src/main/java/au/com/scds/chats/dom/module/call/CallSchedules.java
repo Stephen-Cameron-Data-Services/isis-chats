@@ -35,12 +35,13 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 @DomainServiceLayout(named="Calls", menuOrder = "50") 
 public class CallSchedules {
 
-	/*@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-	@MemberOrder(sequence = "1")
-	public List<CalendarDayCallSchedule> listDailyCallSchedules() {
-		return container.allInstances(CalendarDayCallSchedule.class);
-	}*/
+	public CallSchedules( ) {}
+
+	public CallSchedules(DomainObjectContainer container, Volunteers volunteers, Participants participants ) {
+		this.container = container;
+		this.volunteers  = volunteers;
+		this.participants = participants;
+	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)

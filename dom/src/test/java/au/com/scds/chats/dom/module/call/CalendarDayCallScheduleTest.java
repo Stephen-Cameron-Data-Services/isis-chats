@@ -1,27 +1,25 @@
-package au.com.scds.chats.dom.module.volunteer;
+package au.com.scds.chats.dom.module.call;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.core.unittestsupport.jmocking.JUnitRuleMockery2;
 import org.apache.isis.core.unittestsupport.jmocking.JUnitRuleMockery2.Mode;
-
 import org.jmock.Expectations;
-import org.jmock.Sequence;
 import org.jmock.auto.Mock;
-
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import au.com.scds.chats.dom.module.call.CalendarDayCallSchedule;
-import au.com.scds.chats.dom.module.call.CallSchedules;
-import au.com.scds.chats.dom.module.call.ScheduledCall;
+import au.com.scds.chats.dom.module.participant.Participant;
+import au.com.scds.chats.dom.module.participant.Participants;
+import au.com.scds.chats.dom.module.volunteer.Volunteer;
+import au.com.scds.chats.dom.module.volunteer.Volunteers;
 
-public class CallShedulingTest {
+public class CalendarDayCallScheduleTest {
 
 	@Rule
 	public JUnitRuleMockery2 context = JUnitRuleMockery2.createFor(Mode.INTERFACES_AND_CLASSES);
@@ -29,22 +27,27 @@ public class CallShedulingTest {
 	@Mock
 	DomainObjectContainer mockContainer;
 
-	CallSchedules callSchedules;
+	CallSchedules schedules;
+	CalendarDayCallSchedule schedule;
+	Volunteers volunteers;
+	Participants participants;
 
 	@Before
 	public void setUp() throws Exception {
-		callSchedules = new CallSchedules();
-		callSchedules.container = mockContainer;
+		volunteers = new Volunteers(mockContainer);
+		participants = new Participants(mockContainer);
+		schedules = new CallSchedules(mockContainer, volunteers, participants);
+		schedule = new CalendarDayCallSchedule(mockContainer, schedules, participants);
 	}
 
-	public static class Create extends CallShedulingTest {
+	public static class CalendarDayCallScheduleTest_Tests extends CalendarDayCallScheduleTest {
 
 		@Test
         public void createDailyCallSchedule() throws Exception {
 
             // given
-            final CalendarDayCallSchedule schedule = new CalendarDayCallSchedule(mockContainer,callSchedules);
             final LocalDate date = new LocalDate();
+			final Volunteer volunteer = new Volunteer();
             final ScheduledCall call = new ScheduledCall(mockContainer);
 
             context.checking(new Expectations() {
@@ -62,7 +65,7 @@ public class CallShedulingTest {
             });
 
             // when
-            CalendarDayCallSchedule _schedule = callSchedules.createCalendarDayCallSchedule(date,null);
+            CalendarDayCallSchedule _schedule = schedules.createCalendarDayCallSchedule(date,volunteer);
             //CallSchedules is normally injected as Domain Service
 
             // then
@@ -93,5 +96,61 @@ public class CallShedulingTest {
             assertThat(_schedule.getTotalCalls()).isEqualTo(0);
             
         }
+		
+		@Test
+		public void createSchedule() throws Exception {
+
+			// given
+			LocalDate date = new LocalDate();
+			Volunteer volunteer = new Volunteer();
+
+			context.checking(new Expectations() {
+				{
+					oneOf(mockContainer).newTransientInstance(CalendarDayCallSchedule.class);
+					will(returnValue(schedule));
+					oneOf(mockContainer).persistIfNotAlready(schedule);
+					oneOf(mockContainer).flush();
+				}
+			});
+
+			// when
+			final CalendarDayCallSchedule obj = schedules.createCalendarDayCallSchedule(date, volunteer);
+
+			// then
+			assertThat(obj).isEqualTo(schedule);
+			assertThat(obj.getAllocatedVolunteer()).isEqualTo(volunteer);
+			assertThat(obj.getCalendarDate()).isEqualTo(date);
+
+		}
+
+		@Test
+		public void addScheduledCall() throws Exception {
+
+			// given
+			final ScheduledCall call = new ScheduledCall();
+			final DateTime dateTime = new DateTime();
+			final Participant participant = new Participant();
+
+			context.checking(new Expectations() {
+				{
+					oneOf(mockContainer).newTransientInstance(ScheduledCall.class);
+					will(returnValue(call));
+					oneOf(mockContainer).persistIfNotAlready(call);
+					oneOf(mockContainer).flush();
+				}
+			});
+
+			// when
+			schedule.setCalendarDate(new LocalDate());
+			schedule.scheduleNewCall(participant, dateTime);
+
+			// then
+			assertThat(schedule.getTotalCalls()).isEqualTo(1);
+			assertThat(schedule.getScheduledCalls().first()).isEqualTo(call);
+			assertThat(schedule.getScheduledCalls().first().getParticipant()).isEqualTo(participant);
+			assertThat(schedule.getScheduledCalls().first().getScheduledDateTime()).isEqualTo(dateTime);
+		}
+
 	}
+
 }
