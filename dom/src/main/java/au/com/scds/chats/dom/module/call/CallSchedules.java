@@ -158,6 +158,7 @@ public class CallSchedules {
 	// This is done to allow maintenance of the aggregate counts in the Schedule
 	ScheduledCall createScheduledCall(CalendarDayCallSchedule callSchedule, LocalTime time) {
 		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
+		//TODO remove next line
 		call.setCallSchedule(callSchedule);
 		call.setScheduledDateTime(callSchedule.getCalendarDate().toDateTime(time));
 		container.persistIfNotAlready(call);

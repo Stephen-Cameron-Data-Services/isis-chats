@@ -45,6 +45,8 @@ public class Volunteer extends AbstractDomainEntity implements Notable, Locatabl
 
 	private Person person;
 	private Status status = Status.ACTIVE;
+	@Persistent(mappedBy = "volunteer")
+	private SortedSet<VolunteeredTime> volunteeredTimes = new TreeSet<>();
 
 	public TranslatableString title() {
 		return TranslatableString.tr("Volunteer: {fullname}", "fullname", getPerson().getFullname());
@@ -133,6 +135,12 @@ public class Volunteer extends AbstractDomainEntity implements Notable, Locatabl
 		return getPerson().getLocation();
 	}
 
+	@Programmatic
+	public void addVolunteeredTime(VolunteeredTime time) {
+		if (time != null)
+			volunteeredTimes.add(time);
+	}
+
 	@Inject
 	private CallSchedules schedulesRepo;
 
@@ -141,4 +149,5 @@ public class Volunteer extends AbstractDomainEntity implements Notable, Locatabl
 
 	@Inject
 	protected Participants participantsRepo;
+
 }

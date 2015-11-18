@@ -43,12 +43,12 @@ public class ActivitiesTest {
         public void createOneOffActivity() throws Exception {
 
             // given
-            final ActivityEvent activity = new ActivityEvent();
+            final OneOffActivity activity = new OneOffActivity();
             final DateTime dateTime = new DateTime();
 
             context.checking(new Expectations() {
                 {
-                    oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+                    oneOf(mockContainer).newTransientInstance(OneOffActivity.class);
                     will(returnValue(activity));
                     oneOf(mockContainer).persistIfNotAlready(activity);
                     oneOf(mockContainer).flush();
@@ -56,12 +56,11 @@ public class ActivitiesTest {
             });
 
             // when
-            final ActivityEvent obj = activities.createOneOffActivity("Foobar",dateTime);
+            final OneOffActivity obj = activities.createOneOffActivity("Foobar",dateTime);
 
             // then
             assertThat(obj).isEqualTo(activity);
             assertThat(obj.getName()).isEqualTo("Foobar");
-            assertThat(obj.getParentActivity()).isNull();
             assertThat(obj.getActivityType()).isNull();
             assertThat(obj.getActivityTypeName()).isNull();
             //TODO assertThat(obj.getRegion()).isNull();

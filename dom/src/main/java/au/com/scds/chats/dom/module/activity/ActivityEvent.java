@@ -42,18 +42,20 @@ import au.com.scds.chats.dom.module.general.names.ActivityType;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.dom.module.participant.Participation;
+import au.com.scds.chats.dom.module.volunteer.Volunteer;
+import au.com.scds.chats.dom.module.volunteer.VolunteeredTimeForActivity;
 
 /**
  * ActivityEvents are individual Activities that appear on a calendar.
  * 
- * Will have been created as a 'One Off' Activity, or, have been created
- * (spawned) as a child of a <code>RecurrentActivity</code>.
+ * Get been created (spawned) as a child of a <code>RecurringActivity</code>.
  * 
- * If an event spawned from a RecurrentActivity, it properties will generally be
- * those of its spawning parent, in-fact accessed and displayed from its parent,
- * other that the DateTime of the specific ActivityEvent.
+ * It acts as a see-through class where the the values displayed are generally
+ * taken from its parent <code>RecurringActivity</code>, in-fact accessed and
+ * displayed from its parent, other that the DateTime of the specific
+ * ActivityEvent.
  * 
- * However this parent/child relationship provides the chance for the child to
+ * However this parent/child relationship also provides the chance for the child to
  * override the properties of its parent.
  * 
  * For example, we can add <code>Participations</code> to the parent and these
@@ -71,7 +73,6 @@ import au.com.scds.chats.dom.module.participant.Participation;
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "EVENT")
 @Queries({ @Query(name = "find", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent "),
-		@Query(name = "findOneOffActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE name.indexOf(:name) >= 0 "),
 		@Query(name = "findActivitiesWithoutAttendanceList", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE attendances == null "),
 		@Query(name = "findAllFutureActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE startDateTime > :currentDateTime "),
 		@Query(name = "findAllPastActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE startDateTime <= :currentDateTime ") })
@@ -92,8 +93,6 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		this.container = container;
 		this.participantsRepo = participants;
 	}
-
-
 
 	@Property(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "1.1")
@@ -121,6 +120,19 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 			return;
 		this.attendances = attendances;
 	}
+	
+	@Action()
+	@ActionLayout()
+	@MemberOrder(name = "volunteeredtime", sequence = "1")
+	public ActivityEvent addVolunteeredTime(Volunteer volunteer, DateTime startDateTime, DateTime endDateTime) {
+		VolunteeredTimeForActivity time = volunteersRepo.createVolunteeredTimeForActivity(volunteer, this, startDateTime, endDateTime);
+		addVolunteeredTime(time);
+		return this;
+	}
+	
+	public List<Volunteer> choices0AddVolunteeredTime(){
+		return volunteersRepo.listActive();
+	}
 
 	// CalendarEventable methods
 	@Programmatic
@@ -134,6 +146,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	}
 
 	// >>> Overrides <<< //
+	@Override
 	public String title() {
 		if (getParentActivity() != null && super.getName() == null) {
 			return "Activity: " + getParentActivity().getName();

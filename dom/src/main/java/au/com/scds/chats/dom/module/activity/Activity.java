@@ -48,6 +48,8 @@ import au.com.scds.chats.dom.module.general.names.Regions;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.dom.module.participant.Participation;
+import au.com.scds.chats.dom.module.volunteer.VolunteeredTimeForActivity;
+import au.com.scds.chats.dom.module.volunteer.Volunteers;
 
 @PersistenceCapable(table = "activity", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
@@ -67,7 +69,9 @@ public abstract class Activity extends AbstractDomainEntity implements /*Locatab
 	protected Boolean isRestricted;
 	protected Long scheduleId;
 	@Persistent(mappedBy = "activity")
-	protected SortedSet<Participation> participations = new TreeSet<Participation>();
+	protected SortedSet<Participation> participations = new TreeSet<>();
+	@Persistent(mappedBy = "activity")
+	protected SortedSet<VolunteeredTimeForActivity> volunteeredTime = new TreeSet<>();
 
 	public Activity() {
 	}
@@ -405,12 +409,34 @@ public abstract class Activity extends AbstractDomainEntity implements /*Locatab
 	public List<Participant> choices0RemoveParticipant() {
 		return getParticipants();
 	}
+	
+	@Property()
+	@MemberOrder(sequence = "200")
+	@CollectionLayout(render = RenderType.LAZILY)
+	public SortedSet<VolunteeredTimeForActivity> getVolunteeredTime() {
+		return volunteeredTime;
+	}
+
+	public void setVolunteeredTime(SortedSet<VolunteeredTimeForActivity> volunteeredTime) {
+		this.volunteeredTime = volunteeredTime;
+	}
+	
+	//used by public actions in extending classes
+	@Programmatic
+	public void addVolunteeredTime(VolunteeredTimeForActivity time){
+		if(time == null)
+			return;
+		this.volunteeredTime.add(time);
+	}
 
 	@Inject
 	protected DomainObjectContainer container;
 
 	@Inject
 	protected Participants participantsRepo;
+
+	@Inject
+	protected Volunteers volunteersRepo;
 
 	@Inject
 	protected Locations locationsRepo;

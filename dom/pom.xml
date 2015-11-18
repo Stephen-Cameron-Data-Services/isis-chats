@@ -81,7 +81,7 @@
 		<dependency>
 			<groupId>org.isisaddons.wicket.excel</groupId>
 			<artifactId>isis-wicket-excel-cpt</artifactId>
-			<version>1.10.0-SNAPSHOT</version>
+			<version>1.10.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mindrot</groupId>

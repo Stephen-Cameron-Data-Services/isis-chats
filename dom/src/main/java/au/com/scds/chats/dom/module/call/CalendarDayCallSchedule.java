@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
 
@@ -37,6 +38,7 @@ import org.joda.time.LocalTime;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.dom.module.volunteer.Volunteer;
+import au.com.scds.chats.dom.module.volunteer.VolunteeredTimeForActivity;
 
 /**
  * A manager of ScheduledCall objects for a specific Calendar day, usually for a
@@ -57,6 +59,8 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	private Integer totalCalls = 0;
 	private Integer completedCalls = 0;
 	private SortedSet<ScheduledCall> scheduledCalls = new TreeSet<>();
+	@Persistent(mappedBy = "activity")
+	protected SortedSet<VolunteeredTimeForActivity> volunteeredTime = new TreeSet<>();
 
 	public CalendarDayCallSchedule() {
 
@@ -125,6 +129,25 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	public SortedSet<ScheduledCall> getScheduledCalls() {
 		return scheduledCalls;
 	}
+	
+	@Property()
+	@MemberOrder(sequence = "200")
+	@CollectionLayout(render = RenderType.LAZILY)
+	public SortedSet<VolunteeredTimeForActivity> getVolunteeredTime() {
+		return volunteeredTime;
+	}
+
+	public void setVolunteeredTime(SortedSet<VolunteeredTimeForActivity> volunteeredTime) {
+		this.volunteeredTime = volunteeredTime;
+	}
+	
+	//used by public actions in extending classes
+	@Programmatic
+	public void addVolunteeredTime(VolunteeredTimeForActivity time){
+		if(time == null)
+			return;
+		this.volunteeredTime.add(time);
+	}
 
 	// ACTIONS
 	@Action()
@@ -190,7 +213,7 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	@Override
 	@Programmatic
 	public String getCalendarName() {
-		return "calendarDate";
+		return "Daily Call Schedules";
 	}
 
 	@Override

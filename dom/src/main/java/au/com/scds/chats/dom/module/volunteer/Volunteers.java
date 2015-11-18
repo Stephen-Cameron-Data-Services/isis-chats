@@ -16,16 +16,19 @@ import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import au.com.scds.chats.dom.module.activity.Activity;
+import au.com.scds.chats.dom.module.call.CalendarDayCallSchedule;
 import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.Status;
 import au.com.scds.chats.dom.module.volunteer.Volunteer;
 
-@DomainService( repositoryFor = Volunteer.class)
+@DomainService(repositoryFor = Volunteer.class)
 @DomainServiceLayout(menuOrder = "30")
 public class Volunteers {
-	
+
 	public Volunteers() {
 	}
 
@@ -62,7 +65,8 @@ public class Volunteers {
 		return container.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersBySurname", "surname", surname));
 	}
 
-	public Volunteer create(final @Parameter(maxLength=100) @ParameterLayout(named = "First name") String firstname, final @Parameter(maxLength=100) @ParameterLayout(named = "Family name") String surname,
+	public Volunteer create(final @Parameter(maxLength = 100) @ParameterLayout(named = "First name") String firstname,
+			final @Parameter(maxLength = 100) @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob) {
 		return newVolunteer(firstname, surname, dob);
 	}
@@ -101,6 +105,47 @@ public class Volunteers {
 		container.persistIfNotAlready(volunteer);
 		container.flush();
 		return volunteer;
+	}
+
+	@Programmatic
+	public VolunteeredTime createVolunteeredTime(Volunteer volunteer, DateTime startDateTime, DateTime endDateTime){
+		if(volunteer == null || startDateTime== null || endDateTime==null)
+			return null;
+		VolunteeredTime time = container.newTransientInstance(VolunteeredTime.class);
+		time.setStartDateTime(startDateTime);
+		time.setEndDateTime(endDateTime);
+		volunteer.addVolunteeredTime(time);
+		container.persist(time);
+		container.flush();
+		return time;
+	}
+	
+	@Programmatic
+	public VolunteeredTimeForActivity createVolunteeredTimeForActivity(Volunteer volunteer, Activity activity, DateTime startDateTime, DateTime endDateTime){
+		if(volunteer == null || activity == null || startDateTime== null || endDateTime==null)
+			return null;
+		VolunteeredTimeForActivity time = container.newTransientInstance(VolunteeredTimeForActivity.class);
+		time.setStartDateTime(startDateTime);
+		time.setEndDateTime(endDateTime);
+		time.setActivity(activity);
+		volunteer.addVolunteeredTime(time);
+		container.persist(time);
+		container.flush();
+		return time;
+	}
+	
+	@Programmatic
+	public VolunteeredTimeForCalls createVolunteeredTimeForCalls(Volunteer volunteer, CalendarDayCallSchedule callSchedule, DateTime startDateTime, DateTime endDateTime){
+		if(volunteer == null || callSchedule == null || startDateTime== null || endDateTime==null)
+			return null;
+		VolunteeredTimeForCalls time = container.newTransientInstance(VolunteeredTimeForCalls.class);
+		time.setStartDateTime(startDateTime);
+		time.setEndDateTime(endDateTime);
+		time.setCallSchedule(callSchedule);
+		volunteer.addVolunteeredTime(time);
+		container.persist(time);
+		container.flush();
+		return time;
 	}
 
 	@Inject
