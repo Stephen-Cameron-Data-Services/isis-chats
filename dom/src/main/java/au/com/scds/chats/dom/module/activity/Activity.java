@@ -412,7 +412,7 @@ public abstract class Activity extends AbstractDomainEntity implements /*Locatab
 	
 	@Property()
 	@MemberOrder(sequence = "200")
-	@CollectionLayout(render = RenderType.LAZILY)
+	@CollectionLayout(render = RenderType.EAGERLY)
 	public SortedSet<VolunteeredTimeForActivity> getVolunteeredTime() {
 		return volunteeredTime;
 	}
@@ -421,7 +421,7 @@ public abstract class Activity extends AbstractDomainEntity implements /*Locatab
 		this.volunteeredTime = volunteeredTime;
 	}
 	
-	//used by public actions in extending classes
+	//used by public addVolunteerdTime actions in extending classes
 	@Programmatic
 	public void addVolunteeredTime(VolunteeredTimeForActivity time){
 		if(time == null)

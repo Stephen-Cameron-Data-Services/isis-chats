@@ -65,8 +65,8 @@ public class Activities {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "5")
-	public OneOffActivity createOneOffActivity(@Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Activity name") final String name, @Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Start date time") final DateTime startDateTime) {
-		final OneOffActivity obj = container.newTransientInstance(OneOffActivity.class);
+	public ActivityEvent createOneOffActivity(@Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Activity name") final String name, @Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Start date time") final DateTime startDateTime) {
+		final ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 		obj.setName(name);
 		obj.setStartDateTime(startDateTime);
 		container.persistIfNotAlready(obj);
@@ -77,8 +77,8 @@ public class Activities {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "6")
-	public List<OneOffActivity> findOneOffActivityByName(@ParameterLayout(named = "Name") final String name) {
-		return container.allMatches(new QueryDefault<>(OneOffActivity.class, "findOneOffActivityByName", "name", name));
+	public List<ActivityEvent> findActivityByName(@ParameterLayout(named = "Name") final String name) {
+		return container.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivityByName", "name", name));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)

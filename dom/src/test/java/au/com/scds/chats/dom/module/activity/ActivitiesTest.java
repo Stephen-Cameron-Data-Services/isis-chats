@@ -40,15 +40,15 @@ public class ActivitiesTest {
     public static class ActivitiesTest_Tests extends ActivitiesTest  {
 
         @Test
-        public void createOneOffActivity() throws Exception {
+        public void createActivityEvent() throws Exception {
 
             // given
-            final OneOffActivity activity = new OneOffActivity();
+            final ActivityEvent activity = new ActivityEvent();
             final DateTime dateTime = new DateTime();
 
             context.checking(new Expectations() {
                 {
-                    oneOf(mockContainer).newTransientInstance(OneOffActivity.class);
+                    oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
                     will(returnValue(activity));
                     oneOf(mockContainer).persistIfNotAlready(activity);
                     oneOf(mockContainer).flush();
@@ -56,7 +56,7 @@ public class ActivitiesTest {
             });
 
             // when
-            final OneOffActivity obj = activities.createOneOffActivity("Foobar",dateTime);
+            final ActivityEvent obj = activities.createOneOffActivity("Foobar",dateTime);
 
             // then
             assertThat(obj).isEqualTo(activity);

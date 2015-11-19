@@ -153,14 +153,14 @@ public class CallSchedules {
 	}
 
 	@Programmatic
-	// Gets called by the CalendarDayCallSchedule to actually create a
-	// ScheduledCall
-	// This is done to allow maintenance of the aggregate counts in the Schedule
-	ScheduledCall createScheduledCall(CalendarDayCallSchedule callSchedule, LocalTime time) {
+	//Probably should have made callSchedule responsible for creating calls
+	//as its now a divided operation (if we make use of DN to maintain bidirectional)
+	ScheduledCall createScheduledCall(CalendarDayCallSchedule callSchedule, LocalTime time) throws Exception {
 		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
-		//TODO remove next line
-		call.setCallSchedule(callSchedule);
+		//set the scheduled date-time for comparable to work in the call-back
 		call.setScheduledDateTime(callSchedule.getCalendarDate().toDateTime(time));
+		//call back to the schedule to increment total calls
+		callSchedule.addCall(call);
 		container.persistIfNotAlready(call);
 		container.flush();
 		return call;

@@ -11,7 +11,11 @@ import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 
+import org.apache.isis.applib.annotation.BookmarkPolicy;
+import org.apache.isis.applib.annotation.DomainObject;
+import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
+import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
@@ -21,10 +25,13 @@ import org.joda.time.Period;
 
 import au.com.scds.chats.dom.AbstractDomainEntity;
 
-@PersistenceCapable(table = "volunteer_effort", identityType = IdentityType.DATASTORE)
+@DomainObject(objectType = "VTIME")
+@DomainObjectLayout(bookmarking = BookmarkPolicy.NEVER)
+@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = {  "Admin" })
+@PersistenceCapable(table = "volunteered_time", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "role", value = "GENERAL")
-public class VolunteeredTime extends AbstractDomainEntity {
+public class VolunteeredTime extends AbstractDomainEntity implements Comparable<VolunteeredTime>{
 
 	private Volunteer volunteer;
 	private DateTime startDateTime;
@@ -98,4 +105,12 @@ public class VolunteeredTime extends AbstractDomainEntity {
 			return null;
 	}
 
+	@Override
+	public int compareTo(VolunteeredTime other) {
+		if(other == null)
+			return 0;
+		String myName = getVolunteer().getPerson().getSurname();
+		String otherName = other.getVolunteer().getPerson().getSurname();
+		return myName.compareTo(otherName);
+	}
 }

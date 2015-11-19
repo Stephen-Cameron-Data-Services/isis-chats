@@ -23,6 +23,7 @@ import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
+import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
@@ -39,6 +40,8 @@ import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.dom.module.volunteer.Volunteer;
 import au.com.scds.chats.dom.module.volunteer.VolunteeredTimeForActivity;
+import au.com.scds.chats.dom.module.volunteer.VolunteeredTimeForCalls;
+import au.com.scds.chats.dom.module.volunteer.Volunteers;
 
 /**
  * A manager of ScheduledCall objects for a specific Calendar day, usually for a
@@ -50,17 +53,18 @@ import au.com.scds.chats.dom.module.volunteer.VolunteeredTimeForActivity;
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-@Queries({ @Query(name = "findCallSchedule", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.CalendarDayCallSchedule "),
-		@Query(name = "findCallScheduleByVolunteer", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.CalendarDayCallSchedule WHERE allocatedVolunteer == :volunteer ") })
+@Queries({ @Query(name = "findCallSchedule", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.call.CalendarDayCallSchedule "),
+		@Query(name = "findCallScheduleByVolunteer", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.call.CalendarDayCallSchedule WHERE allocatedVolunteer == :volunteer ") })
 public class CalendarDayCallSchedule implements CalendarEventable, Comparable<CalendarDayCallSchedule> {
 
 	private LocalDate calendarDate;
 	private Volunteer allocatedVolunteer;
 	private Integer totalCalls = 0;
 	private Integer completedCalls = 0;
+	@Persistent(mappedBy = "callSchedule")
 	private SortedSet<ScheduledCall> scheduledCalls = new TreeSet<>();
-	@Persistent(mappedBy = "activity")
-	protected SortedSet<VolunteeredTimeForActivity> volunteeredTime = new TreeSet<>();
+	@Persistent(mappedBy = "callSchedule")
+	protected SortedSet<VolunteeredTimeForCalls> volunteeredTime = new TreeSet<>();
 
 	public CalendarDayCallSchedule() {
 
@@ -105,7 +109,6 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	@MemberOrder(sequence = "3")
 	@Column(allowsNull = "false")
 	public Integer getTotalCalls() {
-
 		return totalCalls;
 	}
 
@@ -132,21 +135,30 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	
 	@Property()
 	@MemberOrder(sequence = "200")
-	@CollectionLayout(render = RenderType.LAZILY)
-	public SortedSet<VolunteeredTimeForActivity> getVolunteeredTime() {
+	@CollectionLayout(render = RenderType.EAGERLY)
+	public SortedSet<VolunteeredTimeForCalls> getVolunteeredTime() {
 		return volunteeredTime;
 	}
 
-	public void setVolunteeredTime(SortedSet<VolunteeredTimeForActivity> volunteeredTime) {
+	public void setVolunteeredTime(SortedSet<VolunteeredTimeForCalls> volunteeredTime) {
 		this.volunteeredTime = volunteeredTime;
 	}
 	
-	//used by public actions in extending classes
-	@Programmatic
-	public void addVolunteeredTime(VolunteeredTimeForActivity time){
-		if(time == null)
-			return;
+	@Action()
+	@ActionLayout()
+	@MemberOrder(name="volunteeredtime",sequence="1")
+	public CalendarDayCallSchedule addVolunteeredTime(Volunteer voulunteer, @ParameterLayout(named="Started At") DateTime startDateTime, @ParameterLayout(named="Finished At") DateTime endDateTime){
+		VolunteeredTimeForCalls time = volunteersRepo.createVolunteeredTimeForCalls(getAllocatedVolunteer(), this, startDateTime, endDateTime);
 		this.volunteeredTime.add(time);
+		return this;
+	}
+	
+	public List<Volunteer> choices0AddVolunteeredTime(){
+		return volunteersRepo.listActive();
+	}
+	
+	public Volunteer default0AddVolunteeredTime(){
+		return getAllocatedVolunteer();
 	}
 
 	// ACTIONS
@@ -172,11 +184,16 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 		}
 		ScheduledCall call = callScheduler.createScheduledCall(this, time);
 		call.setAllocatedVolunteer(getAllocatedVolunteer());
-		scheduledCalls.add(call);
+		return call;
+	}
+	
+	//call-back for CallSchedules.createScheduledCall, see scheduleCall above.
+	@Programmatic
+	public void addCall(ScheduledCall call) throws Exception {
 		setTotalCalls(getTotalCalls() + 1);
+		scheduledCalls.add(call);
 		if (getTotalCalls() != scheduledCalls.size())
 			throw new Exception("Error: total call count and scheduledCalls.size() are different");
-		return call;
 	}
 
 	@Programmatic
@@ -209,6 +226,14 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 		}
 		return;
 	}
+	
+	//used by public addVolunteerdTime actions in extending classes
+	@Programmatic
+	public void addVolunteeredTime(VolunteeredTimeForCalls time){
+		if(time == null)
+			return;
+		this.volunteeredTime.add(time);
+	}
 
 	@Override
 	@Programmatic
@@ -235,4 +260,11 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	
 	@Inject()
 	Participants participantsRepo;
+	
+	@Inject()
+	Volunteers volunteersRepo;
+
+
+
+
 }

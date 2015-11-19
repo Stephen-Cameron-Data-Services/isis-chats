@@ -135,7 +135,9 @@ public class RecurringActivity extends Activity implements Notable {
 		// proceed if valid origin
 		if (origin != null) {
 			ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
+			//TODO why is this still needed?
 			obj.setParentActivity(this);
+			obj.setName(getName());
 			switch(getPeriodicity()){
 			case DAILY:
 				obj.setStartDateTime(origin.plusDays(1));
