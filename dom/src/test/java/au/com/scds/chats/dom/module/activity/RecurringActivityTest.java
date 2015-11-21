@@ -75,7 +75,7 @@ public class RecurringActivityTest {
 			});
 
 			// when
-			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
+			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo,null,null,null,null);
 			obj.setName("Foobar");
 			obj.setPeriodicity(Periodicity.WEEKLY);
 			obj.setStartDateTime(dateTime);
@@ -136,7 +136,7 @@ public class RecurringActivityTest {
 			});
 
 			// when
-			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
+			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo,null,null,null,null);
 			obj.setName("Foobar");
 			obj.setPeriodicity(Periodicity.DAILY);
 			obj.setStartDateTime(dateTime);
@@ -163,7 +163,7 @@ public class RecurringActivityTest {
 		public void addParticipantToParent() throws Exception {
 
 			// given
-			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
+			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo,null,null,null,null);
 			final ActivityEvent event1 = new ActivityEvent();
 			final ActivityEvent event2 = new ActivityEvent();
 			// create Participant to register for parent RecurringActivity
@@ -234,7 +234,7 @@ public class RecurringActivityTest {
 		public void allCascadedProperties() throws Exception {
 
 			// given
-			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
+			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo,null,null,null,null);
 			final ActivityEvent event1 = new ActivityEvent();
 			final ActivityEvent event2 = new ActivityEvent();
 
@@ -318,7 +318,7 @@ public class RecurringActivityTest {
 			// given
 			Locations locations = new Locations(mockContainer, new LocationLookupService());
 			final Address address = new Address(locations);
-			final RecurringActivity activity= new RecurringActivity(mockContainer,null,null,null,locations);
+			final RecurringActivity activity= new RecurringActivity(mockContainer,null,null,null,null,locations);
 
 			context.checking(new Expectations() {
 				{

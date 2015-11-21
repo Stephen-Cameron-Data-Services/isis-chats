@@ -44,6 +44,7 @@ import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.dom.module.participant.Participation;
 import au.com.scds.chats.dom.module.volunteer.Volunteer;
 import au.com.scds.chats.dom.module.volunteer.VolunteeredTimeForActivity;
+import au.com.scds.chats.dom.module.volunteer.Volunteers;
 
 /**
  * ActivityEvents are individual Activities that appear on a calendar.
@@ -90,9 +91,12 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	// for mock testing
 	public ActivityEvent(DomainObjectContainer container, Participants participants) {
-		super();
-		this.container = container;
-		this.participantsRepo = participants;
+		super(container,participants,null,null,null,null);
+	}
+	
+	// for mock testing
+	public ActivityEvent(DomainObjectContainer container, Volunteers volunteers) {
+		super(container,null,volunteers,null,null,null);
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
@@ -131,7 +135,6 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	@MemberOrder(name = "volunteeredtime", sequence = "1")
 	public ActivityEvent addVolunteeredTime(Volunteer volunteer, @ParameterLayout(named="Started At") DateTime startDateTime, @ParameterLayout(named="Finished At") DateTime endDateTime) {
 		VolunteeredTimeForActivity time = volunteersRepo.createVolunteeredTimeForActivity(volunteer, this, startDateTime, endDateTime);
-		addVolunteeredTime(time);
 		return this;
 	}
 	

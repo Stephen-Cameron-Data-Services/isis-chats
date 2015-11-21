@@ -114,8 +114,8 @@ public class Volunteers {
 		VolunteeredTime time = container.newTransientInstance(VolunteeredTime.class);
 		time.setStartDateTime(startDateTime);
 		time.setEndDateTime(endDateTime);
-		time.setVolunteer(volunteer);
-		//volunteer.addVolunteeredTime(time);
+		time.setVolunteer(volunteer); //needed for compareTo to work
+		volunteer.addVolunteeredTime(time);
 		container.persistIfNotAlready(time);
 		container.flush();
 		return time;
@@ -128,10 +128,9 @@ public class Volunteers {
 		VolunteeredTimeForActivity time = container.newTransientInstance(VolunteeredTimeForActivity.class);
 		time.setStartDateTime(startDateTime);
 		time.setEndDateTime(endDateTime);
-		//time.setActivity(activity);
-		time.setVolunteer(volunteer);
+		time.setVolunteer(volunteer); //needed for compareTo to work
+		volunteer.addVolunteeredTime(time);
 		activity.addVolunteeredTime(time);
-		//volunteer.addVolunteeredTime(time);
 		container.persistIfNotAlready(time);
 		container.flush();
 		return time;
@@ -144,8 +143,8 @@ public class Volunteers {
 		VolunteeredTimeForCalls time = container.newTransientInstance(VolunteeredTimeForCalls.class);
 		time.setStartDateTime(startDateTime);
 		time.setEndDateTime(endDateTime);
-		//time.setCallSchedule(callSchedule);
-		time.setVolunteer(volunteer);
+		time.setVolunteer(volunteer); //needed for compareTo to work
+		volunteer.addVolunteeredTime(time);
 		callSchedule.addVolunteeredTime(time);
 		container.persistIfNotAlready(time);
 		container.flush();

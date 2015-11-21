@@ -16,6 +16,7 @@ import org.joda.time.DateTime;
 import au.com.scds.chats.dom.module.general.Locations;
 import au.com.scds.chats.dom.module.general.names.ActivityTypes;
 import au.com.scds.chats.dom.module.participant.Participants;
+import au.com.scds.chats.dom.module.volunteer.Volunteers;
 /**
  * 
  * An <code>Activity</code> that is used to schedule individual
@@ -45,8 +46,8 @@ public class RecurringActivity extends Activity implements Notable {
 	}
 
 	// used for testing only
-	public RecurringActivity(DomainObjectContainer container, Participants participantsRepo, Providers activityProviders, ActivityTypes activityTypes, Locations locations) {
-		super(container, participantsRepo,  activityProviders, activityTypes, locations);
+	public RecurringActivity(DomainObjectContainer container, Participants participantsRepo, Volunteers volunteersRepo, Providers activityProviders, ActivityTypes activityTypes, Locations locations) {
+		super(container, participantsRepo, volunteersRepo, activityProviders, activityTypes, locations);
 	}
 
 	@Override

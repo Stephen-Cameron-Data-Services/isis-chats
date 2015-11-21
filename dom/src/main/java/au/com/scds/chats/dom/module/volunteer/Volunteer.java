@@ -12,6 +12,7 @@ import javax.jdo.annotations.*;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.Identifier;
 import org.apache.isis.applib.annotation.Action;
+import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
@@ -45,15 +46,14 @@ public class Volunteer extends AbstractDomainEntity implements Notable, Locatabl
 
 	private Person person;
 	private Status status = Status.ACTIVE;
-	//@Persistent(mappedBy = "volunteer")
-	//private SortedSet<VolunteeredTime> volunteeredTimes = new TreeSet<>();
+	@Persistent(mappedBy = "allocatedVolunteer")
+	private SortedSet<CalendarDayCallSchedule> callSchedules = new TreeSet<>();
+	@Persistent(mappedBy = "volunteer")
+	private SortedSet<VolunteeredTime> volunteeredTimes = new TreeSet<>();
 
 	public TranslatableString title() {
 		return TranslatableString.tr("Volunteer: {fullname}", "fullname", getPerson().getFullname());
 	}
-
-	@Persistent(mappedBy = "allocatedVolunteer")
-	private SortedSet<CalendarDayCallSchedule> callSchedules = new TreeSet<CalendarDayCallSchedule>();
 
 	@CollectionLayout(named = "Call Schedules", paged = 20, render = RenderType.EAGERLY)
 	public SortedSet<CalendarDayCallSchedule> getScheduled() {
@@ -65,12 +65,12 @@ public class Volunteer extends AbstractDomainEntity implements Notable, Locatabl
 	}
 
 	@Action()
-	@MemberOrder(name = "callschedules", sequence = "1")
+	@MemberOrder(name = "callSchedules", sequence = "1")
 	public Volunteer addScheduledCall(final Participant participant, final DateTime dateTime) {
 		try {
 			ScheduledCall call = schedulesRepo.createScheduledCall(this, participant, dateTime);
 		} catch (Exception e) {
-			// TODO log this error
+			container.warnUser(e.getMessage());
 		}
 		return this;
 	}
@@ -135,11 +135,20 @@ public class Volunteer extends AbstractDomainEntity implements Notable, Locatabl
 		return getPerson().getLocation();
 	}
 
-	/*@Programmatic
+	@Programmatic
 	public void addVolunteeredTime(VolunteeredTime time) {
 		if (time != null)
 			volunteeredTimes.add(time);
-	}*/
+	}
+
+	public SortedSet<VolunteeredTime> getVolunteeredTimes() {
+		return volunteeredTimes;
+	}
+
+	public void setVolunteeredTimes(SortedSet<VolunteeredTime> volunteeredTimes) {
+		this.volunteeredTimes = volunteeredTimes;
+	}
+	
 
 	@Inject
 	private CallSchedules schedulesRepo;

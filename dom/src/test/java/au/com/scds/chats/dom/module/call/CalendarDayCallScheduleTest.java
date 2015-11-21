@@ -37,7 +37,7 @@ public class CalendarDayCallScheduleTest {
 		volunteers = new Volunteers(mockContainer);
 		participants = new Participants(mockContainer);
 		schedules = new CallSchedules(mockContainer, volunteers, participants);
-		schedule = new CalendarDayCallSchedule(mockContainer, schedules, participants);
+		schedule = new CalendarDayCallSchedule(mockContainer, schedules, participants, volunteers);
 	}
 
 	public static class CalendarDayCallScheduleTest_Tests extends CalendarDayCallScheduleTest {
@@ -142,7 +142,7 @@ public class CalendarDayCallScheduleTest {
 
 			// when
 			schedule.setCalendarDate(new LocalDate());
-			schedule.scheduleNewCall(participant, dateTime);
+			schedule.addNewCall(participant, dateTime);
 
 			// then
 			assertThat(schedule.getTotalCalls()).isEqualTo(1);

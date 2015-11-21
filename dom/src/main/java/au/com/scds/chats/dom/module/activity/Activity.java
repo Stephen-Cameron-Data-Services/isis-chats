@@ -71,16 +71,17 @@ public abstract class Activity extends AbstractDomainEntity implements /*Locatab
 	@Persistent(mappedBy = "activity")
 	protected SortedSet<Participation> participations = new TreeSet<>();
 	@Persistent(mappedBy = "activity")
-	protected SortedSet<VolunteeredTimeForActivity> volunteeredTime = new TreeSet<>();
+	protected SortedSet<VolunteeredTimeForActivity> volunteeredTimes = new TreeSet<>();
 
 	public Activity() {
 	}
 
-	public Activity(DomainObjectContainer container, Participants participantsRepo, Providers activityProviders, ActivityTypes activityTypes, Locations locations) {
+	public Activity(DomainObjectContainer container, Participants participants, Volunteers volunteers, Providers activityProviders, ActivityTypes activityTypes, Locations locations) {
 		this.container = container;
-		this.participantsRepo = participantsRepo;
-		this.activityProviders = activityProviders;
-		this.activityTypes = activityTypes;
+		this.participantsRepo = participants;
+		this.volunteersRepo = volunteers;
+		this.activityProvidersRepo = activityProviders;
+		this.activityTypesRepo = activityTypes;
 		this.locationsRepo = locations;
 	}
 
@@ -133,7 +134,7 @@ public abstract class Activity extends AbstractDomainEntity implements /*Locatab
 	}
 
 	public List<Provider> choicesProvider() {
-		return activityProviders.listAllProviders();
+		return activityProvidersRepo.listAllProviders();
 	}
 
 	@Property(hidden = Where.EVERYWHERE)
@@ -155,11 +156,11 @@ public abstract class Activity extends AbstractDomainEntity implements /*Locatab
 	}
 
 	public void setActivityTypeName(String name) {
-		this.setActivityType(activityTypes.activityTypeForName(name));
+		this.setActivityType(activityTypesRepo.activityTypeForName(name));
 	}
 
 	public List<String> choicesActivityTypeName() {
-		return activityTypes.allNames();
+		return activityTypesRepo.allNames();
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
@@ -413,12 +414,12 @@ public abstract class Activity extends AbstractDomainEntity implements /*Locatab
 	@Property()
 	@MemberOrder(sequence = "200")
 	@CollectionLayout(render = RenderType.EAGERLY)
-	public SortedSet<VolunteeredTimeForActivity> getVolunteeredTime() {
-		return volunteeredTime;
+	public SortedSet<VolunteeredTimeForActivity> getVolunteeredTimes() {
+		return volunteeredTimes;
 	}
 
-	public void setVolunteeredTime(SortedSet<VolunteeredTimeForActivity> volunteeredTime) {
-		this.volunteeredTime = volunteeredTime;
+	public void setVolunteeredTimes(SortedSet<VolunteeredTimeForActivity> volunteeredTimes) {
+		this.volunteeredTimes = volunteeredTimes;
 	}
 	
 	//used by public addVolunteerdTime actions in extending classes
@@ -426,7 +427,7 @@ public abstract class Activity extends AbstractDomainEntity implements /*Locatab
 	public void addVolunteeredTime(VolunteeredTimeForActivity time){
 		if(time == null)
 			return;
-		this.volunteeredTime.add(time);
+		this.volunteeredTimes.add(time);
 	}
 
 	@Inject
@@ -442,8 +443,8 @@ public abstract class Activity extends AbstractDomainEntity implements /*Locatab
 	protected Locations locationsRepo;
 
 	@Inject
-	protected Providers activityProviders;
+	protected Providers activityProvidersRepo;
 
 	@Inject
-	protected ActivityTypes activityTypes;
+	protected ActivityTypes activityTypesRepo;
 }

@@ -100,9 +100,9 @@ public abstract class AbstractDomainEntity implements Timestampable, WithApplica
 		this.region = region;
 	}
 
-	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
+	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(named = "Region")
-	@MemberOrder(name = "Admin", sequence = "5")
+	@MemberOrder(name = "Admin", sequence = "100")
 	@NotPersistent
 	public String getRegionName() {
 		if (getRegion() == null)

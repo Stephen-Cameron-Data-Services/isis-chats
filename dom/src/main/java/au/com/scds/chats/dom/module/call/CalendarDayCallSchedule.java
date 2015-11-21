@@ -64,16 +64,18 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	@Persistent(mappedBy = "callSchedule")
 	private SortedSet<ScheduledCall> scheduledCalls = new TreeSet<>();
 	@Persistent(mappedBy = "callSchedule")
-	protected SortedSet<VolunteeredTimeForCalls> volunteeredTime = new TreeSet<>();
+	protected SortedSet<VolunteeredTimeForCalls> volunteeredTimes = new TreeSet<>();
 
 	public CalendarDayCallSchedule() {
 
 	}
 
-	public CalendarDayCallSchedule(DomainObjectContainer container, CallSchedules schedules, Participants participants) {
+	// for mock testing
+	public CalendarDayCallSchedule(DomainObjectContainer container, CallSchedules schedules, Participants participants, Volunteers volunteers) {
 		this.container = container;
 		this.callScheduler = schedules;
 		this.participantsRepo = participants;
+		this.volunteersRepo = volunteers;
 	}
 
 	public String title() {
@@ -132,48 +134,48 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	public SortedSet<ScheduledCall> getScheduledCalls() {
 		return scheduledCalls;
 	}
-	
+
 	@Property()
 	@MemberOrder(sequence = "200")
 	@CollectionLayout(render = RenderType.EAGERLY)
-	public SortedSet<VolunteeredTimeForCalls> getVolunteeredTime() {
-		return volunteeredTime;
+	public SortedSet<VolunteeredTimeForCalls> getVolunteeredTimes() {
+		return volunteeredTimes;
 	}
 
-	public void setVolunteeredTime(SortedSet<VolunteeredTimeForCalls> volunteeredTime) {
-		this.volunteeredTime = volunteeredTime;
+	public void setVolunteeredTimes(SortedSet<VolunteeredTimeForCalls> volunteeredTimes) {
+		this.volunteeredTimes = volunteeredTimes;
 	}
-	
+
 	@Action()
 	@ActionLayout()
-	@MemberOrder(name="volunteeredtime",sequence="1")
-	public CalendarDayCallSchedule addVolunteeredTime(Volunteer voulunteer, @ParameterLayout(named="Started At") DateTime startDateTime, @ParameterLayout(named="Finished At") DateTime endDateTime){
-		VolunteeredTimeForCalls time = volunteersRepo.createVolunteeredTimeForCalls(getAllocatedVolunteer(), this, startDateTime, endDateTime);
-		this.volunteeredTime.add(time);
+	@MemberOrder(name = "volunteeredTimes", sequence = "1")
+	public CalendarDayCallSchedule addVolunteeredTime(Volunteer volunteer, @ParameterLayout(named = "Started At") DateTime startDateTime, @ParameterLayout(named = "Finished At") DateTime endDateTime) {
+		VolunteeredTimeForCalls time = volunteersRepo.createVolunteeredTimeForCalls(volunteer, this, startDateTime, endDateTime);
 		return this;
 	}
-	
-	public List<Volunteer> choices0AddVolunteeredTime(){
+
+	public List<Volunteer> choices0AddVolunteeredTime() {
 		return volunteersRepo.listActive();
 	}
-	
-	public Volunteer default0AddVolunteeredTime(){
+
+	public Volunteer default0AddVolunteeredTime() {
 		return getAllocatedVolunteer();
 	}
 
 	// ACTIONS
 	@Action()
 	@ActionLayout()
-	public void scheduleNewCall(@Parameter(optionality = Optionality.MANDATORY) final Participant participant, @Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) throws Exception {
+	@MemberOrder(name = "scheduledCalls", sequence = "1")
+	public void addNewCall(@Parameter(optionality = Optionality.MANDATORY) final Participant participant, @Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) throws Exception {
 		ScheduledCall call = scheduleCall(dateTime.toLocalTime());
 		call.setParticipant(participant);
 	}
-	
-	public List<Participant> choices0ScheduleNewCall(){
+
+	public List<Participant> choices0ScheduleNewCall() {
 		return participantsRepo.listActive();
 	}
-	
-	public DateTime default1ScheduleNewCall(){
+
+	public DateTime default1ScheduleNewCall() {
 		return new DateTime(getCalendarDate().toDateTimeAtCurrentTime());
 	}
 
@@ -186,8 +188,8 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 		call.setAllocatedVolunteer(getAllocatedVolunteer());
 		return call;
 	}
-	
-	//call-back for CallSchedules.createScheduledCall, see scheduleCall above.
+
+	// call-back for CallSchedules.createScheduledCall, see scheduleCall above.
 	@Programmatic
 	public void addCall(ScheduledCall call) throws Exception {
 		setTotalCalls(getTotalCalls() + 1);
@@ -226,13 +228,13 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 		}
 		return;
 	}
-	
-	//used by public addVolunteerdTime actions in extending classes
+
+	// used by public addVolunteerdTime actions in extending classes
 	@Programmatic
-	public void addVolunteeredTime(VolunteeredTimeForCalls time){
-		if(time == null)
+	public void addVolunteeredTime(VolunteeredTimeForCalls time) {
+		if (time == null)
 			return;
-		this.volunteeredTime.add(time);
+		this.volunteeredTimes.add(time);
 	}
 
 	@Override
@@ -257,14 +259,11 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 
 	@Inject()
 	DomainObjectContainer container;
-	
+
 	@Inject()
 	Participants participantsRepo;
-	
+
 	@Inject()
 	Volunteers volunteersRepo;
-
-
-
 
 }
