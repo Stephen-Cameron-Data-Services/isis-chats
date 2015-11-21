@@ -171,11 +171,11 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 		call.setParticipant(participant);
 	}
 
-	public List<Participant> choices0ScheduleNewCall() {
+	public List<Participant> choices0AddNewCall() {
 		return participantsRepo.listActive();
 	}
 
-	public DateTime default1ScheduleNewCall() {
+	public DateTime default1AddNewCall() {
 		return new DateTime(getCalendarDate().toDateTimeAtCurrentTime());
 	}
 

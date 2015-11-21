@@ -24,61 +24,123 @@ import org.apache.isis.applib.annotation.ViewModel;
 				key = "view-definition",
 				value = "CREATE VIEW ParticipantPerson "
 						+ "( "
+						+ "  {this.activityName}, "
+						+ "  {this.startDateTime}, "
+						+ "  {this.region}, "
 						+ "  {this.surname}, "
 						+ "  {this.firstname}, "
-						+ "  {this.birthdate}, "
-						+ "  {this.activity}, "
-						+ "  {this.region}, "
-						+ "  {this.daysSinceLastAttended} "
+						+ "  {this.prefferedName}, "
+						+ "  {this.address}, "
+						+ "  {this.homephoneNumber}, "
+						+ "  {this.mobileNumber}, "
+						+ "  {this.limitingHealthIssues}, "
+						+ "  {this.otherLimitingFactors} "
 						+ ") AS "
 						+ "SELECT "
+						+ "  activity.name AS activityname, "
+						+ "	 activity.startDateTime, "
+						+ "	 activity.region_name as region, "
 						+ "	 person.surname, "
 						+ "	 person.firstname, "
-						+ "	 person.birthdate, "
-						+ "	 activity.name AS activity, "
-						+ "	 activity.region_name AS region, "
-						+ "	 datediff(now(),attended.startdatetime) AS daysSinceLastAttended "
+						+ "	 person.preferredname, "
+						+ "	 concat(location.street1,' ' ,location.street2, ' ', location.suburb) as address, "
+						+ "	 person.homephonenumber, "
+						+ "	 person.mobilephonenumber, "
+						+ "	 socialfactors.limitingHealthIssues, "
+						+ "	 socialfactors.otherlimitingfactors "
 						+ "FROM "
-						+ "	 attended, "
-						+ "	 participant, "
-						+ "	 person, "
-						+ "	 activity "
-						+ "WHERE "
-						+ "	 participant.participant_id = attended.participant_participant_id AND "
-						+ "	 activity.activity_id = attended.activity_activity_id AND "
-						+ "	 participant.person_person_id = person.person_id AND "
-						+ "  participant.status = 'ACTIVE'"
-						+ "GROUP BY "
-						+ "	 participant.participant_id, "
-						+ "	 activity.activity_id "
+						+ "  activity "
+						+ "JOIN "
+						+ "  participation "
+						+ "ON "
+						+ "  participation.activity_activity_id = activity.activity_id "
+						+ "JOIN "
+						+ "	 participant "
+						+ "ON "
+						+ "  participant.participant_id = participation.participant_participant_id "
+						+ "JOIN "
+						+ "  person "
+						+ "ON "
+						+ "  person.person_id = participant.person_person_id "
+						+ "LEFT JOIN "
+						+ "  socialfactors "
+						+ "ON "
+						+ "  socialfactors.parent_participant_id =  participant.participant_id "
+						+ "LEFT JOIN "
+						+ "  location "
+						+ "ON "
+						+ "  location.location_id =  person.streetaddress_location_id "
 						+ "ORDER BY "
-						+ " daysSinceLastAttended DESC;") })
+						+ "  person.surname, person.firstname;") })
 @Queries({
-		@Query(name = "findInactiveParticipants", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.viewmodels.InactiveParticipant "),
-		@Query(name = "getParticipantActivity", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.viewmodels.InactiveParticipant WHERE firstname == :firstname && surname == :surname && birthdate == :birthdate") })
+		@Query(name = "getActivityParticipantDetails", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.ParticipantPerson WHERE activityName == :activity && startDateTime == :datetime && region == :region") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ParticipantPersonView {
 
-	private String fullname;
+	private String activityName;
+	private String startDateTime;
+	private String region;
+	private String surname;
+	private String firstname;
 	private String prefferedName;
 	private String address;
-	private String phoneNumber;
+	private String homephoneNumber;
 	private String mobileNumber;
 	private String limitingHealthIssues;
 	private String otherLimitingFactors;
 
-	@Property(editing=Editing.DISABLED)
+	@Property()
 	@MemberOrder(sequence = "1")
-	public String getFullname() {
-		return fullname;
+	public String getActivityName() {
+		return activityName;
 	}
 
-	public void setFullname(String fullname) {
-		this.fullname = fullname;
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
 	}
 
-	@Property(editing=Editing.DISABLED)
+	@Property()
 	@MemberOrder(sequence = "2")
+	public String getStartDateTime() {
+		return startDateTime;
+	}
+
+	public void setStartDateTime(String startDateTime) {
+		this.startDateTime = startDateTime;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "3")
+	public String getRegion() {
+		return region;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "4")
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "5")
+	public String getFirstname() {
+		return firstname;
+	}
+
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "6")
 	public String getPrefferedName() {
 		return prefferedName;
 	}
@@ -87,8 +149,8 @@ public class ParticipantPersonView {
 		this.prefferedName = prefferedName;
 	}
 
-	@Property(editing=Editing.DISABLED)
-	@MemberOrder(sequence = "3")
+	@Property()
+	@MemberOrder(sequence = "7")
 	public String getAddress() {
 		return address;
 	}
@@ -97,18 +159,18 @@ public class ParticipantPersonView {
 		this.address = address;
 	}
 
-	@Property(editing=Editing.DISABLED)
-	@MemberOrder(sequence = "4")
-	public String getPhoneNumber() {
-		return phoneNumber;
+	@Property()
+	@MemberOrder(sequence = "8")
+	public String getHomephoneNumber() {
+		return homephoneNumber;
 	}
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
+	public void setHomephoneNumber(String homephoneNumber) {
+		this.homephoneNumber = homephoneNumber;
 	}
 
-	@Property(editing=Editing.DISABLED)
-	@MemberOrder(sequence = "5")
+	@Property()
+	@MemberOrder(sequence = "9")
 	public String getMobileNumber() {
 		return mobileNumber;
 	}
@@ -117,8 +179,8 @@ public class ParticipantPersonView {
 		this.mobileNumber = mobileNumber;
 	}
 
-	@Property(editing=Editing.DISABLED)
-	@MemberOrder(sequence = "6")
+	@Property()
+	@MemberOrder(sequence = "10")
 	public String getLimitingHealthIssues() {
 		return limitingHealthIssues;
 	}
@@ -127,8 +189,8 @@ public class ParticipantPersonView {
 		this.limitingHealthIssues = limitingHealthIssues;
 	}
 
-	@Property(editing=Editing.DISABLED)
-	@MemberOrder(sequence = "7")
+	@Property()
+	@MemberOrder(sequence = "11")
 	public String getOtherLimitingFactors() {
 		return otherLimitingFactors;
 	}

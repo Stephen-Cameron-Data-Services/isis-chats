@@ -53,8 +53,9 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 
 @PersistenceCapable(table = "activity", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
+@Unique(name = "Activity_UNQ", members = { "name", "startDateTime", "region" })
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "class", value = "ACTIVITY")
-public abstract class Activity extends AbstractDomainEntity implements /*Locatable,*/ Comparable<Activity> {
+public abstract class Activity extends AbstractDomainEntity implements Locatable, Comparable<Activity> {
 
 	private Long oldId; // id copied from old system
 	protected String name;

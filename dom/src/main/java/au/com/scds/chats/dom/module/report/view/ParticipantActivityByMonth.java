@@ -13,6 +13,7 @@ import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
+import org.joda.time.DateTime;
 
 @ViewModel
 @DomainObject(editing = Editing.DISABLED)
@@ -58,7 +59,7 @@ import org.apache.isis.applib.annotation.ViewModel;
 @Queries({
 	@Query(name = "allParticipantActivityByMonth",
 			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.module.report.viewmodels.ParticipantActivityByMonth") })
+			value = "SELECT FROM au.com.scds.chats.dom.module.report.view.ParticipantActivityByMonth") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ParticipantActivityByMonth {
 	
@@ -67,6 +68,7 @@ public class ParticipantActivityByMonth {
 	public String birthDate;
 	public String region;
 	public String activityName;
+	public DateTime activityStartDateTime;
 	public String yearMonth;
 	public String hoursAttended;
 
@@ -119,9 +121,19 @@ public class ParticipantActivityByMonth {
 	public void setActivityName(String activityName) {
 		this.activityName = activityName;
 	}
-
+	
 	@Property()
 	@MemberOrder(sequence = "6")
+	public DateTime getActivityStartDateTime() {
+		return activityStartDateTime;
+	}
+
+	public void setActivityStartDateTime(DateTime activityStartDateTime) {
+		this.activityStartDateTime = activityStartDateTime;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "7")
 	public String getYearMonth() {
 		return yearMonth;
 	}
@@ -131,7 +143,7 @@ public class ParticipantActivityByMonth {
 	}
 
 	@Property()
-	@MemberOrder(sequence = "7")
+	@MemberOrder(sequence = "8")
 	public String getHoursAttended() {
 		return hoursAttended;
 	}

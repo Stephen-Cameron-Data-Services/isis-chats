@@ -76,9 +76,9 @@ import org.joda.time.LocalDate;
 						+ "ON "
 						+ "  location.location_id = person.mailaddress_location_id; ") })
 @Queries({
-		@Query(name = "listMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.viewmodels.MailMergeData "),
-		@Query(name = "listActiveParticipantMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.viewmodels.MailMergeData WHERE participantStatus == 'ACTIVE'"),
-		@Query(name = "listActiveVolunteerMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.viewmodels.MailMergeData WHERE volunteerStatus == 'ACTIVE'") })
+		@Query(name = "listMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.MailMergeData "),
+		@Query(name = "listActiveParticipantMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.MailMergeData WHERE participantStatus == 'ACTIVE'"),
+		@Query(name = "listActiveVolunteerMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.MailMergeData WHERE volunteerStatus == 'ACTIVE'") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class MailMergeData {
 

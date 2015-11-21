@@ -61,8 +61,8 @@ import org.joda.time.LocalDate;
 						+ "ORDER BY "
 						+ " daysSinceLastAttended DESC;") })
 @Queries({
-		@Query(name = "findInactiveParticipants", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.viewmodels.InactiveParticipant "),
-		@Query(name = "getParticipantActivity", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.viewmodels.InactiveParticipant WHERE firstname == :firstname && surname == :surname && birthdate == :birthdate") })
+		@Query(name = "findInactiveParticipants", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.InactiveParticipant "),
+		@Query(name = "getParticipantActivity", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.InactiveParticipant WHERE firstname == :firstname && surname == :surname && birthdate == :birthdate") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class InactiveParticipant /* implements WithApplicationTenancy */{
 
