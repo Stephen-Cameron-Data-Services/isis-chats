@@ -13,6 +13,7 @@ import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
+import org.joda.time.DateTime;
 
 @ViewModel
 @DomainObject(editing = Editing.DISABLED)
@@ -39,7 +40,7 @@ import org.apache.isis.applib.annotation.ViewModel;
 						+ "SELECT "
 						+ "  activity.name AS activityname, "
 						+ "	 activity.startDateTime, "
-						+ "	 activity.region_name as region, "
+						+ "	 activity.region_name AS region, "
 						+ "	 person.surname, "
 						+ "	 person.firstname, "
 						+ "	 person.preferredname, "
@@ -78,7 +79,7 @@ import org.apache.isis.applib.annotation.ViewModel;
 public class ParticipantPersonView {
 
 	private String activityName;
-	private String startDateTime;
+	private DateTime startDateTime;
 	private String region;
 	private String surname;
 	private String firstname;
@@ -101,11 +102,11 @@ public class ParticipantPersonView {
 
 	@Property()
 	@MemberOrder(sequence = "2")
-	public String getStartDateTime() {
+	public DateTime getStartDateTime() {
 		return startDateTime;
 	}
 
-	public void setStartDateTime(String startDateTime) {
+	public void setStartDateTime(DateTime startDateTime) {
 		this.startDateTime = startDateTime;
 	}
 

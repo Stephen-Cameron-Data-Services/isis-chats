@@ -14,6 +14,7 @@ import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 @ViewModel
 @DomainObject(editing = Editing.DISABLED)
@@ -41,8 +42,8 @@ import org.joda.time.DateTime;
 						+ "	person.region_name AS region, "
 						+ "	activity.name AS activityname, "
 						+ "	activity.startdatetime AS activitystartdatetime, "
-						+ "	EXTRACT(YEAR_MONTH FROM attended.startdatetime) as yearmonth,"
-						+ "	ROUND(SUM(TIMESTAMPDIFF(MINUTE,attended.enddatetime,attended.startdatetime))/60,1) as hoursattended"
+						+ "	EXTRACT(YEAR_MONTH FROM attended.startdatetime) as yearmonth, "
+						+ "	ROUND(SUM(TIMESTAMPDIFF(MINUTE,attended.enddatetime,attended.startdatetime))/60,1) as hoursattended "
 						+ "FROM "
 						+ "	attended, "
 						+ "	participant, "
@@ -65,12 +66,12 @@ public class ParticipantActivityByMonth {
 	
 	public String surname;
 	public String firstName;
-	public String birthDate;
+	public LocalDate birthDate;
 	public String region;
 	public String activityName;
 	public DateTime activityStartDateTime;
-	public String yearMonth;
-	public String hoursAttended;
+	public Integer yearMonth;
+	public Float hoursAttended;
 
 	@Property()
 	@MemberOrder(sequence = "1")
@@ -94,11 +95,11 @@ public class ParticipantActivityByMonth {
 
 	@Property()
 	@MemberOrder(sequence = "3")
-	public String getBirthDate() {
+	public LocalDate getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(String birthDate) {
+	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
 
@@ -134,21 +135,21 @@ public class ParticipantActivityByMonth {
 
 	@Property()
 	@MemberOrder(sequence = "7")
-	public String getYearMonth() {
+	public Integer getYearMonth() {
 		return yearMonth;
 	}
 
-	public void setYearMonth(String yearMonth) {
+	public void setYearMonth(Integer yearMonth) {
 		this.yearMonth = yearMonth;
 	}
 
 	@Property()
 	@MemberOrder(sequence = "8")
-	public String getHoursAttended() {
+	public Float getHoursAttended() {
 		return hoursAttended;
 	}
 
-	public void setHoursAttended(String hoursAttended) {
+	public void setHoursAttended(Float hoursAttended) {
 		this.hoursAttended = hoursAttended;
 	}
 }

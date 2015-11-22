@@ -49,17 +49,18 @@ public class VolunteeredTime extends AbstractDomainEntity implements Comparable<
 
 	@Override
 	public int compareTo(VolunteeredTime other) {
+		System.out.println("compare");
 		if (getVolunteer() != null && other.getVolunteer() != null) {
 			String thisName = getVolunteer().getPerson().getSurname() + getStartDateTime();
 			String otherName = getVolunteer().getPerson().getSurname() + other.getStartDateTime();
 			return thisName.compareTo(otherName);
 		} else {
-			return ObjectContracts.compare(this,other,"startDateTime","endDateTime");
+			return ObjectContracts.compare(this, other, "startDateTime", "endDateTime");
 		}
 	}
 
 	@Property()
-	@PropertyLayout(hidden=Where.REFERENCES_PARENT)
+	@PropertyLayout(hidden = Where.REFERENCES_PARENT)
 	@MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
 	public Volunteer getVolunteer() {

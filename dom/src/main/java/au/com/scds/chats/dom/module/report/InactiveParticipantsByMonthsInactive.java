@@ -22,16 +22,16 @@ import au.com.scds.chats.dom.module.report.view.InactiveParticipant;
 @DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.1")
 public class InactiveParticipantsByMonthsInactive {
 
-	public List<InactiveParticipant> inactiveParticipants(){
+	public List<InactiveParticipant> findMostInactiveParticipants(){
 		return container.allMatches(new QueryDefault<>(InactiveParticipant.class,"findInactiveParticipants"));
 	}
 	
-	public List<InactiveParticipant> participantActivity(@Parameter(optionality=Optionality.MANDATORY) Participant participant){
+	public List<InactiveParticipant> findParticipantActivity(@Parameter(optionality=Optionality.MANDATORY) Participant participant){
 		Person p = participant.getPerson();
 		return container.allMatches(new QueryDefault<>(InactiveParticipant.class,"getParticipantActivity","firstname",p.getFirstname(),"surname",p.getSurname(),"birthdate",p.getBirthdate()));
 	}
 	
-	public List<Participant> choices0ParticipantActivity(){
+	public List<Participant> choices0FindParticipantActivity(){
 		return participantsRepo.listActive();
 	}
 	

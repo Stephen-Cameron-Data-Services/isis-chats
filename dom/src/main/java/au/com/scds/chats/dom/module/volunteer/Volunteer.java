@@ -49,7 +49,8 @@ public class Volunteer extends AbstractDomainEntity implements Notable, Locatabl
 	@Persistent(mappedBy = "allocatedVolunteer")
 	private SortedSet<CalendarDayCallSchedule> callSchedules = new TreeSet<>();
 	@Persistent(mappedBy = "volunteer")
-	private SortedSet<VolunteeredTime> volunteeredTimes = new TreeSet<>();
+	@Order(column="v_idx")
+	private List<VolunteeredTime> volunteeredTimes = new ArrayList<>();
 
 	public TranslatableString title() {
 		return TranslatableString.tr("Volunteer: {fullname}", "fullname", getPerson().getFullname());
@@ -141,11 +142,11 @@ public class Volunteer extends AbstractDomainEntity implements Notable, Locatabl
 			volunteeredTimes.add(time);
 	}
 
-	public SortedSet<VolunteeredTime> getVolunteeredTimes() {
+	public List<VolunteeredTime> getVolunteeredTimes() {
 		return volunteeredTimes;
 	}
 
-	public void setVolunteeredTimes(SortedSet<VolunteeredTime> volunteeredTimes) {
+	public void setVolunteeredTimes(List<VolunteeredTime> volunteeredTimes) {
 		this.volunteeredTimes = volunteeredTimes;
 	}
 	

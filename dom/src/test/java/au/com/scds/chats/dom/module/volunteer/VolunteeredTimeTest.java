@@ -106,8 +106,8 @@ public class VolunteeredTimeTest {
 
 			// then
 			// then
-			assertThat(activity.getVolunteeredTimes().first()).isEqualTo(va);
-			assertThat(volunteer.getVolunteeredTimes().first()).isEqualTo(va);
+			assertThat(activity.getVolunteeredTimes().get(0)).isEqualTo(va);
+			assertThat(volunteer.getVolunteeredTimes().get(0)).isEqualTo(va);
 		}
 
 		@Test
@@ -131,8 +131,8 @@ public class VolunteeredTimeTest {
 			callSchedule.addVolunteeredTime(volunteer, start, end);
 			
 			// then
-			assertThat(callSchedule.getVolunteeredTimes().first()).isEqualTo(vc);
-			assertThat(volunteer.getVolunteeredTimes().first()).isEqualTo(vc);
+			assertThat(callSchedule.getVolunteeredTimes().get(0)).isEqualTo(vc);
+			assertThat(volunteer.getVolunteeredTimes().get(0)).isEqualTo(vc);
 		}
 		
 		@Test

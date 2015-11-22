@@ -158,8 +158,10 @@ public class Participants {
 	@Programmatic
 	public Participation createParticipation(Activity activity, Participant participant) {
 		Participation participation = container.newTransientInstance(Participation.class);
-		//Not needed! participation.setActivity(activity);
+		participation.setActivity(activity);
 		participation.setParticipant(participant);
+		activity.addParticipation(participation);
+		participant.addParticipation(participation);
 		container.persistIfNotAlready(participation);
 		container.flush();
 		return participation;
@@ -167,6 +169,8 @@ public class Participants {
 
 	@Programmatic
 	public void deleteParticipation(Participation participation) {
+		participation.getActivity().removeParticipation(participation);
+		participation.getParticipant().removeParticipation(participation);
 		container.removeIfNotAlready(participation);
 		container.flush();
 	}

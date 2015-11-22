@@ -72,7 +72,8 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 	@Persistent(mappedBy = "activity")
 	protected SortedSet<Participation> participations = new TreeSet<>();
 	@Persistent(mappedBy = "activity")
-	protected SortedSet<VolunteeredTimeForActivity> volunteeredTimes = new TreeSet<>();
+	@Order(column = "a_idx")
+	protected List<VolunteeredTimeForActivity> volunteeredTimes = new ArrayList<>();
 
 	public Activity() {
 	}
@@ -102,7 +103,7 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 
 	@Property(hidden = Where.NOWHERE)
 	@MemberOrder(sequence = "1")
-	@Column(allowsNull = "true", length = 100)
+	@Column(allowsNull = "false")
 	public String getName() {
 		return name;
 	}
@@ -115,7 +116,7 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 	 * Compares based on startDateTime, putting most more recent first.
 	 */
 	public int compareTo(final Activity other) {
-		return ObjectContracts.compare(other, this, "startDateTime");
+		return ObjectContracts.compare(other, this, "startDateTime", "name", "region");
 		/*
 		 * if(other != null) return
 		 * other.getStartDateTime().compareTo(getStartDateTime()); else return
@@ -259,7 +260,7 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 			return getAddress().title();
 	}
 
-	@Property(hidden=Where.ALL_TABLES)
+	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Lat-Long")
 	@MemberOrder(name = "Location", sequence = "3")
 	@NotPersistent
@@ -350,6 +351,13 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 	}
 
 	@Programmatic
+	public void addParticipation(Participation participation) {
+		if (participation == null)
+			return;
+		participations.add(participation);
+	}
+
+	@Programmatic
 	public Participation findParticipation(Participant participant) {
 		for (Participation p : getParticipations()) {
 			if (p.getParticipant().compareTo(participant) == 0)
@@ -372,8 +380,7 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 	@MemberOrder(name = "participations", sequence = "1")
 	public Activity addParticipant(final Participant participant) {
 		if (findParticipation(participant) == null) {
-			Participation p = participantsRepo.createParticipation(this, participant);
-			this.participations.add(p);
+			participantsRepo.createParticipation(this, participant);
 		} else {
 			container.informUser("A Participant (" + participant.getFullName() + ") is already participating in this Activity");
 		}
@@ -396,11 +403,8 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 		if (participant == null)
 			return this;
 		Participation participation = findParticipation(participant);
-		if (participation != null) {
-			participations.remove(participation);
-			container.removeIfNotAlready(participation);
-			container.flush();
-		}
+		if (participation != null)
+			participantsRepo.deleteParticipation(participation);
 		return this;
 	}
 
@@ -411,22 +415,22 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 	public List<Participant> choices0RemoveParticipant() {
 		return getParticipants();
 	}
-	
+
 	@Property()
 	@MemberOrder(sequence = "200")
 	@CollectionLayout(render = RenderType.EAGERLY)
-	public SortedSet<VolunteeredTimeForActivity> getVolunteeredTimes() {
+	public List<VolunteeredTimeForActivity> getVolunteeredTimes() {
 		return volunteeredTimes;
 	}
 
-	public void setVolunteeredTimes(SortedSet<VolunteeredTimeForActivity> volunteeredTimes) {
+	public void setVolunteeredTimes(List<VolunteeredTimeForActivity> volunteeredTimes) {
 		this.volunteeredTimes = volunteeredTimes;
 	}
-	
-	//used by public addVolunteerdTime actions in extending classes
+
+	// used by public addVolunteerdTime actions in extending classes
 	@Programmatic
-	public void addVolunteeredTime(VolunteeredTimeForActivity time){
-		if(time == null)
+	public void addVolunteeredTime(VolunteeredTimeForActivity time) {
+		if (time == null)
 			return;
 		this.volunteeredTimes.add(time);
 	}
@@ -448,4 +452,10 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 
 	@Inject
 	protected ActivityTypes activityTypesRepo;
+
+	public void removeParticipation(Participation participation) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

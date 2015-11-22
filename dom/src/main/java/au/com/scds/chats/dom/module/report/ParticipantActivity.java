@@ -20,10 +20,10 @@ import au.com.scds.chats.dom.module.report.view.InactiveParticipant;
 import au.com.scds.chats.dom.module.report.view.ParticipantActivityByMonth;
 
 @DomainService(nature=NatureOfService.VIEW_MENU_ONLY)
-@DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "30")
+@DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.0")
 public class ParticipantActivity {
 	
-	public List<ParticipantActivityByMonth> inactiveParticipants(){
+	public List<ParticipantActivityByMonth> participantActivityByMonth(){
 		return container.allMatches(new QueryDefault<>(ParticipantActivityByMonth.class,"allParticipantActivityByMonth"));
 	}
 	

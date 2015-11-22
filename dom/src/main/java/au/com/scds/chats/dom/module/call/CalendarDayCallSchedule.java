@@ -1,5 +1,6 @@
 package au.com.scds.chats.dom.module.call;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -7,6 +8,7 @@ import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.Order;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.Queries;
@@ -64,7 +66,8 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	@Persistent(mappedBy = "callSchedule")
 	private SortedSet<ScheduledCall> scheduledCalls = new TreeSet<>();
 	@Persistent(mappedBy = "callSchedule")
-	protected SortedSet<VolunteeredTimeForCalls> volunteeredTimes = new TreeSet<>();
+	@Order(column="cs_idx")
+	protected List<VolunteeredTimeForCalls> volunteeredTimes = new ArrayList<>();
 
 	public CalendarDayCallSchedule() {
 
@@ -138,11 +141,11 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	@Property()
 	@MemberOrder(sequence = "200")
 	@CollectionLayout(render = RenderType.EAGERLY)
-	public SortedSet<VolunteeredTimeForCalls> getVolunteeredTimes() {
+	public List<VolunteeredTimeForCalls> getVolunteeredTimes() {
 		return volunteeredTimes;
 	}
 
-	public void setVolunteeredTimes(SortedSet<VolunteeredTimeForCalls> volunteeredTimes) {
+	public void setVolunteeredTimes(List<VolunteeredTimeForCalls> volunteeredTimes) {
 		this.volunteeredTimes = volunteeredTimes;
 	}
 
@@ -152,6 +155,14 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	public CalendarDayCallSchedule addVolunteeredTime(Volunteer volunteer, @ParameterLayout(named = "Started At") DateTime startDateTime, @ParameterLayout(named = "Finished At") DateTime endDateTime) {
 		VolunteeredTimeForCalls time = volunteersRepo.createVolunteeredTimeForCalls(volunteer, this, startDateTime, endDateTime);
 		return this;
+	}
+	
+	// used by public addVolunteerdTime actions in extending classes
+	@Programmatic
+	public void addVolunteeredTime(VolunteeredTimeForCalls time) {
+		if (time == null)
+			return;
+		volunteeredTimes.add(time);
 	}
 
 	public List<Volunteer> choices0AddVolunteeredTime() {
@@ -166,11 +177,12 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	@Action()
 	@ActionLayout()
 	@MemberOrder(name = "scheduledCalls", sequence = "1")
-	public void addNewCall(@Parameter(optionality = Optionality.MANDATORY) final Participant participant, @Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) throws Exception {
+	public CalendarDayCallSchedule addNewCall(@Parameter(optionality = Optionality.MANDATORY) final Participant participant, @Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) throws Exception {
 		ScheduledCall call = scheduleCall(dateTime.toLocalTime());
 		call.setParticipant(participant);
+		return this;
 	}
-
+	
 	public List<Participant> choices0AddNewCall() {
 		return participantsRepo.listActive();
 	}
@@ -227,14 +239,6 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 			}
 		}
 		return;
-	}
-
-	// used by public addVolunteerdTime actions in extending classes
-	@Programmatic
-	public void addVolunteeredTime(VolunteeredTimeForCalls time) {
-		if (time == null)
-			return;
-		this.volunteeredTimes.add(time);
 	}
 
 	@Override

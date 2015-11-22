@@ -43,7 +43,7 @@ public class Participation extends AbstractDomainEntity implements Comparable<Pa
 	private Date pickupTime;
 	private Long roleId;
 	private String transportNotes;
-	
+
 	public Participation() {
 	}
 
@@ -70,7 +70,7 @@ public class Participation extends AbstractDomainEntity implements Comparable<Pa
 	}
 
 	public void setParticipant(final Participant parent) {
-		// only allow parent to be set once
+		// only allow parent Participant to be set once
 		if (this.participant == null && parent != null)
 			this.participant = parent;
 	}
@@ -94,10 +94,12 @@ public class Participation extends AbstractDomainEntity implements Comparable<Pa
 		return this.activity;
 	}
 
-	public void setActivity(Activity activity) {
-		this.activity = activity;
+	public void setActivity(Activity parent) {
+		// only allow parent Activity to be set once
+		if (this.activity == null && parent != null)
+			this.activity = parent;
 	}
-	
+
 	@Property(hidden = Where.EVERYWHERE)
 	@Column(allowsNull = "true")
 	public TransportType getArrivingTransportType() {
@@ -123,7 +125,7 @@ public class Participation extends AbstractDomainEntity implements Comparable<Pa
 	public List<String> choicesArrivingTransportTypeName() {
 		return transportTypes.allNames();
 	}
-	
+
 	@Property(hidden = Where.EVERYWHERE)
 	@Column(allowsNull = "true")
 	public TransportType getDepartingTransportType() {
@@ -200,11 +202,13 @@ public class Participation extends AbstractDomainEntity implements Comparable<Pa
 
 	@Override
 	public int compareTo(final Participation o) {
-		//TODO needs more 
-		//return ComparisonChain.start().compare(getActivity(), o.getActivity()).compare(getParticipant(), o.getParticipant()).result();
-		return getParticipant().compareTo(o.getParticipant());
+		// TODO needs more
+		return ComparisonChain.start().compare(getActivity(),
+				o.getActivity()).compare(getParticipant(),
+				o.getParticipant()).result();
+		// return getParticipant().compareTo(o.getParticipant());
 	}
-	
+
 	@Inject
 	TransportTypes transportTypes;
 }

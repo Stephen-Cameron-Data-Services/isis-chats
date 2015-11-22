@@ -233,18 +233,17 @@ public class Participant extends AbstractDomainEntity implements Notable, Locata
 		return false;
 	}
 
-
 	@Programmatic
-	public Participation removeParticipation(Activity activity) {
-		for (Participation p : participations) {
-			if (p.getActivity().equals(activity)) {
-				participations.remove(p);
-				return p;
-			}
-		}
-		return null;
+	public void addParticipation(Participation participation) {
+		if(participation == null)
+			return;
+		this.participations.add(participation);		
 	}
-
+	
+	@Programmatic
+	public void removeParticipation(Participation participation) {
+		this.participations.remove(participation);
+	}
 
 	@Programmatic
 	public Participation findParticipation(Activity activity) {
@@ -265,4 +264,8 @@ public class Participant extends AbstractDomainEntity implements Notable, Locata
 	public int compareTo(final Participant o) {
 		return this.getPerson().compareTo(o.getPerson());
 	}
+
+
+
+
 }
