@@ -55,7 +55,10 @@ public class RecurringActivityTest {
 			final ActivityEvent event1 = new ActivityEvent();
 			final ActivityEvent event2 = new ActivityEvent();
 			final ActivityEvent event3 = new ActivityEvent();
-			final DateTime dateTime = new DateTime();
+			final ActivityEvent event4 = new ActivityEvent();
+			//get seed date in the future
+			final DateTime dateTime = (new DateTime()).plusMinutes(1);
+			
 
 			context.checking(new Expectations() {
 				{
@@ -71,6 +74,10 @@ public class RecurringActivityTest {
 					will(returnValue(event3));
 					oneOf(mockContainer).persistIfNotAlready(event3);
 					oneOf(mockContainer).flush();
+					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					will(returnValue(event4));
+					oneOf(mockContainer).persistIfNotAlready(event4);
+					oneOf(mockContainer).flush();
 				}
 			});
 
@@ -82,20 +89,22 @@ public class RecurringActivityTest {
 			obj.addNextScheduledActivity();
 			obj.addNextScheduledActivity();
 			obj.addNextScheduledActivity();
+			obj.addNextScheduledActivity();
 
 			// then
-			assertThat(event1.getStartDateTime()).isLessThan(event2.getStartDateTime());
-			assertThat(event2.getStartDateTime()).isLessThan(event3.getStartDateTime());
+			assertThat(event1.getStartDateTime()).isEqualTo(dateTime);
 			assertThat(event2.getStartDateTime()).isEqualTo(event1.getStartDateTime().plusDays(7));
 			assertThat(event3.getStartDateTime()).isEqualTo(event2.getStartDateTime().plusDays(7));
-			assertThat(obj.getFutureActivities().size()).isEqualTo(3);
+			assertThat(event4.getStartDateTime()).isEqualTo(event3.getStartDateTime().plusDays(7));
+			assertThat(obj.getFutureActivities().size()).isEqualTo(4);
 			assertThat(obj.getCompletedActivities().size()).isEqualTo(0);
-			assertThat(obj.getActivityEvents().first()).isEqualTo(event3);
+			assertThat(obj.getActivityEvents().first()).isEqualTo(event4);
 			assertThat(obj.getActivityEvents().last()).isEqualTo(event1);
 			assertThat(obj.getFutureActivities().get(0)).isEqualTo(event1);
 			assertThat(obj.getFutureActivities().get(1)).isEqualTo(event2);
 			assertThat(obj.getFutureActivities().get(2)).isEqualTo(event3);
-			assertThat(obj.getFutureActivities().get(2).title().toString()).isEqualTo("Activity: Foobar");
+			assertThat(obj.getFutureActivities().get(3)).isEqualTo(event4);			
+			assertThat(obj.getFutureActivities().get(3).title().toString()).isEqualTo("Activity: Foobar");
 		}
 		
 		@Test
@@ -108,6 +117,7 @@ public class RecurringActivityTest {
 			final ActivityEvent event3 = new ActivityEvent();
 			final ActivityEvent event4 = new ActivityEvent();
 			final ActivityEvent event5 = new ActivityEvent();
+			final ActivityEvent event6 = new ActivityEvent();
 			final DateTime dateTime = new DateTime();
 
 			context.checking(new Expectations() {
@@ -132,14 +142,19 @@ public class RecurringActivityTest {
 					will(returnValue(event5));
 					oneOf(mockContainer).persistIfNotAlready(event5);
 					oneOf(mockContainer).flush();
+					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					will(returnValue(event6));
+					oneOf(mockContainer).persistIfNotAlready(event6);
+					oneOf(mockContainer).flush();
 				}
 			});
 
 			// when
 			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo,null,null,null,null);
 			obj.setName("Foobar");
-			obj.setPeriodicity(Periodicity.DAILY);
 			obj.setStartDateTime(dateTime);
+			obj.addNextScheduledActivity();
+			obj.setPeriodicity(Periodicity.DAILY);
 			obj.addNextScheduledActivity();
 			obj.setPeriodicity(Periodicity.WEEKLY);
 			obj.addNextScheduledActivity();
@@ -151,11 +166,12 @@ public class RecurringActivityTest {
 			obj.addNextScheduledActivity();
 
 			// then
-			assertThat(event1.getStartDateTime()).isEqualTo(dateTime.plusDays(1));
-			assertThat(event2.getStartDateTime()).isEqualTo(dateTime.plusDays(1+7));
-			assertThat(event3.getStartDateTime()).isEqualTo(dateTime.plusDays(1+7+14));
-			assertThat(event4.getStartDateTime()).isEqualTo(dateTime.plusDays(1+7+14+28));
-			assertThat(event5.getStartDateTime()).isEqualTo(dateTime.plusDays(1+7+14+28+56));
+			assertThat(event1.getStartDateTime()).isEqualTo(dateTime);
+			assertThat(event2.getStartDateTime()).isEqualTo(dateTime.plusDays(1));
+			assertThat(event3.getStartDateTime()).isEqualTo(dateTime.plusDays(1+7));
+			assertThat(event4.getStartDateTime()).isEqualTo(dateTime.plusDays(1+7+14));
+			assertThat(event5.getStartDateTime()).isEqualTo(dateTime.plusDays(1+7+14+28));
+			assertThat(event6.getStartDateTime()).isEqualTo(dateTime.plusDays(1+7+14+28+56));
 		}
 
 
@@ -164,8 +180,8 @@ public class RecurringActivityTest {
 
 			// given
 			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo,null,null,null,null);
-			final ActivityEvent event1 = new ActivityEvent();
-			final ActivityEvent event2 = new ActivityEvent();
+			final ActivityEvent event1 = new ActivityEvent(mockContainer,participantsRepo);
+			final ActivityEvent event2 = new ActivityEvent(mockContainer,participantsRepo);
 			// create Participant to register for parent RecurringActivity
 			Person person1 = new Person();
 			person1.setFirstname("Joe");
@@ -206,11 +222,10 @@ public class RecurringActivityTest {
 			});
 
 			// when
-			parent.addParticipant(participant1);
 			parent.setStartDateTime(new DateTime());
+			parent.addParticipant(participant1);
 			parent.addNextScheduledActivity();
 			parent.addNextScheduledActivity();
-			event2.participantsRepo = participantsRepo;
 			event2.addParticipant(participant2);
 			
 			//then
@@ -289,13 +304,23 @@ public class RecurringActivityTest {
 			assertThat(event2.getActivityType().getName()).isEqualTo("TEST2");
 			assertThat(event1.getActivityType().getName()).isEqualTo("TEST1");
 
-			//// Location			
-			/*TODOparent.setLocation(new Location("TEST1"));
-			parent.getActivityEvents().first().setLocation(new Location("TEST2"));
-			assertThat(parent.getLocation().getName()).isEqualTo("TEST1");
-			assertThat(event2.getLocation().getName()).isEqualTo("TEST2");
-			assertThat(event1.getLocation().getName()).isEqualTo("TEST1");
-			*/
+			//// Location
+			LocationLookupService locationLookupService = new LocationLookupService();
+			Locations locations = new Locations(mockContainer,locationLookupService);
+			Address address = new Address(locations);
+			address.setStreet1("66 Corinth Street");
+			address.setSuburb("Howrah");
+			address.setPostcode("7018");
+			address.updateGeocodedLocation();
+			parent.setAddress(address);
+			assertThat(parent.getLocation()).isNotNull();
+			assertThat(parent.getLocation().getLatitude()).isEqualTo(-42.886763);
+			assertThat(parent.getLocation().getLongitude()).isEqualTo(147.408854);
+			assertThat(parent.getLocation().getLatitude()).isEqualTo(event1.getLocation().getLatitude());
+			assertThat(parent.getLocation().getLongitude()).isEqualTo(event1.getLocation().getLongitude());
+			assertThat(parent.getLocation().getLatitude()).isEqualTo(event2.getLocation().getLatitude());
+			assertThat(parent.getLocation().getLongitude()).isEqualTo(event2.getLocation().getLongitude());
+			
 			//// CostForParticipant			
 			parent.setCostForParticipant("10.00");
 			parent.getActivityEvents().first().setCostForParticipant("20.00");

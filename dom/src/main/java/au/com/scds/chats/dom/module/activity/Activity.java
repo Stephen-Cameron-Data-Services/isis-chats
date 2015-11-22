@@ -117,11 +117,12 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 	 */
 	public int compareTo(final Activity other) {
 		return ObjectContracts.compare(other, this, "startDateTime", "name", "region");
-		/*
-		 * if(other != null) return
-		 * other.getStartDateTime().compareTo(getStartDateTime()); else return
-		 * 0;
-		 */
+
+		// if (other != null)
+		// return other.getStartDateTime().compareTo(getStartDateTime());
+		// else
+		// return 0;
+
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
@@ -176,20 +177,6 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 	public void setApproximateEndDateTime(final DateTime approximateEndDateTime) {
 		this.approximateEndDateTime = approximateEndDateTime;
 	}
-
-	/*
-	 * @Property(hidden = Where.ALL_TABLES)
-	 * 
-	 * @PropertyLayout(named = "Copied From Activity Id")
-	 * 
-	 * @MemberOrder(sequence = "7")
-	 * 
-	 * @Column(allowsNull = "true") public Long getCopiedFromActivityId() {
-	 * return copiedFromActivityId; }
-	 * 
-	 * public void setCopiedFromActivityId(final Long copiedFromActivityId) {
-	 * this.copiedFromActivityId = copiedFromActivityId; }
-	 */
 
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Cost For Participant")
@@ -365,6 +352,12 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 		}
 		return null;
 	}
+	
+	@Programmatic
+	public void removeParticipation(Participation participation) {
+		if(participations.contains(participation))
+			participations.remove(participation);
+	}
 
 	@Programmatic
 	public List<Participant> getParticipants() {
@@ -453,9 +446,6 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 	@Inject
 	protected ActivityTypes activityTypesRepo;
 
-	public void removeParticipation(Participation participation) {
-		// TODO Auto-generated method stub
 
-	}
 
 }

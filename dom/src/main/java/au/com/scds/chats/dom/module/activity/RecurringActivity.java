@@ -17,6 +17,7 @@ import au.com.scds.chats.dom.module.general.Locations;
 import au.com.scds.chats.dom.module.general.names.ActivityTypes;
 import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.dom.module.volunteer.Volunteers;
+
 /**
  * 
  * An <code>Activity</code> that is used to schedule individual
@@ -40,7 +41,7 @@ public class RecurringActivity extends Activity implements Notable {
 	private Periodicity periodicity = Periodicity.WEEKLY;
 	@Persistent(mappedBy = "parent")
 	private SortedSet<ActivityEvent> childActivities = new TreeSet<ActivityEvent>();
-	
+
 	public RecurringActivity() {
 		super();
 	}
@@ -76,8 +77,8 @@ public class RecurringActivity extends Activity implements Notable {
 	}
 
 	/**
-	 * ActivityEvents are displayed as two separate lists:
-	 * Future and Completed, see below.
+	 * ActivityEvents are displayed as two separate lists: Future and Completed,
+	 * see below.
 	 */
 	@CollectionLayout(hidden = Where.EVERYWHERE)
 	SortedSet<ActivityEvent> getActivityEvents() {
@@ -121,25 +122,26 @@ public class RecurringActivity extends Activity implements Notable {
 	@ActionLayout(named = "Add Next")
 	@MemberOrder(name = "futureActivities", sequence = "1")
 	public RecurringActivity addNextScheduledActivity() {
-		DateTime origin = null;
-		//find last event from which to schedule next
 		if (childActivities.size() == 0) {
 			if (getStartDateTime() == null) {
 				container.warnUser("Please set 'Start date time' for this Recurring Activity (as starting time from which to schedule more activity events)");
 			} else {
-				origin = getStartDateTime();
+				ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
+				obj.setParentActivity(this);
+				obj.setName(getName());
+				obj.setStartDateTime(getStartDateTime());
+				childActivities.add(obj);
+				container.persistIfNotAlready(obj);
+				container.flush();
 			}
 		} else {
-			//first should be last in chronological order
-			origin = childActivities.first().getStartDateTime();
-		}
-		// proceed if valid origin
-		if (origin != null) {
+			// find last event from which to schedule next
+			// first should be last in chronological order
+			DateTime origin = childActivities.first().getStartDateTime();
 			ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
-			//TODO why is this still needed?
 			obj.setParentActivity(this);
 			obj.setName(getName());
-			switch(getPeriodicity()){
+			switch (getPeriodicity()) {
 			case DAILY:
 				obj.setStartDateTime(origin.plusDays(1));
 				break;

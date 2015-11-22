@@ -8,6 +8,7 @@ import javax.jdo.annotations.*;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.services.clock.ClockService;
+import org.apache.isis.applib.util.ObjectContracts;
 import org.incode.module.note.dom.api.notable.Notable;
 import org.joda.time.DateTime;
 import org.joda.time.DateTime;
@@ -215,7 +216,7 @@ public class ScheduledCall extends AbstractDomainEntity implements Comparable<Sc
 	@Action()
 	@ActionLayout(named = "Change End Date Time")
 	@MemberOrder(name = "isCompleted", sequence = "3")
-	public ScheduledCall ChangeEndTime(@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "New End Time") final DateTime endDateTime) {
+	public ScheduledCall changeEndTime(@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "New End Time") final DateTime endDateTime) {
 
 		if (endDateTime == null) {
 			try {
@@ -230,8 +231,9 @@ public class ScheduledCall extends AbstractDomainEntity implements Comparable<Sc
 
 	@Override
 	public int compareTo(ScheduledCall other) {
-		// TODO compare by date then allocated volunteer then participant
-		return this.getScheduledDateTime().compareTo(other.getScheduledDateTime());
+		return ObjectContracts.compare(this, other, "scheduledDateTime", "participant");
+		// return
+		// this.getScheduledDateTime().compareTo(other.getScheduledDateTime());
 	}
 
 	@Inject()

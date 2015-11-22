@@ -193,7 +193,6 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 			return this;
 		for (Participation p : super.getParticipations()) {
 			if (p.getParticipant().equals(participant)) {
-				participations.remove(p);
 				participantsRepo.deleteParticipation(p);
 				break;
 			}
@@ -256,8 +255,8 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	@Property()
 	@PropertyLayout(named = "Location Name")
 	@MemberOrder(name = "Location", sequence = "1")
-	@NotPersistent
 	@Override
+	@NotPersistent
 	public String getAddressLocationName() {
 		if (getParentActivity() != null && super.getAddressLocationName() == null) {
 			return getParentActivity().getAddressLocationName();
@@ -268,12 +267,25 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	@Property()
 	@PropertyLayout(named = "Address")
 	@MemberOrder(name = "Location", sequence = "2")
+	@Override
 	@NotPersistent
 	public String getFullAddress() {
 		if (getParentActivity() != null && super.getFullAddress() == null) {
 			return getParentActivity().getFullAddress();
 		}
 		return super.getFullAddress();
+	}
+	
+	@Property(hidden = Where.ALL_TABLES)
+	@PropertyLayout(named = "Lat-Long")
+	@MemberOrder(name = "Location", sequence = "3")
+	@Override
+	@NotPersistent
+	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
+		if (getParentActivity() != null && super.getLocation() == null) {
+			return getParentActivity().getLocation();
+		}
+		return super.getLocation();
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
