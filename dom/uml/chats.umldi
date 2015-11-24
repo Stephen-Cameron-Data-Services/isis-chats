@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<diagrams:Diagrams xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.topcased.org/DI/1.0" xmlns:diagrams="http://www.topcased.org/Diagrams/1.0" xmi:id="_98gkgJHCEeW0F-jLTTndDA" activeDiagram="_98hLkJHCEeW0F-jLTTndDA">
+  <model href="chats.uml#_qb8akM37EdqwVrslYOdUDA"/>
+  <diagrams xmi:id="_98hLkJHCEeW0F-jLTTndDA" position="0,0" size="100,100" name="chats" viewport="0,0">
+    <property xmi:id="_99L58JHCEeW0F-jLTTndDA" key="pageFormatName" value="A4"/>
+    <property xmi:id="_99L58ZHCEeW0F-jLTTndDA" key="diagramWidth" value="840"/>
+    <property xmi:id="_99L58pHCEeW0F-jLTTndDA" key="diagramHeight" value="1188"/>
+    <property xmi:id="_99L585HCEeW0F-jLTTndDA" key="pageMarginName" value="Small Margin"/>
+    <property xmi:id="_99L59JHCEeW0F-jLTTndDA" key="diagramTopMargin" value="20"/>
+    <property xmi:id="_99L59ZHCEeW0F-jLTTndDA" key="diagramBottomMargin" value="20"/>
+    <property xmi:id="_99L59pHCEeW0F-jLTTndDA" key="diagramLeftMargin" value="20"/>
+    <property xmi:id="_99L595HCEeW0F-jLTTndDA" key="diagramRightMargin" value="20"/>
+    <property xmi:id="_99L5-JHCEeW0F-jLTTndDA" key="orientation" value="portrait"/>
+    <semanticModel xsi:type="di:EMFSemanticModelBridge" xmi:id="_98hLkZHCEeW0F-jLTTndDA" presentation="org.topcased.modeler.uml.classdiagram">
+      <element href="chats.uml#_qb8akM37EdqwVrslYOdUDA"/>
+    </semanticModel>
+  </diagrams>
+</diagrams:Diagrams>

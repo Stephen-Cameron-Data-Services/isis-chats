@@ -12,12 +12,16 @@ import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 
+import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
+import org.apache.isis.applib.annotation.InvokeOn;
 import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.ParameterLayout;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
@@ -26,6 +30,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 
 import au.com.scds.chats.dom.AbstractDomainEntity;
+import au.com.scds.chats.dom.module.attendance.Attended;
 
 @DomainObject(objectType = "VTIME")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.NEVER)
@@ -71,7 +76,7 @@ public class VolunteeredTime extends AbstractDomainEntity implements Comparable<
 		this.volunteer = volunteer;
 	}
 
-	@Property()
+	@Property(editing=Editing.DISABLED)
 	@PropertyLayout(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "10")
 	@Column(allowsNull = "false")
@@ -83,7 +88,7 @@ public class VolunteeredTime extends AbstractDomainEntity implements Comparable<
 		this.startDateTime = startDateTime;
 	}
 
-	@Property()
+	@Property(editing=Editing.DISABLED)
 	@PropertyLayout(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "11")
 	@Column(allowsNull = "false")
@@ -93,6 +98,38 @@ public class VolunteeredTime extends AbstractDomainEntity implements Comparable<
 
 	public void setEndDateTime(DateTime endDateTime) {
 		this.endDateTime = endDateTime;
+	}
+	
+	@Action()
+	@MemberOrder(name="enddatetime",sequence="1")
+	public VolunteeredTime updateDatesAndTimes(@ParameterLayout(named="Start Date Time") DateTime start, @ParameterLayout(named="End Date Time") DateTime end){
+		if (start != null && end != null) {
+			if (end.isBefore(start)) {
+				container.warnUser("end date & time is earlier than start date & time");
+				return this;
+			}
+			if (end.getDayOfWeek() != start.getDayOfWeek()) {
+				container.warnUser("end date and start date are different days of the week");
+				return this;
+			}
+			Period period = new Period(start.toLocalDateTime(), end.toLocalDateTime());
+			Float hours = ((float) period.toStandardMinutes().getMinutes()) / 60;
+			if (hours > 12.0) {
+				container.warnUser("end date & time and start date & time are not in the same 12 hour period");
+				return this;
+			}
+			setStartDateTime(start);
+			setEndDateTime(end);
+		}
+		return this;
+	}
+	
+	public DateTime default0UpdateDatesAndTimes(){
+		return getStartDateTime();
+	}
+	
+	public DateTime default1UpdateDatesAndTimes(){
+		return getEndDateTime();
 	}
 
 	@Property()

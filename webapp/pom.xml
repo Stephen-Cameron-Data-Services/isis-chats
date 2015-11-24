@@ -78,7 +78,7 @@
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <warName>simpleapp</warName>
+                    <warName>chats-webapp</warName>
                     <archive>
                         <manifest>
                             <addClasspath>false</addClasspath>
@@ -137,6 +137,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>chats-app</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>chats-reports</artifactId>
         </dependency>
         
         <!-- other isis components -->

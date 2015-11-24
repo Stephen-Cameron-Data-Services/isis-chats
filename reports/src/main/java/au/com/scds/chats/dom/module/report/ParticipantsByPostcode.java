@@ -17,7 +17,7 @@ import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
 @DomainService(nature=NatureOfService.VIEW_MENU_ONLY)
-@DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "30")
+@DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.8")
 public class ParticipantsByPostcode {
 
 	/*public List<InactiveParticipant> inactiveParticipants(){

@@ -19,6 +19,7 @@ import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
+import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
@@ -175,7 +176,7 @@ public class Attended extends AbstractDomainEntity implements Comparable<Attende
 
 	@Action(invokeOn = InvokeOn.OBJECT_AND_COLLECTION)
 	@MemberOrder(name = "enddatetime", sequence = "23.1")
-	public Attended updateDatesAndTimes(@Parameter(optionality = Optionality.MANDATORY) DateTime start, @Parameter(optionality = Optionality.MANDATORY) DateTime end) {
+	public Attended updateDatesAndTimes(@ParameterLayout(named="Start Date Time") DateTime start, @ParameterLayout(named="End Date Time") DateTime end) {
 		boolean isColl = actionInvocationContext.getInvokedOn().isCollection();
 		if (start != null && end != null) {
 			if (end.isBefore(start)) {
