@@ -132,7 +132,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	
 	@Action()
 	@ActionLayout()
-	@MemberOrder(name = "volunteeredtime", sequence = "1")
+	@MemberOrder(name = "volunteeredTimes", sequence = "1")
 	public ActivityEvent addVolunteeredTime(Volunteer volunteer, @ParameterLayout(named="Started At") DateTime startDateTime, @ParameterLayout(named="Finished At") DateTime endDateTime) {
 		VolunteeredTimeForActivity time = volunteersRepo.createVolunteeredTimeForActivity(volunteer, this, startDateTime, endDateTime);
 		return this;

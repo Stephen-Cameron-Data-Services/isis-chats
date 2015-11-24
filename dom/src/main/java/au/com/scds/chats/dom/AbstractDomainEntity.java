@@ -91,7 +91,7 @@ public abstract class AbstractDomainEntity implements Timestampable, WithApplica
 	@Property(editing = Editing.DISABLED, hidden = Where.EVERYWHERE)
 	// @PropertyLayout(named = "Region")
 	// @MemberOrder(name = "Admin", sequence = "5")
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "false")
 	public Region getRegion() {
 		return region;
 	}
@@ -120,6 +120,8 @@ public abstract class AbstractDomainEntity implements Timestampable, WithApplica
 				if (user != null && user.getTenancy() != null) {
 					String path = user.getTenancy().getPath();
 					String name = path.substring(path.lastIndexOf("/") + 1);
+					if(name.isEmpty())
+						name="ALL";
 					setRegion(regions.regionForName(name));
 				}
 			}
@@ -137,14 +139,13 @@ public abstract class AbstractDomainEntity implements Timestampable, WithApplica
 
 	@Programmatic
 	public ApplicationTenancy getApplicationTenancy() {
-
-		if (getRegion() == null)
-			return null;
+		ApplicationTenancy tenancy = new ApplicationTenancy();
+		if (getRegion() == null || getRegion().equals("ALL"))
+			tenancy.setPath("/");
 		else {
-			ApplicationTenancy tenancy = new ApplicationTenancy();
 			tenancy.setPath("/" + getRegion().getName());
-			return tenancy;
 		}
+		return tenancy;
 	}
 
 	@Inject

@@ -7,6 +7,10 @@ import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.PrimaryKey;
 
+import org.apache.isis.applib.util.ObjectContracts;
+
+import au.com.scds.chats.dom.module.activity.Activity;
+
 //import au.com.scds.chats.dom.AbstractNamedChatsDomainEntity;
 
 /**
@@ -25,7 +29,7 @@ import javax.jdo.annotations.PrimaryKey;
 //TODO maybe this could be a map to prevent unnecessary database queries
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public abstract class ClassificationValue {
+public abstract class ClassificationValue  {
 	
 	public ClassificationValue(){}
 	
