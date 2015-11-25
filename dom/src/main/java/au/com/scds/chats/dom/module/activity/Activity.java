@@ -35,7 +35,7 @@ import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.services.i18n.TranslatableString;
 import org.apache.isis.applib.util.ObjectContracts;
 
-import au.com.scds.chats.dom.AbstractDomainEntity;
+import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.RegexValidation;
 import au.com.scds.chats.dom.module.general.Address;
 import au.com.scds.chats.dom.module.general.Location;
@@ -54,8 +54,9 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 @PersistenceCapable(table = "activity", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Unique(name = "Activity_UNQ", members = { "name", "startDateTime", "region" })
-@Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "class", value = "ACTIVITY")
-public abstract class Activity extends AbstractDomainEntity implements Locatable, Comparable<Activity> {
+ @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column =
+ "classifier", value = "ACTIVITY")
+public abstract class Activity extends AbstractChatsDomainEntity implements Locatable, Comparable<Activity> {
 
 	private Long oldId; // id copied from old system
 	protected String name;
@@ -352,10 +353,10 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 		}
 		return null;
 	}
-	
+
 	@Programmatic
 	public void removeParticipation(Participation participation) {
-		if(participations.contains(participation))
+		if (participations.contains(participation))
 			participations.remove(participation);
 	}
 
@@ -445,7 +446,5 @@ public abstract class Activity extends AbstractDomainEntity implements Locatable
 
 	@Inject
 	protected ActivityTypes activityTypesRepo;
-
-
 
 }

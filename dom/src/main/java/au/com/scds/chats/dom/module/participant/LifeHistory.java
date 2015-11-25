@@ -20,13 +20,13 @@ import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 
-import au.com.scds.chats.dom.AbstractDomainEntity;
+import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 
 @DomainObject(objectType = "LIFE-HISTORY")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-public class LifeHistory extends AbstractDomainEntity {
+public class LifeHistory extends AbstractChatsDomainEntity {
 
 	private Participant parent;
 	private String lifeStory;

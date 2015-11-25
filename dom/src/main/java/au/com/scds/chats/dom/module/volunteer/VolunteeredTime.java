@@ -29,7 +29,7 @@ import org.apache.isis.applib.util.ObjectContracts;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
-import au.com.scds.chats.dom.AbstractDomainEntity;
+import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.module.attendance.Attended;
 
 @DomainObject(objectType = "VTIME")
@@ -38,7 +38,7 @@ import au.com.scds.chats.dom.module.attendance.Attended;
 @PersistenceCapable(table = "volunteered_time", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "role", value = "GENERAL")
-public class VolunteeredTime extends AbstractDomainEntity implements Comparable<VolunteeredTime> {
+public class VolunteeredTime extends AbstractChatsDomainEntity implements Comparable<VolunteeredTime> {
 
 	private Volunteer volunteer;
 	private DateTime startDateTime;

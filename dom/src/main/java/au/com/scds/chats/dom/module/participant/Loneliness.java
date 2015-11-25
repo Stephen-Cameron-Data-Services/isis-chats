@@ -16,13 +16,13 @@ import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 
-import au.com.scds.chats.dom.AbstractDomainEntity;
+import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 
 @DomainObject(objectType = "LONELINESS")
 @DomainObjectLayout()
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General"}, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-public class Loneliness extends AbstractDomainEntity {
+public class Loneliness extends AbstractChatsDomainEntity {
 
 	private Participant parent;
 	private String content;

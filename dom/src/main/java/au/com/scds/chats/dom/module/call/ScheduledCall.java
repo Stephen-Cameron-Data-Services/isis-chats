@@ -15,7 +15,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
 
-import au.com.scds.chats.dom.AbstractDomainEntity;
+import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 //import au.com.scds.chats.dom.module.note.NoteLinkable;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.volunteer.Volunteer;
@@ -41,7 +41,7 @@ import au.com.scds.chats.dom.module.volunteer.Volunteer;
 @DomainObject(objectType = "SCHEDULED_CALL")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
-public class ScheduledCall extends AbstractDomainEntity implements Comparable<ScheduledCall> {
+public class ScheduledCall extends AbstractChatsDomainEntity implements Comparable<ScheduledCall> {
 
 	private Participant participant;
 	private Volunteer volunteer;

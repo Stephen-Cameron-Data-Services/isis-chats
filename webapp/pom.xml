@@ -139,10 +139,6 @@
             <artifactId>chats-app</artifactId>
         </dependency>
         
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>chats-reports</artifactId>
-        </dependency>
         
         <!-- other isis components -->
         <dependency>

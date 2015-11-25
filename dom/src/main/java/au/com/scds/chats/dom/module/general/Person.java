@@ -22,7 +22,7 @@ import org.isisaddons.wicket.gmap3.cpt.service.LocationLookupService;
 
 import org.joda.time.LocalDate;
 
-import au.com.scds.chats.dom.AbstractDomainEntity;
+import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.RegexValidation;
 import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.names.ContactType;
@@ -39,7 +39,7 @@ import au.com.scds.chats.dom.module.general.names.Salutations;
 @DomainObject(objectType = "PERSON")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = "General", middle = { "Contact Details", "Admin" })
-public class Person extends AbstractDomainEntity implements Locatable, Comparable<Person> {
+public class Person extends AbstractChatsDomainEntity implements Locatable, Comparable<Person> {
 
 	private Long oldId;
 	private Salutation salutation;

@@ -19,13 +19,13 @@ import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.joda.time.LocalDate;
 
-import au.com.scds.chats.dom.AbstractDomainEntity;
+import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 
 @DomainObject(objectType = "SOCIAL-FACTORS")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General", "Involvement", "Friends and Relatives" }, middle = { "Limitations", "Driving", "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-public class SocialFactors extends AbstractDomainEntity {
+public class SocialFactors extends AbstractChatsDomainEntity {
 
 	private Participant parent;
 	private String limitingHealthIssues;

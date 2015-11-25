@@ -29,7 +29,7 @@ import org.incode.module.note.dom.api.notable.Notable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 
-import au.com.scds.chats.dom.AbstractDomainEntity;
+import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 //import au.com.scds.chats.dom.module.note.NoteLinkable;
 import au.com.scds.chats.dom.module.activity.Activity;
 import au.com.scds.chats.dom.module.general.Person;
@@ -41,7 +41,7 @@ import au.com.scds.chats.dom.module.general.Status;
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Queries({ @Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE status == :status"),
 		@Query(name = "findParticipantsBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE person.surname.indexOf(:surname) >= 0"), })
-public class Participant extends AbstractDomainEntity implements Notable, Locatable, Comparable<Participant> {
+public class Participant extends AbstractChatsDomainEntity implements Notable, Locatable, Comparable<Participant> {
 
 	private Person person;
 	private Status status = Status.ACTIVE;

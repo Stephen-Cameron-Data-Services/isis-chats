@@ -22,7 +22,7 @@ import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 
-import au.com.scds.chats.dom.AbstractDomainEntity;
+import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.module.activity.Activity;
 import au.com.scds.chats.dom.module.general.names.TransportType;
 import au.com.scds.chats.dom.module.general.names.TransportType;
@@ -32,7 +32,7 @@ import au.com.scds.chats.dom.module.general.names.TransportTypes;
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-public class Participation extends AbstractDomainEntity implements Comparable<Participation> {
+public class Participation extends AbstractChatsDomainEntity implements Comparable<Participation> {
 
 	private Participant participant;
 	private Activity activity;

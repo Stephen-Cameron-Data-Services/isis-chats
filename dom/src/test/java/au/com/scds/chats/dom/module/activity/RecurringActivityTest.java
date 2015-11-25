@@ -92,7 +92,7 @@ public class RecurringActivityTest {
 			obj.addNextScheduledActivity();
 
 			// then
-			assertThat(event1.getStartDateTime()).isEqualTo(dateTime);
+			assertThat(event1.getStartDateTime()).isEqualTo(dateTime.plusSeconds(1));
 			assertThat(event2.getStartDateTime()).isEqualTo(event1.getStartDateTime().plusDays(7));
 			assertThat(event3.getStartDateTime()).isEqualTo(event2.getStartDateTime().plusDays(7));
 			assertThat(event4.getStartDateTime()).isEqualTo(event3.getStartDateTime().plusDays(7));
@@ -166,12 +166,13 @@ public class RecurringActivityTest {
 			obj.addNextScheduledActivity();
 
 			// then
-			assertThat(event1.getStartDateTime()).isEqualTo(dateTime);
-			assertThat(event2.getStartDateTime()).isEqualTo(dateTime.plusDays(1));
-			assertThat(event3.getStartDateTime()).isEqualTo(dateTime.plusDays(1+7));
-			assertThat(event4.getStartDateTime()).isEqualTo(dateTime.plusDays(1+7+14));
-			assertThat(event5.getStartDateTime()).isEqualTo(dateTime.plusDays(1+7+14+28));
-			assertThat(event6.getStartDateTime()).isEqualTo(dateTime.plusDays(1+7+14+28+56));
+			DateTime first = dateTime.plusSeconds(1);
+			assertThat(event1.getStartDateTime()).isEqualTo(first);
+			assertThat(event2.getStartDateTime()).isEqualTo(first.plusDays(1));
+			assertThat(event3.getStartDateTime()).isEqualTo(first.plusDays(1+7));
+			assertThat(event4.getStartDateTime()).isEqualTo(first.plusDays(1+7+14));
+			assertThat(event5.getStartDateTime()).isEqualTo(first.plusDays(1+7+14+28));
+			assertThat(event6.getStartDateTime()).isEqualTo(first.plusDays(1+7+14+28+56));
 		}
 
 

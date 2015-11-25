@@ -32,7 +32,7 @@ import au.com.scds.chats.dom.module.general.names.Regions;
  */
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public abstract class AbstractDomainEntity implements Timestampable, WithApplicationTenancy {
+public abstract class AbstractChatsDomainEntity implements Timestampable, WithApplicationTenancy {
 
 	private String createdBy;
 	private DateTime createdOn;
@@ -120,11 +120,14 @@ public abstract class AbstractDomainEntity implements Timestampable, WithApplica
 				if (user != null && user.getTenancy() != null) {
 					String path = user.getTenancy().getPath();
 					String name = path.substring(path.lastIndexOf("/") + 1);
-					if(name.isEmpty())
-						name="ALL";
+					if (name.isEmpty())
+						name = "GLOBAL";
 					setRegion(regions.regionForName(name));
-				}
+				}else
+					setRegion(regions.regionForName("GLOBAL")); //TODO temp fix
 			}
+			else
+				setRegion(regions.regionForName("GLOBAL")); //TODO temp fix
 		} else
 			setLastModifiedBy(updatedBy);
 	}
@@ -140,7 +143,7 @@ public abstract class AbstractDomainEntity implements Timestampable, WithApplica
 	@Programmatic
 	public ApplicationTenancy getApplicationTenancy() {
 		ApplicationTenancy tenancy = new ApplicationTenancy();
-		if (getRegion() == null || getRegion().equals("ALL"))
+		if (getRegion() == null || getRegion().equals("GLOBAL"))
 			tenancy.setPath("/");
 		else {
 			tenancy.setPath("/" + getRegion().getName());

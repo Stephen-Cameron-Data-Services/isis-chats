@@ -27,7 +27,7 @@ import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 import org.joda.time.DateTime;
 
-import au.com.scds.chats.dom.AbstractDomainEntity;
+import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.module.activity.Activity;
 import au.com.scds.chats.dom.module.call.CalendarDayCallSchedule;
 import au.com.scds.chats.dom.module.call.CallSchedules;
@@ -42,7 +42,7 @@ import au.com.scds.chats.dom.module.participant.Participation;
 		@Query(name = "findVolunteersBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.Volunteer " + "WHERE person.surname.indexOf(:surname) >= 0"), })
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-public class Volunteer extends AbstractDomainEntity implements Notable, Locatable {
+public class Volunteer extends AbstractChatsDomainEntity implements Notable, Locatable {
 
 	private Person person;
 	private Status status = Status.ACTIVE;
