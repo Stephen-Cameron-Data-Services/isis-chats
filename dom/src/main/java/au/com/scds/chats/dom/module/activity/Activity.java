@@ -28,6 +28,8 @@ import java.util.TreeSet;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import javax.inject.Inject;
 import org.apache.isis.applib.annotation.*;
@@ -54,8 +56,8 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 @PersistenceCapable(table = "activity", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Unique(name = "Activity_UNQ", members = { "name", "startDateTime", "region" })
- @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column =
- "classifier", value = "ACTIVITY")
+@Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column =
+		"classifier", value = "ACTIVITY")
 public abstract class Activity extends AbstractChatsDomainEntity implements Locatable, Comparable<Activity> {
 
 	private Long oldId; // id copied from old system
@@ -76,6 +78,8 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	@Order(column = "a_idx")
 	protected List<VolunteeredTimeForActivity> volunteeredTimes = new ArrayList<>();
 
+	private static DateTimeFormatter titleFormatter = DateTimeFormat.forPattern("dd-MMM-yyyy");
+
 	public Activity() {
 	}
 
@@ -89,7 +93,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	}
 
 	public String title() {
-		return "Activity: " + getName();
+		return getName() + " - " + titleFormatter.print(getStartDateTime());
 	}
 
 	@Programmatic
@@ -117,7 +121,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	 * Compares based on startDateTime, putting most more recent first.
 	 */
 	public int compareTo(final Activity other) {
-		return ObjectContracts.compare(other, this, "startDateTime", "name", "region");
+		return ObjectContracts.compare(other, this, "name", "startDateTime", "region");
 
 		// if (other != null)
 		// return other.getStartDateTime().compareTo(getStartDateTime());
@@ -410,14 +414,11 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		return getParticipants();
 	}
 
-	@Property()
-	@MemberOrder(sequence = "200")
-	@CollectionLayout(render = RenderType.EAGERLY)
-	public List<VolunteeredTimeForActivity> getVolunteeredTimes() {
+	protected List<VolunteeredTimeForActivity> getVolunteeredTimes() {
 		return volunteeredTimes;
 	}
 
-	public void setVolunteeredTimes(List<VolunteeredTimeForActivity> volunteeredTimes) {
+	protected void setVolunteeredTimes(List<VolunteeredTimeForActivity> volunteeredTimes) {
 		this.volunteeredTimes = volunteeredTimes;
 	}
 

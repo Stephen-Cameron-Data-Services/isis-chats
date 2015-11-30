@@ -130,6 +130,13 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		this.attendances = attendances;
 	}
 	
+	@Property()
+	@MemberOrder(sequence = "200")
+	@CollectionLayout(render = RenderType.EAGERLY)
+	public List<VolunteeredTimeForActivity> getVolunteeredTimes() {
+		return super.getVolunteeredTimes();
+	}
+	
 	@Action()
 	@ActionLayout()
 	@MemberOrder(name = "volunteeredTimes", sequence = "1")

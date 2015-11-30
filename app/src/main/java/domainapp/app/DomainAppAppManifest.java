@@ -27,6 +27,8 @@ import java.util.Map;
 import org.apache.isis.applib.AppManifest;
 import org.apache.isis.applib.fixturescripts.FixtureScript;
 
+import com.google.common.collect.ImmutableMap;
+
 import au.com.scds.chats.dom.DomainAppDomainModule;
 import au.com.scds.chats.fixture.DomainAppFixtureModule;
 
@@ -101,9 +103,8 @@ public class DomainAppAppManifest implements AppManifest {
      */
     @Override
     public Map<String, String> getConfigurationProperties() {
-    	//HashMap<String, String> config = new HashMap<>();
-    	//config.put("isis.services.eventbus.allowLateRegistration","true");
-        return null;
+       return ImmutableMap.of(
+                "isis.reflector.facets.include", "org.isisaddons.module.security.facets.TenantedAuthorizationFacetFactory");
     }
 
 }

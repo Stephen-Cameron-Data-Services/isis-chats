@@ -66,7 +66,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 	}
 
 	@Action()
-	@MemberOrder(name = "callSchedules", sequence = "1")
+	@MemberOrder(name = "callschedules", sequence = "1")
 	public Volunteer addScheduledCall(final Participant participant, final DateTime dateTime) {
 		try {
 			ScheduledCall call = schedulesRepo.createScheduledCall(this, participant, dateTime);

@@ -50,7 +50,6 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	private String surname;
 	private String preferredname;
 	private LocalDate birthdate;
-	private Region region;
 	private Address streetAddress;
 	private Address mailAddress;
 	private String homePhoneNumber;

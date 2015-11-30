@@ -16,6 +16,7 @@ import org.joda.time.DateTime;
 import au.com.scds.chats.dom.module.general.Locations;
 import au.com.scds.chats.dom.module.general.names.ActivityTypes;
 import au.com.scds.chats.dom.module.participant.Participants;
+import au.com.scds.chats.dom.module.volunteer.VolunteeredTimeForActivity;
 import au.com.scds.chats.dom.module.volunteer.Volunteers;
 
 /**
@@ -68,13 +69,13 @@ public class RecurringActivity extends Activity implements Notable {
 		this.periodicity = periodicity;
 	}
 
-	@Property()
+	/*@Property()
 	@PropertyLayout()
 	@MemberOrder(name = "Scheduling", sequence = "2")
 	@Override
 	public DateTime getStartDateTime() {
-		return this.startDateTime;
-	}
+		return super.getStartDateTime();
+	}*/
 
 	/**
 	 * ActivityEvents are displayed as two separate lists: Future and Completed,

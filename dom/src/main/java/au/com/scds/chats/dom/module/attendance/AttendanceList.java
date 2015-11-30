@@ -49,7 +49,7 @@ public class AttendanceList {
 	}
 
 	public String title() {
-		return "Attendance for Activity: " + getParentActivity().getName();
+		return "Attendance: " + getParentActivity().title();
 	}
 
 	@Property()

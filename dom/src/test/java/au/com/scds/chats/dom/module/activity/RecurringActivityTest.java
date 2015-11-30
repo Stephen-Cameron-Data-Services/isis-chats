@@ -104,7 +104,7 @@ public class RecurringActivityTest {
 			assertThat(obj.getFutureActivities().get(1)).isEqualTo(event2);
 			assertThat(obj.getFutureActivities().get(2)).isEqualTo(event3);
 			assertThat(obj.getFutureActivities().get(3)).isEqualTo(event4);			
-			assertThat(obj.getFutureActivities().get(3).title().toString()).isEqualTo("Activity: Foobar");
+			assertThat(obj.getFutureActivities().get(3).title().toString()).startsWith("Foobar");
 		}
 		
 		@Test

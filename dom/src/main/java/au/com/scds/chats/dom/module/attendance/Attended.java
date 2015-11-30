@@ -93,8 +93,8 @@ public class Attended extends AbstractChatsDomainEntity implements Comparable<At
 		return getParticipant().getFullName();
 	}
 
-	@Property(editing = Editing.AS_CONFIGURED)
-	@PropertyLayout(describedAs = "When the Participant joined the Activity", hidden = Where.ALL_TABLES)
+	@Property()
+	@PropertyLayout(describedAs = "When the Participant joined the Activity")
 	@MemberOrder(sequence = "3.1")
 	@Column(allowsNull = "true")
 	public DateTime getStartDateTime() {
@@ -105,8 +105,8 @@ public class Attended extends AbstractChatsDomainEntity implements Comparable<At
 		this.startDateTime = startDateTime;
 	}
 
-	@Property(editing = Editing.AS_CONFIGURED)
-	@PropertyLayout(describedAs = "When the Participant left the Activity", hidden = Where.ALL_TABLES)
+	@Property()
+	@PropertyLayout(describedAs = "When the Participant left the Activity")
 	@MemberOrder(sequence = "4.1")
 	@Column(allowsNull = "true")
 	public DateTime getEndDateTime() {

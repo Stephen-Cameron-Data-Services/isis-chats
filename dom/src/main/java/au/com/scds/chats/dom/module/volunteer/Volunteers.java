@@ -1,6 +1,5 @@
 package au.com.scds.chats.dom.module.volunteer;
 
-
 import java.util.List;
 
 import javax.inject.Inject;
@@ -12,6 +11,7 @@ import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
@@ -109,8 +109,8 @@ public class Volunteers {
 	}
 
 	@Programmatic
-	public VolunteeredTime createVolunteeredTime(Volunteer volunteer, DateTime startDateTime, DateTime endDateTime){
-		if(volunteer == null || startDateTime== null || endDateTime==null)
+	public VolunteeredTime createVolunteeredTime(Volunteer volunteer, DateTime startDateTime, DateTime endDateTime) {
+		if (volunteer == null || startDateTime == null || endDateTime == null)
 			return null;
 		VolunteeredTime time = container.newTransientInstance(VolunteeredTime.class);
 		time.setStartDateTime(startDateTime);
@@ -121,30 +121,30 @@ public class Volunteers {
 		container.flush();
 		return time;
 	}
-	
+
 	@Programmatic
-	public VolunteeredTimeForActivity createVolunteeredTimeForActivity(Volunteer volunteer, Activity activity, DateTime startDateTime, DateTime endDateTime){
-		if(volunteer == null || activity == null || startDateTime== null || endDateTime==null)
+	public VolunteeredTimeForActivity createVolunteeredTimeForActivity(Volunteer volunteer, Activity activity, DateTime startDateTime, DateTime endDateTime) {
+		if (volunteer == null || activity == null || startDateTime == null || endDateTime == null)
 			return null;
 		VolunteeredTimeForActivity time = container.newTransientInstance(VolunteeredTimeForActivity.class);
 		time.setStartDateTime(startDateTime);
 		time.setEndDateTime(endDateTime);
-		time.setVolunteer(volunteer); 
+		time.setVolunteer(volunteer);
 		volunteer.addVolunteeredTime(time);
 		activity.addVolunteeredTime(time);
 		container.persistIfNotAlready(time);
 		container.flush();
 		return time;
 	}
-	
+
 	@Programmatic
-	public VolunteeredTimeForCalls createVolunteeredTimeForCalls(Volunteer volunteer, CalendarDayCallSchedule callSchedule, DateTime startDateTime, DateTime endDateTime){
-		if(volunteer == null || callSchedule == null || startDateTime== null || endDateTime==null)
+	public VolunteeredTimeForCalls createVolunteeredTimeForCalls(Volunteer volunteer, CalendarDayCallSchedule callSchedule, DateTime startDateTime, DateTime endDateTime) {
+		if (volunteer == null || callSchedule == null || startDateTime == null || endDateTime == null)
 			return null;
 		VolunteeredTimeForCalls time = container.newTransientInstance(VolunteeredTimeForCalls.class);
 		time.setStartDateTime(startDateTime);
 		time.setEndDateTime(endDateTime);
-		time.setVolunteer(volunteer); 
+		time.setVolunteer(volunteer);
 		volunteer.addVolunteeredTime(time);
 		callSchedule.addVolunteeredTime(time);
 		container.persistIfNotAlready(time);

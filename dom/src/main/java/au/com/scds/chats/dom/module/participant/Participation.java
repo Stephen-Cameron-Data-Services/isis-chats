@@ -9,6 +9,7 @@ import javax.jdo.annotations.DatastoreIdentity;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Unique;
 
 import com.google.common.collect.ComparisonChain;
 
@@ -21,6 +22,7 @@ import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
+import org.apache.isis.applib.util.ObjectContracts;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.module.activity.Activity;
@@ -32,6 +34,7 @@ import au.com.scds.chats.dom.module.general.names.TransportTypes;
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
+@Unique(name = "Participation_UNQ", members = { "participant", "activity" })
 public class Participation extends AbstractChatsDomainEntity implements Comparable<Participation> {
 
 	private Participant participant;
@@ -203,6 +206,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	@Override
 	public int compareTo(final Participation o) {
 		// TODO needs more
+		//return ObjectContracts.compare(o, this,"activity","participant");
+				
 		return ComparisonChain.start().compare(getActivity(),
 				o.getActivity()).compare(getParticipant(),
 				o.getParticipant()).result();

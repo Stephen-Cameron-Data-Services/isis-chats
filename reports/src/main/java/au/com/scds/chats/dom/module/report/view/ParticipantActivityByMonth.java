@@ -31,7 +31,6 @@ import org.joda.time.LocalDate;
 						+ " {this.birthDate}, "
 						+ " {this.region}, "
 						+ " {this.activityName}, "
-						+ " {this.activityStartDateTime}, "
 						+ " {this.yearMonth}, "
 						+ " {this.hoursAttended} "
 						+ ") AS "
@@ -41,9 +40,8 @@ import org.joda.time.LocalDate;
 						+ "	person.birthdate, "
 						+ "	person.region_name AS region, "
 						+ "	activity.name AS activityname, "
-						+ "	activity.startdatetime AS activitystartdatetime, "
 						+ "	EXTRACT(YEAR_MONTH FROM attended.startdatetime) as yearmonth, "
-						+ "	ROUND(SUM(TIMESTAMPDIFF(MINUTE,attended.enddatetime,attended.startdatetime))/60,1) as hoursattended "
+						+ "	ROUND(SUM(TIMESTAMPDIFF(MINUTE,attended.startdatetime,attended.enddatetime))/60,1) as hoursattended "
 						+ "FROM "
 						+ "	attended, "
 						+ "	participant, "
@@ -69,7 +67,6 @@ public class ParticipantActivityByMonth {
 	public LocalDate birthDate;
 	public String region;
 	public String activityName;
-	public DateTime activityStartDateTime;
 	public Integer yearMonth;
 	public Float hoursAttended;
 
@@ -121,16 +118,6 @@ public class ParticipantActivityByMonth {
 
 	public void setActivityName(String activityName) {
 		this.activityName = activityName;
-	}
-	
-	@Property()
-	@MemberOrder(sequence = "6")
-	public DateTime getActivityStartDateTime() {
-		return activityStartDateTime;
-	}
-
-	public void setActivityStartDateTime(DateTime activityStartDateTime) {
-		this.activityStartDateTime = activityStartDateTime;
 	}
 
 	@Property()

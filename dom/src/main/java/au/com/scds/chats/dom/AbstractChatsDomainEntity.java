@@ -119,17 +119,29 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 				ApplicationUser user = userRepository.findByUsername(updatedBy);
 				if (user != null && user.getTenancy() != null) {
 					String path = user.getTenancy().getPath();
-					String name = path.substring(path.lastIndexOf("/") + 1);
-					if (name.isEmpty())
+					String name = null;
+					if (path.equals("/")) {
 						name = "GLOBAL";
-					setRegion(regions.regionForName(name));
-				}else
-					setRegion(regions.regionForName("GLOBAL")); //TODO temp fix
+					} else if (path.matches("^\\/[_A-Za-z0-9-]+\\/$")) {
+						name = path.substring(1, path.length() - 1);
+					} else {
+						System.out.println("Error: user tenancy path not correct (" + path + ")");
+						return;
+					}
+					Region region = regions.regionForName(name);
+					if (region != null)
+						setRegion(regions.regionForName(name));
+					else
+						System.out.println("Error: user's region named " + name + " not found");
+				} else {
+					System.out.println("Error: user tenancy not found");
+				}
+			} else {
+				System.out.println("Error: userRepository is null");
 			}
-			else
-				setRegion(regions.regionForName("GLOBAL")); //TODO temp fix
-		} else
+		} else {
 			setLastModifiedBy(updatedBy);
+		}
 	}
 
 	@Programmatic
@@ -142,12 +154,14 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 
 	@Programmatic
 	public ApplicationTenancy getApplicationTenancy() {
+		//System.out.println(">>> getApplicationTenancy");
 		ApplicationTenancy tenancy = new ApplicationTenancy();
-		if (getRegion() == null || getRegion().equals("GLOBAL"))
+		if (getRegion().getName().equals("GLOBAL"))
 			tenancy.setPath("/");
 		else {
-			tenancy.setPath("/" + getRegion().getName());
+			tenancy.setPath("/" + getRegion().getName() + "/");
 		}
+		//System.out.println(">>> tenancy.path=" + tenancy.getPath());
 		return tenancy;
 	}
 
