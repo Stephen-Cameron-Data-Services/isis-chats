@@ -190,10 +190,22 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		}
 		return temp;
 	}
+	
+	/** 
+	 * Participants & Participations lists are combined list from child and parent Activity, but only want to
+	 * remove Participants from child list.
+	 * 
+	 * Called by Participants#deletedParticipation()
+	 */
+	@Override
+	public void removeParticipation(Participation participation) {
+		if (super.getParticipations().contains(participation))
+			super.getParticipations().remove(participation);
+	}
 
 	/**
-	 * Participants & Participations lists are combined list, but only want to
-	 * remove Participants from local list.
+	 * Participants & Participations lists are combined list from child and parent Activity, but only want to
+	 * remove Participants from child list.
 	 */
 	@Override
 	public ActivityEvent removeParticipant(final Participant participant) {

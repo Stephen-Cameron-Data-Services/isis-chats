@@ -185,7 +185,7 @@ public class ScheduledCall extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	void setCallSchedule(final CalendarDayCallSchedule callSchedule) {
-		if (this.callSchedule == null && callSchedule != null)
+		if (getCallSchedule() == null && callSchedule != null)
 			this.callSchedule = callSchedule;
 	}
 
@@ -217,7 +217,6 @@ public class ScheduledCall extends AbstractChatsDomainEntity implements Comparab
 	@ActionLayout(named = "Change End Date Time")
 	@MemberOrder(name = "isCompleted", sequence = "3")
 	public ScheduledCall changeEndTime(@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "New End Time") final DateTime endDateTime) {
-
 		if (endDateTime == null) {
 			try {
 				setIsCompleted2(false);

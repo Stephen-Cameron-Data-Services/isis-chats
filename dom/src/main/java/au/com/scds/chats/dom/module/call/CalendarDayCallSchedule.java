@@ -162,7 +162,7 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	public void addVolunteeredTime(VolunteeredTimeForCalls time) {
 		if (time == null)
 			return;
-		volunteeredTimes.add(time);
+		getVolunteeredTimes().add(time);
 	}
 
 	public List<Volunteer> choices0AddVolunteeredTime() {
@@ -205,8 +205,8 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 	@Programmatic
 	public void addCall(ScheduledCall call) throws Exception {
 		setTotalCalls(getTotalCalls() + 1);
-		scheduledCalls.add(call);
-		if (getTotalCalls() != scheduledCalls.size())
+		getScheduledCalls().add(call);
+		if (getTotalCalls() != getScheduledCalls().size())
 			throw new Exception("Error: total call count and scheduledCalls.size() are different");
 	}
 
@@ -216,7 +216,7 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 			return null;
 		if (isComplete == null)
 			return null;
-		if (scheduledCalls.contains(call)) {
+		if (getScheduledCalls().contains(call)) {
 			if (!call.getIsCompleted() && isComplete) {
 				call.setIsCompletedViaSchedule(this, true);
 				setCompletedCalls(getCompletedCalls() + 1);
@@ -230,12 +230,12 @@ public class CalendarDayCallSchedule implements CalendarEventable, Comparable<Ca
 
 	@Programmatic
 	public synchronized void removeCall(final ScheduledCall call) {
-		if (call != null && scheduledCalls.contains(call)) {
+		if (call != null && getScheduledCalls().contains(call)) {
 			if (call.getIsCompleted()) {
 				container.informUser("call is completed and cannot be removed");
 			} else {
 				setTotalCalls(getTotalCalls() - 1);
-				scheduledCalls.remove(call);
+				getScheduledCalls().remove(call);
 			}
 		}
 		return;

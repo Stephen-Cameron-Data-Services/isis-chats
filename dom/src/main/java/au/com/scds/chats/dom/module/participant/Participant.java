@@ -213,19 +213,6 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 		return participations;
 	}
 
-	/*
-	 * public void setParticipations(final SortedSet<Participation>
-	 * participations) { this.participations = participations; }
-	 * 
-	 * @Programmatic public Participation addParticipation(Activity activity) {
-	 * if (!hasParticipation(activity)) { Participation participation =
-	 * container.newTransientInstance(Participation.class);
-	 * participation.setParticipant(this); participation.setActivity(activity);
-	 * container.persistIfNotAlready(participation);
-	 * participations.add(participation); return participation; } else { return
-	 * null; } }
-	 */
-
 	@Programmatic
 	public boolean hasParticipation(Activity activity) {
 		for (Participation p : participations) {
@@ -240,7 +227,7 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public void addParticipation(Participation participation) {
 		if (participation == null)
 			return;
-		participations.add(participation);
+		getParticipations().add(participation);
 	}
 
 	@Programmatic
@@ -250,7 +237,7 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 
 	@Programmatic
 	public Participation findParticipation(Activity activity) {
-		for (Participation p : participations) {
+		for (Participation p : getParticipations()) {
 			if (p.getActivity().equals(activity)) {
 				return p;
 			}

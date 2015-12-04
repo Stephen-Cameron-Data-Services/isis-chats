@@ -241,10 +241,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	@MemberOrder(name = "Location", sequence = "1")
 	@NotPersistent
 	public String getAddressLocationName() {
-		if (getAddress() == null)
-			return null;
-		else
-			return getAddress().getName();
+		return (getAddress() != null) ? getAddress().getName() : null; 
 	}
 
 	@Property()
@@ -252,10 +249,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	@MemberOrder(name = "Location", sequence = "2")
 	@NotPersistent
 	public String getFullAddress() {
-		if (getAddress() == null)
-			return null;
-		else
-			return getAddress().title();
+		return (getAddress() != null) ? getAddress().title() : null;
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
@@ -263,10 +257,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	@MemberOrder(name = "Location", sequence = "3")
 	@NotPersistent
 	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
-		if (getAddress() != null)
-			return getAddress().getLocation();
-		else
-			return null;
+		return (getAddress() != null) ? getAddress().getLocation() : null;
 	}
 
 	@Action()
@@ -366,8 +357,8 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Programmatic
 	public void removeParticipation(Participation participation) {
-		if (participations.contains(participation))
-			participations.remove(participation);
+		if (getParticipations().contains(participation))
+			getParticipations().remove(participation);
 	}
 
 	@Programmatic
@@ -433,7 +424,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	public void addVolunteeredTime(VolunteeredTimeForActivity time) {
 		if (time == null)
 			return;
-		this.volunteeredTimes.add(time);
+		getVolunteeredTimes().add(time);
 	}
 
 	@Inject

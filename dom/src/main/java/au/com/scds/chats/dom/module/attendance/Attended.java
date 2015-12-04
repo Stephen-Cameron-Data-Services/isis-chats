@@ -152,10 +152,10 @@ public class Attended extends AbstractChatsDomainEntity implements Comparable<At
 
 	@Action(invokeOn = InvokeOn.OBJECT_ONLY)
 	@MemberOrder(sequence = "20.1")
-	public Attended Delete() {
+	public AttendanceList Delete() {
 		AttendanceList attendances = getActivity().getAttendances();
 		attendances.removeAttended(this);
-		return this;
+		return attendances;
 	}
 
 	@Action(invokeOn = InvokeOn.OBJECT_AND_COLLECTION)

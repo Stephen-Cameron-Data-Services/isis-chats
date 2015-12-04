@@ -43,9 +43,9 @@ public class AttendanceLists {
 			return null;
 		AttendanceList attendanceList = container.newTransientInstance(AttendanceList.class);
 		attendanceList.setParentActivity(activityEvent);
+		activityEvent.setAttendances(attendanceList);
 		container.persistIfNotAlready(attendanceList);
 		container.flush();
-		activityEvent.setAttendances(attendanceList);
 		return attendanceList;
 	}
 

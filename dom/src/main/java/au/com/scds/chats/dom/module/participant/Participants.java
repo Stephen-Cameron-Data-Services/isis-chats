@@ -229,7 +229,4 @@ public class Participants {
 
 	@Inject
 	private IsisJdoSupport isisJdoSupport;
-
-
-
 }

@@ -88,7 +88,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 	}
 
 	public void setPerson(final Person person) {
-		if (this.person == null)
+		if (this.person == null && person != null)
 			this.person = person;
 	}
 
@@ -148,7 +148,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 	@Programmatic
 	public void addVolunteeredTime(VolunteeredTime time) {
 		if (time != null)
-			volunteeredTimes.add(time);
+			 getVolunteeredTimes().add(time);
 	}
 
 	@Inject
