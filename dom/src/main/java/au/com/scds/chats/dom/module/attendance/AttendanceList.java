@@ -38,7 +38,7 @@ import au.com.scds.chats.dom.module.participant.Participation;
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 public class AttendanceList {
 
-	private ActivityEvent activity;
+	private ActivityEvent parentActivity;
 	public List<Attended> attendeds = new ArrayList<>();
 	
 	public AttendanceList(){}
@@ -58,11 +58,11 @@ public class AttendanceList {
 	@MemberOrder(sequence = "1")
 	@Column(allowsNull = "true")
 	public ActivityEvent getParentActivity() {
-		return activity;
+		return parentActivity;
 	}
 
 	void setParentActivity(final ActivityEvent activity) {
-		this.activity = activity;
+		this.parentActivity = activity;
 	}
 
 	@Property()
@@ -81,11 +81,11 @@ public class AttendanceList {
 	@ActionLayout(named = "Add All Participants")
 	@MemberOrder(name = "attendeds", sequence = "1")
 	public AttendanceList addAllAttendeds() {
-		for (Participation participation : activity.getParticipations()) {
+		for (Participation participation : getParentActivity().getParticipations()) {
 			Participant participant = participation.getParticipant();
 			if (!hasParticipant(participant)) {
-				Attended attended = attendanceListsRepo.createAttended(activity, participant, true);
-				attendeds.add(attended);
+				Attended attended = attendanceListsRepo.createAttended(parentActivity, participant, true);
+				getAttendeds().add(attended);
 			}
 		}
 		return this;
@@ -104,8 +104,8 @@ public class AttendanceList {
 	@ActionLayout(named = "Add")
 	@MemberOrder(name = "attendeds", sequence = "2")
 	public AttendanceList addAttended(@Parameter(optionality = Optionality.MANDATORY) Participant participant) {
-		Attended attended = attendanceListsRepo.createAttended(activity, participant, true);
-		attendeds.add(attended);
+		Attended attended = attendanceListsRepo.createAttended(parentActivity, participant, true);
+		getAttendeds().add(attended);
 		return this;
 	}
 
@@ -113,7 +113,7 @@ public class AttendanceList {
 		List<Participant> list = participantsRepo.listActive();
 		List<Participant> temp = new ArrayList<>(list);
 		for (Participant participant : list) {
-			for (Attended attendee : attendeds) {
+			for (Attended attendee : getAttendeds()) {
 				if (attendee.getParticipant().equals(participant))
 					temp.remove(participant);
 			}
@@ -140,9 +140,9 @@ public class AttendanceList {
 
 	@Programmatic
 	public void removeAttended(Attended attended) {
-		if (attended != null && attendeds.contains(attended)) {
+		if (attended != null && getAttendeds().contains(attended)) {
 			System.out.println("Removing Attended");
-			attendeds.remove(attended);
+			getAttendeds().remove(attended);
 			attendanceListsRepo.deleteAttended(attended);
 		}
 

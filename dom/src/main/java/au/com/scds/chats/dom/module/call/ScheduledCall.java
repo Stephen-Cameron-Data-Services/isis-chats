@@ -44,7 +44,7 @@ import au.com.scds.chats.dom.module.volunteer.Volunteer;
 public class ScheduledCall extends AbstractChatsDomainEntity implements Comparable<ScheduledCall> {
 
 	private Participant participant;
-	private Volunteer volunteer;
+	private Volunteer allocatedVolunteer;
 	private CalendarDayCallSchedule callSchedule;
 	private DateTime scheduledDateTime;
 	private Boolean isCompleted = false;
@@ -81,11 +81,11 @@ public class ScheduledCall extends AbstractChatsDomainEntity implements Comparab
 	@MemberOrder(sequence = "2")
 	@Column(allowsNull = "true")
 	public Volunteer getAllocatedVolunteer() {
-		return volunteer;
+		return allocatedVolunteer;
 	}
 
 	void setAllocatedVolunteer(final Volunteer volunteer) {
-		this.volunteer = volunteer;
+		this.allocatedVolunteer = volunteer;
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Value Set By Scheduler")

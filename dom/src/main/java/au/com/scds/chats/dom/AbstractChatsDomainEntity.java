@@ -105,10 +105,7 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 	@MemberOrder(name = "Admin", sequence = "100")
 	@NotPersistent
 	public String getRegionName() {
-		if (getRegion() == null)
-			return null;
-		else
-			return getRegion().getName();
+		return (getRegion() != null) ? getRegion().getName() : null;
 	}
 
 	@Programmatic

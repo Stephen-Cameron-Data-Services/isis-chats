@@ -139,7 +139,7 @@ public class RecurringActivity extends Activity implements Notable {
 		} else {
 			// find last event from which to schedule next
 			// first should be last in chronological order
-			DateTime origin = childActivities.first().getStartDateTime();
+			DateTime origin = getChildActivities().first().getStartDateTime();
 			ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 			obj.setParentActivity(this);
 			obj.setName(getName());

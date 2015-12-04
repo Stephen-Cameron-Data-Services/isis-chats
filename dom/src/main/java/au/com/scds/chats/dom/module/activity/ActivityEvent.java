@@ -56,8 +56,8 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
  * displayed from its parent, other that the DateTime of the specific
  * ActivityEvent.
  * 
- * However this parent/child relationship also provides the chance for the child to
- * override the properties of its parent.
+ * However this parent/child relationship also provides the chance for the child
+ * to override the properties of its parent.
  * 
  * For example, we can add <code>Participations</code> to the parent and these
  * will be those of its children too, unless we override by adding an equivalent
@@ -74,8 +74,8 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "EVENT")
 @Queries({ @Query(name = "find", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent "),
-	@Query(name = "findActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE name.indexOf(:name) >= 0 "),
-	@Query(name = "findActivitiesWithoutAttendanceList", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE attendances == null "),
+		@Query(name = "findActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE name.indexOf(:name) >= 0 "),
+		@Query(name = "findActivitiesWithoutAttendanceList", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE attendances == null "),
 		@Query(name = "findAllFutureActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE startDateTime > :currentDateTime "),
 		@Query(name = "findAllPastActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE startDateTime <= :currentDateTime ") })
 // @Unique(name = "Activity_name_UNQ", members = { "name"
@@ -83,7 +83,7 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 public class ActivityEvent extends Activity implements Notable, CalendarEventable {
 
 	protected RecurringActivity parentActivity;
-	@Persistent(mappedBy="activity")
+	@Persistent(mappedBy = "parentActivity")
 	protected AttendanceList attendances;
 
 	public ActivityEvent() {
@@ -92,12 +92,12 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	// for mock testing
 	public ActivityEvent(DomainObjectContainer container, Participants participants) {
-		super(container,participants,null,null,null,null);
+		super(container, participants, null, null, null, null);
 	}
-	
+
 	// for mock testing
 	public ActivityEvent(DomainObjectContainer container, Volunteers volunteers) {
-		super(container,null,volunteers,null,null,null);
+		super(container, null, volunteers, null, null, null);
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
@@ -110,8 +110,8 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	public void setParentActivity(final RecurringActivity activity) {
 		this.parentActivity = activity;
 	}
-	
-	public boolean hideParentActivity(){
+
+	public boolean hideParentActivity() {
 		return getParentActivity() == null;
 	}
 
@@ -126,27 +126,27 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	// used by AttendanceLists.createAttendanceList(activity)
 	public void setAttendances(final AttendanceList attendances) {
 		// can only be set once
-		if (this.attendances != null)
+		if (getAttendances() != null || attendances == null)
 			return;
 		this.attendances = attendances;
 	}
-	
+
 	@Property()
 	@MemberOrder(sequence = "200")
 	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<VolunteeredTimeForActivity> getVolunteeredTimes() {
 		return super.getVolunteeredTimes();
 	}
-	
+
 	@Action()
 	@ActionLayout()
 	@MemberOrder(name = "volunteeredTimes", sequence = "1")
-	public ActivityEvent addVolunteeredTime(Volunteer volunteer, @ParameterLayout(named="Started At") DateTime startDateTime, @ParameterLayout(named="Finished At") DateTime endDateTime) {
+	public ActivityEvent addVolunteeredTime(Volunteer volunteer, @ParameterLayout(named = "Started At") DateTime startDateTime, @ParameterLayout(named = "Finished At") DateTime endDateTime) {
 		VolunteeredTimeForActivity time = volunteersRepo.createVolunteeredTimeForActivity(volunteer, this, startDateTime, endDateTime);
 		return this;
 	}
-	
-	public List<Volunteer> choices0AddVolunteeredTime(){
+
+	public List<Volunteer> choices0AddVolunteeredTime() {
 		return volunteersRepo.listActive();
 	}
 
@@ -283,7 +283,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		}
 		return super.getFullAddress();
 	}
-	
+
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Lat-Long")
 	@MemberOrder(name = "Location", sequence = "3")
