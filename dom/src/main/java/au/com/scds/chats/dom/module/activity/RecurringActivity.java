@@ -40,7 +40,7 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 public class RecurringActivity extends Activity implements Notable {
 
 	private Periodicity periodicity = Periodicity.WEEKLY;
-	@Persistent(mappedBy = "parent")
+	@Persistent(mappedBy = "parentActivity")
 	private SortedSet<ActivityEvent> childActivities = new TreeSet<ActivityEvent>();
 
 	public RecurringActivity() {
@@ -82,11 +82,11 @@ public class RecurringActivity extends Activity implements Notable {
 	 * see below.
 	 */
 	@CollectionLayout(hidden = Where.EVERYWHERE)
-	SortedSet<ActivityEvent> getActivityEvents() {
+	SortedSet<ActivityEvent> getChildActivities() {
 		return childActivities;
 	}
 
-	void setActivityEvents(final SortedSet<ActivityEvent> activityEvents) {
+	void setChildActivities(final SortedSet<ActivityEvent> activityEvents) {
 		this.childActivities = activityEvents;
 	}
 
@@ -98,7 +98,7 @@ public class RecurringActivity extends Activity implements Notable {
 	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<ActivityEvent> getFutureActivities() {
 		ArrayList<ActivityEvent> temp = new ArrayList<>();
-		for (ActivityEvent event : getActivityEvents()) {
+		for (ActivityEvent event : getChildActivities()) {
 			if (event.getStartDateTime().isAfterNow()) {
 				temp.add(event);
 			}
@@ -111,7 +111,7 @@ public class RecurringActivity extends Activity implements Notable {
 	@CollectionLayout(render = RenderType.LAZILY)
 	public List<ActivityEvent> getCompletedActivities() {
 		ArrayList<ActivityEvent> temp = new ArrayList<>();
-		for (ActivityEvent event : getActivityEvents()) {
+		for (ActivityEvent event : getChildActivities()) {
 			if (event.getStartDateTime().isBeforeNow()) {
 				temp.add(event);
 			}
@@ -123,7 +123,7 @@ public class RecurringActivity extends Activity implements Notable {
 	@ActionLayout(named = "Add Next")
 	@MemberOrder(name = "futureActivities", sequence = "1")
 	public RecurringActivity addNextScheduledActivity() {
-		if (childActivities.size() == 0) {
+		if (getChildActivities().size() == 0) {
 			if (getStartDateTime() == null) {
 				container.warnUser("Please set 'Start date time' for this Recurring Activity (as starting time from which to schedule more activity events)");
 			} else {
@@ -132,7 +132,7 @@ public class RecurringActivity extends Activity implements Notable {
 				obj.setName(getName());
 				//set time one second ahead for comparison inequality
 				obj.setStartDateTime(getStartDateTime().plusSeconds(1));
-				childActivities.add(obj);
+				getChildActivities().add(obj);
 				container.persistIfNotAlready(obj);
 				container.flush();
 			}
@@ -160,7 +160,7 @@ public class RecurringActivity extends Activity implements Notable {
 				obj.setStartDateTime(origin.plusDays(56));
 				break;
 			}
-			childActivities.add(obj);
+			getChildActivities().add(obj);
 			container.persistIfNotAlready(obj);
 			container.flush();
 		}

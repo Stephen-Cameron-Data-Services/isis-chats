@@ -9,7 +9,7 @@ import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.services.clock.ClockService;
 import org.apache.isis.applib.util.ObjectContracts;
-import org.incode.module.note.dom.api.notable.Notable;
+//import org.incode.module.note.dom.api.notable.Notable;
 import org.joda.time.DateTime;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;

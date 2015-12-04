@@ -21,6 +21,7 @@ package au.com.scds.chats.dom.module.participant;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.inject.Inject;
 import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.annotation.*;
@@ -39,23 +40,29 @@ import au.com.scds.chats.dom.module.general.Status;
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-@Queries({ @Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE status == :status"),
+@Queries({
+		@Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE status == :status"),
 		@Query(name = "findParticipantsBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE person.surname.indexOf(:surname) >= 0"), })
-public class Participant extends AbstractChatsDomainEntity implements Notable, Locatable, Comparable<Participant> {
+public class Participant extends AbstractChatsDomainEntity implements Locatable, Comparable<Participant> {
 
 	private Person person;
 	private Status status = Status.ACTIVE;
+	@Persistent(mappedBy = "participant")
 	private LifeHistory lifeHistory;
+	@Persistent(mappedBy = "participant")
 	private SocialFactors socialFactors;
+	@Persistent(mappedBy = "participant")
 	private Loneliness loneliness;
 	@Persistent(mappedBy = "participant")
+	private ParticipantNotes notes;
+	@Persistent(mappedBy = "participant")
 	protected SortedSet<Participation> participations = new TreeSet<Participation>();
-	
-	public Participant(){
+
+	public Participant() {
 		super();
 	}
-	
-	//use for testing only
+
+	// use for testing only
 	public Participant(Person person) {
 		super();
 		setPerson(person);
@@ -67,7 +74,7 @@ public class Participant extends AbstractChatsDomainEntity implements Notable, L
 
 	@Property(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "1")
-	@Column(allowsNull="false")
+	@Column(allowsNull = "false")
 	public Person getPerson() {
 		return person;
 	}
@@ -76,38 +83,38 @@ public class Participant extends AbstractChatsDomainEntity implements Notable, L
 		this.person = person;
 	}
 
-	@Property(hidden = Where.OBJECT_FORMS,editing=Editing.DISABLED, editingDisabledReason="Displayed from Person record")
+	@Property(hidden = Where.OBJECT_FORMS, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
 	@MemberOrder(sequence = "1.1")
 	public String getFullName() {
 		return getPerson().getFullname();
 	}
 
-	@Property(editing=Editing.DISABLED, editingDisabledReason="Displayed from Person record")
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
 	@MemberOrder(sequence = "2")
 	public String getHomePhoneNumber() {
 		return getPerson().getHomePhoneNumber();
 	}
 
-	@Property(editing=Editing.DISABLED, editingDisabledReason="Displayed from Person record")
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
 	@MemberOrder(sequence = "3")
 	public String getMobilePhoneNumber() {
 		return getPerson().getMobilePhoneNumber();
 	}
 
-	@Property(hidden = Where.PARENTED_TABLES, editing=Editing.DISABLED, editingDisabledReason="Displayed from Person record")
+	@Property(hidden = Where.PARENTED_TABLES, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
 	@MemberOrder(sequence = "4")
 	public String getStreetAddress() {
 		return getPerson().getFullStreetAddress();
 	}
 
-	@Property(hidden = Where.PARENTED_TABLES, editing=Editing.DISABLED, editingDisabledReason="Displayed from Person record")
+	@Property(hidden = Where.PARENTED_TABLES, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
 	@PropertyLayout()
 	@MemberOrder(sequence = "5")
 	public String getMailAddress() {
 		return getPerson().getFullMailAddress();
 	}
 
-	@Property(hidden = Where.PARENTED_TABLES, editing=Editing.DISABLED, editingDisabledReason="Displayed from Person record")
+	@Property(hidden = Where.PARENTED_TABLES, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
 	@MemberOrder(sequence = "6")
 	public String getEMailAddress() {
 		return getPerson().getEmailAddress();
@@ -130,21 +137,15 @@ public class Participant extends AbstractChatsDomainEntity implements Notable, L
 	}
 
 	public void setLifeHistory(final LifeHistory lifeHistory) {
-		// only set life history once
-		if (this.lifeHistory == null && lifeHistory != null) {
-			this.lifeHistory = lifeHistory;
-			this.lifeHistory.setParentParticipant(this);
-			container.persistIfNotAlready(lifeHistory);
-		}
+		this.lifeHistory = lifeHistory;
 	}
 
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
 	@ActionLayout(named = "Life History")
 	@MemberOrder(sequence = "10")
 	public LifeHistory updateLifeHistory() {
-		if (getLifeHistory() == null) {
-			setLifeHistory(container.newTransientInstance(LifeHistory.class));
-		}
+		if (getLifeHistory() == null)
+			participantsRepo.createLifeHistory(this);
 		return getLifeHistory();
 	}
 
@@ -155,21 +156,15 @@ public class Participant extends AbstractChatsDomainEntity implements Notable, L
 	}
 
 	public void setSocialFactors(final SocialFactors socialFactors) {
-		// only set social factors once
-		if (this.socialFactors == null && socialFactors != null) {
-			this.socialFactors = socialFactors;
-			this.socialFactors.setParentParticipant(this);
-			container.persistIfNotAlready(socialFactors);
-		}
+		this.socialFactors = socialFactors;
 	}
 
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
 	@ActionLayout(named = "Social Factors")
 	@MemberOrder(sequence = "11")
 	public SocialFactors updateSocialFactors() {
-		if (getSocialFactors() == null) {
-			setSocialFactors(container.newTransientInstance(SocialFactors.class));
-		}
+		if (getSocialFactors() == null)
+			participantsRepo.createSocialFactors(this);
 		return getSocialFactors();
 	}
 
@@ -180,24 +175,37 @@ public class Participant extends AbstractChatsDomainEntity implements Notable, L
 	}
 
 	public void setLoneliness(final Loneliness loneliness) {
-		// only set loneliness once
-		if (this.loneliness == null && loneliness != null) {
-			this.loneliness = loneliness;
-			this.loneliness.setParentParticipant(this);
-			container.persistIfNotAlready(loneliness);
-		}
+		this.loneliness = loneliness;
 	}
 
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
 	@ActionLayout(named = "Loneliness")
 	@MemberOrder(sequence = "12")
 	public Loneliness updateLoneliness() {
-		if (getLoneliness() == null) {
-			setLoneliness(container.newTransientInstance(Loneliness.class));
-		}
+		if (getLoneliness() == null)
+			participantsRepo.createLoneliness(this);
 		return getLoneliness();
 	}
+	
+	@Property(hidden = Where.EVERYWHERE)
+	@Column(allowsNull = "true")
+	public ParticipantNotes getNotes() {
+		return notes;
+	}
 
+	public void setNotes(ParticipantNotes notes) {
+		this.notes = notes;
+	}
+	
+	@Action(semantics = SemanticsOf.IDEMPOTENT)
+	@ActionLayout(named = "Notes")
+	@MemberOrder(sequence = "13")
+	public ParticipantNotes updateNotes() {
+		if (getNotes() == null)
+			participantsRepo.createParticipantNotes(this);
+		return getNotes();
+	}
+	
 	@Property()
 	@MemberOrder(sequence = "100")
 	@CollectionLayout(named = "Participation", render = RenderType.EAGERLY)
@@ -205,23 +213,18 @@ public class Participant extends AbstractChatsDomainEntity implements Notable, L
 		return participations;
 	}
 
-	/*public void setParticipations(final SortedSet<Participation> participations) {
-		this.participations = participations;
-	}
-
-	@Programmatic
-	public Participation addParticipation(Activity activity) {
-		if (!hasParticipation(activity)) {
-			Participation participation = container.newTransientInstance(Participation.class);
-			participation.setParticipant(this);
-			participation.setActivity(activity);
-			container.persistIfNotAlready(participation);
-			participations.add(participation);
-			return participation;
-		} else {
-			return null;
-		}
-	}*/
+	/*
+	 * public void setParticipations(final SortedSet<Participation>
+	 * participations) { this.participations = participations; }
+	 * 
+	 * @Programmatic public Participation addParticipation(Activity activity) {
+	 * if (!hasParticipation(activity)) { Participation participation =
+	 * container.newTransientInstance(Participation.class);
+	 * participation.setParticipant(this); participation.setActivity(activity);
+	 * container.persistIfNotAlready(participation);
+	 * participations.add(participation); return participation; } else { return
+	 * null; } }
+	 */
 
 	@Programmatic
 	public boolean hasParticipation(Activity activity) {
@@ -235,14 +238,14 @@ public class Participant extends AbstractChatsDomainEntity implements Notable, L
 
 	@Programmatic
 	public void addParticipation(Participation participation) {
-		if(participation == null)
+		if (participation == null)
 			return;
-		this.participations.add(participation);		
+		participations.add(participation);
 	}
-	
+
 	@Programmatic
 	public void removeParticipation(Participation participation) {
-		this.participations.remove(participation);
+		getParticipations().remove(participation);
 	}
 
 	@Programmatic
@@ -254,7 +257,7 @@ public class Participant extends AbstractChatsDomainEntity implements Notable, L
 		}
 		return null;
 	}
-	
+
 	@NotPersistent
 	public Location getLocation() {
 		return getPerson().getLocation();
@@ -265,7 +268,8 @@ public class Participant extends AbstractChatsDomainEntity implements Notable, L
 		return this.getPerson().compareTo(o.getPerson());
 	}
 
-
+	@Inject
+	Participants participantsRepo;
 
 
 }

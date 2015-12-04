@@ -89,7 +89,8 @@ public class Participants {
 	}
 
 	@MemberOrder(sequence = "4")
-	public Participant create(final @Parameter(maxLength=100) @ParameterLayout(named = "First name") String firstname, final @Parameter(maxLength=100) @ParameterLayout(named = "Family name") String surname,
+	public Participant create(final @Parameter(maxLength = 100) @ParameterLayout(named = "First name") String firstname,
+			final @Parameter(maxLength = 100) @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob) {
 		return newParticipant(firstname, surname, dob);
 	}
@@ -154,7 +155,7 @@ public class Participants {
 		container.flush();
 		return p;
 	}
-	
+
 	@Programmatic
 	public Participation createParticipation(Activity activity, Participant participant) {
 		Participation participation = container.newTransientInstance(Participation.class);
@@ -175,10 +176,60 @@ public class Participants {
 		container.flush();
 	}
 
+	@Programmatic
+	public void createLifeHistory(Participant participant) {
+		if (participant == null || participant.getLifeHistory() != null)
+			return;
+		LifeHistory lifeHistory = container.newTransientInstance(LifeHistory.class);
+		lifeHistory.setParticipant(participant);
+		participant.setLifeHistory(lifeHistory);
+		container.persistIfNotAlready(lifeHistory);
+		container.flush();
+		return;
+	}
+
+	@Programmatic
+	public void createSocialFactors(Participant participant) {
+		if (participant == null || participant.getSocialFactors() != null)
+			return;
+		SocialFactors socialFactors = container.newTransientInstance(SocialFactors.class);
+		socialFactors.setParticipant(participant);
+		participant.setSocialFactors(socialFactors);
+		container.persistIfNotAlready(socialFactors);
+		container.flush();
+		return;
+	}
+
+	@Programmatic
+	public void createLoneliness(Participant participant) {
+		if (participant == null || participant.getLoneliness() != null)
+			return;
+		Loneliness loneliness = container.newTransientInstance(Loneliness.class);
+		loneliness.setParticipant(participant);
+		participant.setLoneliness(loneliness);
+		container.persistIfNotAlready(loneliness);
+		container.flush();
+		return;
+	}
+	
+	@Programmatic
+	public void createParticipantNotes(Participant participant) {
+		if (participant == null || participant.getNotes() != null)
+			return;
+		ParticipantNotes notes = container.newTransientInstance(ParticipantNotes.class);
+		notes.setParticipant(participant);
+		participant.setNotes(notes);
+		container.persistIfNotAlready(notes);
+		container.flush();
+		return;
+	}
+
 	@Inject
 	DomainObjectContainer container;
 
 	@Inject
 	private IsisJdoSupport isisJdoSupport;
+
+
 
 }

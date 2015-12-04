@@ -66,7 +66,7 @@ import org.joda.time.DateTime;
 						+ "LEFT JOIN "
 						+ "  socialfactors "
 						+ "ON "
-						+ "  socialfactors.parent_participant_id =  participant.participant_id "
+						+ "  socialfactors.participant_participant_id =  participant.participant_id "
 						+ "LEFT JOIN "
 						+ "  location "
 						+ "ON "

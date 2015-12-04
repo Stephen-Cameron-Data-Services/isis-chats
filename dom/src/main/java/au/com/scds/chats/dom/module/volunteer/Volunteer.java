@@ -136,11 +136,6 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 		return getPerson().getLocation();
 	}
 
-	@Programmatic
-	public void addVolunteeredTime(VolunteeredTime time) {
-		if (time != null)
-			volunteeredTimes.add(time);
-	}
 
 	public List<VolunteeredTime> getVolunteeredTimes() {
 		return volunteeredTimes;
@@ -150,6 +145,11 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 		this.volunteeredTimes = volunteeredTimes;
 	}
 	
+	@Programmatic
+	public void addVolunteeredTime(VolunteeredTime time) {
+		if (time != null)
+			volunteeredTimes.add(time);
+	}
 
 	@Inject
 	private CallSchedules schedulesRepo;

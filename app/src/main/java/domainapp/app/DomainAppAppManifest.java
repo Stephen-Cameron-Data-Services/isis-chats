@@ -103,6 +103,7 @@ public class DomainAppAppManifest implements AppManifest {
      */
     @Override
     public Map<String, String> getConfigurationProperties() {
+    	//return Collections.emptyMap();
        return ImmutableMap.of(
                 "isis.reflector.facets.include", "org.isisaddons.module.security.facets.TenantedAuthorizationFacetFactory");
     }

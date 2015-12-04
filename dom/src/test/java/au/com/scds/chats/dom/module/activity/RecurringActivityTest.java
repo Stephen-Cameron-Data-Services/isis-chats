@@ -98,8 +98,8 @@ public class RecurringActivityTest {
 			assertThat(event4.getStartDateTime()).isEqualTo(event3.getStartDateTime().plusDays(7));
 			assertThat(obj.getFutureActivities().size()).isEqualTo(4);
 			assertThat(obj.getCompletedActivities().size()).isEqualTo(0);
-			assertThat(obj.getActivityEvents().first()).isEqualTo(event4);
-			assertThat(obj.getActivityEvents().last()).isEqualTo(event1);
+			assertThat(obj.getChildActivities().first()).isEqualTo(event4);
+			assertThat(obj.getChildActivities().last()).isEqualTo(event1);
 			assertThat(obj.getFutureActivities().get(0)).isEqualTo(event1);
 			assertThat(obj.getFutureActivities().get(1)).isEqualTo(event2);
 			assertThat(obj.getFutureActivities().get(2)).isEqualTo(event3);
@@ -230,8 +230,8 @@ public class RecurringActivityTest {
 			event2.addParticipant(participant2);
 			
 			//then
-			assertThat(parent.getActivityEvents().first()).isEqualTo(event2);
-			assertThat(parent.getActivityEvents().last()).isEqualTo(event1);
+			assertThat(parent.getChildActivities().first()).isEqualTo(event2);
+			assertThat(parent.getChildActivities().last()).isEqualTo(event1);
 			assertThat(parent.getParticipants().size()).isEqualTo(1);
 			assertThat(event1.getParticipants().size()).isEqualTo(1);
 			assertThat(event2.getParticipants().size()).isEqualTo(2);
@@ -300,7 +300,7 @@ public class RecurringActivityTest {
 			
 			//// ActivityType
 			parent.setActivityType(new ActivityType("TEST1"));
-			parent.getActivityEvents().first().setActivityType(new ActivityType("TEST2"));
+			parent.getChildActivities().first().setActivityType(new ActivityType("TEST2"));
 			assertThat(parent.getActivityType().getName()).isEqualTo("TEST1");
 			assertThat(event2.getActivityType().getName()).isEqualTo("TEST2");
 			assertThat(event1.getActivityType().getName()).isEqualTo("TEST1");
@@ -324,14 +324,14 @@ public class RecurringActivityTest {
 			
 			//// CostForParticipant			
 			parent.setCostForParticipant("10.00");
-			parent.getActivityEvents().first().setCostForParticipant("20.00");
+			parent.getChildActivities().first().setCostForParticipant("20.00");
 			assertThat(parent.getCostForParticipant()).isEqualTo("10.00");
 			assertThat(event2.getCostForParticipant()).isEqualTo("20.00");
 			assertThat(event1.getCostForParticipant()).isEqualTo("10.00");
 			
 			//// Description			
 			parent.setDescription("parent");
-			parent.getActivityEvents().first().setDescription("child");
+			parent.getChildActivities().first().setDescription("child");
 			assertThat(parent.getDescription()).isEqualTo("parent");
 			assertThat(event2.getDescription()).isEqualTo("child");
 			assertThat(event1.getDescription()).isEqualTo("parent");

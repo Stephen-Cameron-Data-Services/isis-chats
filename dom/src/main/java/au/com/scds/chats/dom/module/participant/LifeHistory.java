@@ -28,27 +28,27 @@ import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 public class LifeHistory extends AbstractChatsDomainEntity {
 
-	private Participant parent;
+	private Participant participant;
 	private String lifeStory;
 	private String experiences;
 	private String hobbies;
 	private String interests;
 
 	public String title() {
-		return "Life History of Participant: " + parent.getPerson().getFullname();
+		return "Life History of Participant: " + getParticipant().getPerson().getFullname();
 	}
 
 	@Property()
 	@PropertyLayout()
 	@MemberOrder(sequence = "100")
 	@Column(allowsNull = "false")
-	public Participant getParentParticipant() {
-		return parent;
+	public Participant getParticipant() {
+		return participant;
 	}
 
-	public void setParentParticipant(Participant participant) {
-		if (this.parent == null && participant != null)
-			this.parent = participant;
+	public void setParticipant(Participant participant) {
+		if (getParticipant() == null && participant != null)
+			this.participant = participant;
 	}
 
 	@Property()

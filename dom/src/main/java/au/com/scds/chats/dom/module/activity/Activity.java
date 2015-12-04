@@ -37,6 +37,8 @@ import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.services.i18n.TranslatableString;
 import org.apache.isis.applib.util.ObjectContracts;
 
+import com.google.common.collect.ComparisonChain;
+
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.RegexValidation;
 import au.com.scds.chats.dom.module.general.Address;
@@ -121,7 +123,11 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	 * Compares based on startDateTime, putting most more recent first.
 	 */
 	public int compareTo(final Activity other) {
+		//return ObjectContracts.compare(other, this,  "startDateTime");
 		return ObjectContracts.compare(other, this, "name", "startDateTime", "region");
+		
+		//return ComparisonChain.start().compare(getName(),
+				//other.getName()).compare(getStartDateTime(),other.getStartDateTime()).compare(getRegion(),other.getRegion()).result();
 
 		// if (other != null)
 		// return other.getStartDateTime().compareTo(getStartDateTime());

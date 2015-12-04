@@ -32,7 +32,7 @@ import au.com.scds.chats.dom.module.general.names.Regions;
  */
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public abstract class AbstractChatsDomainEntity implements Timestampable, WithApplicationTenancy {
+public abstract class AbstractChatsDomainEntity implements Timestampable, WithApplicationTenancy{
 
 	private String createdBy;
 	private DateTime createdOn;
@@ -122,10 +122,10 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 					String name = null;
 					if (path.equals("/")) {
 						name = "GLOBAL";
-					} else if (path.matches("^\\/[_A-Za-z0-9-]+\\/$")) {
+					} else if (path.matches("^\\/[_A-Za-z0-9-]+_$")) {
 						name = path.substring(1, path.length() - 1);
 					} else {
-						System.out.println("Error: user tenancy path not correct (" + path + ")");
+						container.warnUser("Error: user tenancy path not correct (" + path + "), must match pattern /[_A-Za-z0-9-]+_$");
 						return;
 					}
 					Region region = regions.regionForName(name);
@@ -154,14 +154,12 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 
 	@Programmatic
 	public ApplicationTenancy getApplicationTenancy() {
-		//System.out.println(">>> getApplicationTenancy");
 		ApplicationTenancy tenancy = new ApplicationTenancy();
 		if (getRegion().getName().equals("GLOBAL"))
 			tenancy.setPath("/");
 		else {
-			tenancy.setPath("/" + getRegion().getName() + "/");
+			tenancy.setPath("/" + getRegion().getName() + "_");
 		}
-		//System.out.println(">>> tenancy.path=" + tenancy.getPath());
 		return tenancy;
 	}
 

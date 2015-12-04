@@ -27,7 +27,7 @@ import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 public class SocialFactors extends AbstractChatsDomainEntity {
 
-	private Participant parent;
+	private Participant participant;
 	private String limitingHealthIssues;
 	private String otherLimitingFactors;
 	private String driversLicence;
@@ -43,20 +43,20 @@ public class SocialFactors extends AbstractChatsDomainEntity {
 	private String involvementIH;
 
 	public String title() {
-		return "Social Factors of Participant: " + parent.getPerson().getFullname();
+		return "Social Factors of Participant: " + getParticipant().getPerson().getFullname();
 	}
 
-	@Property(editing = Editing.DISABLED)
+	@Property()
 	@PropertyLayout()
 	@MemberOrder(sequence = "100")
 	@Column(allowsNull = "false")
-	public Participant getParentParticipant() {
-		return parent;
+	public Participant getParticipant() {
+		return participant;
 	}
 
-	public void setParentParticipant(final Participant parent) {
-		if (this.parent == null && parent != null)
-			this.parent = parent;
+	public void setParticipant(Participant parent) {
+		if (getParticipant() == null && parent != null)
+			this.participant = parent;
 	}
 
 	@Property()

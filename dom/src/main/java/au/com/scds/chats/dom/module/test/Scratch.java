@@ -7,8 +7,8 @@ public class Scratch {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String test = "/SOUTH/";
-		if(test.matches("^\\/[_A-Za-z0-9-]+\\/$")){
+		String test = "/SOUTH_";
+		if(test.matches("^\\/[_A-Za-z0-9-]+_$")){
 			System.out.println("success!");
 		}
 	}

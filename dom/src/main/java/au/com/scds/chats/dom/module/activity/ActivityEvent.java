@@ -82,7 +82,8 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 // })
 public class ActivityEvent extends Activity implements Notable, CalendarEventable {
 
-	protected RecurringActivity parent;
+	protected RecurringActivity parentActivity;
+	@Persistent(mappedBy="activity")
 	protected AttendanceList attendances;
 
 	public ActivityEvent() {
@@ -103,11 +104,11 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	@MemberOrder(sequence = "1.1")
 	@Column(allowsNull = "true")
 	public final RecurringActivity getParentActivity() {
-		return parent;
+		return parentActivity;
 	}
 
 	public void setParentActivity(final RecurringActivity activity) {
-		this.parent = activity;
+		this.parentActivity = activity;
 	}
 	
 	public boolean hideParentActivity(){
