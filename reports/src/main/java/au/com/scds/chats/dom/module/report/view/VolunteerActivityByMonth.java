@@ -48,47 +48,48 @@ import org.joda.time.LocalDate;
 						+ " {this.firstName}, "
 						+ " {this.birthDate}, "
 						+ " {this.region}, "
-						+ " {this.activityName}, "
-						+ " {this.volunteerStatus}, "						
+						+ " {this.volunteerStatus}, "
+						+ " {this.volunteeredTimeCategory}, "
 						+ " {this.yearMonth}, "
 						+ " {this.hoursAttended} "
 						+ ") AS "
-						+ "SELECT "
-						+ "	person.surname, "
-						+ "	person.firstname, "
-						+ "	person.birthdate, "
-						+ "	person.region_name AS region, "
-						+ "	activity.name AS activityname, "
-						+ " volunteer.status AS volunteerstatus, "
-						+ "	EXTRACT(YEAR_MONTH FROM attended.startdatetime) as yearmonth, "
-						+ "	ROUND(SUM(TIMESTAMPDIFF(MINUTE,attended.startdatetime,attended.enddatetime))/60,1) as hoursattended "
-						+ "FROM "
-						+ "	attended, "
-						+ "	volunteer, "
-						+ "	person, "
-						+ "	activity "
-						+ "WHERE "
-						+ "	volunteer.volunteer_id = attended.volunteer_volunteer_id AND "
-						+ "	activity.activity_id = attended.activity_activity_id AND "
-						+ "	volunteer.person_person_id = person.person_id AND " 
-						+ " volunteer.status <> 'EXITED' "
-						+ "GROUP BY "
-						+ "	volunteer.volunteer_id, "
-						+ "	activity.activity_id, "
-						+ "	EXTRACT(YEAR_MONTH FROM activity.startdatetime);") })
+						+ "SELECT  "
+						+ "  person.surname,  "
+						+ "  person.firstname,  "
+						+ "  person.birthdate,  "
+						+ "  person.region_name AS region,  "
+						+ "  volunteer.status as volunteerstatus, "
+						+ "  CASE volunteered_time.role  "
+						+ "    WHEN 'VTACTIVITY' THEN 'ACTIVITIES' "
+						+ "    ELSE volunteered_time.role "
+						+ "  END AS volunteeredtimecategory, "
+						+ "  EXTRACT(YEAR_MONTH FROM volunteered_time.startdatetime) as yearmonth,  "
+						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteered_time.startdatetime,volunteered_time.enddatetime))/60,1) as hoursvolunteered  "
+						+ "FROM  "
+						+ "  volunteered_time,  "
+						+ "  volunteer,  "
+						+ "  person  "
+						+ "WHERE  "
+						+ "  volunteer.volunteer_id = volunteered_time.volunteer_volunteer_id AND  "
+						+ "  volunteer.person_person_id = person.person_id AND   "
+						+ "  volunteer.status <> 'EXITED'  "
+						+ "GROUP BY  "
+						+ "  volunteer.volunteer_id,  "
+						+ "  volunteered_time.role,  "
+						+ "  EXTRACT(YEAR_MONTH FROM volunteered_time.startdatetime);") })
 @Queries({
-	@Query(name = "allVolunteerActivityByMonth",
-			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.module.report.view.VolunteerActivityByMonth") })
+		@Query(name = "allVolunteerActivityByMonth",
+				language = "JDOQL",
+				value = "SELECT FROM au.com.scds.chats.dom.module.report.view.VolunteerActivityByMonth") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class VolunteerActivityByMonth {
-	
+
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
 	public String region;
-	public String activityName;
 	public String volunteerStatus;
+	public String volunteeredTimeCategory;
 	public Integer yearMonth;
 	public Float hoursAttended;
 
@@ -134,14 +135,14 @@ public class VolunteerActivityByMonth {
 
 	@Property()
 	@MemberOrder(sequence = "5.1")
-	public String getActivityName() {
-		return activityName;
+	public String getVolunteeredTimeCategory() {
+		return volunteeredTimeCategory;
 	}
 
-	public void setActivityName(String activityName) {
-		this.activityName = activityName;
+	public void setVolunteeredTimeCategory(String volunteeredTimeCategory) {
+		this.volunteeredTimeCategory = volunteeredTimeCategory;
 	}
-	
+
 	@Property()
 	@MemberOrder(sequence = "5.2")
 	public String getVolunteerStatus() {
@@ -172,4 +173,3 @@ public class VolunteerActivityByMonth {
 		this.hoursAttended = hoursAttended;
 	}
 }
-
