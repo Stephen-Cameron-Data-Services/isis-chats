@@ -1,3 +1,21 @@
+/*
+ *
+ *  Copyright 2015 Stephen Cameron Data Services
+ *
+ *
+ *  Licensed under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  KIND, either express or implied.  See the License for the
+ *  specific language governing permissions and limitations
+ *  under the License.
+ */
 package au.com.scds.chats.dom.module.volunteer;
 
 import java.util.ArrayList;
@@ -14,6 +32,7 @@ import org.apache.isis.applib.Identifier;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.CollectionLayout;
+import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Programmatic;
@@ -40,7 +59,7 @@ import au.com.scds.chats.dom.module.participant.Participation;
 
 @Queries({ @Query(name = "listVolunteersByStatus", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.Volunteer " + "WHERE status == :status"),
 		@Query(name = "findVolunteersBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.Volunteer " + "WHERE person.surname.indexOf(:surname) >= 0"), })
-@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
+@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "VolunteerRoles", "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 public class Volunteer extends AbstractChatsDomainEntity implements Notable, Locatable {
 
@@ -49,8 +68,9 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 	@Persistent(mappedBy = "allocatedVolunteer")
 	private SortedSet<CalendarDayCallSchedule> callSchedules = new TreeSet<>();
 	@Persistent(mappedBy = "volunteer")
-	@Order(column="v_idx")
+	@Order(column = "v_idx")
 	private List<VolunteeredTime> volunteeredTimes = new ArrayList<>();
+	private List<VolunteerRole> volunteerRoles = new ArrayList<>();
 
 	public TranslatableString title() {
 		return TranslatableString.tr("Volunteer: {fullname}", "fullname", getPerson().getFullname());
@@ -81,6 +101,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 		return list;
 	}
 
+	@Property(editing=Editing.DISABLED)
 	@MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
 	public Person getPerson() {
@@ -90,10 +111,6 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 	public void setPerson(final Person person) {
 		if (this.person == null && person != null)
 			this.person = person;
-	}
-
-	public List<Person> choicesPerson() {
-		return container.allInstances(Person.class);
 	}
 
 	@MemberOrder(sequence = "2")
@@ -130,12 +147,19 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 	public void setStatus(final Status status) {
 		this.status = status;
 	}
+	
+	public List<Status> choicesStatus(){
+		ArrayList<Status> statuses = new ArrayList<>();
+		statuses.add(Status.ACTIVE);
+		statuses.add(Status.INACTIVE);
+		statuses.add(Status.TO_EXIT);
+		return statuses;
+	}
 
 	@NotPersistent
 	public Location getLocation() {
 		return getPerson().getLocation();
 	}
-
 
 	public List<VolunteeredTime> getVolunteeredTimes() {
 		return volunteeredTimes;
@@ -144,18 +168,53 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 	public void setVolunteeredTimes(List<VolunteeredTime> volunteeredTimes) {
 		this.volunteeredTimes = volunteeredTimes;
 	}
-	
+
 	@Programmatic
 	public void addVolunteeredTime(VolunteeredTime time) {
 		if (time != null)
-			 getVolunteeredTimes().add(time);
+			getVolunteeredTimes().add(time);
+	}
+
+	public List<VolunteerRole> getVolunteerRoles() {
+		return volunteerRoles;
+	}
+
+	public void setVolunteerRoles(List<VolunteerRole> volunteerRoles) {
+		this.volunteerRoles = volunteerRoles;
+	}
+
+	@Action()
+	@ActionLayout(named="Add")
+	@MemberOrder(name = "VolunteerRoles", sequence = "1")
+	public void addVolunteerRole(VolunteerRole role) {
+		if (role != null)
+			getVolunteerRoles().add(role);
+	}
+	
+	public List<VolunteerRole> choices0AddVolunteerRole(){
+		return volunteers.listVolunteerRolesNotInList(getVolunteerRoles());
+	}
+
+	@Action()
+	@ActionLayout(named="Remove")
+	@MemberOrder(name = "VolunteerRoles", sequence = "2")
+	public void removeVolunteerRole(VolunteerRole role) {
+		if (role != null)
+			getVolunteerRoles().remove(role);
+	}
+	
+	public List<VolunteerRole> choices0RemoveVolunteerRole(){
+		return getVolunteerRoles();
 	}
 
 	@Inject
-	private CallSchedules schedulesRepo;
-
+	protected Volunteers volunteers;
+	
 	@Inject
-	private DomainObjectContainer container;
+	protected CallSchedules schedulesRepo;
+
+	//@Inject
+	//private DomainObjectContainer container;
 
 	@Inject
 	protected Participants participantsRepo;

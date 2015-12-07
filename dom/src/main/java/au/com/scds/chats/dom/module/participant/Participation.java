@@ -1,3 +1,21 @@
+/*
+ *
+ *  Copyright 2015 Stephen Cameron Data Services
+ *
+ *
+ *  Licensed under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  KIND, either express or implied.  See the License for the
+ *  specific language governing permissions and limitations
+ *  under the License.
+ */
 package au.com.scds.chats.dom.module.participant;
 
 import java.util.Date;
@@ -17,12 +35,14 @@ import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
+import org.apache.isis.applib.annotation.LabelPosition;
 import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.util.ObjectContracts;
+import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.module.activity.Activity;
@@ -42,8 +62,9 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	private String oldId;
 	private TransportType arrivingTransportType;
 	private TransportType departingTransportType;
-	private Date dropoffTime;
-	private Date pickupTime;
+	private DateTime dropoffTime;
+	private DateTime pickupTime;
+	private AdditionalTransportTime transportTime = AdditionalTransportTime.ZERO;
 	private Long roleId;
 	private String transportNotes;
 
@@ -58,7 +79,7 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 
 	public String title() {
 		if (getParticipant() != null && getParticipant().getPerson() != null && getActivity() != null) {
-			return "Participation of: " + participant.getPerson().getFullname() + " in Activity: " + getActivity().getName();
+			return participant.getPerson().getFullname() + " - in - " + getActivity().getName();
 		} else {
 			return null;
 		}
@@ -159,11 +180,11 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	@PropertyLayout(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "6")
 	@Column(allowsNull = "true")
-	public Date getDropoffTime() {
+	public DateTime getDropoffTime() {
 		return this.dropoffTime;
 	}
 
-	public void setDropoffTime(Date dropoffTime) {
+	public void setDropoffTime(DateTime dropoffTime) {
 		this.dropoffTime = dropoffTime;
 	}
 
@@ -171,11 +192,11 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	@PropertyLayout(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "7")
 	@Column(allowsNull = "true")
-	public Date getPickupTime() {
+	public DateTime getPickupTime() {
 		return this.pickupTime;
 	}
 
-	public void setPickupTime(Date pickupTime) {
+	public void setPickupTime(DateTime pickupTime) {
 		this.pickupTime = pickupTime;
 	}
 
@@ -194,6 +215,21 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	@Property()
 	@PropertyLayout(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "10")
+	public AdditionalTransportTime getTransportTime() {
+		return transportTime;
+	}
+
+	public void setTransportTime(AdditionalTransportTime transportTime) {
+		this.transportTime = transportTime;
+	}
+
+	public enum AdditionalTransportTime {
+		ZERO, HALF_HOUR, ONE_HOUR
+	}
+
+	@Property()
+	@PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP, hidden = Where.ALL_TABLES)
+	@MemberOrder(sequence = "11")
 	@Column(allowsNull = "true")
 	public String getTransportNotes() {
 		return this.transportNotes;
@@ -206,8 +242,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	@Override
 	public int compareTo(final Participation o) {
 		// TODO needs more
-		//return ObjectContracts.compare(o, this,"activity","participant");
-				
+		// return ObjectContracts.compare(o, this,"activity","participant");
+
 		return ComparisonChain.start().compare(getActivity(),
 				o.getActivity()).compare(getParticipant(),
 				o.getParticipant()).result();
@@ -216,4 +252,5 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 
 	@Inject
 	TransportTypes transportTypes;
+
 }

@@ -1,9 +1,9 @@
 /*
- *  Licensed to the Apache Software Foundation (ASF) under one
- *  or more contributor license agreements.  See the NOTICE file
- *  distributed with this work for additional information
- *  regarding copyright ownership.  The ASF licenses this file
- *  to you under the Apache License, Version 2.0 (the
+ *
+ *  Copyright 2015 Stephen Cameron Data Services
+ *
+ *
+ *  Licensed under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
  *
@@ -15,9 +15,10 @@
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
  *  under the License.
- */
-package au.com.scds.chats.dom.module.participant;
+ */package au.com.scds.chats.dom.module.participant;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -68,8 +69,8 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 		setPerson(person);
 	}
 
-	public TranslatableString title() {
-		return TranslatableString.tr("Participant: {fullname}", "fullname", getPerson().getFullname());
+	public String title() {
+		return getPerson().getFullname();
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
@@ -128,6 +129,14 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 
 	public void setStatus(final Status status) {
 		this.status = status;
+	}
+	
+	public List<Status> choicesStatus(){
+		ArrayList<Status> statuses = new ArrayList<>();
+		statuses.add(Status.ACTIVE);
+		statuses.add(Status.INACTIVE);
+		statuses.add(Status.TO_EXIT);
+		return statuses;
 	}
 
 	@Property(hidden = Where.EVERYWHERE)

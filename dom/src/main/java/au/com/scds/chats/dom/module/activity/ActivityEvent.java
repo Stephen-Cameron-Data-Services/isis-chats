@@ -1,9 +1,9 @@
 /*
- *  Licensed to the Apache Software Foundation (ASF) under one
- *  or more contributor license agreements.  See the NOTICE file
- *  distributed with this work for additional information
- *  regarding copyright ownership.  The ASF licenses this file
- *  to you under the Apache License, Version 2.0 (the
+ *
+ *  Copyright 2015 Stephen Cameron Data Services
+ *
+ *
+ *  Licensed under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
  *
@@ -149,6 +149,16 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	public List<Volunteer> choices0AddVolunteeredTime() {
 		return volunteersRepo.listActive();
 	}
+	
+	@Action()
+	@MemberOrder(name = "participations", sequence = "4")
+	public List<ParticipantTransportView> showTransportList(){
+		List<ParticipantTransportView> list = new ArrayList<>();
+		for(Participation p : getParticipations()){
+			list.add(new ParticipantTransportView(p));
+		}
+		return list;
+	}
 
 	// CalendarEventable methods
 	@Programmatic
@@ -165,7 +175,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	@Override
 	public String title() {
 		if (getParentActivity() != null && super.getName() == null) {
-			return "Activity: " + getParentActivity().getName();
+			return getParentActivity().getName();
 		}
 		return super.title();
 	}

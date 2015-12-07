@@ -1,9 +1,9 @@
 /*
- *  Licensed to the Apache Software Foundation (ASF) under one
- *  or more contributor license agreements.  See the NOTICE file
- *  distributed with this work for additional information
- *  regarding copyright ownership.  The ASF licenses this file
- *  to you under the Apache License, Version 2.0 (the
+ *
+ *  Copyright 2015 Stephen Cameron Data Services
+ *
+ *
+ *  Licensed under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
  *
@@ -15,8 +15,7 @@
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
  *  under the License.
- */
-package au.com.scds.chats.dom.module.participant;
+ */package au.com.scds.chats.dom.module.participant;
 
 import java.util.List;
 
@@ -73,22 +72,36 @@ public class Participants {
 		 * p.status.eq(Status.ACTIVE));
 		 */
 	}
-
+	
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
-	public List<Participant> listExited() {
-		return container.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.EXCITED));
+	public List<Participant> listInactive() {
+		return container.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.INACTIVE));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "3")
+	public List<Participant> listToExit() {
+		return container.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.TO_EXIT));
+	}
+	
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "3")
+	public List<Participant> listExited() {
+		return container.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.EXITED));
+	}
+
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "4")
 	public List<Participant> findBySurname(@ParameterLayout(named = "Surname") final String surname) {
 		return container.allMatches(new QueryDefault<>(Participant.class, "findParticipantsBySurname", "surname", surname));
 	}
 
-	@MemberOrder(sequence = "4")
+	@MemberOrder(sequence = "5")
 	public Participant create(final @Parameter(maxLength = 100) @ParameterLayout(named = "First name") String firstname,
 			final @Parameter(maxLength = 100) @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob) {

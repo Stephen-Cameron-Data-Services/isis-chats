@@ -38,18 +38,18 @@ import org.joda.time.LocalDate;
 @DomainObject(editing = Editing.DISABLED)
 @PersistenceCapable(
 		identityType = IdentityType.NONDURABLE,
-		table = "ParticipantActivityByMonth",
+		table = "VolunteerActivityByMonth",
 		extensions = { @Extension(
 				vendorName = "datanucleus",
 				key = "view-definition",
-				value = "CREATE VIEW ParticipantActivityByMonth "
+				value = "CREATE VIEW VolunteerActivityByMonth "
 						+ "( "
 						+ " {this.surname}, "
 						+ " {this.firstName}, "
 						+ " {this.birthDate}, "
 						+ " {this.region}, "
 						+ " {this.activityName}, "
-						+ " {this.participantStatus}, "						
+						+ " {this.volunteerStatus}, "						
 						+ " {this.yearMonth}, "
 						+ " {this.hoursAttended} "
 						+ ") AS "
@@ -59,36 +59,36 @@ import org.joda.time.LocalDate;
 						+ "	person.birthdate, "
 						+ "	person.region_name AS region, "
 						+ "	activity.name AS activityname, "
-						+ " participant.status AS participantstatus, "
+						+ " volunteer.status AS volunteerstatus, "
 						+ "	EXTRACT(YEAR_MONTH FROM attended.startdatetime) as yearmonth, "
 						+ "	ROUND(SUM(TIMESTAMPDIFF(MINUTE,attended.startdatetime,attended.enddatetime))/60,1) as hoursattended "
 						+ "FROM "
 						+ "	attended, "
-						+ "	participant, "
+						+ "	volunteer, "
 						+ "	person, "
 						+ "	activity "
 						+ "WHERE "
-						+ "	participant.participant_id = attended.participant_participant_id AND "
+						+ "	volunteer.volunteer_id = attended.volunteer_volunteer_id AND "
 						+ "	activity.activity_id = attended.activity_activity_id AND "
-						+ "	participant.person_person_id = person.person_id AND " 
-						+ " participant.status <> 'EXITED' "
+						+ "	volunteer.person_person_id = person.person_id AND " 
+						+ " volunteer.status <> 'EXITED' "
 						+ "GROUP BY "
-						+ "	participant.participant_id, "
+						+ "	volunteer.volunteer_id, "
 						+ "	activity.activity_id, "
 						+ "	EXTRACT(YEAR_MONTH FROM activity.startdatetime);") })
 @Queries({
-	@Query(name = "allParticipantActivityByMonth",
+	@Query(name = "allVolunteerActivityByMonth",
 			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.module.report.view.ParticipantActivityByMonth") })
+			value = "SELECT FROM au.com.scds.chats.dom.module.report.view.VolunteerActivityByMonth") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class ParticipantActivityByMonth {
+public class VolunteerActivityByMonth {
 	
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
 	public String region;
 	public String activityName;
-	public String participantStatus;
+	public String volunteerStatus;
 	public Integer yearMonth;
 	public Float hoursAttended;
 
@@ -144,12 +144,12 @@ public class ParticipantActivityByMonth {
 	
 	@Property()
 	@MemberOrder(sequence = "5.2")
-	public String getParticipantStatus() {
-		return participantStatus;
+	public String getVolunteerStatus() {
+		return volunteerStatus;
 	}
 
-	public void setParticipantStatus(String participantStatus) {
-		this.participantStatus = participantStatus;
+	public void setVolunteerStatus(String volunteerStatus) {
+		this.volunteerStatus = volunteerStatus;
 	}
 
 	@Property()
@@ -172,3 +172,4 @@ public class ParticipantActivityByMonth {
 		this.hoursAttended = hoursAttended;
 	}
 }
+

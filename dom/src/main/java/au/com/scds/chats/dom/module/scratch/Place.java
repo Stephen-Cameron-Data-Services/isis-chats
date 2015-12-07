@@ -1,4 +1,4 @@
-package au.com.scds.chats.dom.module.test;
+package au.com.scds.chats.dom.module.scratch;
 
 import javax.inject.Inject;
 import javax.jdo.annotations.Column;
