@@ -186,9 +186,10 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 	@Action()
 	@ActionLayout(named="Add")
 	@MemberOrder(name = "VolunteerRoles", sequence = "1")
-	public void addVolunteerRole(VolunteerRole role) {
+	public Volunteer addVolunteerRole(VolunteerRole role) {
 		if (role != null)
 			getVolunteerRoles().add(role);
+		return this;
 	}
 	
 	public List<VolunteerRole> choices0AddVolunteerRole(){
@@ -198,9 +199,10 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 	@Action()
 	@ActionLayout(named="Remove")
 	@MemberOrder(name = "VolunteerRoles", sequence = "2")
-	public void removeVolunteerRole(VolunteerRole role) {
+	public Volunteer removeVolunteerRole(VolunteerRole role) {
 		if (role != null)
 			getVolunteerRoles().remove(role);
+		return this;		
 	}
 	
 	public List<VolunteerRole> choices0RemoveVolunteerRole(){
@@ -212,9 +214,6 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 	
 	@Inject
 	protected CallSchedules schedulesRepo;
-
-	//@Inject
-	//private DomainObjectContainer container;
 
 	@Inject
 	protected Participants participantsRepo;

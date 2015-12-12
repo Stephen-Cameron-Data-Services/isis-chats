@@ -52,7 +52,7 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Location", "Scheduling", "Admin" })
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
-@Discriminator(value = "RECURRING")
+@Discriminator(value = "RECURRING_ACTIVITY")
 @Queries({ @Query(name = "find", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.RecurringActivity "),
 		@Query(name = "findRecurringActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.RecurringActivity WHERE name.indexOf(:name) >= 0 ") })
 public class RecurringActivity extends Activity implements Notable {

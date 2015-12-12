@@ -56,17 +56,17 @@ import org.joda.time.DateTime;
 						+ "  {this.otherLimitingFactors} "
 						+ ") AS "
 						+ "SELECT "
-						+ "  activity.name AS activityname, "
+						+ "  activity.name AS activityName, "
 						+ "	 activity.startDateTime, "
-						+ "	 activity.region_name AS region, "
+						+ "	 activity.region_name AS regionName, "
 						+ "	 person.surname, "
-						+ "	 person.firstname, "
-						+ "	 person.preferredname, "
+						+ "	 person.firstname AS firstName, "
+						+ "	 person.preferredname AS preferredName, "
 						+ "	 concat(location.street1,' ' ,location.street2, ' ', location.suburb) as address, "
-						+ "	 person.homephonenumber, "
-						+ "	 person.mobilephonenumber, "
-						+ "	 socialfactors.limitingHealthIssues, "
-						+ "	 socialfactors.otherlimitingfactors "
+						+ "	 person.homephonenumber AS homePhoneNumber, "
+						+ "	 person.mobilephonenumber AS mobilePhoneNumber, "
+						+ "	 socialfactors.limitinghealthissues AS limitingHealthIssues, "
+						+ "	 socialfactors.otherlimitingfactors AS otherLimitingFactors"
 						+ "FROM "
 						+ "  activity "
 						+ "JOIN "
@@ -100,7 +100,7 @@ public class ParticipantPersonView {
 	private DateTime startDateTime;
 	private String region;
 	private String surname;
-	private String firstname;
+	private String firstName;
 	private String prefferedName;
 	private String address;
 	private String homephoneNumber;
@@ -151,11 +151,11 @@ public class ParticipantPersonView {
 	@Property()
 	@MemberOrder(sequence = "5")
 	public String getFirstname() {
-		return firstname;
+		return firstName;
 	}
 
 	public void setFirstname(String firstname) {
-		this.firstname = firstname;
+		this.firstName = firstname;
 	}
 
 	@Property()

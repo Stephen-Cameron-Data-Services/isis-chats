@@ -50,10 +50,10 @@ import org.joda.time.Period;
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.module.attendance.Attended;
 
-@DomainObject(objectType = "VTIME")
+@DomainObject(objectType = "VOLUNTEERED_TIME")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.NEVER)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
-@PersistenceCapable(table = "volunteered_time", identityType = IdentityType.DATASTORE)
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "role", value = "GENERAL")
 public class VolunteeredTime extends AbstractChatsDomainEntity implements Comparable<VolunteeredTime> {

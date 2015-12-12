@@ -38,60 +38,59 @@ import org.joda.time.LocalDate;
 @DomainObject(editing = Editing.DISABLED)
 @PersistenceCapable(
 		identityType = IdentityType.NONDURABLE,
-		table = "VolunteerActivityByMonth",
+		table = "VolunteeredTimeForActivitesByVolunteerAndRoleAndYearMonth",
 		extensions = { @Extension(
 				vendorName = "datanucleus",
 				key = "view-definition",
-				value = "CREATE VIEW VolunteerActivityByMonth "
+				value = "CREATE VIEW VolunteeredTimeForActivitesByVolunteerAndRoleAndYearMonth "
 						+ "( "
-						+ " {this.surname}, "
-						+ " {this.firstName}, "
-						+ " {this.birthDate}, "
-						+ " {this.region}, "
-						+ " {this.volunteerStatus}, "
-						+ " {this.volunteeredTimeCategory}, "
-						+ " {this.yearMonth}, "
-						+ " {this.hoursAttended} "
+						+ "  {this.activityName}, "
+						+ "  {this.activityRegion}, "
+						+ "  {this.activityYearMonth}, "						
+						+ "  {this.surname}, "
+						+ "  {this.firstName}, "
+						+ "  {this.birthDate}, "
+						+ "  {this.volunteerStatus}, "
+						+ "  {this.hoursVolunteered} "
 						+ ") AS "
 						+ "SELECT  "
+						+ "  activity.name as activityName, "						
+						+ "  activity.region_name as activityRegion,  "	
+						+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime) as activityYearMonth,  "
 						+ "  person.surname,  "
-						+ "  person.firstname,  "
-						+ "  person.birthdate,  "
-						+ "  person.region_name AS region,  "
-						+ "  volunteer.status as volunteerstatus, "
-						+ "  CASE volunteered_time.role  "
-						+ "    WHEN 'VTACTIVITY' THEN 'ACTIVITIES' "
-						+ "    ELSE volunteered_time.role "
-						+ "  END AS volunteeredtimecategory, "
-						+ "  EXTRACT(YEAR_MONTH FROM volunteered_time.startdatetime) as yearmonth,  "
-						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteered_time.startdatetime,volunteered_time.enddatetime))/60,1) as hoursvolunteered  "
+						+ "  person.firstname AS firstName,  "
+						+ "  person.birthdate AS birthDate,  "
+						+ "  volunteer.status AS volunteerStatus, "
+						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteered_time.startdatetime,volunteered_time.enddatetime))/60,1) as hoursVolunteered  "
 						+ "FROM  "
+						+ "  activity, "	
 						+ "  volunteered_time,  "
 						+ "  volunteer,  "
 						+ "  person  "
 						+ "WHERE  "
-						+ "  volunteer.volunteer_id = volunteered_time.volunteer_volunteer_id AND  "
-						+ "  volunteer.person_person_id = person.person_id AND   "
-						+ "  volunteer.status <> 'EXITED'  "
+						+ "  volunteered_time.activity_activity_id = activity.activity_id AND "						
+						+ "  volunteer.volunteer_id  = volunteered_time.volunteer_volunteer_id AND  "
+						+ "  person.person_id = volunteer.person_person_id "
 						+ "GROUP BY  "
-						+ "  volunteer.volunteer_id,  "
-						+ "  volunteered_time.role,  "
-						+ "  EXTRACT(YEAR_MONTH FROM volunteered_time.startdatetime);") })
+						+ "  activity.name,  "
+						+ "  activity.region_name, "
+						+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime), "						
+						+ "  volunteered_time.volunteer_volunteer_id;") })
 @Queries({
-		@Query(name = "allVolunteerActivityByMonth",
+		@Query(name = "allVolunteeredTimeForActivitesByVolunteerAndRoleAndYearMonth",
 				language = "JDOQL",
-				value = "SELECT FROM au.com.scds.chats.dom.module.report.view.VolunteerActivityByMonth") })
+				value = "SELECT FROM au.com.scds.chats.dom.module.report.view.VolunteeredTimeForActivitesByVolunteerAndRoleAndYearMonth") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class VolunteerActivityByMonth {
+public class VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth {
 
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
 	public String region;
 	public String volunteerStatus;
-	public String volunteeredTimeCategory;
-	public Integer yearMonth;
-	public Float hoursAttended;
+	public String activityName;
+	public Integer activityYearMonth;
+	public Float hoursVolunteered;
 
 	@Property()
 	@MemberOrder(sequence = "1")
@@ -135,12 +134,12 @@ public class VolunteerActivityByMonth {
 
 	@Property()
 	@MemberOrder(sequence = "5.1")
-	public String getVolunteeredTimeCategory() {
-		return volunteeredTimeCategory;
+	public String getActivityName() {
+		return activityName;
 	}
 
-	public void setVolunteeredTimeCategory(String volunteeredTimeCategory) {
-		this.volunteeredTimeCategory = volunteeredTimeCategory;
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
 	}
 
 	@Property()
@@ -155,21 +154,21 @@ public class VolunteerActivityByMonth {
 
 	@Property()
 	@MemberOrder(sequence = "7")
-	public Integer getYearMonth() {
-		return yearMonth;
+	public Integer getActivityYearMonth() {
+		return activityYearMonth;
 	}
 
-	public void setYearMonth(Integer yearMonth) {
-		this.yearMonth = yearMonth;
+	public void setActivityYearMonth(Integer yearMonth) {
+		this.activityYearMonth = yearMonth;
 	}
 
 	@Property()
 	@MemberOrder(sequence = "8")
-	public Float getHoursAttended() {
-		return hoursAttended;
+	public Float getHoursVolunteered() {
+		return hoursVolunteered;
 	}
 
-	public void setHoursAttended(Float hoursAttended) {
-		this.hoursAttended = hoursAttended;
+	public void setHoursVolunteered(Float hoursVolunteered) {
+		this.hoursVolunteered = hoursVolunteered;
 	}
 }

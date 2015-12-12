@@ -72,7 +72,7 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Location", "Admin" })
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
-@Discriminator(value = "EVENT")
+@Discriminator(value = "ACTIVITY")
 @Queries({ @Query(name = "find", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent "),
 		@Query(name = "findActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE name.indexOf(:name) >= 0 "),
 		@Query(name = "findActivitiesWithoutAttendanceList", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE attendances == null "),

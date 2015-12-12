@@ -29,14 +29,14 @@ import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
 
-import au.com.scds.chats.dom.module.report.view.VolunteerActivityByMonth;
+import au.com.scds.chats.dom.module.report.view.VolunteeredTimeByVolunteerAndRoleAndYearMonth;
 
 @DomainService(nature=NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.1")
 public class VolunteerActivity {
 	
-	public List<VolunteerActivityByMonth> volunteerActivityByMonth(){
-		return container.allMatches(new QueryDefault<>(VolunteerActivityByMonth.class,"allVolunteerActivityByMonth"));
+	public List<VolunteeredTimeByVolunteerAndRoleAndYearMonth> volunteerActivityByMonth(){
+		return container.allMatches(new QueryDefault<>(VolunteeredTimeByVolunteerAndRoleAndYearMonth.class,"allVolunteerActivityByMonth"));
 	}
 	
 	@Inject

@@ -50,18 +50,18 @@ import org.joda.time.LocalDate;
 				value = "CREATE VIEW InactiveParticipant "
 						+ "( "
 						+ "  {this.surname}, "
-						+ "  {this.firstname}, "
-						+ "  {this.birthdate}, "
-						+ "  {this.activity}, "
-						+ "  {this.region}, "
+						+ "  {this.firstName}, "
+						+ "  {this.birthDate}, "
+						+ "  {this.activityName}, "
+						+ "  {this.regionName}, "
 						+ "  {this.daysSinceLastAttended} "
 						+ ") AS "
 						+ "SELECT "
 						+ "	 person.surname, "
-						+ "	 person.firstname, "
-						+ "	 person.birthdate, "
-						+ "	 activity.name AS activity, "
-						+ "	 activity.region_name AS region, "
+						+ "	 person.firstname AS firstName, "
+						+ "	 person.birthdate AS birthDate, "
+						+ "	 activity.name AS activityName, "
+						+ "	 activity.region_name AS regionName, "
 						+ "	 datediff(now(),attended.startdatetime) AS daysSinceLastAttended "
 						+ "FROM "
 						+ "	 attended, "
@@ -85,10 +85,10 @@ import org.joda.time.LocalDate;
 public class InactiveParticipant /* implements WithApplicationTenancy */{
 
 	private String surname;
-	private String firstname;
-	private LocalDate birthdate;
-	private String region;
-	private String activity;
+	private String firstName;
+	private LocalDate birthDate;
+	private String regionName;
+	private String activityName;
 	private Integer daysSinceLastAttended;
 
 	public String title() {
@@ -108,31 +108,31 @@ public class InactiveParticipant /* implements WithApplicationTenancy */{
 	@Property()
 	@MemberOrder(sequence = "2")
 	public String getFirstname() {
-		return firstname;
+		return firstName;
 	}
 
 	public void setFirstname(String firstname) {
-		this.firstname = firstname;
+		this.firstName = firstname;
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "3")
 	public LocalDate getBirthdate() {
-		return birthdate;
+		return birthDate;
 	}
 
 	public void setBirthdate(LocalDate birthdate) {
-		this.birthdate = birthdate;
+		this.birthDate = birthdate;
 	}
 
 	@Property()
 	@MemberOrder(sequence = "4")
 	public String getActivity() {
-		return activity;
+		return activityName;
 	}
 
 	public void setActivity(String activity) {
-		this.activity = activity;
+		this.activityName = activity;
 	}
 
 	@Property()
@@ -148,11 +148,11 @@ public class InactiveParticipant /* implements WithApplicationTenancy */{
 	@Property()
 	@MemberOrder(sequence = "6")
 	public String getRegion() {
-		return region;
+		return regionName;
 	}
 
 	public void setRegion(String region) {
-		this.region = region;
+		this.regionName = region;
 	}
 
 	/*
