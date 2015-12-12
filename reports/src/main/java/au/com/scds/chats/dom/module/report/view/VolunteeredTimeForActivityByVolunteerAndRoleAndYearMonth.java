@@ -38,11 +38,11 @@ import org.joda.time.LocalDate;
 @DomainObject(editing = Editing.DISABLED)
 @PersistenceCapable(
 		identityType = IdentityType.NONDURABLE,
-		table = "VolunteeredTimeForActivitesByVolunteerAndRoleAndYearMonth",
+		table = "VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth",
 		extensions = { @Extension(
 				vendorName = "datanucleus",
 				key = "view-definition",
-				value = "CREATE VIEW VolunteeredTimeForActivitesByVolunteerAndRoleAndYearMonth "
+				value = "CREATE VIEW VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth "
 						+ "( "
 						+ "  {this.activityName}, "
 						+ "  {this.activityRegion}, "
@@ -77,19 +77,19 @@ import org.joda.time.LocalDate;
 						+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime), "						
 						+ "  volunteered_time.volunteer_volunteer_id;") })
 @Queries({
-		@Query(name = "allVolunteeredTimeForActivitesByVolunteerAndRoleAndYearMonth",
+		@Query(name = "allVolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth",
 				language = "JDOQL",
-				value = "SELECT FROM au.com.scds.chats.dom.module.report.view.VolunteeredTimeForActivitesByVolunteerAndRoleAndYearMonth") })
+				value = "SELECT FROM au.com.scds.chats.dom.module.report.view.VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth {
 
+	public String activityName;
+	public String activityRegion;
+	public Integer activityYearMonth;
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
-	public String region;
 	public String volunteerStatus;
-	public String activityName;
-	public Integer activityYearMonth;
 	public Float hoursVolunteered;
 
 	@Property()
@@ -124,12 +124,12 @@ public class VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth {
 
 	@Property()
 	@MemberOrder(sequence = "4")
-	public String getRegion() {
-		return region;
+	public String getActivityRegion() {
+		return activityRegion;
 	}
 
-	public void setRegion(String region) {
-		this.region = region;
+	public void setActivityRegion(String region) {
+		this.activityRegion = region;
 	}
 
 	@Property()

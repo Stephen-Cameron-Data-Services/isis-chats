@@ -45,13 +45,13 @@ import org.joda.time.DateTime;
 						+ "( "
 						+ "  {this.activityName}, "
 						+ "  {this.startDateTime}, "
-						+ "  {this.region}, "
+						+ "  {this.regionName}, "
 						+ "  {this.surname}, "
-						+ "  {this.firstname}, "
+						+ "  {this.firstName}, "
 						+ "  {this.prefferedName}, "
 						+ "  {this.address}, "
-						+ "  {this.homephoneNumber}, "
-						+ "  {this.mobileNumber}, "
+						+ "  {this.homePhoneNumber}, "
+						+ "  {this.mobilePhoneNumber}, "
 						+ "  {this.limitingHealthIssues}, "
 						+ "  {this.otherLimitingFactors} "
 						+ ") AS "
@@ -92,19 +92,19 @@ import org.joda.time.DateTime;
 						+ "ORDER BY "
 						+ "  person.surname, person.firstname;") })
 @Queries({
-		@Query(name = "getActivityParticipantDetails", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.ParticipantPerson WHERE activityName == :activity && startDateTime == :datetime && region == :region") })
+		@Query(name = "getParticipantPerson", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.ParticipantPerson WHERE activityName == :activity && startDateTime == :datetime && region == :region") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class ParticipantPersonView {
+public class ParticipantPerson {
 
 	private String activityName;
 	private DateTime startDateTime;
-	private String region;
+	private String regionName;
 	private String surname;
 	private String firstName;
 	private String prefferedName;
 	private String address;
-	private String homephoneNumber;
-	private String mobileNumber;
+	private String homePhoneNumber;
+	private String mobilePhoneNumber;
 	private String limitingHealthIssues;
 	private String otherLimitingFactors;
 
@@ -131,11 +131,11 @@ public class ParticipantPersonView {
 	@Property()
 	@MemberOrder(sequence = "3")
 	public String getRegion() {
-		return region;
+		return regionName;
 	}
 
-	public void setRegion(String region) {
-		this.region = region;
+	public void setRegionName(String region) {
+		this.regionName = region;
 	}
 
 	@Property()
@@ -180,22 +180,22 @@ public class ParticipantPersonView {
 
 	@Property()
 	@MemberOrder(sequence = "8")
-	public String getHomephoneNumber() {
-		return homephoneNumber;
+	public String getHomePhoneNumber() {
+		return homePhoneNumber;
 	}
 
-	public void setHomephoneNumber(String homephoneNumber) {
-		this.homephoneNumber = homephoneNumber;
+	public void setHomePhoneNumber(String homePhoneNumber) {
+		this.homePhoneNumber = homePhoneNumber;
 	}
 
 	@Property()
 	@MemberOrder(sequence = "9")
-	public String getMobileNumber() {
-		return mobileNumber;
+	public String getMobilePhoneNumber() {
+		return mobilePhoneNumber;
 	}
 
-	public void setMobileNumber(String mobileNumber) {
-		this.mobileNumber = mobileNumber;
+	public void setMobilePhoneNumber(String mobilePhoneNumber) {
+		this.mobilePhoneNumber = mobilePhoneNumber;
 	}
 
 	@Property()

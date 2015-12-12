@@ -12,6 +12,11 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>chats-app</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.17</version>
+		</dependency>
 	</dependencies>
 	<profiles>
 		<profile>
@@ -62,6 +67,7 @@
 							<log4jConfiguration>${basedir}/log4j.properties</log4jConfiguration>
 							<verbose>true</verbose>
 							<props>${basedir}/datanucleus.properties</props>
+							<outputFile>${basedir}/ddl.sql</outputFile>
 						</configuration>
 						<executions>
 							<execution>

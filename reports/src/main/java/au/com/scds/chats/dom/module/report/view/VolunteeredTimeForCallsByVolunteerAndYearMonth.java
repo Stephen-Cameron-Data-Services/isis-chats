@@ -90,8 +90,8 @@ public class VolunteeredTimeForCallsByVolunteerAndYearMonth {
 	public String region;
 	public String volunteerStatus;
 	public Integer callScheduleYearMonth;
-	public Float hoursVolunteered;
-	public Float hoursOnCalls;
+	public Float totalHoursVolunteered;
+	public Float totalCallHours;
 
 	@Property()
 	@MemberOrder(sequence = "1")
@@ -155,22 +155,22 @@ public class VolunteeredTimeForCallsByVolunteerAndYearMonth {
 
 	@Property()
 	@MemberOrder(sequence = "10")
-	public Float getHoursVolunteered() {
-		return hoursVolunteered;
+	public Float getTotalHoursVolunteered() {
+		return totalHoursVolunteered;
 	}
 
-	public void setHoursVolunteered(Float hoursVolunteered) {
-		this.hoursVolunteered = hoursVolunteered;
+	public void setTotalHoursVolunteered(Float totalHoursVolunteered) {
+		this.totalHoursVolunteered = totalHoursVolunteered;
 	}
 
 	@Property()
 	@MemberOrder(sequence = "11")
-	public Float getHoursOnCalls() {
-		return hoursOnCalls;
+	public Float getTotalCallHours() {
+		return totalCallHours;
 	}
 
-	public void setHoursOnCalls(Float hoursOnCalls) {
-		this.hoursOnCalls = hoursOnCalls;
+	public void setTotalCallHours(Float totalCallHours) {
+		this.totalCallHours = totalCallHours;
 	}
 
 }
