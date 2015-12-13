@@ -58,7 +58,7 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Unique(name = "Activity_UNQ", members = { "name", "startDateTime", "region" })
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column =
-		"classifier", value = "ACTIVITY")
+		"classifier", value = "_ACTIVITY")
 public abstract class Activity extends AbstractChatsDomainEntity implements Locatable, Comparable<Activity> {
 
 	private Long oldId; // id copied from old system

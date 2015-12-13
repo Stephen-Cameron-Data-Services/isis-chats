@@ -72,33 +72,6 @@ LEFT OUTER JOIN
 ON 
   location.location_id = person.mailaddress_location_id;
 
-DROP VIEW ParticipantSummary;
-CREATE VIEW ParticipantActivityByMonth AS
-SELECT
-  person.surname,
-  person.firstname AS firstName,
-  person.birthdate AS birthDate,
-  person.region_name AS regionName,
-  activity.name AS activityName,
-  participant.status AS participantStatus,
-  EXTRACT(YEAR_MONTH FROM attended.startdatetime) as yearMonth,
-  ROUND(SUM(TIMESTAMPDIFF(MINUTE,attended.startdatetime,attended.enddatetime))/60,1) as hoursAttended
-FROM
-  activity,
-  attended,
-  participant,
-  person
-WHERE
-  attended.activity_activity_id = activity.activity_id AND
-  participant.participant_id = attended.participant_participant_id AND
-  person.person_id = participant.person_person_id AND	
-  participant.status <> 'EXITED'
-GROUP BY
-  participant.participant_id,
-  activity.activity_id,
-  EXTRACT(YEAR_MONTH FROM activity.startdatetime);
-  
-  
 DROP VIEW ParticipantActivityByMonth;
 CREATE VIEW ParticipantActivityByMonth AS
 SELECT
@@ -172,24 +145,24 @@ SELECT
   person.birthdate AS birthDate,  
   person.region_name AS regionName,  
   volunteer.status AS volunteerStatus, 
-  CASE volunteered_time.role  
+  CASE volunteeredtime.role  
     WHEN 'VTACTIVITY' THEN 'ACTIVITIES' 
-    ELSE volunteered_time.role 
+    ELSE volunteeredtime.role 
   END AS volunteerRole, 
-  EXTRACT(YEAR_MONTH FROM volunteered_time.startdatetime) AS yearMonth,  
-  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteered_time.startdatetime,volunteered_time.enddatetime))/60,1) AS hoursVolunteered  
+  EXTRACT(YEAR_MONTH FROM volunteeredtime.startdatetime) AS yearMonth,  
+  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime))/60,1) AS hoursVolunteered  
 FROM  
-  volunteered_time,  
+  volunteeredtime,  
   volunteer,  
   person  
 WHERE  
-  volunteer.volunteer_id = volunteered_time.volunteer_volunteer_id AND  
+  volunteer.volunteer_id = volunteeredtime.volunteer_volunteer_id AND  
   volunteer.person_person_id = person.person_id AND   
   volunteer.status <> 'EXITED'  
 GROUP BY  
   volunteer.volunteer_id,  
-  volunteered_time.role,  
-  EXTRACT(YEAR_MONTH FROM volunteered_time.startdatetime);
+  volunteeredtime.role,  
+  EXTRACT(YEAR_MONTH FROM volunteeredtime.startdatetime);
 
 DROP VIEW VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth;
 CREATE VIEW VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth AS 
@@ -201,15 +174,15 @@ SELECT
   person.firstname AS firstName,  
   person.birthdate AS birthDate,  
   volunteer.status AS volunteerStatus, 
-  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteered_time.startdatetime,volunteered_time.enddatetime))/60,1) as hoursVolunteered  
+  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime))/60,1) as hoursVolunteered  
 FROM  
   activity, 	
-  volunteered_time,  
+  volunteeredtime,  
   volunteer,  
   person  
 WHERE  
-  volunteered_time.activity_activity_id = activity.activity_id AND 
-  volunteer.volunteer_id  = volunteered_time.volunteer_volunteer_id AND  
+  volunteeredtime.activity_activity_id = activity.activity_id AND 
+  volunteer.volunteer_id  = volunteeredtime.volunteer_volunteer_id AND  
   person.person_id = volunteer.person_person_id 
 GROUP BY  
   activity.name,  
@@ -222,12 +195,12 @@ SELECT
   activity.name AS activityName, 
   activity.region_name AS regionName, 
   EXTRACT(YEAR_MONTH FROM activity.startdatetime) AS yearMonth, 
-  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteered_time.startdatetime,volunteered_time.enddatetime))/60,1) AS hoursVolunteered 
+  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime))/60,1) AS hoursVolunteered 
 FROM  
   activity, 
-  volunteered_time 
+  volunteeredtime 
 WHERE 
-  volunteered_time.activity_activity_id = activity.activity_id  
+  volunteeredtime.activity_activity_id = activity.activity_id  
 GROUP BY 
   activity.name, 
   activity.region_name, 
@@ -257,14 +230,14 @@ DROP VIEW VolunteeredTimeForCallsByYearMonth;
 CREATE VIEW VolunteeredTimeForCallsByYearMonth AS 
 SELECT  
   EXTRACT(YEAR_MONTH FROM calendardaycallschedule.calendardate) AS callScheduleYearMonth,  
-  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteered_time.startdatetime,volunteered_time.enddatetime))/60,1) AS hoursVolunteered,  
+  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime))/60,1) AS hoursVolunteered,  
   ROUND(SUM(TIMESTAMPDIFF(MINUTE,scheduledcall.startdatetime,scheduledcall.enddatetime))/60,1) AS hoursOnCalls  
 FROM  
   calendardaycallschedule, 
-  volunteered_time, 
+  volunteeredtime, 
   scheduledcall 
 WHERE  
-  volunteered_time.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id AND 
+  volunteeredtime.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id AND 
   scheduledcall.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id 
 GROUP BY  
   EXTRACT(YEAR_MONTH FROM calendardaycallschedule.calendardate);
@@ -286,7 +259,7 @@ LEFT OUTER JOIN
 ON
   SC.callschedule_calendardaycallschedule_id = CDCS.calendardaycallschedule_id
 LEFT OUTER JOIN
-  volunteered_time AS VT
+  volunteeredtime AS VT
 ON
   VT.callschedule_calendardaycallschedule_id = CDCS.calendardaycallschedule_id
 GROUP BY 

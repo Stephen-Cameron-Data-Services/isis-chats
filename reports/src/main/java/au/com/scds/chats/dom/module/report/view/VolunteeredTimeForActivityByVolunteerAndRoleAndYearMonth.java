@@ -61,21 +61,21 @@ import org.joda.time.LocalDate;
 						+ "  person.firstname AS firstName,  "
 						+ "  person.birthdate AS birthDate,  "
 						+ "  volunteer.status AS volunteerStatus, "
-						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteered_time.startdatetime,volunteered_time.enddatetime))/60,1) as hoursVolunteered  "
+						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime))/60,1) as hoursVolunteered  "
 						+ "FROM  "
 						+ "  activity, "	
-						+ "  volunteered_time,  "
+						+ "  volunteeredtime,  "
 						+ "  volunteer,  "
 						+ "  person  "
 						+ "WHERE  "
-						+ "  volunteered_time.activity_activity_id = activity.activity_id AND "						
-						+ "  volunteer.volunteer_id  = volunteered_time.volunteer_volunteer_id AND  "
+						+ "  volunteeredtime.activity_activity_id = activity.activity_id AND "						
+						+ "  volunteer.volunteer_id  = volunteeredtime.volunteer_volunteer_id AND  "
 						+ "  person.person_id = volunteer.person_person_id "
 						+ "GROUP BY  "
 						+ "  activity.name,  "
 						+ "  activity.region_name, "
 						+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime), "						
-						+ "  volunteered_time.volunteer_volunteer_id;") })
+						+ "  volunteeredtime.volunteer_volunteer_id;") })
 @Queries({
 		@Query(name = "allVolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth",
 				language = "JDOQL",

@@ -59,24 +59,24 @@ import org.joda.time.LocalDate;
 						+ "  person.birthdate AS birthDate,  "
 						+ "  person.region_name AS regionName,  "
 						+ "  volunteer.status as volunteerStatus, "
-						+ "  CASE volunteered_time.role  "
+						+ "  CASE volunteeredtime.role  "
 						+ "    WHEN 'VTACTIVITY' THEN 'ACTIVITIES' "
-						+ "    ELSE volunteered_time.role "
+						+ "    ELSE volunteeredtime.role "
 						+ "  END AS volunteerRole, "
-						+ "  EXTRACT(YEAR_MONTH FROM volunteered_time.startdatetime) as yearMonth,  "
-						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteered_time.startdatetime,volunteered_time.enddatetime))/60,1) as hoursVolunteered  "
+						+ "  EXTRACT(YEAR_MONTH FROM volunteeredtime.startdatetime) as yearMonth,  "
+						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime))/60,1) as hoursVolunteered  "
 						+ "FROM  "
-						+ "  volunteered_time,  "
+						+ "  volunteeredtime,  "
 						+ "  volunteer,  "
 						+ "  person  "
 						+ "WHERE  "
-						+ "  volunteer.volunteer_id = volunteered_time.volunteer_volunteer_id AND  "
+						+ "  volunteer.volunteer_id = volunteeredtime.volunteer_volunteer_id AND  "
 						+ "  volunteer.person_person_id = person.person_id AND   "
 						+ "  volunteer.status <> 'EXITED'  "
 						+ "GROUP BY  "
 						+ "  volunteer.volunteer_id,  "
-						+ "  volunteered_time.role,  "
-						+ "  EXTRACT(YEAR_MONTH FROM volunteered_time.startdatetime);") })
+						+ "  volunteeredtime.role,  "
+						+ "  EXTRACT(YEAR_MONTH FROM volunteeredtime.startdatetime);") })
 @Queries({
 		@Query(name = "allVolunteeredTimeByVolunteerAndRoleAndYearMonth",
 				language = "JDOQL",
