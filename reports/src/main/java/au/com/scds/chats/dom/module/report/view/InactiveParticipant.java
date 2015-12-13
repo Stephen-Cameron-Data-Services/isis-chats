@@ -80,7 +80,7 @@ import org.joda.time.LocalDate;
 						+ " daysSinceLastAttended DESC;") })
 @Queries({
 		@Query(name = "findInactiveParticipants", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.InactiveParticipant "),
-		@Query(name = "getParticipantActivity", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.InactiveParticipant WHERE firstname == :firstname && surname == :surname && birthdate == :birthdate") })
+		@Query(name = "getParticipantActivity", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.InactiveParticipant WHERE firstName == :firstname && surname == :surname && birthDate == :birthdate") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class InactiveParticipant /* implements WithApplicationTenancy */{
 

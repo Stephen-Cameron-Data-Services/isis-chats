@@ -40,7 +40,7 @@ import au.com.scds.chats.dom.module.report.view.VolunteeredTimeForCallsByVolunte
 public class VolunteeringReports {
 	
 	public List<VolunteeredTimeByVolunteerAndRoleAndYearMonth> volunteeredTimeByMonth(){
-		return container.allMatches(new QueryDefault<>(VolunteeredTimeByVolunteerAndRoleAndYearMonth.class,"allVolunteerActivityByMonth"));
+		return container.allMatches(new QueryDefault<>(VolunteeredTimeByVolunteerAndRoleAndYearMonth.class,"allVolunteeredTimeByVolunteerAndRoleAndYearMonth"));
 	}
 	
 	public List<VolunteeredTimeForActivityByYearMonth> volunteeredTimeForActivitiesByMonth(){

@@ -10,6 +10,8 @@ import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
+import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
 
 @ViewModel
@@ -40,7 +42,7 @@ import org.apache.isis.applib.annotation.ViewModel;
 						"  aym.regionName = vtas.regionName AND " +
 						"  aym.yearMonth = vtas.yearMonth;") })
 @Queries({
-	@Query(name = "findVolunteeredTimeForActivityByYearMonth", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.VolunteeredTimeForActivityByYearMonth") })
+	@Query(name = "allVolunteeredTimeForActivityByYearMonth", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.VolunteeredTimeForActivityByYearMonth") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class VolunteeredTimeForActivityByYearMonth {
 
@@ -49,6 +51,8 @@ public class VolunteeredTimeForActivityByYearMonth {
 	public Integer yearMonth;
 	public Float hoursVolunteered;
 
+	@Property()
+	@MemberOrder(sequence="1")
 	public String getActivityName() {
 		return activityName;
 	}
@@ -57,6 +61,8 @@ public class VolunteeredTimeForActivityByYearMonth {
 		this.activityName = activityName;
 	}
 
+	@Property()
+	@MemberOrder(sequence="2")
 	public String getRegionName() {
 		return regionName;
 	}
@@ -65,6 +71,8 @@ public class VolunteeredTimeForActivityByYearMonth {
 		this.regionName = regionName;
 	}
 
+	@Property()
+	@MemberOrder(sequence="3")	
 	public Integer getYearMonth() {
 		return yearMonth;
 	}
@@ -73,6 +81,8 @@ public class VolunteeredTimeForActivityByYearMonth {
 		this.yearMonth = yearMonth;
 	}
 
+	@Property()
+	@MemberOrder(sequence="4")
 	public Float getHoursVolunteered() {
 		return hoursVolunteered;
 	}

@@ -53,11 +53,11 @@ import org.joda.time.LocalDate;
 						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteered_time.startdatetime,volunteered_time.enddatetime))/60,1) AS hoursVolunteered,  "
 						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,scheduledcall.startdatetime,scheduledcall.enddatetime))/60,1) AS hoursOnCalls  "
 						+ "FROM  "
-						+ "  calendardaycallschedule, "						
-						+ "  volunteered_time, "						
+						+ "  calendardaycallschedule, "
+						+ "  volunteered_time, "
 						+ "  scheduledcall "
 						+ "WHERE  "
-						+ "  volunteered_time.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id AND "						
+						+ "  volunteered_time.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id AND "
 						+ "  scheduledcall.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id "
 						+ "GROUP BY  "
 						+ "  EXTRACT(YEAR_MONTH FROM calendardaycallschedule.calendardate);") })
@@ -71,22 +71,33 @@ public class VolunteeredTimeForCallsByYearMonth {
 	private Integer callScheduleYearMonth;
 	private Float hoursVolunteered;
 	private Float hoursOnCalls;
-	
+
+	@Property()
+	@MemberOrder(sequence = "1")
 	public Integer getCallScheduleYearMonth() {
 		return callScheduleYearMonth;
 	}
+
 	public void setCallScheduleYearMonth(Integer callScheduleYearMonth) {
 		this.callScheduleYearMonth = callScheduleYearMonth;
 	}
+
+	@Property()
+	@MemberOrder(sequence="2")
 	public Float getHoursVolunteered() {
 		return hoursVolunteered;
 	}
+
 	public void setHoursVolunteered(Float hoursVolunteered) {
 		this.hoursVolunteered = hoursVolunteered;
 	}
+
+	@Property()
+	@MemberOrder(sequence="3")	
 	public Float getHoursOnCalls() {
 		return hoursOnCalls;
 	}
+
 	public void setHoursOnCalls(Float hoursOnCalls) {
 		this.hoursOnCalls = hoursOnCalls;
 	}
