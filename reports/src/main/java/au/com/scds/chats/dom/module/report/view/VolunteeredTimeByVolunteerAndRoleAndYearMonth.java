@@ -47,7 +47,7 @@ import org.joda.time.LocalDate;
 						+ " {this.surname}, "
 						+ " {this.firstName}, "
 						+ " {this.birthDate}, "
-						+ " {this.region}, "
+						+ " {this.regionName}, "
 						+ " {this.volunteerStatus}, "
 						+ " {this.volunteerRole}, "
 						+ " {this.yearMonth}, "
@@ -87,7 +87,7 @@ public class VolunteeredTimeByVolunteerAndRoleAndYearMonth {
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
-	public String region;
+	public String regionName;
 	public String volunteerStatus;
 	public String volunteerRole;
 	public Integer yearMonth;
@@ -125,12 +125,12 @@ public class VolunteeredTimeByVolunteerAndRoleAndYearMonth {
 
 	@Property()
 	@MemberOrder(sequence = "4")
-	public String getRegion() {
-		return region;
+	public String getRegionName() {
+		return regionName;
 	}
 
-	public void setRegion(String region) {
-		this.region = region;
+	public void setRegionName(String region) {
+		this.regionName = region;
 	}
 
 	@Property()

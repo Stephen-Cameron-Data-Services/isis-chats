@@ -12,6 +12,15 @@ import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.ViewModel;
 
+/**
+ * 
+ * Simple ViewModel of Activities (ActivityEvents) grouped by year-month (of
+ * startdDateTime).
+ * 
+ * Cannot have sub-selects in DB views so need this one to find all Activities
+ * without Volunteered times, see VolunteeredTimeForActivityByYearMonthWithZeroValues.
+ * 
+ */
 @ViewModel
 @DomainObject(editing = Editing.DISABLED)
 @PersistenceCapable(

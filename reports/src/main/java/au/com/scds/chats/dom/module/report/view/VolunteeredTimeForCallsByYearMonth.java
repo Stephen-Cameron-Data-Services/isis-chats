@@ -69,8 +69,8 @@ import org.joda.time.LocalDate;
 public class VolunteeredTimeForCallsByYearMonth {
 
 	private Integer callScheduleYearMonth;
-	private Integer hoursVolunteered;
-	private Integer hoursOnCalls;
+	private Float hoursVolunteered;
+	private Float hoursOnCalls;
 	
 	public Integer getCallScheduleYearMonth() {
 		return callScheduleYearMonth;
@@ -78,16 +78,16 @@ public class VolunteeredTimeForCallsByYearMonth {
 	public void setCallScheduleYearMonth(Integer callScheduleYearMonth) {
 		this.callScheduleYearMonth = callScheduleYearMonth;
 	}
-	public Integer getHoursVolunteered() {
+	public Float getHoursVolunteered() {
 		return hoursVolunteered;
 	}
-	public void setHoursVolunteered(Integer hoursVolunteered) {
+	public void setHoursVolunteered(Float hoursVolunteered) {
 		this.hoursVolunteered = hoursVolunteered;
 	}
-	public Integer getHoursOnCalls() {
+	public Float getHoursOnCalls() {
 		return hoursOnCalls;
 	}
-	public void setHoursOnCalls(Integer hoursOnCalls) {
+	public void setHoursOnCalls(Float hoursOnCalls) {
 		this.hoursOnCalls = hoursOnCalls;
 	}
 

@@ -47,36 +47,41 @@ import org.joda.time.LocalDate;
 						+ "  {this.surname}, "
 						+ "  {this.firstName}, "
 						+ "  {this.birthDate}, "
-						+ "  {this.region}, "
-						+ "  {this.volunteerStatus}, "
+						+ "  {this.volunteerStatus}, "						
+						+ "  {this.volunteerRegion}, "
 						+ "  {this.callScheduleYearMonth}, "
-						+ "  {this.totalHoursVolunteered}, "
+						+ "  {this.totalCalls}, "
+						+ "  {this.totalCompletedCalls}, "
+						+ "  {this.totalVolunteeredHours}, "
 						+ "  {this.totalCallHours} "
 						+ ") AS "
-						+ "SELECT  "
-						+ "  person.surname,  "
-						+ "  person.firstname AS firstName,  "
-						+ "  person.birthdate AS birthDate,  "
-						+ "  person.region_name AS region,  "
+						+ "SELECT "
+						+ "  person.surname, "
+						+ "  person.firstname AS firstName, "
+						+ "  person.birthdate AS birthDate, "
 						+ "  volunteer.status AS volunteerStatus, "
-						+ "  EXTRACT(YEAR_MONTH FROM calendardaycallschedule.calendardate) AS callScheduleYearMonth,  "
-						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteered_time.startdatetime,volunteered_time.enddatetime))/60,1) AS totalVolunteeredHours,  "
-						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,scheduledcall.startdatetime,scheduledcall.enddatetime))/60,1) AS totalCallHours  "
-						+ "FROM  "
-						+ "  calendardaycallschedule, "						
+						+ "  volunteer.region_name AS volunteerRegion, "
+						+ "  EXTRACT(YEAR_MONTH FROM callschedulesummary.calendardate) AS callScheduleYearMonth, "
+						+ "  SUM(callschedulesummary.totalcalls) AS totalCalls, "
+						+ "  SUM(callschedulesummary.completedcalls) AS totalCompletedCalls, "
+						+ "  SUM(CASE "
+						+ "  	WHEN isnull(callschedulesummary.totalVolunteeredHours) THEN 0 "
+						+ "  	ELSE callschedulesummary.totalVolunteeredHours "
+						+ "  END) AS totalVolunteeredHours, "
+						+ "  SUM(CASE "
+						+ "    WHEN isnull(callschedulesummary.totalCallHours) THEN 0 "
+						+ "    ELSE callschedulesummary.totalCallHours "
+						+ "  END) AS totalCallHours "
+						+ "FROM "
+						+ "  callschedulesummary, " 
 						+ "  volunteer, "
-						+ "  person, "	
-						+ "  volunteered_time, "						
-						+ "  scheduledcall "
-						+ "WHERE  "
-						+ "  volunteer.volunteer_id = calendardaycallschedule.allocatedvolunteer_volunteer_id AND "
-						+ "  volunteered_time.volunteer_volunteer_id = volunteer.volunteer_id AND "
-						+ "  person.person_id = volunteer.person_person_id AND "
-						+ "  volunteered_time.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id AND "						
-						+ "  calendardaycallschedule.allocatedvolunteer_volunteer_id = volunteer.volunteer_id "
+						+ "  person "
+						+ "WHERE "
+						+ "  volunteer.volunteer_id = callschedulesummary.allocatedvolunteer_volunteer_id AND "
+						+ "  person.person_id = volunteer.person_person_id "
 						+ "GROUP BY  "
 						+ "  volunteer.volunteer_id,  "
-						+ "  EXTRACT(YEAR_MONTH FROM callschedule.calendardate);") })
+						+ "  EXTRACT(YEAR_MONTH FROM callschedulesummary.calendardate);") })
 @Queries({
 		@Query(name = "allVolunteeredTimeForCallsByVolunteerAndYearMonth",
 				language = "JDOQL",
@@ -87,12 +92,14 @@ public class VolunteeredTimeForCallsByVolunteerAndYearMonth {
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
-	public String region;
 	public String volunteerStatus;
+	public String volunteerRegion;	
 	public Integer callScheduleYearMonth;
-	public Float totalHoursVolunteered;
+	public Integer totalCalls;
+	public Integer totalCompletedCalls;
+	public Float totalVolunteeredHours;
 	public Float totalCallHours;
-
+	
 	@Property()
 	@MemberOrder(sequence = "1")
 	public String getSurname() {
@@ -125,12 +132,12 @@ public class VolunteeredTimeForCallsByVolunteerAndYearMonth {
 
 	@Property()
 	@MemberOrder(sequence = "4")
-	public String getRegion() {
-		return region;
+	public String getVolunteerRegion() {
+		return volunteerRegion;
 	}
 
-	public void setRegion(String region) {
-		this.region = region;
+	public void setVolunteerRegion(String region) {
+		this.volunteerRegion = region;
 	}
 
 	@Property()
@@ -155,12 +162,12 @@ public class VolunteeredTimeForCallsByVolunteerAndYearMonth {
 
 	@Property()
 	@MemberOrder(sequence = "10")
-	public Float getTotalHoursVolunteered() {
-		return totalHoursVolunteered;
+	public Float getTotalVolunteeredHours() {
+		return totalVolunteeredHours;
 	}
 
-	public void setTotalHoursVolunteered(Float totalHoursVolunteered) {
-		this.totalHoursVolunteered = totalHoursVolunteered;
+	public void setTotalVolunteeredHours(Float totalVolunteeredHours) {
+		this.totalVolunteeredHours = totalVolunteeredHours;
 	}
 
 	@Property()
@@ -171,6 +178,22 @@ public class VolunteeredTimeForCallsByVolunteerAndYearMonth {
 
 	public void setTotalCallHours(Float totalCallHours) {
 		this.totalCallHours = totalCallHours;
+	}
+
+	public Integer getTotalCalls() {
+		return totalCalls;
+	}
+
+	public void setTotalCalls(Integer totalCalls) {
+		this.totalCalls = totalCalls;
+	}
+
+	public Integer getTotalCompletedCalls() {
+		return totalCompletedCalls;
+	}
+
+	public void setTotalCompletedCalls(Integer totalCompletedCalls) {
+		this.totalCompletedCalls = totalCompletedCalls;
 	}
 
 }

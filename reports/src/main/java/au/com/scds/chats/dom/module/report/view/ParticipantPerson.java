@@ -48,7 +48,7 @@ import org.joda.time.DateTime;
 						+ "  {this.regionName}, "
 						+ "  {this.surname}, "
 						+ "  {this.firstName}, "
-						+ "  {this.prefferedName}, "
+						+ "  {this.preferredName}, "
 						+ "  {this.address}, "
 						+ "  {this.homePhoneNumber}, "
 						+ "  {this.mobilePhoneNumber}, "
@@ -101,7 +101,7 @@ public class ParticipantPerson {
 	private String regionName;
 	private String surname;
 	private String firstName;
-	private String prefferedName;
+	private String preferredName;
 	private String address;
 	private String homePhoneNumber;
 	private String mobilePhoneNumber;
@@ -160,12 +160,12 @@ public class ParticipantPerson {
 
 	@Property()
 	@MemberOrder(sequence = "6")
-	public String getPrefferedName() {
-		return prefferedName;
+	public String getPreferredName() {
+		return preferredName;
 	}
 
-	public void setPrefferedName(String prefferedName) {
-		this.prefferedName = prefferedName;
+	public void setPreferredName(String preferredName) {
+		this.preferredName = preferredName;
 	}
 
 	@Property()

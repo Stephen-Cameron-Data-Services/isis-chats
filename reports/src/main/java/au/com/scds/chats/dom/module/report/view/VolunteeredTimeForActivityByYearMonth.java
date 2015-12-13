@@ -20,35 +20,34 @@ import org.apache.isis.applib.annotation.ViewModel;
 		extensions = { @Extension(
 				vendorName = "datanucleus",
 				key = "view-definition",
-				value = "CREATE VIEW VolunteeredTimeForActivityByYearMonth ("
-						+ "  {this.activityName},"
-						+ "  {this.regionName},"
-						+ "  {this.yearMonth},"
-						+ "  {this.hoursVolunteered}"
-						+ ") AS "
-						+ "SELECT "
-						+ "  activity.name as activityName, "
-						+ "  activity.region_name as regionName, "
-						+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime) as yearMonth, "
-						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteered_time.startdatetime,volunteered_time.enddatetime))/60,1) as hoursVolunteered "
-						+ "FROM  "
-						+ "  activity, "
-						+ "  volunteered_time "
-						+ "WHERE "
-						+ "  volunteered_time.activity_activity_id = activity.activity_id  "
-						+ "GROUP BY "
-						+ "  activity.name, "
-						+ "  activity.region_name, "
-						+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime);") })
+				value = "CREATE VIEW VolunteeredTimeForActivityByYearMonth ( " +
+						"  {this.activityName}, " +
+						"  {this.regionName}, " +
+						"  {this.yearMonth}, " +
+						"  {this.hoursVolunteered} " +
+						") AS " +
+						"SELECT aym.*, " +
+						"  CASE " +
+						"  WHEN isnull(vtas.hoursVolunteered) THEN 0 " +
+						"  ELSE vtas.hoursVolunteered " +
+						"  END AS hoursVolunteered " +
+						"FROM " +
+						"  activityyearmonth AS aym " +
+						"LEFT OUTER JOIN " +
+						"  volunteeredtimeforactivitysummary AS vtas " +
+						"ON " +
+						"  aym.activityName = vtas.activityName AND " +
+						"  aym.regionName = vtas.regionName AND " +
+						"  aym.yearMonth = vtas.yearMonth;") })
 @Queries({
-	@Query(name = "findVolunteeredTimeForActivityByYearMonth", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.VolunteeredTimeForActivityByYearMonth ") })
+	@Query(name = "findVolunteeredTimeForActivityByYearMonth", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.VolunteeredTimeForActivityByYearMonth") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class VolunteeredTimeForActivityByYearMonth {
 
-	public String activityName;
+	public String activityName;	
 	public String regionName;
-	public String yearMonth;
-	public String hoursVolunteered;
+	public Integer yearMonth;
+	public Float hoursVolunteered;
 
 	public String getActivityName() {
 		return activityName;
@@ -66,20 +65,19 @@ public class VolunteeredTimeForActivityByYearMonth {
 		this.regionName = regionName;
 	}
 
-	public String getYearMonth() {
+	public Integer getYearMonth() {
 		return yearMonth;
 	}
 
-	public void setYearMonth(String yearMonth) {
+	public void setYearMonth(Integer yearMonth) {
 		this.yearMonth = yearMonth;
 	}
 
-	public String getHoursVolunteered() {
+	public Float getHoursVolunteered() {
 		return hoursVolunteered;
 	}
 
-	public void setHoursVolunteered(String hoursVolunteered) {
+	public void setHoursVolunteered(Float hoursVolunteered) {
 		this.hoursVolunteered = hoursVolunteered;
 	}
-
 }

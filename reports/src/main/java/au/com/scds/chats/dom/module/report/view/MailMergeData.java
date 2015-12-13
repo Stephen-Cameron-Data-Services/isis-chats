@@ -49,7 +49,7 @@ import org.joda.time.LocalDate;
 						+ "  {this.surname}, "
 						+ "  {this.firstName}, "
 						+ "  {this.middleName}, "
-						+ "  {this.prefferedName}, "
+						+ "  {this.preferredName}, "
 						+ "  {this.birthDate}, "
 						+ "  {this.homePhoneNumber}, "
 						+ "  {this.mobilePhoneNumber}, "
@@ -104,7 +104,7 @@ public class MailMergeData {
 	public String surname;
 	public String firstName;
 	public String middleName;
-	public String prefferedName;
+	public String preferredName;
 	public LocalDate birthDate;
 	public String homePhoneNumber;
 	public String mobilePhoneNumber;
@@ -153,12 +153,12 @@ public class MailMergeData {
 
 	@Property()
 	@MemberOrder(sequence = "4")
-	public String getPrefferedName() {
-		return prefferedName;
+	public String getPreferredName() {
+		return preferredName;
 	}
 
-	public void setPrefferedName(String prefferedName) {
-		this.prefferedName = prefferedName;
+	public void setPreferredName(String prefferedName) {
+		this.preferredName = prefferedName;
 	}
 
 	@Property()
