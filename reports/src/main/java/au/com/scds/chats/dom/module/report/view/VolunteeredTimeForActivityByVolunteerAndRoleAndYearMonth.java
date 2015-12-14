@@ -92,38 +92,20 @@ public class VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth {
 	public String volunteerStatus;
 	public Float hoursVolunteered;
 
+
+
 	@Property()
 	@MemberOrder(sequence = "1")
-	public String getSurname() {
-		return surname;
+	public String getActivityName() {
+		return activityName;
 	}
 
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
-
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
+	}	
+	
 	@Property()
 	@MemberOrder(sequence = "2")
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	@Property()
-	@MemberOrder(sequence = "3")
-	public LocalDate getBirthDate() {
-		return birthDate;
-	}
-
-	public void setBirthDate(LocalDate birthDate) {
-		this.birthDate = birthDate;
-	}
-
-	@Property()
-	@MemberOrder(sequence = "4")
 	public String getActivityRegion() {
 		return activityRegion;
 	}
@@ -133,17 +115,37 @@ public class VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth {
 	}
 
 	@Property()
-	@MemberOrder(sequence = "5.1")
-	public String getActivityName() {
-		return activityName;
+	@MemberOrder(sequence = "3")
+	public String getSurname() {
+		return surname;
 	}
 
-	public void setActivityName(String activityName) {
-		this.activityName = activityName;
+	public void setSurname(String surname) {
+		this.surname = surname;
 	}
 
 	@Property()
-	@MemberOrder(sequence = "5.2")
+	@MemberOrder(sequence = "4")
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "5")
+	public LocalDate getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(LocalDate birthDate) {
+		this.birthDate = birthDate;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "6")
 	public String getVolunteerStatus() {
 		return volunteerStatus;
 	}

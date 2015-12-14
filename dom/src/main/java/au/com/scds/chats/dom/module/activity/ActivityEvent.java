@@ -33,10 +33,8 @@ import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEvent;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEventable;
 import org.joda.time.DateTime;
 
-import au.com.scds.chats.dom.CalendarNameRepositoryForChats;
+//import au.com.scds.chats.dom.CalendarNameRepositoryForChats;
 import au.com.scds.chats.dom.module.attendance.AttendanceList;
-import au.com.scds.chats.dom.module.general.Location;
-import au.com.scds.chats.dom.module.general.Persons;
 import au.com.scds.chats.dom.module.general.names.ActivityType;
 //import au.com.scds.chats.dom.module.note.NoteLinkable;
 import au.com.scds.chats.dom.module.participant.Participant;
@@ -163,7 +161,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	// CalendarEventable methods
 	@Programmatic
 	public String getCalendarName() {
-		return CalendarNameRepositoryForChats.calendarNameFor(this);
+		return "Activities";
 	}
 
 	@Programmatic

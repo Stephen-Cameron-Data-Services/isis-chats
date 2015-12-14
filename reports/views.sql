@@ -1,4 +1,4 @@
-DROP VIEW ActivityYearMonth;
+#DROP VIEW ActivityYearMonth;
 CREATE VIEW ActivityYearMonth AS
 SELECT
   activity.name as activityName,
@@ -13,7 +13,7 @@ GROUP BY
   activity.region_name,
   EXTRACT(YEAR_MONTH FROM activity.startdatetime);
 
-DROP VIEW InactiveParticipant;
+#DROP VIEW InactiveParticipant;
 CREATE VIEW InactiveParticipant AS
 SELECT 
   person.surname, 
@@ -38,7 +38,7 @@ GROUP BY
 ORDER BY 
  daysSinceLastAttended DESC;
 
-DROP VIEW MailMergeData;
+#DROP VIEW MailMergeData;
 CREATE VIEW MailMergeData AS
 SELECT 
   person.salutation_name AS salutation, 
@@ -72,7 +72,7 @@ LEFT OUTER JOIN
 ON 
   location.location_id = person.mailaddress_location_id;
 
-DROP VIEW ParticipantActivityByMonth;
+#DROP VIEW ParticipantActivityByMonth;
 CREATE VIEW ParticipantActivityByMonth AS
 SELECT
   person.surname,
@@ -98,7 +98,7 @@ GROUP BY
   activity.activity_id,
   EXTRACT(YEAR_MONTH FROM activity.startdatetime);
 
-DROP VIEW ParticipantPerson;
+#DROP VIEW ParticipantPerson;
 CREATE VIEW ParticipantPerson AS
 SELECT
   activity.name AS activityName,
@@ -137,7 +137,7 @@ ON
 ORDER BY
   person.surname, person.firstname;
 
-DROP VIEW VolunteeredTimeByVolunteerAndRoleAndYearMonth;
+#DROP VIEW VolunteeredTimeByVolunteerAndRoleAndYearMonth;
 CREATE VIEW VolunteeredTimeByVolunteerAndRoleAndYearMonth AS
 SELECT
   person.surname,
@@ -164,7 +164,7 @@ GROUP BY
   volunteeredtime.role,  
   EXTRACT(YEAR_MONTH FROM volunteeredtime.startdatetime);
 
-DROP VIEW VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth;
+#DROP VIEW VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth;
 CREATE VIEW VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth AS 
 SELECT  
   activity.name as activityName, 
@@ -189,7 +189,7 @@ GROUP BY
   activity.region_name, 
   EXTRACT(YEAR_MONTH FROM activity.startdatetime);
 
-DROP VIEW VolunteeredTimeForActivitySummary;
+#DROP VIEW VolunteeredTimeForActivitySummary;
 CREATE VIEW VolunteeredTimeForActivitySummary AS 
 SELECT 
   activity.name AS activityName, 
@@ -206,7 +206,7 @@ GROUP BY
   activity.region_name, 
   EXTRACT(YEAR_MONTH FROM activity.startdatetime);
 
-DROP VIEW VolunteeredTimeForActivityByYearMonth;
+#DROP VIEW VolunteeredTimeForActivityByYearMonth;
 CREATE VIEW VolunteeredTimeForActivityByYearMonth AS 
 SELECT  aym.*,
   CASE 
@@ -226,7 +226,7 @@ ON
 
 
 
-DROP VIEW VolunteeredTimeForCallsByYearMonth;
+#DROP VIEW VolunteeredTimeForCallsByYearMonth;
 CREATE VIEW VolunteeredTimeForCallsByYearMonth AS 
 SELECT  
   EXTRACT(YEAR_MONTH FROM calendardaycallschedule.calendardate) AS callScheduleYearMonth,  
@@ -242,7 +242,7 @@ WHERE
 GROUP BY  
   EXTRACT(YEAR_MONTH FROM calendardaycallschedule.calendardate);
 
-DROP VIEW CallScheduleSummary;
+#DROP VIEW CallScheduleSummary;
 CREATE VIEW CallScheduleSummary AS 
 SELECT
   CDCS.calendardaycallschedule_id,
@@ -265,7 +265,7 @@ ON
 GROUP BY 
   CDCS.calendardaycallschedule_id;
 
-DROP VIEW VolunteeredTimeForCallsByVolunteerAndYearMonth;
+#DROP VIEW VolunteeredTimeForCallsByVolunteerAndYearMonth;
 CREATE VIEW VolunteeredTimeForCallsByVolunteerAndYearMonth AS 
 SELECT
   person.surname,
