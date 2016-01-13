@@ -10,7 +10,7 @@ import javax.persistence.EntityManager;
 import org.apache.isis.applib.DomainObjectContainer;
 
 import au.com.scds.chats.dom.module.general.Location;
-import au.com.scds.chats.dom.module.general.codes.ActivityType;
+import au.com.scds.chats.dom.module.general.names.ActivityType;
 
 public class ActivityTypeMap {
 
@@ -21,7 +21,7 @@ public class ActivityTypeMap {
 		this.em = em;
 	}
 
-	public au.com.scds.chats.dom.module.general.codes.ActivityType map(BigInteger id) {
+	public au.com.scds.chats.dom.module.general.names.ActivityType map(BigInteger id) {
 		if (id == null)
 			return null;
 		else {
@@ -40,7 +40,7 @@ public class ActivityTypeMap {
 		List<au.com.scds.chats.datamigration.model.Activitytype> activityTypes = this.em.createQuery("select activityType from Activitytype activityType", au.com.scds.chats.datamigration.model.Activitytype.class).getResultList();
 		for (au.com.scds.chats.datamigration.model.Activitytype activityType : activityTypes) {
 			if (!map.containsKey(activityType.getId())) {
-				au.com.scds.chats.dom.module.general.codes.ActivityType newActivityType = new au.com.scds.chats.dom.module.general.codes.ActivityType();
+				au.com.scds.chats.dom.module.general.names.ActivityType newActivityType = new au.com.scds.chats.dom.module.general.names.ActivityType();
 				newActivityType.setName(activityType.getTitle());
 				map.put(activityType.getId(), newActivityType);
 				System.out.println("ActivityType(" + newActivityType.getName() + ")");

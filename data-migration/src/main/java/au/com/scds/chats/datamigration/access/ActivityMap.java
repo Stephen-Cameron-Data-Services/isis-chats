@@ -48,7 +48,7 @@ public class ActivityMap extends BaseMap{
 				n.setOldId(o.getId().longValue());
 				n.setActivityType(activityTypes.map(o.getActivitytypeId()));
 				n.setApproximateEndDateTime(new org.joda.time.DateTime(o.getApprximateEndDTTM()));
-				n.setCopiedFromActivityId(BigInt2Long(o.getCopiedFrom__activity_id()));
+				//n.setCopiedFromActivityId(BigInt2Long(o.getCopiedFrom__activity_id()));
 				n.setCostForParticipant(o.getCostForParticipant());
 				n.setCreatedBy(BigInt2Long(o.getCreatedbyUserId()));
 				n.setCreatedOn(new org.joda.time.DateTime(o.getCreatedDTTM()));
@@ -57,7 +57,7 @@ public class ActivityMap extends BaseMap{
 				n.setLastModifiedBy(BigInt2Long(o.getLastmodifiedbyUserId()));
 				n.setLastModifiedOn(new org.joda.time.DateTime(o.getLastmodifiedDTTM()));
 				n.setActivityType(activityTypes.map(o.getActivitytypeId()));
-				n.setNotes(o.getNotes());
+				//n.setNotes(o.getNotes());
 				n.setRegion(regions.map(o.getRegion()));
 				n.setIsRestricted(o.getRestricted() != 0);
 				n.setScheduleId(BigInt2Long(o.getScheduleId()));

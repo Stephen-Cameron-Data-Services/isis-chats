@@ -136,7 +136,7 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 					String path = user.getTenancy().getPath();
 					String name = null;
 					if (path.equals("/")) {
-						name = "GLOBAL";
+						name = "STATEWIDE";
 					} else if (path.matches("^\\/[_A-Za-z0-9-]+_$")) {
 						name = path.substring(1, path.length() - 1);
 					} else {
@@ -170,7 +170,7 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 	@Programmatic
 	public ApplicationTenancy getApplicationTenancy() {
 		ApplicationTenancy tenancy = new ApplicationTenancy();
-		if (getRegion().getName().equals("GLOBAL"))
+		if (getRegion().getName().equals("STATEWIDE"))
 			tenancy.setPath("/");
 		else {
 			tenancy.setPath("/" + getRegion().getName() + "_");
