@@ -25,17 +25,33 @@ import domainapp.app.DomainAppAppManifest;
 
 public class DomainAppSystemInitializer {
 
-    public static void initIsft() {
-        IsisSystemForTest isft = IsisSystemForTest.getElseNull();
-        if(isft == null) {
-            isft = new IsisSystemForTest.Builder()
-                    .withLoggingAt(org.apache.log4j.Level.INFO)
-                    .with(new DomainAppAppManifest())
-                    .with(new IsisConfigurationForJdoIntegTests())
-                    .build()
-                    .setUpSystem();
-            IsisSystemForTest.set(isft);
-        }
-    }
+	public static void initIsft() {
+		IsisSystemForTest isft = IsisSystemForTest.getElseNull();
+
+		IsisConfigurationForJdoIntegTests config = new IsisConfigurationForJdoIntegTests();
+
+		config.put("isis.persistor.datanucleus.impl.datanucleus.identifier.case","LowerCase");
+		config.put("isis.persistor.datanucleus.impl.datanucleus.identifierFactory","jpa");
+		config.put("isis.persistor.datanucleus.impl.datanucleus.schema.autoCreateAll","false");
+		config.put("isis.persistor.datanucleus.impl.datanucleus.schema.validateTables","false");
+		config.put("isis.persistor.datanucleus.impl.datanucleus.schema.validateConstraints","false");
+		config.put("isis.persistor.datanucleus.install-fixtures","false");
+		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionDriverName", "com.mysql.jdbc.Driver");
+		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionURL",
+				"jdbc:mysql://localhost:3306/chats?zeroDateTimeBehavior=convertToNull");
+		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionUserName", "chats");
+		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionPassword", "password");
+
+		if (isft == null) {
+			try{
+			isft = new IsisSystemForTest.Builder().withLoggingAt(org.apache.log4j.Level.DEBUG)
+					.with(new DomainAppAppManifest()).with(config).build()
+					.setUpSystem();
+			IsisSystemForTest.set(isft);
+			} catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+	}
 
 }

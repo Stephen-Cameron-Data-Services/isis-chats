@@ -31,7 +31,7 @@ public class ParticipationMap extends BaseMap {
 	ActivityMap activities;
 	Map<BigInteger, Participant> map = new HashMap<BigInteger, Participant>();
 
-	ParticipationMap(EntityManager em, PersonMap persons, ActivityMap activities) {
+	public ParticipationMap(EntityManager em, PersonMap persons, ActivityMap activities) {
 		this.em = em;
 		this.persons = persons;
 		this.activities = activities;
@@ -46,7 +46,7 @@ public class ParticipationMap extends BaseMap {
 		for (BigInteger key : personIds) {
 			if (persons.containsKey(key)) {
 				Person person = persons.getEntry(key);
-				participant = participants.newParticipant(person, container);
+				participant = participants.newParticipant(person);
 				if (container != null) {
 					container.persistIfNotAlready(participant);
 					container.flush();
@@ -74,22 +74,22 @@ public class ParticipationMap extends BaseMap {
 					p.setActivity(activity);
 					p.setParticipant(participant);
 					p.setOldId(ap.getId());
-					p.setArrivingTransporttypeId(BigInt2Long(ap.getArrivingTransporttypeId()));
-					p.setCreatedByUserId(BigInt2Long(ap.getCreatedbyUserId()));
-					p.setCreatedDateTime(new DateTime(ap.getCreatedDTTM()));
-					p.setDeletedDateTime(new DateTime(ap.getDeletedDTTM()));
-					p.setDepartingTransporttypeId(BigInt2Long(ap.getDepartingTransporttypeId()));
-					p.setDropoffTime(ap.getDropoffTime());
-					p.setLastModifiedByUserId(BigInt2Long(ap.getLastmodifiedbyUserId()));
-					p.setLastModifiedDateTime(new DateTime(ap.getLastmodifiedDTTM()));
-					p.setPickupTime(ap.getPickupTime());
-					p.setRegion(ap.getRegion());
+					//p.setArrivingTransporttypeId(BigInt2Long(ap.getArrivingTransporttypeId()));
+					//p.setCreatedByUserId(BigInt2Long(ap.getCreatedbyUserId()));
+					//p.setCreatedDateTime(new DateTime(ap.getCreatedDTTM()));
+					//p.setDeletedDateTime(new DateTime(ap.getDeletedDTTM()));
+					//p.setDepartingTransporttypeId(BigInt2Long(ap.getDepartingTransporttypeId()));
+					//p.setDropoffTime(ap.getDropoffTime());
+					//p.setLastModifiedByUserId(BigInt2Long(ap.getLastmodifiedbyUserId()));
+					//p.setLastModifiedDateTime(new DateTime(ap.getLastmodifiedDTTM()));
+					//p.setPickupTime(ap.getPickupTime());
+					//p.setRegion(ap.getRegion());
 					p.setRoleId(BigInt2Long(ap.getRoleId()));
 					p.setTransportNotes(ap.getTransportNotes());
 					if (container != null) {
 						container.persist(p);
 					}
-					System.out.println(i++ + " Participation(Person(" + p.getParticipant().getFullName() + ") Activity(" + p.getActivityName() + "))");
+					System.out.println(i++ + " Participation(Person(" + p.getParticipant().getFullName() + ") Activity(" + p.getActivity().getName() + "))");
 				} else {
 					System.out.println(i++ + " Unknown Activity:" + ap.getActivityId());
 				}

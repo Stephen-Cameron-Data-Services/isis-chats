@@ -9,16 +9,20 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 import org.apache.isis.applib.DomainObjectContainer;
+import org.joda.time.DateTime;
 
 import au.com.scds.chats.datamigration.access.ActivityMap;
 import au.com.scds.chats.datamigration.access.ActivityTypeMap;
+import au.com.scds.chats.dom.module.activity.Activities;
 import au.com.scds.chats.dom.module.activity.Activity;
 import au.com.scds.chats.dom.module.activity.ActivityEvent;
+import au.com.scds.chats.dom.module.activity.RecurringActivity;
+import au.com.scds.chats.dom.module.general.names.Region;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class ActivityMap extends BaseMap{
+public class ActivityMap extends BaseMap {
 
 	EntityManager em;
 	ActivityTypeMap activityTypes;
@@ -29,54 +33,94 @@ public class ActivityMap extends BaseMap{
 	// GsonBuilder().serializeNulls().setDateFormat(DateFormat.FULL,
 	// DateFormat.FULL).create();
 
-	ActivityMap(EntityManager em, ActivityTypeMap activityTypes, RegionMap regions) {
+	public ActivityMap(EntityManager em, ActivityTypeMap activityTypes, RegionMap regions) {
 		this.em = em;
 		this.activityTypes = activityTypes;
 		this.regions = regions;
 	}
 
-	public void init(DomainObjectContainer container) {
-		Activity n;
-		List<au.com.scds.chats.datamigration.model.Activity> activities = this.em.createQuery("select activity from Activity activity", au.com.scds.chats.datamigration.model.Activity.class).getResultList();
-		for (au.com.scds.chats.datamigration.model.Activity o : activities) {
-			if (!map.containsKey(o.getId())) {
-				if (container != null) {
-					n = container.newTransientInstance(Activity.class);
-				} else {
-					n = new ActivityEvent();
-				}
-				n.setOldId(o.getId().longValue());
-				n.setActivityType(activityTypes.map(o.getActivitytypeId()));
-				n.setApproximateEndDateTime(new org.joda.time.DateTime(o.getApprximateEndDTTM()));
-				//n.setCopiedFromActivityId(BigInt2Long(o.getCopiedFrom__activity_id()));
-				n.setCostForParticipant(o.getCostForParticipant());
-				n.setCreatedBy(BigInt2Long(o.getCreatedbyUserId()));
-				n.setCreatedOn(new org.joda.time.DateTime(o.getCreatedDTTM()));
-				//n.setDeletedDateTime(new org.joda.time.DateTime(o.getDeletedDTTM()));
-				n.setDescription(o.getDescription());
-				n.setLastModifiedBy(BigInt2Long(o.getLastmodifiedbyUserId()));
-				n.setLastModifiedOn(new org.joda.time.DateTime(o.getLastmodifiedDTTM()));
-				n.setActivityType(activityTypes.map(o.getActivitytypeId()));
-				//n.setNotes(o.getNotes());
-				n.setRegion(regions.map(o.getRegion()));
-				n.setIsRestricted(o.getRestricted() != 0);
-				n.setScheduleId(BigInt2Long(o.getScheduleId()));
-				n.setStartDateTime(new org.joda.time.DateTime(o.getStartDTTM()));
-				n.setName(o.getTitle());
-				if (container != null) {
-					container.persistIfNotAlready(n);
-				}
-				map.put(o.getId(), n);
-				System.out.println("Activity(" + n.getName() + ")");
+	public void init(Activities activities2) {
+
+		// get a list of copied activities
+		// these will become recurring activities
+		Map<Long, RecurringActivity> recurring = new HashMap<>();
+		javax.persistence.Query q = em.createNativeQuery(
+				"select activities.* FROM "
+						+ "(select copiedFrom__activity_id, count(*) as count from lifeline.activities "
+						+ "group by copiedFrom__activity_id) as counts, lifeline.activities as activities "
+						+ "where not isnull(counts.copiedFrom__activity_id) "
+						+ "and activities.id = counts.copiedFrom__activity_id " + "order by counts.count desc; ",
+				au.com.scds.chats.datamigration.model.Activity.class);
+		List<au.com.scds.chats.datamigration.model.Activity> copied = q.getResultList();
+		int seconds = 0;
+		for (au.com.scds.chats.datamigration.model.Activity a : copied) {
+			System.out.println(a.getTitle());
+			Region region = regions.map(a.getRegion());
+			RecurringActivity n = activities2.createRecurringActivity(a.getTitle(),
+					new DateTime(a.getStartDTTM()).plusSeconds(seconds++), region);
+			n.setOldId(a.getId().longValue());
+			n.setActivityType(activityTypes.map(a.getActivitytypeId()));
+			n.setApproximateEndDateTime(new org.joda.time.DateTime(a.getApprximateEndDTTM()));
+			// n.setCopiedFromActivityId(BigInt2Long(o.getCopiedFrom__activity_id()));
+			n.setCostForParticipant(a.getCostForParticipant());
+			n.setCreatedBy(BigInt2String(a.getCreatedbyUserId()));
+			n.setCreatedOn(new org.joda.time.DateTime(a.getCreatedDTTM()));
+			// n.setDeletedDateTime(new
+			// org.joda.time.DateTime(o.getDeletedDTTM()));
+			n.setDescription(a.getDescription());
+			n.setLastModifiedBy(BigInt2String(a.getLastmodifiedbyUserId()));
+			n.setLastModifiedOn(new org.joda.time.DateTime(a.getLastmodifiedDTTM()));
+			n.setActivityType(activityTypes.map(a.getActivitytypeId()));
+			n.setIsRestricted(a.getRestricted() != 0);
+			n.setScheduleId(BigInt2Long(a.getScheduleId()));
+			recurring.put(a.getId().longValue(), n);
+		}
+
+		// now process the whole list
+		List<au.com.scds.chats.datamigration.model.Activity> all = this.em
+				.createQuery("select activity from Activity activity",
+						au.com.scds.chats.datamigration.model.Activity.class)
+				.getResultList();
+		ActivityEvent n;
+		seconds = 0;
+		for (au.com.scds.chats.datamigration.model.Activity a : all) {
+			System.out.println(seconds);
+			if (recurring.containsKey(a.getId().longValue())) {
+				// copied
+				n = recurring.get(a.getId().longValue()).createActivity(a.getTitle(),
+						new DateTime(a.getStartDTTM()).plusSeconds(seconds++), regions.map(a.getRegion()));
+			} else if (a.getCopiedFrom__activity_id() != null && recurring.containsKey(a.getCopiedFrom__activity_id().longValue())) {
+				// a copy
+				n = recurring.get(a.getCopiedFrom__activity_id().longValue()).createActivity(a.getTitle(),
+						new DateTime(a.getStartDTTM()).plusSeconds(seconds++), regions.map(a.getRegion()));
+			} else {
+				n = activities2.createOneOffActivity(a.getTitle(),
+						new DateTime(a.getStartDTTM()).plusSeconds(seconds++), regions.map(a.getRegion()));
 			}
+
+			n.setOldId(a.getId().longValue());
+			n.setApproximateEndDateTime(new org.joda.time.DateTime(a.getApprximateEndDTTM()));
+			n.setCopiedFromActivityId(BigInt2Long(a.getCopiedFrom__activity_id()));
+			n.setCostForParticipant(a.getCostForParticipant());
+			n.setCreatedBy(BigInt2String(a.getCreatedbyUserId()));
+			n.setCreatedOn(new org.joda.time.DateTime(a.getCreatedDTTM()));
+			// n.setDeletedDateTime(new
+			// org.joda.time.DateTime(a.getDeletedDTTM()));
+			n.setDescription(a.getDescription());
+			n.setLastModifiedBy(BigInt2String(a.getLastmodifiedbyUserId()));
+			n.setLastModifiedOn(new org.joda.time.DateTime(a.getLastmodifiedDTTM()));
+			n.setActivityType(activityTypes.map(a.getActivitytypeId()));
+			n.setIsRestricted(a.getRestricted() != 0);
+			n.setScheduleId(BigInt2Long(a.getScheduleId()));
+			System.out.println("Activity(" + n.getName() + ")");
 		}
 	}
-	
-	public boolean containsKey(BigInteger key){
+
+	public boolean containsKey(BigInteger key) {
 		return this.map.containsKey(key);
 	}
-	
-	public Activity get(BigInteger key){
+
+	public Activity get(BigInteger key) {
 		return this.map.get(key);
 	}
 }

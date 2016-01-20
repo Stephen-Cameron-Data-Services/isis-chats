@@ -10,4 +10,11 @@ public class BaseMap {
 		else
 			return new Long(bigInt.longValue());
 	}
+	
+	public String BigInt2String(BigInteger bigInt) {
+		if (bigInt == null)
+			return null;
+		else
+			return bigInt.toString();
+	}
 }

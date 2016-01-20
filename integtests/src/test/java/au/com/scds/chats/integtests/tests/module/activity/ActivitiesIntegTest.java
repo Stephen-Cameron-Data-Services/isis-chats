@@ -41,8 +41,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ActivitiesIntegTest extends DomainAppIntegTest {
 
-    @Inject
-    FixtureScripts fixtureScripts;
+    //@Inject
+    //FixtureScripts fixtureScripts;
     @Inject
     Activities activities;
 
@@ -50,7 +50,7 @@ public class ActivitiesIntegTest extends DomainAppIntegTest {
 
         @Test
         public void happyCase() throws Exception {
-
+System.out.println("happyCase");
             // given
         	DateTime startDateTime = new DateTime();
 

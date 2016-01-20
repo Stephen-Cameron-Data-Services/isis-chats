@@ -18,7 +18,7 @@ public class PersonMap extends BaseMap {
 	RegionMap regions;
 	Map<BigInteger, Person> map = new HashMap<BigInteger, Person>();
 
-	PersonMap(EntityManager em, SalutationMap salutations, RegionMap regions) {
+	public PersonMap(EntityManager em, SalutationMap salutations, RegionMap regions) {
 		this.em = em;
 		this.salutations = salutations;
 		this.regions = regions;
@@ -35,15 +35,15 @@ public class PersonMap extends BaseMap {
 					n = new Person();
 				}
 				n.setOldId(BigInt2Long(o.getId()));
-				n.setBirthdate(o.getBirthdate());
+				//n.setBirthdate(o.getBirthdate());
 				// ALLNULL n.setContacttypeId(o.getContacttypeId() );
-				n.setCreatedByUserId(BigInt2Long(o.getCreatedbyUserId()));
-				n.setCreatedDateTime(new org.joda.time.DateTime(o.getCreatedDTTM()));
+				//n.setCreatedByUserId(BigInt2Long(o.getCreatedbyUserId()));
+				//n.setCreatedDateTime(new org.joda.time.DateTime(o.getCreatedDTTM()));
 				// n.setDeletedDTTM(o.getDeletedDTTM());
 				// ALLNULL n.setEnglishSkill(o.getEnglishSkill() );
 				n.setFirstname(o.getFirstname());
-				n.setLastModifiedByUserId(BigInt2Long(o.getLastmodifiedbyUserId()));
-				n.setLastModifiedDateTime(new org.joda.time.DateTime(o.getLastmodifiedDTTM()));
+				//n.setLastModifiedByUserId(BigInt2Long(o.getLastmodifiedbyUserId()));
+				//n.setLastModifiedDateTime(new org.joda.time.DateTime(o.getLastmodifiedDTTM()));
 				n.setMiddlename(o.getMiddlename());
 				n.setPreferredname(o.getPreferredname());
 				n.setRegion(regions.map(o.getRegion()));

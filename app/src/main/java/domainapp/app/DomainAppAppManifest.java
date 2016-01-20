@@ -57,8 +57,8 @@ public class DomainAppAppManifest implements AppManifest {
      */
     @Override
     public List<Class<?>> getAdditionalServices() {
-        //return Collections.emptyList();
-        return Arrays.asList(
+        return //Collections.emptyList();
+        Arrays.asList(
                 org.isisaddons.module.security.dom.password.PasswordEncryptionServiceUsingJBcrypt.class,
                 org.isisaddons.module.security.dom.permission.PermissionsEvaluationServiceAllowBeatsVeto.class
         );

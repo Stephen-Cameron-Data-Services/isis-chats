@@ -9,17 +9,18 @@ import javax.persistence.EntityManager;
 import org.apache.isis.applib.DomainObjectContainer;
 
 import au.com.scds.chats.dom.module.general.Location;
+import au.com.scds.chats.dom.module.general.Locations;
 
 public class LocationMap {
 
 	EntityManager em;
 	Map<String, Location> map = new HashMap<String, Location>();
 
-	LocationMap(EntityManager em) {
+	public LocationMap(EntityManager em) {
 		this.em = em;
 	}
 
-	public au.com.scds.chats.dom.module.general.Location map(String location) {
+	public au.com.scds.chats.dom.module.general.Location lookup(String location) {
 		if (location == null)
 			return null;
 		else {
@@ -32,14 +33,16 @@ public class LocationMap {
 		return map.get(location);
 	}
 
-	public void init(DomainObjectContainer container) {
-		List<String> locations = this.em.createQuery("select distinct(a.location) from Activity a", String.class).getResultList();
-		for (String location : locations) {
-			if (!map.containsKey(location)) {
-				Location l = new Location();
-				l.setName(location);
-				map.put(location, l);
-				System.out.println("Location("+location+")");
+	public void init(Locations locationsRepo) {
+		List<String> locations = this.em.createQuery("select distinct(a.location) from Activity a", String.class)
+				.getResultList();
+		for (String name : locations) {
+			if (name.length() > 255)
+				name = name.substring(0, 254);
+			if (!map.containsKey(name)) {
+				Location l = locationsRepo.createNewLocation(name);
+				map.put(name, l);
+				System.out.println("Location(" + name + ")");
 			}
 		}
 	}

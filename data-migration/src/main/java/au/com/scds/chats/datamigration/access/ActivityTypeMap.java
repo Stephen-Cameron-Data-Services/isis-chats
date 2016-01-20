@@ -11,13 +11,14 @@ import org.apache.isis.applib.DomainObjectContainer;
 
 import au.com.scds.chats.dom.module.general.Location;
 import au.com.scds.chats.dom.module.general.names.ActivityType;
+import au.com.scds.chats.dom.module.general.names.ActivityTypes;
 
 public class ActivityTypeMap {
 
 	EntityManager em;
 	Map<BigInteger, ActivityType> map = new HashMap<BigInteger, ActivityType>();
 
-	ActivityTypeMap(EntityManager em) {
+	public ActivityTypeMap(EntityManager em) {
 		this.em = em;
 	}
 
@@ -27,7 +28,7 @@ public class ActivityTypeMap {
 		else {
 			if (map.containsKey(id))
 				return map.get(id);
-			else if (id.intValueExact()==0) {
+			else if (id.intValueExact() == 0) {
 				return null;
 			} else {
 				System.out.println("ActivityType(" + id + ") not found");
@@ -36,14 +37,21 @@ public class ActivityTypeMap {
 		return map.get(id);
 	}
 
-	public void init(DomainObjectContainer container) {
-		List<au.com.scds.chats.datamigration.model.Activitytype> activityTypes = this.em.createQuery("select activityType from Activitytype activityType", au.com.scds.chats.datamigration.model.Activitytype.class).getResultList();
-		for (au.com.scds.chats.datamigration.model.Activitytype activityType : activityTypes) {
-			if (!map.containsKey(activityType.getId())) {
-				au.com.scds.chats.dom.module.general.names.ActivityType newActivityType = new au.com.scds.chats.dom.module.general.names.ActivityType();
-				newActivityType.setName(activityType.getTitle());
-				map.put(activityType.getId(), newActivityType);
-				System.out.println("ActivityType(" + newActivityType.getName() + ")");
+	public void init(ActivityTypes activityTypes2) {
+		Map<String, ActivityType> temp = new HashMap<String, ActivityType>();
+		List<au.com.scds.chats.datamigration.model.Activitytype> activityTypes = this.em
+				.createQuery("select activityType from Activitytype activityType",
+						au.com.scds.chats.datamigration.model.Activitytype.class)
+				.getResultList();
+		for (au.com.scds.chats.datamigration.model.Activitytype type : activityTypes) {
+			if (temp.containsKey(type.getTitle())) {
+				map.put(type.getId(), temp.get(type.getTitle()));
+				System.out.println("ActivityType(duplicate=" + type.getTitle() + ")");
+			} else {
+				ActivityType activityType = activityTypes2.create(type.getTitle());
+				map.put(type.getId(), activityType);
+				temp.put(type.getTitle(), activityType);
+				System.out.println("ActivityType(" + activityType.getName() + ")");
 			}
 		}
 	}

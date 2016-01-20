@@ -9,18 +9,18 @@ import javax.persistence.EntityManager;
 
 import org.apache.isis.applib.DomainObjectContainer;
 
-import au.com.scds.chats.dom.module.general.codes.Salutation;
+import au.com.scds.chats.dom.module.general.names.Salutation;
 
 public class SalutationMap{
 	
 	EntityManager em;
 	Map<BigInteger, Salutation> map = new HashMap<BigInteger, Salutation>();
 
-	SalutationMap(EntityManager em) {
+	public SalutationMap(EntityManager em) {
 		this.em = em;
 	}
 
-	public au.com.scds.chats.dom.module.general.codes.Salutation map(BigInteger id) {
+	public au.com.scds.chats.dom.module.general.names.Salutation map(BigInteger id) {
 		if (id == null)
 			return null;
 		else {
@@ -37,7 +37,7 @@ public class SalutationMap{
 		List<au.com.scds.chats.datamigration.model.Salutation> salutations = this.em.createQuery("select salutation from Salutation salutation", au.com.scds.chats.datamigration.model.Salutation.class).getResultList();
 		for (au.com.scds.chats.datamigration.model.Salutation salutation : salutations) {
 			if (!map.containsKey(salutation.getId())) {
-				au.com.scds.chats.dom.module.general.codes.Salutation newSalutation = new au.com.scds.chats.dom.module.general.codes.Salutation();
+				au.com.scds.chats.dom.module.general.names.Salutation newSalutation = new au.com.scds.chats.dom.module.general.names.Salutation();
 				newSalutation.setName(salutation.getCode());
 				map.put(salutation.getId(), newSalutation);
 				System.out.println("Salutation(" + newSalutation.getName() + ")");

@@ -46,7 +46,7 @@ public class ActivityTypes {
 	}
 	
 	@Programmatic
-	protected ActivityType create(String name){
+	public ActivityType create(String name){
 		final ActivityType obj = container.newTransientInstance(ActivityType.class);
 		obj.setName(name);
 		container.persistIfNotAlready(obj);
@@ -79,4 +79,6 @@ public class ActivityTypes {
 
 	@javax.inject.Inject
 	DomainObjectContainer container;
+
+
 }

@@ -3,9 +3,22 @@ package au.com.scds.chats.datamigration;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
+import au.com.scds.chats.datamigration.access.ActivityMap;
+import au.com.scds.chats.datamigration.access.ActivityTypeMap;
+import au.com.scds.chats.datamigration.access.LocationMap;
+import au.com.scds.chats.datamigration.access.ParticipationMap;
+import au.com.scds.chats.datamigration.access.PersonMap;
+import au.com.scds.chats.datamigration.access.RegionMap;
+import au.com.scds.chats.datamigration.access.SalutationMap;
 import au.com.scds.chats.dom.module.activity.Activities;
 import au.com.scds.chats.dom.module.activity.ActivityEvent;
+import au.com.scds.chats.dom.module.general.Locations;
+import au.com.scds.chats.dom.module.general.names.ActivityTypes;
+import au.com.scds.chats.dom.module.general.names.Regions;
 
 import com.google.common.collect.Lists;
 
@@ -20,7 +33,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
+import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.fixturescripts.FixtureScripts;
 import org.apache.isis.core.integtestsupport.IntegrationTestAbstract;
 import org.apache.isis.core.integtestsupport.IsisSystemForTest;
@@ -30,24 +43,39 @@ import org.apache.isis.objectstore.jdo.datanucleus.IsisConfigurationForJdoIntegT
 public class IsisChatsSystem extends IntegrationTestAbstract {
 
 	@Inject
+	DomainObjectContainer container;
+	
+	@Inject
 	Activities activities;
+	
+	@Inject
+	ActivityTypes activityTypes;
+	
+	@Inject
+	Locations locations;
+	
+	@Inject
+	Regions regions;
 
-	@Test
-	public void listAll() throws Exception {
-
-		final List<ActivityEvent> all = wrap(activities).listAllFutureActivities();
-		System.out.print(all.size());
-	}
 
 	@BeforeClass
 	public static void initClass() {
 		org.apache.log4j.PropertyConfigurator.configure("logging.properties");
 
 		IsisConfigurationForJdoIntegTests config = new IsisConfigurationForJdoIntegTests();
+
+		config.put("isis.persistor.datanucleus.impl.datanucleus.identifier.case","LowerCase");
+		config.put("isis.persistor.datanucleus.impl.datanucleus.identifierFactory","jpa");
+		config.put("isis.persistor.datanucleus.impl.datanucleus.schema.autoCreateAll","false");
+		config.put("isis.persistor.datanucleus.impl.datanucleus.schema.validateTables","false");
+		config.put("isis.persistor.datanucleus.impl.datanucleus.schema.validateConstraints","false");
+		config.put("isis.persistor.datanucleus.install-fixtures","false");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionDriverName", "com.mysql.jdbc.Driver");
-		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionURL", "jdbc:mysql://localhost:3306/chats?zeroDateTimeBehavior=convertToNull");
+		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionURL",
+				"jdbc:mysql://localhost:3306/chats?zeroDateTimeBehavior=convertToNull");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionUserName", "chats");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionPassword", "password");
+
 
 		IsisSystemForTest isft = IsisSystemForTest.getElseNull();
 		if (isft == null) {
@@ -63,4 +91,32 @@ public class IsisChatsSystem extends IntegrationTestAbstract {
 		// instantiating will install onto ThreadLocal
 		new ScenarioExecutionForIntegration();
 	}
+	
+	@Test
+	public void migrate() throws Exception {
+
+		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("isis-chats-old");
+		final EntityManager em = emf.createEntityManager();
+		
+		final LocationMap locationsMap = new LocationMap(em);
+		final RegionMap regionsMap = new RegionMap(em);
+		final SalutationMap salutationsMap = new SalutationMap(em);
+		final ActivityTypeMap activityTypesMap = new ActivityTypeMap(em);
+		final ActivityMap activitiesMap = new ActivityMap(em, activityTypesMap, regionsMap);
+		final PersonMap personsMap = new PersonMap(em, salutationsMap, regionsMap);
+		final ParticipationMap participantsMap = new ParticipationMap(em, personsMap, activitiesMap);
+
+		// load all the codes Mappers
+		//locationsMap.init(locations);
+		regionsMap.init(regions);
+		//salutations.init(container);
+		activityTypesMap.init(activityTypes);
+		activitiesMap.init(activities);
+		//persons.init(container);
+		//participants.init(container);
+		em.close();
+
+		System.out.println("Finished");
+	}
+
 }

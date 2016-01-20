@@ -68,8 +68,9 @@ public class Locations {
 	}
 	
 	@Programmatic()
-	public Location createLocation() {
+	public Location createNewLocation(String name) {
 		final Location obj = container.newTransientInstance(Location.class);
+		obj.setName(name);
 		container.persistIfNotAlready(obj);
 		container.flush();
 		return obj;

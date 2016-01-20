@@ -52,7 +52,7 @@ public class DataMapper {
 		final ParticipationMap participants = new ParticipationMap(em, persons, activities);
 
 		// load all the codes Mappers
-		locations.init(container);
+		//locations.init(container);
 		regions.init(container);
 		salutations.init(container);
 		activityTypes.init(container);

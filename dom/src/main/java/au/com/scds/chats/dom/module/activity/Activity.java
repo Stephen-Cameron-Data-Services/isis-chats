@@ -327,6 +327,16 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		this.scheduleId = scheduleId;
 	}
 
+	@Property(hidden = Where.EVERYWHERE)
+	@Column(allowsNull = "true")
+	public Long getCopiedFromActivityId() {
+		return copiedFromActivityId;
+	}
+
+	public void setCopiedFromActivityId(Long copiedFromActivityId) {
+		this.copiedFromActivityId = copiedFromActivityId;
+	}
+
 	@Property()
 	@MemberOrder(sequence = "100")
 	@CollectionLayout(named = "Participation", render = RenderType.EAGERLY)
