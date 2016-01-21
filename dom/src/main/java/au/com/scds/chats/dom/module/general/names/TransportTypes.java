@@ -46,7 +46,7 @@ public class TransportTypes {
 	}
 	
 	@Programmatic
-	protected TransportType create(String name){
+	public TransportType create(String name){
 		final TransportType obj = container.newTransientInstance(TransportType.class);
 		obj.setName(name);
 		container.persistIfNotAlready(obj);

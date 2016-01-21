@@ -28,11 +28,14 @@ import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.ParameterLayout;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
+import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.module.general.Person;
+import au.com.scds.chats.dom.module.general.names.Region;
 
 @DomainService(repositoryFor = Person.class)
 @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100")
@@ -58,9 +61,32 @@ public class Persons {
 	public List<Person> findPersonBySurname(
 			@ParameterLayout(named = "Surname") final String surname) {
 		return container.allMatches(new QueryDefault<>(Person.class,
-				"findBySurname", "surname", surname));
+				"findPersonsBySurname", "surname", surname));
 	}
+	
+	@Programmatic
+	public Person createPerson(String firstname, String surname, LocalDate dob, Region region) {
+		Person person = container.newTransientInstance(Person.class);
+		person.setFirstname(firstname);
+		person.setSurname(surname);
+		if(dob == null)
+			dob = new LocalDate("1900-01-01");
+		person.setBirthdate(dob);
+		person.setRegion(region);
+		container.persistIfNotAlready(person);
+		container.flush();
+		return person;
+	}
+	
+	public Person findPerson(String firstname, String surname, LocalDate dob) {
+		return container.firstMatch(new QueryDefault<>(Person.class,
+				"findPerson", "firstname", firstname, "surname", surname, "birthdate", dob));
+	}
+
 
 	@javax.inject.Inject
 	DomainObjectContainer container;
+
+
+
 }

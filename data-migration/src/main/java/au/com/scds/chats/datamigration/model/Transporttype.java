@@ -17,7 +17,7 @@ public class Transporttype implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private String id;
+	private BigInteger id;
 
 	private int additionalTime;
 
@@ -44,11 +44,11 @@ public class Transporttype implements Serializable {
 	public Transporttype() {
 	}
 
-	public String getId() {
+	public BigInteger getId() {
 		return this.id;
 	}
 
-	public void setId(String id) {
+	public void setId(BigInteger id) {
 		this.id = id;
 	}
 

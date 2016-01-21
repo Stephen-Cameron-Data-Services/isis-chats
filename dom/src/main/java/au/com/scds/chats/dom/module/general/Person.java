@@ -53,7 +53,8 @@ import au.com.scds.chats.dom.module.general.names.Salutations;
 
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Unique(name = "Person_UNQ", members = { "firstname", "surname", "birthdate" })
-@Queries({ @Query(name = "findPersonsBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.general.Person " + "WHERE surname == :surname"), })
+@Queries({ @Query(name = "findPersonsBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.general.Person " + "WHERE surname == :surname"), 
+	       @Query(name = "findPerson", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.general.Person " + "WHERE firstname == :firstname && surname == :surname && birthdate == :birthdate")})
 @DomainObject(objectType = "PERSON")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = "General", middle = { "Contact Details", "Admin" })

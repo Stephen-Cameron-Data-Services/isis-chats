@@ -42,6 +42,7 @@ import org.joda.time.LocalDate;
 import au.com.scds.chats.dom.module.activity.Activity;
 import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.Status;
+import au.com.scds.chats.dom.module.general.names.Region;
 
 @DomainService(repositoryFor = Participant.class)
 @DomainServiceLayout(named = "Participants", menuOrder = "20")
@@ -164,6 +165,7 @@ public class Participants {
 	public Participant newParticipant(final Person person) {
 		Participant p = container.newTransientInstance(Participant.class);
 		p.setPerson(person);
+		p.setRegion(person.getRegion());
 		container.persistIfNotAlready(p);
 		container.flush();
 		return p;
@@ -174,6 +176,19 @@ public class Participants {
 		Participation participation = container.newTransientInstance(Participation.class);
 		participation.setActivity(activity);
 		participation.setParticipant(participant);
+		activity.addParticipation(participation);
+		participant.addParticipation(participation);
+		container.persistIfNotAlready(participation);
+		container.flush();
+		return participation;
+	}
+	
+	@Programmatic
+	public Participation createParticipation(Activity activity, Participant participant, Region region) {
+		Participation participation = container.newTransientInstance(Participation.class);
+		participation.setActivity(activity);
+		participation.setParticipant(participant);
+		participation.setRegion(region);
 		activity.addParticipation(participation);
 		participant.addParticipation(participation);
 		container.persistIfNotAlready(participation);
@@ -242,4 +257,6 @@ public class Participants {
 
 	@Inject
 	private IsisJdoSupport isisJdoSupport;
+
+
 }

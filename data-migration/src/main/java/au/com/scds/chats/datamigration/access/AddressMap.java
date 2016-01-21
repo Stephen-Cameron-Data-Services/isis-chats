@@ -8,29 +8,30 @@ import javax.persistence.EntityManager;
 
 import org.apache.isis.applib.DomainObjectContainer;
 
+import au.com.scds.chats.dom.module.general.Address;
 import au.com.scds.chats.dom.module.general.Location;
 import au.com.scds.chats.dom.module.general.Locations;
 
-public class LocationMap {
+public class AddressMap {
 
 	EntityManager em;
-	Map<String, Location> map = new HashMap<String, Location>();
+	Map<String, Address> map = new HashMap<>();
 
-	public LocationMap(EntityManager em) {
+	public AddressMap(EntityManager em) {
 		this.em = em;
 	}
 
-	public au.com.scds.chats.dom.module.general.Location lookup(String location) {
-		if (location == null)
+	public Address map(String address) {
+		if (address == null)
 			return null;
 		else {
-			if (map.containsKey(location))
-				return map.get(location);
+			if (map.containsKey(address))
+				return map.get(address);
 			else {
-				System.out.println("Location(" + location + ") not found");
+				System.out.println("Address(" + address + ") not found");
 			}
 		}
-		return map.get(location);
+		return map.get(address);
 	}
 
 	public void init(Locations locationsRepo) {
@@ -40,10 +41,12 @@ public class LocationMap {
 			if (name.length() > 255)
 				name = name.substring(0, 254);
 			if (!map.containsKey(name)) {
-				Location l = locationsRepo.createNewLocation(name);
-				map.put(name, l);
-				System.out.println("Location(" + name + ")");
+				Address address = locationsRepo.createAddress();
+				address.setName(name);
+				map.put(name, address);
+				System.out.println("Address(" + name + ")");
 			}
 		}
 	}
+
 }

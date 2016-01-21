@@ -29,17 +29,20 @@ public class ParticipationMap extends BaseMap {
 	EntityManager em;
 	PersonMap persons;
 	ActivityMap activities;
+	RegionMap regions;
+	TransportTypeMap transportTypes;
 	Map<BigInteger, Participant> map = new HashMap<BigInteger, Participant>();
 
-	public ParticipationMap(EntityManager em, PersonMap persons, ActivityMap activities) {
+	public ParticipationMap(EntityManager em, PersonMap persons, ActivityMap activities, TransportTypeMap transportTypes, RegionMap regions) {
 		this.em = em;
 		this.persons = persons;
 		this.activities = activities;
+		this.transportTypes = transportTypes;
+		this.regions = regions;
 	}
 
-	public void init(DomainObjectContainer container) {
+	public void init(Participants participants) {
 		// create the Participants
-		Participants participants = new Participants();
 		Participant participant;
 		List<BigInteger> personIds = this.em.createQuery("select distinct(ap.personId) from ActivitiesPerson ap", BigInteger.class).getResultList();
 		int i = 1;
@@ -47,10 +50,6 @@ public class ParticipationMap extends BaseMap {
 			if (persons.containsKey(key)) {
 				Person person = persons.getEntry(key);
 				participant = participants.newParticipant(person);
-				if (container != null) {
-					container.persistIfNotAlready(participant);
-					container.flush();
-				}
 				map.put(key, participant);
 				System.out.println(i++ + " Participant(" + person.getFullname() + ")");
 			} else {
@@ -65,30 +64,19 @@ public class ParticipationMap extends BaseMap {
 				participant = map.get(ap.getPersonId());
 				if (activities.containsKey(ap.getActivityId())) {
 					Activity activity = activities.get(ap.getActivityId());
-					Participation p;
-					if (container != null) {
-						p = container.newTransientInstance(Participation.class);
-					} else {
-						p = new Participation();
-					}
-					p.setActivity(activity);
-					p.setParticipant(participant);
+					Participation p = participants.createParticipation(activity, participant, regions.map(ap.getRegion()));
 					p.setOldId(ap.getId());
-					//p.setArrivingTransporttypeId(BigInt2Long(ap.getArrivingTransporttypeId()));
-					//p.setCreatedByUserId(BigInt2Long(ap.getCreatedbyUserId()));
-					//p.setCreatedDateTime(new DateTime(ap.getCreatedDTTM()));
+					p.setArrivingTransportType(transportTypes.map(ap.getArrivingTransporttypeId()));
+					p.setCreatedBy(BigInt2String(ap.getCreatedbyUserId()));
+					p.setCreatedOn(new DateTime(ap.getCreatedDTTM()));
 					//p.setDeletedDateTime(new DateTime(ap.getDeletedDTTM()));
-					//p.setDepartingTransporttypeId(BigInt2Long(ap.getDepartingTransporttypeId()));
-					//p.setDropoffTime(ap.getDropoffTime());
-					//p.setLastModifiedByUserId(BigInt2Long(ap.getLastmodifiedbyUserId()));
-					//p.setLastModifiedDateTime(new DateTime(ap.getLastmodifiedDTTM()));
-					//p.setPickupTime(ap.getPickupTime());
-					//p.setRegion(ap.getRegion());
+					p.setDepartingTransportType(transportTypes.map(ap.getDepartingTransporttypeId()));
+					p.setDropoffTime(new DateTime(ap.getDropoffTime()));
+					p.setLastModifiedBy(BigInt2String(ap.getLastmodifiedbyUserId()));
+					p.setLastModifiedOn(new DateTime(ap.getLastmodifiedDTTM()));
+					p.setPickupTime(new DateTime(ap.getPickupTime()));
 					p.setRoleId(BigInt2Long(ap.getRoleId()));
 					p.setTransportNotes(ap.getTransportNotes());
-					if (container != null) {
-						container.persist(p);
-					}
 					System.out.println(i++ + " Participation(Person(" + p.getParticipant().getFullName() + ") Activity(" + p.getActivity().getName() + "))");
 				} else {
 					System.out.println(i++ + " Unknown Activity:" + ap.getActivityId());

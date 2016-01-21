@@ -118,6 +118,4 @@ public class Locations {
 	@Inject
 	private LocationLookupService locationLookupService;
 
-
-
 }

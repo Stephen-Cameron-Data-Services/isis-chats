@@ -18,6 +18,7 @@ import au.com.scds.chats.dom.module.activity.Activity;
 import au.com.scds.chats.dom.module.activity.ActivityEvent;
 import au.com.scds.chats.dom.module.activity.RecurringActivity;
 import au.com.scds.chats.dom.module.general.names.Region;
+import au.com.scds.chats.dom.module.general.names.Salutation;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,18 +26,33 @@ import com.google.gson.GsonBuilder;
 public class ActivityMap extends BaseMap {
 
 	EntityManager em;
+	AddressMap locationsMap;
 	ActivityTypeMap activityTypes;
 	RegionMap regions;
-	Map<BigInteger, Activity> map = new HashMap<BigInteger, Activity>();
+	Map<BigInteger, ActivityEvent> map = new HashMap<BigInteger, ActivityEvent>();
 
 	// Gson gson = new
 	// GsonBuilder().serializeNulls().setDateFormat(DateFormat.FULL,
 	// DateFormat.FULL).create();
 
-	public ActivityMap(EntityManager em, ActivityTypeMap activityTypes, RegionMap regions) {
+	public ActivityMap(EntityManager em, AddressMap locationsMap, ActivityTypeMap activityTypes, RegionMap regions) {
 		this.em = em;
+		this.locationsMap = locationsMap;
 		this.activityTypes = activityTypes;
 		this.regions = regions;
+	}
+	
+	public ActivityEvent map(BigInteger id) {
+		if (id == null)
+			return null;
+		else {
+			if (map.containsKey(id))
+				return map.get(id);
+			else {
+				System.out.println("ActivityEvent(" + id + ") not found");
+			}
+		}
+		return map.get(id);
 	}
 
 	public void init(Activities activities2) {
@@ -57,11 +73,14 @@ public class ActivityMap extends BaseMap {
 			System.out.println(a.getTitle());
 			Region region = regions.map(a.getRegion());
 			RecurringActivity n = activities2.createRecurringActivity(a.getTitle(),
-					new DateTime(a.getStartDTTM()).plusSeconds(seconds++), region);
+					new DateTime(a.getStartDTTM()), region);
+			//if (seconds == 30)
+			//	seconds = 0;
 			n.setOldId(a.getId().longValue());
 			n.setActivityType(activityTypes.map(a.getActivitytypeId()));
 			n.setApproximateEndDateTime(new org.joda.time.DateTime(a.getApprximateEndDTTM()));
 			// n.setCopiedFromActivityId(BigInt2Long(o.getCopiedFrom__activity_id()));
+			n.setAddress((locationsMap).map(a.getLocation()));
 			n.setCostForParticipant(a.getCostForParticipant());
 			n.setCreatedBy(BigInt2String(a.getCreatedbyUserId()));
 			n.setCreatedOn(new org.joda.time.DateTime(a.getCreatedDTTM()));
@@ -89,7 +108,8 @@ public class ActivityMap extends BaseMap {
 				// copied
 				n = recurring.get(a.getId().longValue()).createActivity(a.getTitle(),
 						new DateTime(a.getStartDTTM()).plusSeconds(seconds++), regions.map(a.getRegion()));
-			} else if (a.getCopiedFrom__activity_id() != null && recurring.containsKey(a.getCopiedFrom__activity_id().longValue())) {
+			} else if (a.getCopiedFrom__activity_id() != null
+					&& recurring.containsKey(a.getCopiedFrom__activity_id().longValue())) {
 				// a copy
 				n = recurring.get(a.getCopiedFrom__activity_id().longValue()).createActivity(a.getTitle(),
 						new DateTime(a.getStartDTTM()).plusSeconds(seconds++), regions.map(a.getRegion()));
@@ -104,6 +124,7 @@ public class ActivityMap extends BaseMap {
 			n.setCostForParticipant(a.getCostForParticipant());
 			n.setCreatedBy(BigInt2String(a.getCreatedbyUserId()));
 			n.setCreatedOn(new org.joda.time.DateTime(a.getCreatedDTTM()));
+			n.setAddress((locationsMap).map(a.getLocation()));
 			// n.setDeletedDateTime(new
 			// org.joda.time.DateTime(a.getDeletedDTTM()));
 			n.setDescription(a.getDescription());
@@ -112,6 +133,7 @@ public class ActivityMap extends BaseMap {
 			n.setActivityType(activityTypes.map(a.getActivitytypeId()));
 			n.setIsRestricted(a.getRestricted() != 0);
 			n.setScheduleId(BigInt2Long(a.getScheduleId()));
+			map.put(a.getId(), n);
 			System.out.println("Activity(" + n.getName() + ")");
 		}
 	}

@@ -128,7 +128,7 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 
 	@Programmatic
 	public void setUpdatedBy(String updatedBy) {
-		if (getCreatedBy() == null) {
+		/*if (getCreatedBy() == null) {
 			setCreatedBy(updatedBy);
 			if (userRepository != null) {
 				ApplicationUser user = userRepository.findByUsername(updatedBy);
@@ -156,15 +156,15 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 			}
 		} else {
 			setLastModifiedBy(updatedBy);
-		}
+		}*/
 	}
 
 	@Programmatic
 	public void setUpdatedAt(java.sql.Timestamp updatedAt) {
-		if (getCreatedOn() == null)
+		/*if (getCreatedOn() == null)
 			setCreatedOn(new DateTime(updatedAt));
 		else
-			setLastModifiedOn(new DateTime(updatedAt));
+			setLastModifiedOn(new DateTime(updatedAt));*/
 	}
 
 	@Programmatic

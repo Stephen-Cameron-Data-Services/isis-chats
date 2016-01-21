@@ -230,7 +230,7 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	@Property()
 	@PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP, hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "11")
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "true", length = 1000)
 	public String getTransportNotes() {
 		return this.transportNotes;
 	}
