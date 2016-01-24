@@ -73,6 +73,8 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	private Address mailAddress;
 	private String homePhoneNumber;
 	private String mobilePhoneNumber;
+	private String fixedPhoneNumber;
+	private String faxNumber;
 	private String email;
 	
 	public Person(){
@@ -399,6 +401,30 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 
 	public void setMobilePhoneNumber(final String mobilePhoneNumber) {
 		this.mobilePhoneNumber = mobilePhoneNumber;
+	}
+
+	@Property(regexPattern=RegexValidation.CommunicationChannel.PHONENUMBER)
+	@PropertyLayout(named = "Fixed Phone Number")
+	@MemberOrder(name = "Contact Details", sequence = "5")
+	@Column(allowsNull = "true")
+	public String getFixedPhoneNumber() {
+		return fixedPhoneNumber;
+	}
+
+	public void setFixedPhoneNumber(String fixedPhoneNumber) {
+		this.fixedPhoneNumber = fixedPhoneNumber;
+	}
+
+	@Property(regexPattern=RegexValidation.CommunicationChannel.PHONENUMBER)
+	@PropertyLayout(named = "Fax Number")
+	@MemberOrder(name = "Contact Details", sequence = "6")
+	@Column(allowsNull = "true")
+	public String getFaxNumber() {
+		return faxNumber;
+	}
+
+	public void setFaxNumber(String faxNumber) {
+		this.faxNumber = faxNumber;
 	}
 
 	@Property(regexPattern=RegexValidation.CommunicationChannel.EMAIL)

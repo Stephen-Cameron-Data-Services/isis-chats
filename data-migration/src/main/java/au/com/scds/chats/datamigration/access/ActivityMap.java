@@ -68,14 +68,11 @@ public class ActivityMap extends BaseMap {
 						+ "and activities.id = counts.copiedFrom__activity_id " + "order by counts.count desc; ",
 				au.com.scds.chats.datamigration.model.Activity.class);
 		List<au.com.scds.chats.datamigration.model.Activity> copied = q.getResultList();
-		int seconds = 0;
 		for (au.com.scds.chats.datamigration.model.Activity a : copied) {
 			System.out.println(a.getTitle());
 			Region region = regions.map(a.getRegion());
 			RecurringActivity n = activities2.createRecurringActivity(a.getTitle(),
 					new DateTime(a.getStartDTTM()), region);
-			//if (seconds == 30)
-			//	seconds = 0;
 			n.setOldId(a.getId().longValue());
 			n.setActivityType(activityTypes.map(a.getActivitytypeId()));
 			n.setApproximateEndDateTime(new org.joda.time.DateTime(a.getApprximateEndDTTM()));
@@ -101,21 +98,19 @@ public class ActivityMap extends BaseMap {
 						au.com.scds.chats.datamigration.model.Activity.class)
 				.getResultList();
 		ActivityEvent n;
-		seconds = 0;
 		for (au.com.scds.chats.datamigration.model.Activity a : all) {
-			System.out.println(seconds);
 			if (recurring.containsKey(a.getId().longValue())) {
 				// copied
 				n = recurring.get(a.getId().longValue()).createActivity(a.getTitle(),
-						new DateTime(a.getStartDTTM()).plusSeconds(seconds++), regions.map(a.getRegion()));
+						new DateTime(a.getStartDTTM()).plusSeconds(2), regions.map(a.getRegion()));
 			} else if (a.getCopiedFrom__activity_id() != null
 					&& recurring.containsKey(a.getCopiedFrom__activity_id().longValue())) {
 				// a copy
 				n = recurring.get(a.getCopiedFrom__activity_id().longValue()).createActivity(a.getTitle(),
-						new DateTime(a.getStartDTTM()).plusSeconds(seconds++), regions.map(a.getRegion()));
+						new DateTime(a.getStartDTTM()), regions.map(a.getRegion()));
 			} else {
 				n = activities2.createOneOffActivity(a.getTitle(),
-						new DateTime(a.getStartDTTM()).plusSeconds(seconds++), regions.map(a.getRegion()));
+						new DateTime(a.getStartDTTM()), regions.map(a.getRegion()));
 			}
 
 			n.setOldId(a.getId().longValue());

@@ -43,6 +43,7 @@ import au.com.scds.chats.dom.module.activity.Activity;
 import au.com.scds.chats.dom.module.call.CalendarDayCallSchedule;
 import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.Status;
+import au.com.scds.chats.dom.module.general.names.Region;
 import au.com.scds.chats.dom.module.volunteer.Volunteer;
 
 @DomainService(repositoryFor = Volunteer.class)
@@ -135,6 +136,17 @@ public class Volunteers {
 		container.flush();
 		return volunteer;
 	}
+	
+	//used for data migration
+	@Programmatic
+	public Volunteer newVolunteer(Person person, Region region) {
+		final Volunteer volunteer = container.newTransientInstance(Volunteer.class);
+		volunteer.setPerson(person);
+		volunteer.setRegion(region);
+		container.persistIfNotAlready(volunteer);
+		container.flush();
+		return volunteer;
+	}
 
 	@Programmatic
 	public VolunteeredTime createVolunteeredTime(Volunteer volunteer, DateTime startDateTime, DateTime endDateTime) {
@@ -195,4 +207,5 @@ public class Volunteers {
 	
 	@Inject 
 	VolunteerRoles volunteerRoles;
+
 }

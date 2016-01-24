@@ -93,6 +93,8 @@ public class Activities {
 		return obj;
 	}
 
+	//used for data-migration
+	@Programmatic
 	public ActivityEvent createOneOffActivity(String name, DateTime startDateTime, Region region) {
 		final ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 		obj.setName(name);

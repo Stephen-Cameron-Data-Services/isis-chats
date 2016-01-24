@@ -17,12 +17,14 @@ public class PersonMap extends BaseMap {
 
 	EntityManager em;
 	SalutationMap salutations;
+	AddressMap locations;
 	RegionMap regions;
 	Map<BigInteger, Person> map = new HashMap<BigInteger, Person>();
 
-	public PersonMap(EntityManager em, SalutationMap salutations, RegionMap regions) {
+	public PersonMap(EntityManager em, AddressMap locations, SalutationMap salutations, RegionMap regions) {
 		this.em = em;
 		this.salutations = salutations;
+		this.locations = locations;
 		this.regions = regions;
 	}
 

@@ -218,6 +218,14 @@ public class Attended extends AbstractChatsDomainEntity implements Comparable<At
 		return (isColl ? null : this);
 	}
 	
+	//used for data-migration
+	@Programmatic
+	public void setDatesAndTimes(DateTime start, DateTime end) {
+		setStartDateTime(start);
+		setEndDateTime(end);
+		setAttended(true);
+	}
+	
 	public DateTime default0UpdateDatesAndTimes(){
 		return getStartDateTime();
 	}
@@ -234,5 +242,6 @@ public class Attended extends AbstractChatsDomainEntity implements Comparable<At
 
 	@Inject
 	ActionInvocationContext actionInvocationContext;
+
 
 }

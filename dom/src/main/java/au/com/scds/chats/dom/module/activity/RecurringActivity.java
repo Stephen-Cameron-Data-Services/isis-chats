@@ -190,7 +190,7 @@ public class RecurringActivity extends Activity implements Notable {
 	public ActivityEvent createActivity(String name, DateTime startDateTime, Region region) {
 		ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 		obj.setParentActivity(this);
-		obj.setName(getName());
+		obj.setName(name);
 		obj.setStartDateTime(startDateTime);
 		obj.setRegion(region);
 		getChildActivities().add(obj);

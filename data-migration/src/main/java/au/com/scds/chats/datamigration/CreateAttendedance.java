@@ -7,25 +7,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import au.com.scds.chats.datamigration.access.ActivityMap;
-import au.com.scds.chats.datamigration.access.ActivityTypeMap;
-import au.com.scds.chats.datamigration.access.AddressMap;
-import au.com.scds.chats.datamigration.access.ParticipationMap;
-import au.com.scds.chats.datamigration.access.PersonMap;
-import au.com.scds.chats.datamigration.access.RegionMap;
-import au.com.scds.chats.datamigration.access.SalutationMap;
-import au.com.scds.chats.datamigration.access.TransportTypeMap;
-import au.com.scds.chats.datamigration.access.VolunteerMap;
 import au.com.scds.chats.dom.module.activity.Activities;
 import au.com.scds.chats.dom.module.activity.ActivityEvent;
-import au.com.scds.chats.dom.module.general.Locations;
-import au.com.scds.chats.dom.module.general.Persons;
-import au.com.scds.chats.dom.module.general.names.ActivityTypes;
-import au.com.scds.chats.dom.module.general.names.Regions;
-import au.com.scds.chats.dom.module.general.names.Salutations;
-import au.com.scds.chats.dom.module.general.names.TransportTypes;
-import au.com.scds.chats.dom.module.participant.Participants;
-import au.com.scds.chats.dom.module.volunteer.Volunteers;
+import au.com.scds.chats.dom.module.attendance.AttendanceList;
+import au.com.scds.chats.dom.module.attendance.AttendanceLists;
+import au.com.scds.chats.dom.module.attendance.Attended;
 
 import com.google.common.collect.Lists;
 
@@ -47,38 +33,17 @@ import org.apache.isis.core.integtestsupport.IsisSystemForTest;
 import org.apache.isis.core.integtestsupport.scenarios.ScenarioExecutionForIntegration;
 import org.apache.isis.objectstore.jdo.datanucleus.IsisConfigurationForJdoIntegTests;
 
-public class IsisChatsSystem extends IntegrationTestAbstract {
+public class CreateAttendedance extends IntegrationTestAbstract {
 
 	@Inject
 	DomainObjectContainer container;
 
 	@Inject
+	AttendanceLists attendances;
+
+	@Inject
 	Activities activities;
-
-	@Inject
-	ActivityTypes activityTypes;
-
-	@Inject
-	TransportTypes transportTypes;
-
-	@Inject
-	Locations locations;
-
-	@Inject
-	Regions regions;
-
-	@Inject
-	Persons persons;
-
-	@Inject
-	Salutations salutations;
-
-	@Inject
-	Participants participations;
-
-	@Inject
-	Volunteers volunteers;
-
+	
 	@BeforeClass
 	public static void initClass() {
 		org.apache.log4j.PropertyConfigurator.configure("logging.properties");
@@ -114,29 +79,16 @@ public class IsisChatsSystem extends IntegrationTestAbstract {
 		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("isis-chats-old");
 		final EntityManager em = emf.createEntityManager();
 
-		final AddressMap locationsMap = new AddressMap(em);
-		final RegionMap regionsMap = new RegionMap(em);
-		final SalutationMap salutationsMap = new SalutationMap(em);
-		final ActivityTypeMap activityTypesMap = new ActivityTypeMap(em);
-		final TransportTypeMap transportTypesMap = new TransportTypeMap(em);
-		final ActivityMap activitiesMap = new ActivityMap(em, locationsMap, activityTypesMap, regionsMap);
-		final PersonMap personsMap = new PersonMap(em, locationsMap, salutationsMap, regionsMap);
-		final ParticipationMap participationMap = new ParticipationMap(em, personsMap, activitiesMap, transportTypesMap,
-				regionsMap);
-		final VolunteerMap volunteerMap = new VolunteerMap(em);
-
-		// load all the codes Mappers
-		// locationsMap.init(locations);
-		// regionsMap.init(regions);
-		// salutationsMap.init(salutations);
-		// activityTypesMap.init(activityTypes);
-		// transportTypesMap.init(transportTypes);
-		// activitiesMap.init(activities);
-		// personsMap.init(persons);
-		// participationMap.init(participations);
-		volunteerMap.init(volunteers, persons);
-		em.close();
-
+		List<ActivityEvent> events = activities.listAllPastActivities();
+		int i = 1;
+		for(ActivityEvent event : events){
+			System.out.println(i++ + ": "  + event.getName());
+			AttendanceList list = attendances.createActivityAttendanceList(event);
+			list.addAllAttendeds();
+			for(Attended attended: list.attendeds){
+				attended.setDatesAndTimes(event.getStartDateTime(), event.getApproximateEndDateTime());
+			}
+		}
 		System.out.println("Finished");
 	}
 
