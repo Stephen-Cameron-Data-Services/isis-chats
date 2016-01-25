@@ -76,6 +76,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	private String fixedPhoneNumber;
 	private String faxNumber;
 	private String email;
+	private Sex sex;
 	
 	public Person(){
 		super();
@@ -199,6 +200,18 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 
 	public void setBirthdate(LocalDate localDate) {
 		this.birthdate = localDate;
+	}
+
+	@Property()
+	@PropertyLayout()
+	@MemberOrder(sequence = "7")
+	@Column(allowsNull = "false")
+	public Sex getSex() {
+		return sex;
+	}
+
+	public void setSex(Sex sex) {
+		this.sex = sex;
 	}
 	
 /*	@Property()

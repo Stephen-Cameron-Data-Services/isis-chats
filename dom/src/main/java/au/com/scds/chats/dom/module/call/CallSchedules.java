@@ -39,6 +39,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
+import au.com.scds.chats.dom.module.general.names.Region;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
 import au.com.scds.chats.dom.module.volunteer.Volunteer;
@@ -47,6 +48,10 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 @DomainService(nature = NatureOfService.VIEW_MENU_ONLY, repositoryFor = CalendarDayCallSchedule.class)
 @DomainServiceLayout(named="Calls", menuOrder = "50") 
 public class CallSchedules {
+	
+	//work around for data-migration
+	//TODO
+	public Region region;
 
 	public CallSchedules( ) {}
 
@@ -131,6 +136,7 @@ public class CallSchedules {
 		CalendarDayCallSchedule schedule = container.newTransientInstance(CalendarDayCallSchedule.class);
 		schedule.setCalendarDate(date);
 		schedule.setAllocatedVolunteer(volunteer);
+		schedule.setRegion(volunteer.getRegion());
 		container.persistIfNotAlready(schedule);
 		container.flush();
 		return schedule;
@@ -161,6 +167,7 @@ public class CallSchedules {
 		// TODO should an exception be trapped here?
 		ScheduledCall call = sched.scheduleCall(dateTime.toLocalTime());
 		call.setParticipant(participant);
+		call.setRegion(participant.getRegion());
 		call.setIsCompleted(false);
 		return call;
 	}
@@ -170,6 +177,8 @@ public class CallSchedules {
 	//as its now a divided operation (if we make use of DN to maintain bidirectional)
 	ScheduledCall createScheduledCall(CalendarDayCallSchedule callSchedule, LocalTime time) throws Exception {
 		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
+		//TODO
+		call.setRegion(region);
 		//set the scheduled date-time for comparable to work in the call-back
 		call.setScheduledDateTime(callSchedule.getCalendarDate().toDateTime(time));
 		//call back to the schedule to increment total calls

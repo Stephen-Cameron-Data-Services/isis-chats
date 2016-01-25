@@ -294,3 +294,26 @@ WHERE
 GROUP BY
   volunteer.volunteer_id,
   EXTRACT(YEAR_MONTH FROM callschedulesummary.calendardate);
+
+#DROP VIEW CallsDurationByParticipantAndMonth;
+CREATE VIEW CallsDurationByParticipantAndMonth AS
+SELECT
+  person.surname,
+  person.firstname AS firstName,
+  person.birthdate AS birthDate,
+  person.region_name AS regionName,
+  participant.status AS participantStatus,
+	EXTRACT(YEAR_MONTH FROM scheduledcall.startdatetime) as yearMonth,
+	ROUND(SUM(TIMESTAMPDIFF(MINUTE,scheduledcall.startdatetime,scheduledcall.enddatetime))/60,1) as callHoursTotal
+FROM
+  scheduledcall,
+  participant,
+  person
+WHERE
+  participant.participant_id = scheduledcall.participant_participant_id AND
+  person.person_id = participant.person_person_id AND	
+  participant.status <> 'EXITED' AND
+  scheduledcall.iscompleted = true
+GROUP BY
+  participant.participant_id,
+  EXTRACT(YEAR_MONTH FROM scheduledcall.startdatetime);

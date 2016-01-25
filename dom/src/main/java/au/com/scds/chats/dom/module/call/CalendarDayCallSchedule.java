@@ -225,8 +225,8 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	public void addCall(ScheduledCall call) throws Exception {
 		setTotalCalls(getTotalCalls() + 1);
 		getScheduledCalls().add(call);
-		if (getTotalCalls() != getScheduledCalls().size())
-			throw new Exception("Error: total call count and scheduledCalls.size() are different");
+//TODO		if (getTotalCalls() != getScheduledCalls().size())
+//			throw new Exception("Error: total call count and scheduledCalls.size() are different");
 	}
 
 	@Programmatic

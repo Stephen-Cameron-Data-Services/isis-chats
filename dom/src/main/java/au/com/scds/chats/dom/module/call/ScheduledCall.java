@@ -27,6 +27,7 @@ import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.services.clock.ClockService;
 import org.apache.isis.applib.util.ObjectContracts;
+import org.incode.module.note.dom.api.notable.Notable;
 //import org.incode.module.note.dom.api.notable.Notable;
 import org.joda.time.DateTime;
 import org.joda.time.DateTime;
@@ -59,7 +60,7 @@ import au.com.scds.chats.dom.module.volunteer.Volunteer;
 @DomainObject(objectType = "SCHEDULED_CALL")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
-public class ScheduledCall extends AbstractChatsDomainEntity implements Comparable<ScheduledCall> {
+public class ScheduledCall extends AbstractChatsDomainEntity implements Comparable<ScheduledCall>, Notable {
 
 	private Participant participant;
 	private Volunteer allocatedVolunteer;

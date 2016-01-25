@@ -42,8 +42,15 @@ import au.com.scds.chats.dom.module.general.Status;
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Queries({
-		@Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE status == :status"),
-		@Query(name = "findParticipantsBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE person.surname.indexOf(:surname) >= 0"), })
+		@Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE status == :status"),
+		@Query(name = "findParticipantsBySurname", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.module.participant.Participant "
+				+ "WHERE person.surname.indexOf(:surname) >= 0"),
+		@Query(name = "findNewOrModifiedParticipantsByPeriodAndRegion", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.module.participant.Participant "
+				+ "WHERE ((person.createdOn >= :startDate AND person.createdOn < :startDate) "
+				+ "OR (person.modifiedOn >= :startDate AND person.modifiedOn < :startDate)) " + "AND region = :region"), })
 public class Participant extends AbstractChatsDomainEntity implements Locatable, Comparable<Participant> {
 
 	private Person person;
@@ -130,8 +137,8 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public void setStatus(final Status status) {
 		this.status = status;
 	}
-	
-	public List<Status> choicesStatus(){
+
+	public List<Status> choicesStatus() {
 		ArrayList<Status> statuses = new ArrayList<>();
 		statuses.add(Status.ACTIVE);
 		statuses.add(Status.INACTIVE);
@@ -195,7 +202,7 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 			participantsRepo.createLoneliness(this);
 		return getLoneliness();
 	}
-	
+
 	@Property(hidden = Where.EVERYWHERE)
 	@Column(allowsNull = "true")
 	public ParticipantNotes getNotes() {
@@ -205,7 +212,7 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public void setNotes(ParticipantNotes notes) {
 		this.notes = notes;
 	}
-	
+
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
 	@ActionLayout(named = "Notes")
 	@MemberOrder(sequence = "13")
@@ -214,7 +221,7 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 			participantsRepo.createParticipantNotes(this);
 		return getNotes();
 	}
-	
+
 	@Property()
 	@MemberOrder(sequence = "100")
 	@CollectionLayout(named = "Participation", render = RenderType.EAGERLY)
@@ -266,6 +273,5 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 
 	@Inject
 	Participants participantsRepo;
-
 
 }

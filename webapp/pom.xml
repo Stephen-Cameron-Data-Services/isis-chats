@@ -225,6 +225,11 @@
         	<groupId>${project.groupId}</groupId>
         	<artifactId>chats-reports</artifactId>
         </dependency>
+        <dependency>
+        	<groupId>au.com.scds</groupId>
+        	<artifactId>isis-dss-dex-dom</artifactId>
+        	<version>1.0</version>
+        </dependency>
     </dependencies>
 
     <profiles>

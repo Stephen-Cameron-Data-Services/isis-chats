@@ -38,63 +38,58 @@ import org.joda.time.LocalDate;
 @DomainObject(editing = Editing.DISABLED)
 @PersistenceCapable(
 		identityType = IdentityType.NONDURABLE,
-		table = "ParticipantActivityByMonth",
+		table = "CallsDurationByParticipantAndMonth",
 		extensions = { @Extension(
 				vendorName = "datanucleus",
 				key = "view-definition",
-				value = "CREATE VIEW ParticipantActivityByMonth "
+				value = "CREATE VIEW CallsDurationByParticipantAndMonth "
 						+ "( "
 						+ "  {this.surname}, "
 						+ "  {this.firstName}, "
 						+ "  {this.birthDate}, "
 						+ "  {this.regionName}, "
-						+ "  {this.activityName}, "
 						+ "  {this.participantStatus}, "						
 						+ "  {this.yearMonth}, "
-						+ "  {this.hoursAttended} "
+						+ "  {this.callHoursTotal} "
 						+ ") AS "
 						+ "SELECT "
 						+ "  person.surname, "
 						+ "  person.firstname AS firstName, "
 						+ "  person.birthdate AS birthDate, "
 						+ "  person.region_name AS regionName, "
-						+ "  activity.name AS activityName, "
 						+ "  participant.status AS participantStatus, "
-						+ "	EXTRACT(YEAR_MONTH FROM attended.startdatetime) as yearMonth, "
-						+ "	ROUND(SUM(TIMESTAMPDIFF(MINUTE,attended.startdatetime,attended.enddatetime))/60,1) as hoursAttended "
+						+ "	EXTRACT(YEAR_MONTH FROM scheduledcall.startdatetime) as yearMonth, "
+						+ "	ROUND(SUM(TIMESTAMPDIFF(MINUTE,scheduledcall.startdatetime,scheduledcall.enddatetime))/60,1) as callHoursTotal "
 						+ "FROM "
-						+ "  activity, "
-						+ "  attended, "						
+						+ "  scheduledcall, "						
 						+ "  participant, "
 						+ "  person "
 						+ "WHERE "
-						+ "  attended.activity_activity_id = activity.activity_id AND "
-						+ "  participant.participant_id = attended.participant_participant_id AND "
+						+ "  participant.participant_id = scheduledcall.participant_participant_id AND "
 						+ "  person.person_id = participant.person_person_id AND "							
-						+ "  participant.status <> 'EXITED' "
+						+ "  participant.status <> 'EXITED' AND "
+						+ "  scheduledcall.iscompleted = true "						
 						+ "GROUP BY "
 						+ "  participant.participant_id, "
-						+ "  activity.activity_id, "
-						+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime);") })
+						+ "  EXTRACT(YEAR_MONTH FROM scheduledcall.startdatetime);") })
 @Queries({
-	@Query(name = "allParticipantActivityByMonth",
+	@Query(name = "allCallsDurationByParticipantAndMonth",
 			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.module.report.view.ParticipantActivityByMonth"),
-	@Query(name = "allParticipantActivityForMonthAndRegion",
+			value = "SELECT FROM au.com.scds.chats.dom.module.report.view.CallsDurationByParticipantAndMonth"),
+	@Query(name = "allCallsDurationByParticipantForMonthAndRegion",
 			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.module.report.view.ParticipantActivityByMonth pa "
-					+ "WHERE pa.yearMonth = :yearMonth AND pa.regionName = :regionName"), })
+			value = "SELECT FROM au.com.scds.chats.dom.module.report.view.CallsDurationByParticipantAndMonth cd "
+			+ "WHERE cd.yearMonth = :yearMonth AND cd.regionName = :regionName"),})
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class ParticipantActivityByMonth {
+public class CallsDurationByParticipantAndMonth {
 	
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
 	public String regionName;
-	public String activityName;
 	public String participantStatus;
 	public Integer yearMonth;
-	public Float hoursAttended;
+	public Float callHoursTotal;
 
 	@Property()
 	@MemberOrder(sequence = "1")
@@ -135,19 +130,9 @@ public class ParticipantActivityByMonth {
 	public void setRegionName(String region) {
 		this.regionName = region;
 	}
-
-	@Property()
-	@MemberOrder(sequence = "5.1")
-	public String getActivityName() {
-		return activityName;
-	}
-
-	public void setActivityName(String activityName) {
-		this.activityName = activityName;
-	}
 	
 	@Property()
-	@MemberOrder(sequence = "5.2")
+	@MemberOrder(sequence = "5")
 	public String getParticipantStatus() {
 		return participantStatus;
 	}
@@ -168,11 +153,11 @@ public class ParticipantActivityByMonth {
 
 	@Property()
 	@MemberOrder(sequence = "8")
-	public Float getHoursAttended() {
-		return hoursAttended;
+	public Float getCallHoursTotal() {
+		return callHoursTotal;
 	}
 
-	public void setHoursAttended(Float hoursAttended) {
-		this.hoursAttended = hoursAttended;
+	public void setCallHoursTotal(Float callHoursTotal) {
+		this.callHoursTotal = callHoursTotal;
 	}
 }
