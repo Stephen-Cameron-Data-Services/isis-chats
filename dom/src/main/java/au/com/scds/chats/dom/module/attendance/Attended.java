@@ -149,6 +149,15 @@ public class Attended extends AbstractChatsDomainEntity implements Comparable<At
 		} else
 			return null;
 	}
+	
+	@Programmatic
+	public Integer getAttendanceIntervalInMinutes(){
+		if (getStartDateTime() != null && getEndDateTime() != null) {
+			Period per = new Period(getStartDateTime().toLocalDateTime(), getEndDateTime().toLocalDateTime());
+			return per.toStandardMinutes().getMinutes();
+		} else
+			return null;
+	}
 
 	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(hidden = Where.EVERYWHERE)

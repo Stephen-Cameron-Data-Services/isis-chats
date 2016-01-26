@@ -78,7 +78,7 @@ SELECT
   person.surname,
   person.firstname AS firstName,
   person.birthdate AS birthDate,
-  person.region_name AS regionName,
+  activity.region_name AS regionName,
   activity.name AS activityName,
   participant.status AS participantStatus,
   EXTRACT(YEAR_MONTH FROM attended.startdatetime) as yearMonth,
@@ -317,3 +317,24 @@ WHERE
 GROUP BY
   participant.participant_id,
   EXTRACT(YEAR_MONTH FROM scheduledcall.startdatetime);
+
+#DROP VIEW ActivityParticipantAttendance
+CREATE VIEW ActivityParticipantAttendance AS 
+SELECT 
+  person.surname, 
+  person.firstname AS firstName, 
+  person.birthdate AS birthDate, 
+  activity.name AS activityName, 
+  activity.region_name AS regionName, 
+  activity.startdatetime AS startDateTime, 						
+  participant.status AS participantStatus, 
+  ROUND(TIMESTAMPDIFF(MINUTE,attended.startdatetime,attended.enddatetime),1) as minutesAttended 
+FROM 
+  activity, 
+  attended, 						
+  participant, 
+  person 
+WHERE 
+  attended.activity_activity_id = activity.activity_id AND 
+  participant.participant_id = attended.participant_participant_id AND 
+  person.person_id = participant.person_person_id;

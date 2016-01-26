@@ -1,21 +1,21 @@
 /*
- *
- *  Copyright 2015 Stephen Cameron Data Services
- *
- *
- *  Licensed under the Apache License, Version 2.0 (the
- *  "License"); you may not use this file except in compliance
- *  with the License.  You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing,
- *  software distributed under the License is distributed on an
- *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- *  KIND, either express or implied.  See the License for the
- *  specific language governing permissions and limitations
- *  under the License.
- */
+*
+*  Copyright 2015 Stephen Cameron Data Services
+*
+*
+*  Licensed under the Apache License, Version 2.0 (the
+*  "License"); you may not use this file except in compliance
+*  with the License.  You may obtain a copy of the License at
+*
+*        http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing,
+*  software distributed under the License is distributed on an
+*  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+*  KIND, either express or implied.  See the License for the
+*  specific language governing permissions and limitations
+*  under the License.
+*/
 package au.com.scds.chats.dom.module.report.view;
 
 import javax.jdo.annotations.Extension;
@@ -38,30 +38,30 @@ import org.joda.time.LocalDate;
 @DomainObject(editing = Editing.DISABLED)
 @PersistenceCapable(
 		identityType = IdentityType.NONDURABLE,
-		table = "ParticipantActivityByMonth",
+		table = "ActivityParticipantAttendance",
 		extensions = { @Extension(
 				vendorName = "datanucleus",
 				key = "view-definition",
-				value = "CREATE VIEW ParticipantActivityByMonth "
+				value = "CREATE VIEW ActivityParticipantAttendance "
 						+ "( "
 						+ "  {this.surname}, "
 						+ "  {this.firstName}, "
 						+ "  {this.birthDate}, "
-						+ "  {this.regionName}, "
 						+ "  {this.activityName}, "
-						+ "  {this.participantStatus}, "						
-						+ "  {this.yearMonth}, "
-						+ "  {this.hoursAttended} "
+						+ "  {this.regionName}, "
+						+ "  {this.startDateTime}, "						
+						+ "  {this.participantStatus}, "
+						+ "  {this.minutesAttended} "
 						+ ") AS "
 						+ "SELECT "
 						+ "  person.surname, "
 						+ "  person.firstname AS firstName, "
 						+ "  person.birthdate AS birthDate, "
-						+ "  activity.region_name AS regionName, "
 						+ "  activity.name AS activityName, "
+						+ "  activity.region_name AS regionName, "
+						+ "  activity.startdatetime AS startDateTime, "						
 						+ "  participant.status AS participantStatus, "
-						+ "	 EXTRACT(YEAR_MONTH FROM activity.startdatetime) as yearMonth, "
-						+ "	 ROUND(SUM(TIMESTAMPDIFF(MINUTE,attended.startdatetime,attended.enddatetime))/60,1) as hoursAttended "
+						+ "	ROUND(TIMESTAMPDIFF(MINUTE,attended.startdatetime,attended.enddatetime),1) as minutesAttended "
 						+ "FROM "
 						+ "  activity, "
 						+ "  attended, "						
@@ -70,31 +70,26 @@ import org.joda.time.LocalDate;
 						+ "WHERE "
 						+ "  attended.activity_activity_id = activity.activity_id AND "
 						+ "  participant.participant_id = attended.participant_participant_id AND "
-						+ "  person.person_id = participant.person_person_id AND "							
-						+ "  participant.status <> 'EXITED' "
-						+ "GROUP BY "
-						+ "  participant.participant_id, "
-						+ "  activity.activity_id, "
-						+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime);") })
+						+ "  person.person_id = participant.person_person_id") })
 @Queries({
-	@Query(name = "allParticipantActivityByMonth",
+	@Query(name = "allActivityParticipantAttendance",
 			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.module.report.view.ParticipantActivityByMonth"),
-	@Query(name = "allParticipantActivityForMonthAndRegion",
+			value = "SELECT FROM au.com.scds.chats.dom.module.report.view.ActivityParticipantAttendance"),
+	@Query(name = "allParticipantActivityForPeriodAndRegion",
 			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.module.report.view.ParticipantActivityByMonth pa "
-					+ "WHERE pa.yearMonth == :yearMonth && pa.regionName == :region"), })
+			value = "SELECT FROM au.com.scds.chats.dom.module.report.view.ActivityParticipantAttendance pa "
+					+ "WHERE pa.startDateTime >= :periodStartDateTime && pa.startDateTime <= :periodEndDateTime && pa.regionName == :region"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class ParticipantActivityByMonth {
-	
+public class ActivityParticipantAttendance {
+
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
-	public String regionName;
 	public String activityName;
+	public String regionName;
+	public DateTime startDateTime;
 	public String participantStatus;
-	public Integer yearMonth;
-	public Float hoursAttended;
+	public Float minutesAttended;
 
 	@Property()
 	@MemberOrder(sequence = "1")
@@ -137,7 +132,7 @@ public class ParticipantActivityByMonth {
 	}
 
 	@Property()
-	@MemberOrder(sequence = "5.1")
+	@MemberOrder(sequence = "5")
 	public String getActivityName() {
 		return activityName;
 	}
@@ -147,7 +142,17 @@ public class ParticipantActivityByMonth {
 	}
 	
 	@Property()
-	@MemberOrder(sequence = "5.2")
+	@MemberOrder(sequence = "6")
+	public DateTime getStartDateTime() {
+		return startDateTime;
+	}
+
+	public void setStartDateTime(DateTime startDateTime) {
+		this.startDateTime = startDateTime;
+	}	
+	
+	@Property()
+	@MemberOrder(sequence = "7")
 	public String getParticipantStatus() {
 		return participantStatus;
 	}
@@ -157,22 +162,12 @@ public class ParticipantActivityByMonth {
 	}
 
 	@Property()
-	@MemberOrder(sequence = "7")
-	public Integer getYearMonth() {
-		return yearMonth;
-	}
-
-	public void setYearMonth(Integer yearMonth) {
-		this.yearMonth = yearMonth;
-	}
-
-	@Property()
 	@MemberOrder(sequence = "8")
-	public Float getHoursAttended() {
-		return hoursAttended;
+	public Float getMinutesAttended() {
+		return minutesAttended;
 	}
 
-	public void setHoursAttended(Float hoursAttended) {
-		this.hoursAttended = hoursAttended;
+	public void setMinutesAttended(Float minutesAttended) {
+		this.minutesAttended = minutesAttended;
 	}
 }

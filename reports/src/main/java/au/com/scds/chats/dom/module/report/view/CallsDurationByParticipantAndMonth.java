@@ -79,7 +79,7 @@ import org.joda.time.LocalDate;
 	@Query(name = "allCallsDurationByParticipantForMonthAndRegion",
 			language = "JDOQL",
 			value = "SELECT FROM au.com.scds.chats.dom.module.report.view.CallsDurationByParticipantAndMonth cd "
-			+ "WHERE cd.yearMonth = :yearMonth AND cd.regionName = :regionName"),})
+			+ "WHERE cd.yearMonth == :yearMonth && cd.regionName == :region"),})
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class CallsDurationByParticipantAndMonth {
 	
