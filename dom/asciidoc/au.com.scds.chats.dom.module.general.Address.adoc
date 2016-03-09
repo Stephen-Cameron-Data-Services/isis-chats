@@ -1,0 +1,10 @@
+[[Address]]
+== Address
+
+An extended <<Location,Location>>, so having the same Name and Location properties, but with additional street address information.
+
+People and most Activities will have an Address, but some Activities just might be at a Location only.
+
+=== Address Properties
+
+{TBD}

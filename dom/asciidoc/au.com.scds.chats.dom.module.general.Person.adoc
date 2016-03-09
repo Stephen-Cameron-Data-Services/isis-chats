@@ -1,0 +1,11 @@
+[[Person]]
+== Person
+
+The Chats App uses the combination of a Person's first-name, last-name (family-name) and date-of-birth to determine unique identity. So to create a new Person record successfully the combination of these three properties has to be different to any existing record in the system.
+
+Note that the first and last name properties are case-sensitive, so there is an assumption (validate this?) that names will entered in proper-case (first letter upper-case, remainder lower-case).
+
+=== Person properties
+
+{TBD}
+

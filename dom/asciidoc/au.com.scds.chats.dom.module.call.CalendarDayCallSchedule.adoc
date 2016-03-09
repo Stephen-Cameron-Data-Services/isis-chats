@@ -1,0 +1,12 @@
+[[CalendarDayCallSchedule]]
+== Calendar Day Call Schedule
+
+A schedule of <<ScheduledCall,Scheduled Calls>> to be made by a specific <<Volunteer,Volunteer>> to one or more <<Participant,Participants>> on a specific calendar day.
+
+A Calendar Day Call Schedule is a convenient means to provide a view, to a 'Calls Volunteer', of all the calls to be made on a specific day by that Volunteer.
+
+An alternative view of all Scheduled Calls listed chronologically and showing their completion status is provided for Chats Administrators.
+
+== Calendar Day Call Schedule properties
+
+{TBD}

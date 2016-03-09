@@ -1,0 +1,9 @@
+[[Status]]
+== Status
+
+The current status of a <<Participant,Participant>> or a <<Volunteer,Volunteer>>.
+
+* *ACTIVE*: Participant or Volunteer will appear in most selection lists.
+* *INACTIVE* Participant or Volunteer will NOT appear in most selection lists for assigning.
+* *TO_EXIT* As for *INACTIVE* and is scheduled to be set to *EXITED* at the next reporting date. 
+* *EXITED* Participant or Volunteer will NOT appear in any selection lists. Such records will still be visible if accessed from historical data, but read-only.

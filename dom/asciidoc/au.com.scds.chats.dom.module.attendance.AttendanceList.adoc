@@ -1,0 +1,6 @@
+[[AttendanceList]]
+== Attendance List
+
+=== Attendance List properties
+
+{TBD}

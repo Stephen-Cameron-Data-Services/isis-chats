@@ -1,0 +1,8 @@
+[[Activity]]
+== Activity
+
+An Activity in the Chats App is a general name that refers to a both a kind of a 'model' activity, called a <<RecurringActivity, Recurring Activity>>, and occurances or instances of that model in the form of real  activity events, called simply an <<ActivityEvent,Activities>>.
+
+An Activity has the main properties of an name, a fixed start date-time, and a location, usually specified by a street address.
+
+Activity events are either the child of a Recurring Activity (and scheduled from it) or have no such parent Recurring Activity and are then called a one-off <<ActivityEvent,One-off Activity>>. Such One-off Activities are created by entering values for the main properties, whereas with the individual occurances (children) of Recurring Activity the start date-time will, in most cases, be the only thing that changes.

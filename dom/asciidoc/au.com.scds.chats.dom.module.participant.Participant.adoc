@@ -1,0 +1,29 @@
+[[Participant]]
+== Participant
+
+A Participant in the Chats App is essentially a role taken on by a <<Person,Person>>, the other main role is a <<Volunteer,Volunteer>>. So one person can be either a Participant or a Volunteer, or, both a Participant and a Volunteer at the same time.
+
+=== Participations
+
+A Participant participates in Activities. To be able to do this it is necessary to 'link' a Participant in an Activity, this is done by creating a <<Participation,Participation>> record.
+
+Participation records also contain details on transportation of a Participant to an Activity. See the section on Participations for more details on that aspect.
+
+=== Attendances
+
+Participation is not the same thing as attendance at an activity. Rather, the Chats App. provides for creation of an <<AttendanceList,Attendance List>> for each Activity (event) by making a copy of the list of Participations of an Activity. It's mainly done this way to differentiate between recurring and one-off activities and is described in more detail in the Activities and section of this guide.
+
+include::au.com.scds.chats.dom.module.participant.Loneliness.adoc[]
+
+include::au.com.scds.chats.dom.module.participant.SocialFactors.adoc[]
+
+=== Participant Properties
+
+The properties of a Participant are as follows:
+
+==== Status
+
+A Participant has a status, this is one of: 'Active', 'Inactive' or 'To-exit' or 'Excited'. 'Exited' Participants are hidden from view, generally, but can be made 'Active' again by an Administrator.
+
+
+

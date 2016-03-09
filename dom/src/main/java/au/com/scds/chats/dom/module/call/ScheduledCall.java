@@ -52,11 +52,13 @@ import au.com.scds.chats.dom.module.volunteer.Volunteer;
  */
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Queries({
-		@Query(name = "find", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall "),
-		@Query(name = "findScheduledCallsByVolunteer", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall WHERE volunteer == :volunteer "),
-		@Query(name = "findScheduledCallsByParticipant", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall WHERE participant == :participant "),
+		@Query(name = "find", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.call.ScheduledCall "),
+		@Query(name = "findScheduledCallsByVolunteer", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.call.ScheduledCall WHERE volunteer == :volunteer "),
+		@Query(name = "findScheduledCallsByParticipant", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.call.ScheduledCall WHERE participant == :participant "),
 		@Query(name = "findScheduledCallsByParticipantAndVolunteer", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.module.volunteer.ScheduledCall WHERE participant == :participant AND volunteer == :volunteer ") })
+				+ "FROM au.com.scds.chats.dom.module.call.ScheduledCall WHERE participant == :participant AND volunteer == :volunteer "), 
+		@Query(name = "findCompletedScheduledCallsInPeriodAndRegion", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.module.call.ScheduledCall WHERE isCompleted == true && startDateTime >= :startDateTime && startDateTime <= :endDateTime && region == :region ORDER BY startDateTime ASC"), })
 @DomainObject(objectType = "SCHEDULED_CALL")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
@@ -245,6 +247,15 @@ public class ScheduledCall extends AbstractChatsDomainEntity implements Comparab
 		}
 		setEndDateTime(endDateTime);
 		return this;
+	}
+	
+	@Programmatic
+	public Integer getCallIntervalInMinutes(){
+		if (getStartDateTime() != null && getEndDateTime() != null) {
+			Period per = new Period(getStartDateTime().toLocalDateTime(), getEndDateTime().toLocalDateTime());
+			return per.toStandardMinutes().getMinutes();
+		} else
+			return null;
 	}
 
 	@Override

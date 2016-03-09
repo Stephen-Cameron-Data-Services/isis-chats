@@ -1,0 +1,35 @@
+[[Participants__listActive]]
+==== Participants : Active
+
+Lists all <<Participant, Participants>> with <<Status,status>> of ACTIVE.
+
+[[Participants__listInactive]]
+==== Participants : List Inactive
+
+Lists all <<Participant, Participants>> with <<Status,status>> of INACTIVE.
+
+[[Participants__listExited]]
+==== Participants : List Exited
+
+Lists all <<Participant, Participants>> with <<Status,status>> of EXITED.
+
+[[Participants__listToExit]]
+==== Participants : List To_Exit
+
+Lists all <<Participant, Participants>> with <<Status,status>> of TO_EXIT. 
+
+These Participants will have their status updated to EXITED after the next DSS DEX reporting is completed.
+
+[[Participants__findBySurname]]
+==== Participants : Find By Surname
+
+Find all Participants with a surname equal to, or part surname starting with, the entered value.
+
+This is a case-sensitive search.
+
+[[Participants__create]]
+==== Participants : Create
+
+Create a new Participant. By entering a firstname, a surname and a date-of-birth the Chats App will:
+
+firstly search for a existing person with those values. If

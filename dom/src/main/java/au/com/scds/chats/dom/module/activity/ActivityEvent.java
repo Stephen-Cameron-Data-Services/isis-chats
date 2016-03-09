@@ -76,7 +76,7 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 		@Query(name = "findActivitiesWithoutAttendanceList", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE attendances == null "),
 		@Query(name = "findAllFutureActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE startDateTime > :currentDateTime "),
 		@Query(name = "findAllPastActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE startDateTime <= :currentDateTime "),
-		@Query(name = "findActivitiesInPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE startDateTime >= :startDateTime && startDateTime <= :endDateTime && region == :region"),})
+		@Query(name = "findActivitiesInPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE startDateTime >= :startDateTime && startDateTime <= :endDateTime && region == :region ORDER BY startDateTime ASC"),})
 // @Unique(name = "Activity_name_UNQ", members = { "name"
 // })
 public class ActivityEvent extends Activity implements Notable, CalendarEventable {

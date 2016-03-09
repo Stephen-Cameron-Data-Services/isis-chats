@@ -1,0 +1,34 @@
+[[Activities__createRecurringActivity]]
+==== Activities : Create Recurring Activity
+
+Create a new <<RecurringActivity, Recurring Activity>> after entering an activity name and start date and start time value.
+
+[[Activities__listAllRecurringActivities]]
+==== Activities : List All Recurring Activities
+
+List all <<RecurringActivity, Recurring Activities>> (should we filter these??)
+
+[[Activities__findRecurringActivityByName]]
+==== Activities : Find Recurring Activity By Name
+
+List all <<RecurringActivity, Recurring Activities>> with a name starting with an entered value.
+
+[[Activities__createOneOffActivity]]
+==== Create One Off Activity
+
+{TBD}
+
+[[Activities__findActivityByName]]
+==== Find Activity By Name
+
+{TBD}
+
+[[Activities__listAllFutureActivities]]
+==== List All Future Activities
+
+{TBD}
+
+[[Activities__listAllPastActivities]]
+==== List All Past Activitie
+
+{TBD}

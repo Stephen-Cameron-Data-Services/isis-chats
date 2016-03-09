@@ -1,0 +1,20 @@
+[[Location]]
+== Location
+
+A named Geospatial location.
+
+=== Location Properties
+
+[[Location_name]]
+==== Name
+
+A textual 'common-use' name; e.g. Federation Concert Hall.
+
+[[Location_location]]
+==== Location
+
+A specific geospational location composed of a Latitude value and Longitude value; e.g. 
+
+Such a Location value is generated either from off an address via a geocoding service, such as is provided by Google Maps.
+
+

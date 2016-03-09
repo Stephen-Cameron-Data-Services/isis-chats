@@ -18,6 +18,8 @@
 */
 package au.com.scds.chats.dom.module.report.view;
 
+import java.math.BigInteger;
+
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Inheritance;
@@ -89,7 +91,7 @@ public class ActivityParticipantAttendance {
 	public String regionName;
 	public DateTime startDateTime;
 	public String participantStatus;
-	public Float minutesAttended;
+	public Integer minutesAttended;
 
 	@Property()
 	@MemberOrder(sequence = "1")
@@ -163,11 +165,11 @@ public class ActivityParticipantAttendance {
 
 	@Property()
 	@MemberOrder(sequence = "8")
-	public Float getMinutesAttended() {
+	public Integer getMinutesAttended() {
 		return minutesAttended;
 	}
 
-	public void setMinutesAttended(Float minutesAttended) {
+	public void setMinutesAttended(Integer minutesAttended) {
 		this.minutesAttended = minutesAttended;
 	}
 }

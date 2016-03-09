@@ -1,0 +1,51 @@
+= Chats Application (Chats App) 
+
+Chats - Creating Communty Connections for Older People
+
+:doctype: article
+:encoding: utf-8
+:lang: en
+:toc: left
+:toclevels: 2
+:numbered:
+
+
+include::domainapp.app.DomainAppAppManifest.adoc[]
+
+include::au.com.scds.chats.dom.module.activity.Activity.adoc[]
+
+include::au.com.scds.chats.dom.module.activity.RecurringActivity.adoc[]
+
+include::au.com.scds.chats.dom.module.activity.ActivityEvent.adoc[]
+
+include::au.com.scds.chats.dom.module.participant.Participant.adoc[]
+
+include::au.com.scds.chats.dom.module.participant.Participation.adoc[]
+
+include::au.com.scds.chats.dom.module.volunteer.Volunteer.adoc[]
+
+include::au.com.scds.chats.dom.module.volunteer.VolunteerRole.adoc[]
+
+include::au.com.scds.chats.dom.module.volunteer.VolunteeredTime.adoc[]
+
+include::au.com.scds.chats.dom.module.call.ScheduledCall.adoc[]
+
+include::au.com.scds.chats.dom.module.call.CalendarDayCallSchedule.adoc[]
+
+include::au.com.scds.chats.dom.module.attendance.Attended.adoc[]
+
+include::au.com.scds.chats.dom.module.attendance.AttendanceList.adoc[]
+
+include::au.com.scds.chats.dom.module.general.Person.adoc[]
+
+include::au.com.scds.chats.dom.module.general.Location.adoc[]
+
+include::au.com.scds.chats.dom.module.general.Address.adoc[]
+
+include::au.com.scds.chats.module.report.dex.DEXFiles.adoc[]
+
+[[SCDS]]
+== Stephen Cameron Data Services
+
+{TBD}
+

@@ -1,0 +1,27 @@
+[[Volunteer]]
+
+== Volunteer
+
+
+A Volunteer in the Chats App is essentially a role taken on by a <<Person,Person>>, the other main role is a <<Participant,Participant>>. So one person can be either a Participant, or a Volunteer, or both a Participant and a Volunteer.
+
+=== Volunteer Properties
+
+The properties of a Volunteer are the <<Address, Address>> and contact details of the Person (so if you edit the Person proprties that will change what is seen for the Volunteer).
+
+==== Person
+
+The 'underlying' <<Person,Person>> taking on the role of Volunteer.
+
+==== Status
+
+The current <<Status,Status>> of the Volunteer. 
+
+==== Volunteer Roles
+
+The specific <<VolunteerRole, Volunteer Roles>> performed by the Volunteer. These determine to what jobs a Volunteer can be assigned.
+
+==== Volunteered Times
+
+A list of individual time periods that the Volunteer has contributed. This is a view or a log of the intervals that get created from other points in the Chats App.
+

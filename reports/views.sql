@@ -328,7 +328,7 @@ SELECT
   activity.region_name AS regionName, 
   activity.startdatetime AS startDateTime, 						
   participant.status AS participantStatus, 
-  ROUND(TIMESTAMPDIFF(MINUTE,attended.startdatetime,attended.enddatetime),1) as minutesAttended 
+  TIMESTAMPDIFF(MINUTE,attended.startdatetime,attended.enddatetime) as minutesAttended 
 FROM 
   activity, 
   attended, 						

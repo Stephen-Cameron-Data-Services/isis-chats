@@ -1,0 +1,4 @@
+[preface]
+== Preface
+
+The Chats Application is a database developed by Lifeline Tasmania to manage their Chats Social Engagement Program for older Tasmanians.

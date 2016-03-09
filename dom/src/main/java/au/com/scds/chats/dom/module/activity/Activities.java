@@ -27,6 +27,16 @@ import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.module.general.names.Region;
 
+
+/**
+ * <user>
+ * <p> Container for <link>Activity<link> domain entities.
+ * </p>
+ * </user>
+ * 
+ * @author stevec
+ *
+ */
 @DomainService(repositoryFor = ActivityEvent.class)
 @DomainServiceLayout(named = "Activities", menuOrder = "10")
 public class Activities {

@@ -1,0 +1,30 @@
+[[Volunteers__listActive]]
+==== Volunteers : List Active
+
+Lists all <<Volunteer, Volunteers>> with <<Status, status>>  ACTIVE.
+
+[[Volunteers__listInactive]]
+==== Volunteers : List InActive
+
+Lists all <<Volunteer, Volunteers>> with <<Status, status>>  INACTIVE.
+
+[[Volunteers__listExited]]
+==== Volunteers : List Exited
+
+Lists all <<Volunteer, Volunteers>> with <<Status, status>>  EXITED.
+
+[[Volunteers__listToExit]]
+==== Volunteers : List To_Exit
+
+List all <<Volunteer, Volunteers>> with a status of TO_EXIT. All Volunteers will have their <<Status, status>> changed to EXITED after the new <<DSS_DEX_Reporting, DSS DEX Reports>> generation is completed.
+
+[[Volunteers__findBySurname]]
+==== Volunteers : Find By Surname
+
+Find a <<Volunteer, Volunteer>> with surname starting with an entered value.
+
+
+[[Volunteers__create]]
+==== Volunteers : Create
+
+Create a new <<Volunteer, Volunteer>>.

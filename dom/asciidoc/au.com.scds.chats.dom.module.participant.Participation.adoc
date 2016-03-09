@@ -1,0 +1,16 @@
+[[Participation]]
+== Participation
+
+A Participation in the Chats App is a relationship between a <<Participant>> and an <<Activity>> (either a Recurring or a One-off Activity). It essentially indicates enrolment of a Participant in an Activity.
+
+A Participation has properties related the travel details of the individual Participant in the specific Activity.
+
+The list of Participations associated with an Activity is used in several ways:
+
+* To create Transport Lists of potential attendees at an Activity event.
+
+* The create Attendance Lists of actual attendees at an Activity event.
+
+=== Participation Properties
+
+{TBD}

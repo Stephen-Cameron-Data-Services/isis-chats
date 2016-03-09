@@ -1,0 +1,4 @@
+[[Loneliness]]
+=== Loneliness
+
+Information indicating the loneliness of a <<Participant,Participant>>.

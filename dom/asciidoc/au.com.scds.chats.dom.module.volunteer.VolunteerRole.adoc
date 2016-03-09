@@ -1,0 +1,11 @@
+[[VolunteerRole]]
+
+== Volunteer Role
+
+A <<Volunteer,Volunteer>> can be assigned one or more roles as below:
+
+* *Driver*
+
+* *Calls*
+
+* *Activity Host*

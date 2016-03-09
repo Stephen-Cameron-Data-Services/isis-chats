@@ -1,0 +1,4 @@
+[[SocialFactors]]
+=== Social Factors
+
+Information indicating the social factors of a <<Participant, Participant>>.

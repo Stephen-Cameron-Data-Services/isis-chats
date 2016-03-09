@@ -1,0 +1,12 @@
+[[ScheduledCall]]
+== Scheduled Call
+
+A Scheduled Call is created in Chats App to assign a <<Volunteer,Volunteer>> to make a Chats social call to a <<Participant,Participant>>.
+
+It also records the time interval details of the call when it is made by the Volunteer.
+
+A Scheduled Call is indirectly scheduled by being assigned to a schedule of calls to be made by a Volunteer on a specific calendar day, hence called a <<CalendarDayCallSchedule,Calendar Day Call Schedule>>.
+
+=== Scheduled Call Properties
+
+{TBD}

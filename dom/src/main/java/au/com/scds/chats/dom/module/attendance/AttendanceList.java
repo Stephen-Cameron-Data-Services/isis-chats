@@ -57,7 +57,7 @@ import au.com.scds.chats.dom.module.participant.Participation;
 public class AttendanceList {
 
 	private ActivityEvent parentActivity;
-	public List<Attended> attendeds = new ArrayList<>();
+	private List<Attended> attendeds = new ArrayList<>();
 	
 	public AttendanceList(){}
 
