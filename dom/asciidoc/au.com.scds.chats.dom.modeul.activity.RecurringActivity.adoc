@@ -1,4 +1,0 @@
-[[RecurringActivity]]
-== Recurring Activity
-
-{TBD}

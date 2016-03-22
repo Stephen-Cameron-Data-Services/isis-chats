@@ -1,4 +1,31 @@
 [[RecurringActivity]]
 == Recurring Activity
 
-{TBD}
+A Recurring Activity a both a kind of a 'model' activity that has child 'occurrences' or 'real' activity events, each called simply an <<ActivityEvent,Activities>>.
+
+Defining a Recurring Activity assists in efficient management of such events in two ways:
+
+.  All the details of the children that are unchanging can be defined once in the parent and these details will be mirrored in each of the children. These will be location details,??
+
+. Participants can be added (as <<Participation,Participations>>) to the parent or to individual children. The list of Participations for a child Activity is the [underline]#combined# Participations list of the parent and child.
+
+Various aspects of a Recurring Activity will now be described in more detail.
+
+=== Adding a Participant to an Recurring Activity
+
+The process of adding a Participant to an Activity (by creating a <<Participation,Participation>>)) is common to 3 all kinds of Activity (Recurring parent and child, and One-off) and is described <<ActivityEvent__addParticipant,here>>.
+
+Adding a Participation to a Recurring Activity will be the normal action, as most Participants will attend each child Activity. In the case where a Participant wants to attend just a few (child) activities, then add them to the specific Activity event.
+
+When in comes to creating transport lists and also recording Attendance a specific Activities, the list of persons (created or accessed online) is copied from the list of Participations for that Activity and, as stated above, for Recurring Activities this is the combined list of Participations of child and parent. For one-off activities it's just the list of Participations for the Activity alone, as it has no parent.
+
+More details on how Participation lists get are used go to: <<AttendanceList, Attendance Lists>> or <<TransportList, Transport Lists>>.
+
+=== Scheduling Child Activities 
+
+The child Activities of a Recurring Activity are displayed in two tables, the 'Future Activities' table and the 'Completed Activities' table. Whether an specific activity appears in the first or the second list is determined by whether the Start Date Time of that activity is in the future or the past.
+
+To add another child Activity click the 'Add Next' button in the header of the 'Future Activities'. This action will create a new child activity and set its name to be the same as its parent Recurring Activity and its Start Date Time to an increment of the Start Date Time of the latest existing scheduled child Activity.
+
+The interval of time that is used to increment the Start Date Time of latest existing scheduled child is determined by the value of the Periodicity property of the parent Recurring Activity. If the Periodicity is 1 day the increment is 24 hrs.
+
