@@ -85,7 +85,7 @@ public class CreateAttendedance extends IntegrationTestAbstract {
 			System.out.println(i++ + ": "  + event.getName());
 			AttendanceList list = attendances.createActivityAttendanceList(event);
 			list.addAllAttendeds();
-			for(Attended attended: list.attendeds){
+			for(Attended attended: list.getAttendeds()){
 				attended.setDatesAndTimes(event.getStartDateTime(), event.getApproximateEndDateTime());
 			}
 		}

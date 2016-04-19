@@ -32,10 +32,6 @@ public class LocationTest {
 	public static class LocationTest_Tests extends LocationTest {
 
 		@Test
-		/**
-		 * Add an Existing Participation to an ActivityEvent
-		 * 
-		 */
 		public void createLocationFromAddress() throws Exception {
 
 			address.setName("Headquarters");

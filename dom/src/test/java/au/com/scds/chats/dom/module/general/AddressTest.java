@@ -25,8 +25,6 @@ public class AddressTest {
 	Locations locations;
 	Address address;
 	
-	
-
 	@Before
 	public void setUp() throws Exception {
 		locationLookupService = new LocationLookupService();

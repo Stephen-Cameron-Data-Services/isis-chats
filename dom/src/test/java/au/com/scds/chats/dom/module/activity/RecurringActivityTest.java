@@ -337,7 +337,7 @@ public class RecurringActivityTest {
 			assertThat(event1.getDescription()).isEqualTo("parent");
 		
 		}
-		
+		/*TODO
 		@Test
 		public void updateAddress() throws Exception {
 
@@ -362,6 +362,6 @@ public class RecurringActivityTest {
 			assertThat(activity.getLocation()).isNotNull();
 			assertThat(activity.getLocation().getLatitude()).isEqualTo(-42.886763);
 			assertThat(activity.getLocation().getLongitude()).isEqualTo(147.408854);
-		}
+		}*/
 	}
 }
