@@ -56,7 +56,7 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 @Discriminator(value = "RECURRING_ACTIVITY")
 @Queries({ @Query(name = "find", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.RecurringActivity "),
 		@Query(name = "findRecurringActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.RecurringActivity WHERE name.indexOf(:name) >= 0 ") })
-public class RecurringActivity extends Activity implements Notable {
+public class RecurringActivity extends Activity /*implements Notable*/ {
 
 	private Periodicity periodicity = Periodicity.WEEKLY;
 	@Persistent(mappedBy = "parentActivity")

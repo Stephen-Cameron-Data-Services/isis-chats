@@ -35,9 +35,7 @@ import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
 
 @DomainService(repositoryFor = ContactType.class)
-@DomainServiceLayout(menuBar=MenuBar.SECONDARY,
-		named="Administration",
-		menuOrder = "100.2")
+@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.2")
 public class ContactTypes {
 
 	@Action(semantics = SemanticsOf.SAFE)

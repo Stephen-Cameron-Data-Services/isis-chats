@@ -12,8 +12,8 @@ import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 
-@DomainService(repositoryFor = Place.class,nature=NatureOfService.VIEW_MENU_ONLY)
-@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "1000")
+//@DomainService(repositoryFor = Place.class,nature=NatureOfService.VIEW_MENU_ONLY)
+//@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "1000")
 public class Places {
 	
 	@Action()

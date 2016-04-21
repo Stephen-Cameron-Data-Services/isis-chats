@@ -20,9 +20,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>au.com.scds</groupId>
-        <artifactId>chats</artifactId>
-        <version>0.2-SNAPSHOT</version>
+    <groupId>au.com.scds</groupId>
+    <artifactId>chats</artifactId>
+    <version>0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>chats-fixture</artifactId>

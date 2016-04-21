@@ -19,7 +19,7 @@
 package au.com.scds.chats.dom.module.volunteer;
 
 import java.util.ArrayList;
-import java.util.Date;
+//import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -27,8 +27,8 @@ import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.jdo.annotations.*;
 
-import org.apache.isis.applib.DomainObjectContainer;
-import org.apache.isis.applib.Identifier;
+//import org.apache.isis.applib.DomainObjectContainer;
+//import org.apache.isis.applib.Identifier;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.CollectionLayout;
@@ -37,9 +37,9 @@ import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
-import org.apache.isis.applib.annotation.RenderType;
+//import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.annotation.Where;
-import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
+//import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
 import org.apache.isis.applib.services.i18n.TranslatableString;
 import org.incode.module.note.dom.api.notable.Notable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
@@ -47,7 +47,7 @@ import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
-import au.com.scds.chats.dom.module.activity.Activity;
+//import au.com.scds.chats.dom.module.activity.Activity;
 import au.com.scds.chats.dom.module.call.CalendarDayCallSchedule;
 import au.com.scds.chats.dom.module.call.CallSchedules;
 import au.com.scds.chats.dom.module.call.ScheduledCall;
@@ -55,13 +55,13 @@ import au.com.scds.chats.dom.module.general.Person;
 import au.com.scds.chats.dom.module.general.Status;
 import au.com.scds.chats.dom.module.participant.Participant;
 import au.com.scds.chats.dom.module.participant.Participants;
-import au.com.scds.chats.dom.module.participant.Participation;
+//import au.com.scds.chats.dom.module.participant.Participation;
 
 @Queries({ @Query(name = "listVolunteersByStatus", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.Volunteer " + "WHERE status == :status"),
 		@Query(name = "findVolunteersBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.volunteer.Volunteer " + "WHERE person.surname.indexOf(:surname) >= 0"), })
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "VolunteerRoles", "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-public class Volunteer extends AbstractChatsDomainEntity implements Notable, Locatable {
+public class Volunteer extends AbstractChatsDomainEntity implements /*Notable,*/ Locatable {
 
 	private Person person;
 	private Status status = Status.ACTIVE;
@@ -76,7 +76,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 		return TranslatableString.tr("Volunteer: {fullname}", "fullname", getPerson().getFullname());
 	}
 
-	@CollectionLayout(named = "Call Schedules", paged = 20, render = RenderType.EAGERLY)
+	@CollectionLayout(named = "Call Schedules", paged = 20/*, render = RenderType.EAGERLY*/)
 	public SortedSet<CalendarDayCallSchedule> getScheduled() {
 		return callSchedules;
 	}

@@ -52,7 +52,7 @@ import au.com.scds.chats.dom.module.general.Status;
 				+ "FROM au.com.scds.chats.dom.module.participant.Participant "
 				+ "WHERE ((person.createdOn >= :startDate AND person.createdOn < :startDate) "
 				+ "OR (person.modifiedOn >= :startDate AND person.modifiedOn < :startDate)) " + "AND region = :region"), })
-public class Participant extends AbstractChatsDomainEntity implements Locatable, Comparable<Participant> {
+public class Participant extends AbstractChatsDomainEntity implements Locatable, /*Notable,*/ Comparable<Participant> {
 
 	private Person person;
 	private Status status = Status.ACTIVE;

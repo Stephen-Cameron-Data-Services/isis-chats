@@ -62,7 +62,7 @@ import au.com.scds.chats.dom.module.volunteer.Volunteer;
 @DomainObject(objectType = "SCHEDULED_CALL")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
-public class ScheduledCall extends AbstractChatsDomainEntity implements Comparable<ScheduledCall>, Notable {
+public class ScheduledCall extends AbstractChatsDomainEntity implements Comparable<ScheduledCall> /*, Notable */ {
 
 	private Participant participant;
 	private Volunteer allocatedVolunteer;

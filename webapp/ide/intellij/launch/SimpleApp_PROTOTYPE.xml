@@ -10,7 +10,7 @@
     <option name="ENABLE_SWING_INSPECTOR" value="false" />
     <option name="ENV_VARIABLES" />
     <option name="PASS_PARENT_ENVS" value="true" />
-    <module name="chats-webapp" />
+    <module name="isisapp-webapp" />
     <envs />
     <RunnerSettings RunnerId="Debug">
       <option name="DEBUG_PORT" value="" />
@@ -22,7 +22,7 @@
     <ConfigurationWrapper RunnerId="Run" />
     <method>
       <option name="Make" enabled="false" />
-      <option name="Maven.BeforeRunTask" enabled="true" file="C:/Apache/Isis/example/application/chats/dom/pom.xml" goal="datanucleus:enhance -o" />
+      <option name="Maven.BeforeRunTask" enabled="true" file="C:/Apache/Isis/example/application/isisapp/dom/pom.xml" goal="datanucleus:enhance -o" />
     </method>
   </configuration>
 </component>

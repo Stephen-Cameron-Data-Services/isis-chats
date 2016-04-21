@@ -79,7 +79,7 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 		@Query(name = "findActivitiesInPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE startDateTime >= :startDateTime && startDateTime <= :endDateTime && region == :region ORDER BY startDateTime ASC"),})
 // @Unique(name = "Activity_name_UNQ", members = { "name"
 // })
-public class ActivityEvent extends Activity implements Notable, CalendarEventable {
+public class ActivityEvent extends Activity implements /*Notable,*/ CalendarEventable {
 
 	protected RecurringActivity parentActivity;
 	@Persistent(mappedBy = "parentActivity")
@@ -99,7 +99,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		super(container, null, volunteers, null, null, null);
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
+	@Property(hidden = Where.ALL_TABLES, editing=Editing.DISABLED, editingDisabledReason="This Activity belongs to its parent Recurring Activity")
 	@MemberOrder(sequence = "1.1")
 	@Column(allowsNull = "true")
 	public final RecurringActivity getParentActivity() {
@@ -132,7 +132,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	@Property()
 	@MemberOrder(sequence = "200")
-	@CollectionLayout(render = RenderType.EAGERLY)
+	@CollectionLayout( render = RenderType.EAGERLY)
 	public List<VolunteeredTimeForActivity> getVolunteeredTimes() {
 		return super.getVolunteeredTimes();
 	}
