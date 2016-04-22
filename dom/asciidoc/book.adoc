@@ -42,7 +42,11 @@ include::au.com.scds.chats.dom.module.general.Location.adoc[]
 
 include::au.com.scds.chats.dom.module.general.Address.adoc[]
 
+include::au.com.scds.chats.module.report.TripAttendeeList.adoc[]
+
 include::au.com.scds.chats.module.report.dex.DEXFiles.adoc[]
+
+include::incode.Notes.adoc[]
 
 [[SCDS]]
 == Stephen Cameron Data Services

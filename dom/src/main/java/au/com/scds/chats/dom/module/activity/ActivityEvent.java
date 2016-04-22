@@ -79,6 +79,7 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 		@Query(name = "findActivitiesInPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.activity.ActivityEvent WHERE startDateTime >= :startDateTime && startDateTime <= :endDateTime && region == :region ORDER BY startDateTime ASC"),})
 // @Unique(name = "Activity_name_UNQ", members = { "name"
 // })
+
 public class ActivityEvent extends Activity implements /*Notable,*/ CalendarEventable {
 
 	protected RecurringActivity parentActivity;

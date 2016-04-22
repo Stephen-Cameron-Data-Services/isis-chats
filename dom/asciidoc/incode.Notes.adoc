@@ -1,0 +1,21 @@
+[[Notes]]
+
+== Notes
+
+Notes are attachable to the several different kinds of entities in the following list.
+
+* <<Participant, Participants>>
+* <<Volunteer, Volunteers>>
+* <<RecurringActivity, Recurring Activities>>
+* <<ActivityEvent, Activities>>
+* <<ScheduledCall, Calls>>
+
+Notes are created from one of these 'notable' entities using a 'Create Note' button on that entity. 
+
+A list of all notes created from such an entity is present on the entity itself.
+
+There is a global list of Notes (currenty on the home page) and from each Note its possible to follow a link to its related 'notable' entity.
+
+A more intelligent way of looking at notes or searching notes is needed. Anything type can be made 'notable' so the list above can be extended.
+
+The key aspect of the Notes functionality is to be able to go from a Note in a general list of Notes back to its notable entity. That is, the place from which it was created.

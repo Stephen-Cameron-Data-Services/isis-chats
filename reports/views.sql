@@ -110,8 +110,8 @@ SELECT
   concat(location.street1,' ' ,location.street2, ' ', location.suburb) as address,
   person.homephonenumber AS homePhoneNumber,
   person.mobilephonenumber AS mobilePhoneNumber,
-  socialfactors.limitinghealthissues AS limitingHealthIssues,
-  socialfactors.otherlimitingfactors AS otherLimitingFactors
+  limitinghealthissues AS limitingHealthIssues,
+  otherlimitingfactors AS otherLimitingFactors
 FROM
   activity
 JOIN
@@ -126,10 +126,6 @@ JOIN
   person
 ON
   person.person_id = participant.person_person_id
-LEFT JOIN
-  socialfactors
-ON
-  socialfactors.participant_participant_id =  participant.participant_id
 LEFT JOIN
   location
 ON

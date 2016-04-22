@@ -1,5 +1,5 @@
 [[DSS_DEX_Reporting]]
-==== DSS DEX Reports
+== DSS DEX Reports
 
-{TBD}
+DSS DEX bulk-upload report generation and access to previously uploaded (submitted) reports.
 

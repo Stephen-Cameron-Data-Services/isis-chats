@@ -31,6 +31,7 @@ import org.apache.isis.applib.services.i18n.TranslatableString;
 import org.incode.module.note.dom.api.notable.Notable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
+import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 //import au.com.scds.chats.dom.module.note.NoteLinkable;
@@ -66,6 +67,21 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	private ParticipantNotes notes;
 	@Persistent(mappedBy = "participant")
 	protected SortedSet<Participation> participations = new TreeSet<Participation>();
+	
+	//Social Factor Properties
+	private String limitingHealthIssues;
+	private String otherLimitingFactors;
+	private String driversLicence;
+	private String drivingAbility;
+	private String drivingConfidence;
+	private String placeOfOrigin;
+	private LocalDate dateOfSettlement;
+	private String closeRelatives;
+	private Integer closeRlFrCount;
+	private String proximityOfRelatives;
+	private String proximityOfFriends;
+	private String involvementGC;
+	private String involvementIH;
 
 	public Participant() {
 		super();
@@ -125,7 +141,7 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 
 	@Property(hidden = Where.PARENTED_TABLES, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
 	@MemberOrder(sequence = "6")
-	public String getEMailAddress() {
+	public String getEmailAddress() {
 		return getPerson().getEmailAddress();
 	}
 
@@ -270,6 +286,165 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	@Override
 	public int compareTo(final Participant o) {
 		return this.getPerson().compareTo(o.getPerson());
+	}
+	
+
+
+
+	@Property()
+	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Limitations", sequence = "1")
+	@Column(allowsNull = "true")
+	public String getLimitingHealthIssues() {
+		return limitingHealthIssues;
+	}
+
+	public void setLimitingHealthIssues(final String limitingHealthIssues) {
+		this.limitingHealthIssues = limitingHealthIssues;
+	}
+
+	@Property()
+	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Limitations", sequence = "2")
+	@Column(allowsNull = "true")
+	public String getOtherLimitingFactors() {
+		return otherLimitingFactors;
+	}
+
+	public void setOtherLimitingFactors(final String otherLimitingFactors) {
+		this.otherLimitingFactors = otherLimitingFactors;
+	}
+
+	@Property()
+	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Driving", sequence = "3")
+	@Column(allowsNull = "true")
+	public String getDriversLicence() {
+		return driversLicence;
+	}
+
+	public void setDriversLicence(final String driversLicence) {
+		this.driversLicence = driversLicence;
+	}
+
+	@Property()
+	@PropertyLayout(labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Driving", sequence = "4")
+	@Column(allowsNull = "true")
+	public String getDrivingAbility() {
+		return drivingAbility;
+	}
+
+	public void setDrivingAbility(final String drivingAbility) {
+		this.drivingAbility = drivingAbility;
+	}
+
+	@Property()
+	@PropertyLayout(labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Driving", sequence = "5")
+	@Column(allowsNull = "true")
+	public String getDrivingConfidence() {
+		return drivingConfidence;
+	}
+
+	public void setDrivingConfidence(final String drivingConfidence) {
+		this.drivingConfidence = drivingConfidence;
+	}
+
+	@Property()
+	@PropertyLayout(labelPosition = LabelPosition.TOP)
+	@MemberOrder(sequence = "6")
+	@Column(allowsNull = "true")
+	public String getPlaceOfOrigin() {
+		return placeOfOrigin;
+	}
+
+	public void setPlaceOfOrigin(final String placeOfOrigin) {
+		this.placeOfOrigin = placeOfOrigin;
+	}
+
+	@Property()
+	@PropertyLayout(labelPosition = LabelPosition.TOP)
+	@MemberOrder(sequence = "7")
+	@Column(allowsNull = "true")
+	public LocalDate getDateOfSettlement() {
+		return dateOfSettlement;
+	}
+
+	public void setDateOfSettlement(final LocalDate dateOfSettlement) {
+		this.dateOfSettlement = dateOfSettlement;
+	}
+
+	@Property()
+	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Friends and Relatives", sequence = "8")
+	@Column(allowsNull = "true")
+	public String getCloseRelatives() {
+		return closeRelatives;
+	}
+
+	public void setCloseRelatives(final String closeRelatives) {
+		this.closeRelatives = closeRelatives;
+	}
+
+	@Property()
+	@PropertyLayout(labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Friends and Relatives", sequence = "9")
+	@Column(allowsNull = "true")
+	public Integer getCloseRelativeAndFriendCount() {
+		return closeRlFrCount;
+	}
+
+	public void setCloseRelativeAndFriendCount(Integer count) {
+		this.closeRlFrCount = count;
+	}
+
+	@Property()
+	@PropertyLayout(labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Friends and Relatives", sequence = "10")
+	@Column(allowsNull = "true")
+	public String getProximityOfRelatives() {
+		return proximityOfRelatives;
+	}
+
+	public void setProximityOfRelatives(final String proximityOfRelatives) {
+		this.proximityOfRelatives = proximityOfRelatives;
+	}
+
+	@Property()
+	@PropertyLayout(labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Friends and Relatives", sequence = "11")
+	@Column(allowsNull = "true")
+	public String getProximityOfFriends() {
+		return proximityOfFriends;
+	}
+
+	public void setProximityOfFriends(final String proximityOfFriends) {
+		this.proximityOfFriends = proximityOfFriends;
+	}
+
+	@Property()
+	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Involvement", sequence = "12")
+	@Column(allowsNull = "true")
+	public String getInvolvementInGroupsClubs() {
+		return involvementGC;
+	}
+
+	public void setInvolvementInGroupsClubs(final String involvement) {
+		this.involvementGC = involvement;
+	}
+
+	@Property()
+	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	@MemberOrder(name = "Involvement", sequence = "13")
+	@Column(allowsNull = "true")
+	public String getInvolvementInInterestsHobbies() {
+		return involvementIH;
+	}
+
+	public void setInvolvementInInterestsHobbies(final String involvmentInInterestsHobbies) {
+		this.involvementIH = involvmentInInterestsHobbies;
 	}
 
 	@Inject

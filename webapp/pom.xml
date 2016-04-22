@@ -72,6 +72,10 @@
 			<artifactId>isis-core-security</artifactId>
 		</dependency>
 		<dependency>
+            <groupId>org.apache.isis.core</groupId>
+            <artifactId>isis-core-webserver</artifactId>
+        </dependency>
+		<dependency>
 			<groupId>org.apache.geronimo.specs</groupId>
 			<artifactId>geronimo-servlet_3.0_spec</artifactId>
 		</dependency>
@@ -85,11 +89,6 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>chats-reports</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>au.com.scds</groupId>
-			<artifactId>isis-dss-dex-dom</artifactId>
-			<version>1.0</version>
 		</dependency>
 
 	</dependencies>

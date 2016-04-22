@@ -1,9 +1,11 @@
 [[Attendances__createAttendanceList]]
 ==== Attendances : Create Attendance List
 
-{TBD}
+Creates an <<AttendanceList,  Attendance List>> by allowing the user to select an <<ActivityEvent, Activity>> from which a list of Participants is obtained, which is then used to create the Attendance List. 
+
+Such Attendance Lists are composed of individual <<Attended, Attended>> records. These then used to record presence or absence of a <<Participant, Participant>> and start and end time of their attendance (initially copied across from the related Activity).
 
 [[Attendances__listAttendanceLists]]
 ====  Attendances : List Attendance Lists
 
-{TBD}
+Shows a list of all <<AttendanceList,  Attendance List>>  records.

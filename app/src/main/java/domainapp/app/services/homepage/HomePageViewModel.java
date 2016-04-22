@@ -38,11 +38,11 @@ public class HomePageViewModel {
 	// endregion
 
 	// region > object (collection)
-	@HomePage
-	@CollectionLayout(render = RenderType.EAGERLY, paged = 10)
-	public List<Note> getNotes() {
-		return noteRepository.allNotes();
-	}
+	//@HomePage
+	//@CollectionLayout(render = RenderType.EAGERLY, paged = 10)
+	//public List<Note> getNotes() {
+	//	return noteRepository.allNotes();
+	//}
 
 	// endregion
 

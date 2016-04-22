@@ -1,6 +1,8 @@
 [[AttendanceList]]
 == Attendance List
 
+A list of <<Attended, Attended>> entities that each record an individual <<Participant, Participant's>> presence or absence at an specific <<ActivityEvent, Activity>>.
+
 === Attendance List properties
 
 {TBD}

@@ -370,6 +370,7 @@
     <module>fixture</module>
     <!--module>integtests</module-->
     <module>webapp</module>
-    <module>reports</module>
+    
+    
   </modules>
 </project>

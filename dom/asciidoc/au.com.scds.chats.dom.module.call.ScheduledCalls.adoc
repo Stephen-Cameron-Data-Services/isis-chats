@@ -1,32 +1,32 @@
 [[CallSchedules__listDailyCallSchedulesForActiveVolunteer]]
 ==== Calls : List Daily Call Schedules For Active Volunteer
 
-{TBD}
+Get a List of  <<CalendarDayCallSchedule, Daily Call Schedules>> for a specific Active Volunteer (A drop-down list of Active Volunteers is shown).
 
 [[CallSchedules__listDailyCallSchedulesForVolunteer]]
-==== Calls : List Daily Call Schedules For Volunteer
+==== Calls : List Daily Call Schedules For InActive Volunteer
 
-{TBD}
+Get a List of  <<CalendarDayCallSchedule, Daily Call Schedules>> for a specific Inactive Volunteer.
 
 [[CallSchedules__listCallsToActiveParticipant]]
 ==== Calls : List Calls To Active Participant
 
-{TBD}
+Get a List of  <<ScheduledCall,  Calls>> to a specific <<Status, Active>> Participant (A drop-down list of Active Participants is shown).
 
 
 [[CallSchedules__listCallsToParticipant]]
 ==== Calls : List Calls To Participant
 
-{TBD}
+Get a List of  <<ScheduledCall,  Calls>> to a specific <<Participant, Participant>>.
 
 
 [[CallSchedules__listCallsByVolunteer]]
 ==== Calls : List Calls By Volunteer
 
-{TBD}
+Get a List of  <<ScheduledCall,  Calls>> made by a specific <<Volunteer, Volunteer>>.
 
 
 [[CallSchedules__listCallsToParticipantByVolunteer]]
 ==== Calls : List Calls To Participant By Volunteer
 
-{TBD}
+Get a List of  <<ScheduledCall,  Calls>> made by a specific <<Volunteer, Volunteer>> to a specific <<Participant, Participant>>.

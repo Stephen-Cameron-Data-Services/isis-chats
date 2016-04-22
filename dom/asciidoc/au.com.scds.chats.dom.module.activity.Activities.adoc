@@ -1,7 +1,7 @@
 [[Activities__createRecurringActivity]]
 ==== Activities : Create Recurring Activity
 
-Create a new <<RecurringActivity, Recurring Activity>> after entering an activity name and start date and start time value.
+Create a new <<RecurringActivity, Recurring Activity>> after entering an activity name and start date and start time and a periodicity (weekly, monthly etc). Child <<ActivityEvent, Activities>> can then be scheduled into the future from this 'parent'.
 
 [[Activities__listAllRecurringActivities]]
 ==== Activities : List All Recurring Activities
@@ -14,21 +14,21 @@ List all <<RecurringActivity, Recurring Activities>> (should we filter these??)
 List all <<RecurringActivity, Recurring Activities>> with a name starting with an entered value.
 
 [[Activities__createOneOffActivity]]
-==== Create One Off Activity
+==== Activities : Create One Off Activity
 
-{TBD}
+Create a new <<ActivityEvent, One-off Activity>> after entering an activity name and start date and start time value. 
 
 [[Activities__findActivityByName]]
-==== Find Activity By Name
+==== Activities : Find Activity By Name
 
-{TBD}
+Search for all <<ActivityEvent, Activities>> having a specific name.
 
 [[Activities__listAllFutureActivities]]
-==== List All Future Activities
+==== Activities : List All Future Activities
 
-{TBD}
+Get a list of <<ActivityEvent, Activities>> having a start date-time in the future.
 
 [[Activities__listAllPastActivities]]
-==== List All Past Activitie
+==== Activities : List All Past Activitie
 
-{TBD}
+Get a list of <<ActivityEvent, Activities>> having a start date-time in the past. [Note: maybe a List all Archived Activities option will be added too].

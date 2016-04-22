@@ -277,7 +277,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 
 	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(hidden = Where.ALL_TABLES)
-	@MemberOrder(name = "Contact Details", sequence = "1")
+	//@MemberOrder(name = "Contact Details", sequence = "1")
 	@Column(allowsNull = "true")
 	public Address getStreetAddress() {
 		return streetAddress;
@@ -296,7 +296,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	}
 
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	@MemberOrder(name = "streetaddress", sequence = "1")
+	//@MemberOrder(name = "streetaddress", sequence = "1")
 	public Person updateStreetAddress(@ParameterLayout(named = "Street 1") String street1, 
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Suburb") String suburb, 
@@ -341,7 +341,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 
 	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(hidden = Where.ALL_TABLES)
-	@MemberOrder(name = "Contact Details", sequence = "2")
+	//@MemberOrder(name = "Contact Details", sequence = "2")
 	@Column(allowsNull = "true")
 	public Address getMailAddress() {
 		return mailAddress;
@@ -360,7 +360,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	}
 
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	@MemberOrder(name = "mailaddress", sequence = "1")
+	//@MemberOrder(name = "mailaddress", sequence = "1")
 	public Person updateMailAddress(@ParameterLayout(named = "Street 1") String street1, @Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
 			@ParameterLayout(named = "Suburb") String suburb, @ParameterLayout(named = "Postcode") String postcode) {
 		Address newAddress = container.newTransientInstance(Address.class);

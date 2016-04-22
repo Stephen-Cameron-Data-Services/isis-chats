@@ -1,4 +1,7 @@
 [[ActivityEvent]]
 == Activity or One-off Activity
 
+[[ActivityEvent__addParticipant]]
+=== Add Participant
+
 {TBD}
