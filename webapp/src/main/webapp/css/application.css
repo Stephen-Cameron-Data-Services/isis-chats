@@ -28,3 +28,9 @@ div.jodaDateTimePanel span.editing a.edit {
     margin-bottom: 0px;
     margin-right: -18px;
 }
+
+div.longPanel span.editing a.edit {
+    margin-top: -25px;
+    margin-bottom: 0px;
+    margin-right: -18px;
+}

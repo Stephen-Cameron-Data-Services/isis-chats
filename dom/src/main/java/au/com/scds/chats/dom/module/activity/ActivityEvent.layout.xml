@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<grid
+	xsi:schemaLocation="http://isis.apache.org/applib/layout/component http://isis.apache.org/applib/layout/component/component.xsd http://isis.apache.org/applib/layout/grid/bootstrap3 http://isis.apache.org/applib/layout/grid/bootstrap3/bootstrap3.xsd"
+	xmlns="http://isis.apache.org/applib/layout/grid/bootstrap3" xmlns:ns2="http://isis.apache.org/applib/layout/component"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<row>
+		<col span="12" unreferencedActions="true">
+			<ns2:domainObject />
+			<ns2:action id="clearHints" />
+			<ns2:action id="downloadLayoutXml" />
+			<ns2:action id="downloadJdoMetadata" />
+			<ns2:action id="rebuildMetamodel" />
+
+		</col>
+	</row>
+	<row>
+		<col span="12">
+			<tabGroup>
+				<tab name="General">
+					<row>
+						<col span="6">
+							<ns2:fieldSet name="General" id="general"
+								unreferencedProperties="true">
+								<ns2:property id="name" />
+								<ns2:property id="parentActivity" />
+								<ns2:property id="description" />
+								<ns2:property id="activityTypeName" />
+								<ns2:property id="provider" />
+								<ns2:property id="scheduleId" />
+								<ns2:property id="startDateTime" />
+								<ns2:property id="approximateEndDateTime" />
+								<ns2:property id="costForParticipant" />
+								<ns2:property id="isRestricted" />
+							</ns2:fieldSet>
+						</col>
+						<col span="6">
+							<ns2:fieldSet name="Location" id="location">
+								<ns2:action id="updateAddress" />
+								<ns2:property id="addressLocationName" />
+								<ns2:property id="fullAddress" />
+								<ns2:property id="location" />
+							</ns2:fieldSet>
+
+						</col>
+					</row>
+				</tab>
+				<tab name="Participations">
+					<row>
+						<col span="12">
+							<ns2:collection id="participations">
+								<ns2:action id="addParticipant" />
+								<ns2:action id="addNewParticipant" />
+								<ns2:action id="removeParticipant" />
+								<ns2:action id="showTransportList" />
+							</ns2:collection>
+						</col>
+					</row>
+				</tab>
+				<tab name="Attendance">
+					<row>
+						<col span="12">
+							<ns2:collection id="attendance" />
+						</col>
+					</row>
+				</tab>
+				<tab name="Volunteering">
+					<row>
+						<col span="12">
+							<ns2:collection id="volunteeredTimes">
+								<ns2:action id="addVolunteeredTime" />
+							</ns2:collection>
+						</col>
+					</row>
+				</tab>
+				<tab name="Notes">
+					<row>
+						<col span="12">
+							<ns2:collection id="notes" />
+						</col>
+					</row>
+				</tab>
+				<tab name="Other">
+					<row>
+						<col span="4">
+							<ns2:fieldSet name="Admin" id="admin">
+								<ns2:property id="datanucleusIdLong" />
+								<ns2:property id="datanucleusVersionTimestamp" />
+								<ns2:property id="datanucleusVersionLong" />
+								<ns2:property id="createdBy" />
+								<ns2:property id="createdOn" />
+								<ns2:property id="lastModifiedBy" />
+								<ns2:property id="lastModifiedOn" />
+								<ns2:property id="regionName" />
+							</ns2:fieldSet>
+						</col>
+						<col span="8" unreferencedCollections="true">
+						</col>
+					</row>
+				</tab>
+			</tabGroup>
+		</col>
+	</row>
+</grid>

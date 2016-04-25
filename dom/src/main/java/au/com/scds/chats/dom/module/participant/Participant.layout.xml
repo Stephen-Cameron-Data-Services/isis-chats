@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<grid
+	xsi:schemaLocation="http://isis.apache.org/applib/layout/component http://isis.apache.org/applib/layout/component/component.xsd http://isis.apache.org/applib/layout/grid/bootstrap3 http://isis.apache.org/applib/layout/grid/bootstrap3/bootstrap3.xsd"
+	xmlns="http://isis.apache.org/applib/layout/grid/bootstrap3" xmlns:ns2="http://isis.apache.org/applib/layout/component"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<row>
+		<col span="12" unreferencedActions="true">
+			<ns2:domainObject bookmarking="AS_ROOT" />
+		</col>
+	</row>
+	<row>
+		<col span="12" unreferencedCollections="true">
+			<tabGroup>
+				<tab name="General">
+					<row>
+						<col span="12">
+							<ns2:fieldSet name="General" id="general"
+								unreferencedProperties="true">
+								<ns2:property id="person" />
+								<ns2:property id="fullName" />
+								<ns2:property id="homePhoneNumber" />
+								<ns2:property id="mobilePhoneNumber" />
+								<ns2:property id="emailAddress" />
+								<ns2:property id="streetAddress" />
+								<ns2:property id="mailAddress" />
+								<ns2:property id="location" />
+								<ns2:property id="status" />
+							</ns2:fieldSet>
+						</col>
+					</row>
+				</tab>
+				<tab name="Participation">
+					<row>
+						<col span="12">
+							<ns2:collection id="participations" />
+						</col>
+					</row>
+				</tab>
+				<tab name="Life History">
+					<row>
+						<col span="12">
+							<ns2:action id="updateLifeHistory" />
+						</col>
+					</row>
+				</tab>
+				<tab name="Loneliness">
+					<row>
+						<col span="12">
+							<ns2:action id="updateLoneliness" />
+						</col>
+					</row>
+				</tab>
+				<tab name="Social Factors">
+					<row>
+						<col span="6">
+							<ns2:fieldSet id="origin" name="Origin">
+								<ns2:property id="placeOfOrigin" />
+								<ns2:property id="dateOfSettlement" />
+							</ns2:fieldSet>
+							<ns2:fieldSet id="involvement" name="Involvement">
+								<ns2:property id="involvementInGroupsClubs" />
+								<ns2:property id="involvementInInterestsHobbies" />
+							</ns2:fieldSet>
+							<ns2:fieldSet id="friendsandRelatives" name="Friends and Relatives">
+								<ns2:property id="closeRelatives" />
+								<ns2:property id="closeRelativeAndFriendCount" />
+								<ns2:property id="proximityOfRelatives" />
+								<ns2:property id="proximityOfFriends" />
+							</ns2:fieldSet>
+						</col>
+						<col span="6">
+							<ns2:fieldSet id="limitations" name="Limitations">
+								<ns2:property id="limitingHealthIssues" />
+								<ns2:property id="otherLimitingFactors" />
+							</ns2:fieldSet>
+							<ns2:fieldSet id="driving" name="Driving">
+								<ns2:property id="driversLicence" />
+								<ns2:property id="drivingAbility" />
+								<ns2:property id="drivingConfidence" />
+							</ns2:fieldSet>
+						</col>
+					</row>
+				</tab>
+				<tab name="Notes">
+					<row>
+						<col span="12">
+							<ns2:action id="updateNotes" />
+						</col>
+					</row>
+				</tab>
+				<tab name="Other">
+					<row>
+						<col span="4">
+							<ns2:fieldSet name="Admin" id="other">
+								<ns2:property id="createdBy" />
+								<ns2:property id="createdOn" />
+								<ns2:property id="lastModifiedBy" />
+								<ns2:property id="lastModifiedOn" />
+								<ns2:property id="regionName" />
+							</ns2:fieldSet>
+						</col>
+					</row>
+				</tab>
+			</tabGroup>
+		</col>
+	</row>
+</grid>

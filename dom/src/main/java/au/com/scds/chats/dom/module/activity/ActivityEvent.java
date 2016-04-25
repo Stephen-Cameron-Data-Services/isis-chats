@@ -35,6 +35,8 @@ import org.joda.time.DateTime;
 
 //import au.com.scds.chats.dom.CalendarNameRepositoryForChats;
 import au.com.scds.chats.dom.module.attendance.AttendanceList;
+import au.com.scds.chats.dom.module.attendance.Attended;
+import au.com.scds.chats.dom.module.general.Address;
 import au.com.scds.chats.dom.module.general.names.ActivityType;
 //import au.com.scds.chats.dom.module.note.NoteLinkable;
 import au.com.scds.chats.dom.module.participant.Participant;
@@ -80,7 +82,7 @@ import au.com.scds.chats.dom.module.volunteer.Volunteers;
 // @Unique(name = "Activity_name_UNQ", members = { "name"
 // })
 
-public class ActivityEvent extends Activity implements /*Notable,*/ CalendarEventable {
+public class ActivityEvent extends Activity implements Notable, CalendarEventable {
 
 	protected RecurringActivity parentActivity;
 	@Persistent(mappedBy = "parentActivity")
@@ -101,7 +103,7 @@ public class ActivityEvent extends Activity implements /*Notable,*/ CalendarEven
 	}
 
 	@Property(hidden = Where.ALL_TABLES, editing=Editing.DISABLED, editingDisabledReason="This Activity belongs to its parent Recurring Activity")
-	@MemberOrder(sequence = "1.1")
+	//@MemberOrder(sequence = "1.1")
 	@Column(allowsNull = "true")
 	public final RecurringActivity getParentActivity() {
 		return parentActivity;
@@ -115,9 +117,9 @@ public class ActivityEvent extends Activity implements /*Notable,*/ CalendarEven
 		return getParentActivity() == null;
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
+	@Property(hidden = Where.EVERYWHERE)
 	@PropertyLayout(named = "Attendance List")
-	@MemberOrder(sequence = "2.1")
+	//@MemberOrder(sequence = "2.1")
 	@Column(allowsNull = "true")
 	public AttendanceList getAttendances() {
 		return attendances;
@@ -130,9 +132,19 @@ public class ActivityEvent extends Activity implements /*Notable,*/ CalendarEven
 			return;
 		this.attendances = attendances;
 	}
+	
+	@Property(hidden = Where.ALL_TABLES)
+	@PropertyLayout(named = "Attendance List")
+	@NotPersistent
+	public List<Attended> getAttendance() {
+		if(getAttendances() != null)
+			return getAttendances().getAttendeds();
+		else
+			return null;
+	}
 
 	@Property()
-	@MemberOrder(sequence = "200")
+	//@MemberOrder(sequence = "200")
 	@CollectionLayout( render = RenderType.EAGERLY)
 	public List<VolunteeredTimeForActivity> getVolunteeredTimes() {
 		return super.getVolunteeredTimes();
@@ -140,7 +152,7 @@ public class ActivityEvent extends Activity implements /*Notable,*/ CalendarEven
 
 	@Action()
 	@ActionLayout()
-	@MemberOrder(name = "volunteeredTimes", sequence = "1")
+	//@MemberOrder(name = "volunteeredTimes", sequence = "1")
 	public ActivityEvent addVolunteeredTime(Volunteer volunteer, @ParameterLayout(named = "Started At") DateTime startDateTime, @ParameterLayout(named = "Finished At") DateTime endDateTime) {
 		VolunteeredTimeForActivity time = volunteersRepo.createVolunteeredTimeForActivity(volunteer, this, startDateTime, endDateTime);
 		return this;
@@ -151,7 +163,7 @@ public class ActivityEvent extends Activity implements /*Notable,*/ CalendarEven
 	}
 	
 	@Action()
-	@MemberOrder(name = "participations", sequence = "4")
+	//@MemberOrder(name = "participations", sequence = "4")
 	public List<ParticipantTransportView> showTransportList(){
 		List<ParticipantTransportView> list = new ArrayList<>();
 		for(Participation p : getParticipations()){
@@ -284,7 +296,7 @@ public class ActivityEvent extends Activity implements /*Notable,*/ CalendarEven
 
 	@Property()
 	@PropertyLayout(named = "Location Name")
-	@MemberOrder(name = "Location", sequence = "1")
+	//@MemberOrder(name = "Location", sequence = "1")
 	@Override
 	@NotPersistent
 	public String getAddressLocationName() {
@@ -296,7 +308,7 @@ public class ActivityEvent extends Activity implements /*Notable,*/ CalendarEven
 
 	@Property()
 	@PropertyLayout(named = "Address")
-	@MemberOrder(name = "Location", sequence = "2")
+	//@MemberOrder(name = "Location", sequence = "2")
 	@Override
 	@NotPersistent
 	public String getFullAddress() {
@@ -305,10 +317,45 @@ public class ActivityEvent extends Activity implements /*Notable,*/ CalendarEven
 		}
 		return super.getFullAddress();
 	}
+	
+	@Programmatic
+	@NotPersistent
+	private Address getSelfOrParentAddress(){
+		if (getParentActivity() != null && super.getAddress() == null) {
+			return getParentActivity().getAddress();
+		}
+		return super.getAddress();
+		
+	}
+	
+	@Override
+	public String default0UpdateAddress() {
+		return getSelfOrParentAddress() != null ? getSelfOrParentAddress().getName() : null;
+	}
+
+	@Override
+	public String default1UpdateAddress() {
+		return getSelfOrParentAddress() != null ? getSelfOrParentAddress().getStreet1() : null;
+	}
+
+	@Override
+	public String default2UpdateAddress() {
+		return getSelfOrParentAddress() != null ? getSelfOrParentAddress().getStreet2() : null;
+	}
+
+	@Override
+	public String default3UpdateAddress() {
+		return getSelfOrParentAddress() != null ? getSelfOrParentAddress().getSuburb() : null;
+	}
+
+	@Override
+	public String default4UpdateAddress() {
+		return getSelfOrParentAddress() != null ? getSelfOrParentAddress().getPostcode() : null;
+	}
 
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Lat-Long")
-	@MemberOrder(name = "Location", sequence = "3")
+	//@MemberOrder(name = "Location", sequence = "3")
 	@Override
 	@NotPersistent
 	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {

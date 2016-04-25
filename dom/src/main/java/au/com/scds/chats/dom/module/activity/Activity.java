@@ -108,7 +108,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	}
 
 	@Property(hidden = Where.NOWHERE)
-	@MemberOrder(sequence = "1")
+	//@MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
 	public String getName() {
 		return name;
@@ -136,7 +136,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "2")
+	//@MemberOrder(sequence = "2")
 	@Column(allowsNull = "true")
 	public Provider getProvider() {
 		return provider;
@@ -162,7 +162,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Activity Type")
-	@MemberOrder(sequence = "5")
+	//@MemberOrder(sequence = "5")
 	@NotPersistent
 	public String getActivityTypeName() {
 		return getActivityType() != null ? this.getActivityType().getName() : null;
@@ -177,8 +177,8 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
-	@PropertyLayout(named = "Approximate End Date & Time")
-	@MemberOrder(sequence = "6")
+	@PropertyLayout(named = "Approx. End Date & Time")
+	//@MemberOrder(sequence = "6")
 	@Column(allowsNull = "true")
 	public DateTime getApproximateEndDateTime() {
 		return approximateEndDateTime;
@@ -190,7 +190,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Cost For Participant")
-	@MemberOrder(sequence = "8")
+	//@MemberOrder(sequence = "8")
 	@Column(allowsNull = "true")
 	public String getCostForParticipant() {
 		return costForParticipant;
@@ -201,7 +201,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "9")
+	//@MemberOrder(sequence = "9")
 	@Column(allowsNull = "true")
 	public String getDescription() {
 		return description;
@@ -213,7 +213,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Property(hidden = Where.NOWHERE)
 	@PropertyLayout()
-	@MemberOrder(sequence = "10")
+	//@MemberOrder(sequence = "10")
 	@Column(allowsNull = "false")
 	public DateTime getStartDateTime() {
 		return this.startDateTime;
@@ -225,7 +225,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Property(hidden = Where.EVERYWHERE)
 	// @PropertyLayout(hidden = Where.ALL_TABLES)
-	// @MemberOrder(name = "Location", sequence = "11")
+	// //@MemberOrder(name = "Location", sequence = "11")
 	@Column(allowsNull = "true")
 	public Address getAddress() {
 		return address;
@@ -237,7 +237,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Property()
 	@PropertyLayout(named = "Location Name")
-	@MemberOrder(name = "Location", sequence = "1")
+	//@MemberOrder(name = "Location", sequence = "1")
 	@NotPersistent
 	public String getAddressLocationName() {
 		return (getAddress() != null) ? getAddress().getName() : null; 
@@ -245,7 +245,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Property()
 	@PropertyLayout(named = "Address", hidden = Where.ALL_TABLES)
-	@MemberOrder(name = "Location", sequence = "2")
+	//@MemberOrder(name = "Location", sequence = "2")
 	@NotPersistent
 	public String getFullAddress() {
 		return (getAddress() != null) ? getAddress().title() : null;
@@ -253,7 +253,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Lat-Long")
-	@MemberOrder(name = "Location", sequence = "3")
+	//@MemberOrder(name = "Location", sequence = "3")
 	@NotPersistent
 	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
 		return (getAddress() != null) ? getAddress().getLocation() : null;
@@ -262,7 +262,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	@Action()
 	@ActionLayout(named = "Set Location")
 	// Address extends Location
-	@MemberOrder(name = "location", sequence = "1")
+	//@MemberOrder(name = "location", sequence = "1")
 	public Activity updateAddress(@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Location") String name,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 1") String street1,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
@@ -274,8 +274,8 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		address.setStreet2(street2);
 		address.setPostcode(postcode);
 		address.setSuburb(suburb);
-		if (address.getStreet1() != null)
-			address.updateGeocodedLocation();
+		//TODO consider empty address values, reset to null
+		address.updateGeocodedLocation();
 		Address oldAddress = getAddress();
 		setAddress(address);
 		if (oldAddress != null)
@@ -291,21 +291,21 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		return getAddress() != null ? getAddress().getStreet1() : null;
 	}
 
-	public String default2UpdateAddress() {
-		return getAddress() != null ? getAddress().getStreet2() : null;
-	}
-
 	public String default3UpdateAddress() {
 		return getAddress() != null ? getAddress().getSuburb() : null;
+	}
+
+	public String default2UpdateAddress() {
+		return getAddress() != null ? getAddress().getStreet2() : null;
 	}
 
 	public String default4UpdateAddress() {
 		return getAddress() != null ? getAddress().getPostcode() : null;
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
+	@Property(hidden = Where.EVERYWHERE)
 	@PropertyLayout(named = "Is Restricted")
-	@MemberOrder(sequence = "13")
+	//@MemberOrder(sequence = "13")
 	@Column(allowsNull = "true")
 	public Boolean getIsRestricted() {
 		return isRestricted;
@@ -315,9 +315,9 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		this.isRestricted = isRestricted;
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
+	@Property(hidden = Where.EVERYWHERE)
 	@PropertyLayout(named = "Schedule Id")
-	@MemberOrder(sequence = "14")
+	//@MemberOrder(sequence = "14")
 	@Column(allowsNull = "true")
 	public Long getScheduleId() {
 		return scheduleId;
@@ -338,7 +338,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	}
 
 	@Property()
-	@MemberOrder(sequence = "100")
+	//@MemberOrder(sequence = "100")
 	@CollectionLayout(named = "Participation", render = RenderType.EAGERLY)
 	public SortedSet<Participation> getParticipations() {
 		return participations;
@@ -381,7 +381,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Action()
 	@ActionLayout(named = "Add")
-	@MemberOrder(name = "participations", sequence = "1")
+	//@MemberOrder(name = "participations", sequence = "1")
 	public Activity addParticipant(final Participant participant) {
 		if (findParticipation(participant) == null) {
 			participantsRepo.createParticipation(this, participant);
@@ -393,7 +393,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Action()
 	@ActionLayout(named = "Add New")
-	@MemberOrder(name = "participations", sequence = "2")
+	//@MemberOrder(name = "participations", sequence = "2")
 	public Activity addNewParticipant(final @ParameterLayout(named = "First name") String firstname, final @ParameterLayout(named = "Surname") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob) {
 		addParticipant(participantsRepo.newParticipant(firstname, surname, dob));
@@ -402,7 +402,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Action()
 	@ActionLayout(named = "Remove")
-	@MemberOrder(name = "participations", sequence = "3")
+	//@MemberOrder(name = "participations", sequence = "3")
 	public Activity removeParticipant(final Participant participant) {
 		if (participant == null)
 			return this;
@@ -420,6 +420,9 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		return getParticipants();
 	}
 
+	@Property()
+	//@MemberOrder(sequence = "100")
+	@CollectionLayout(named = "Volunteered Time", render = RenderType.EAGERLY)
 	protected List<VolunteeredTimeForActivity> getVolunteeredTimes() {
 		return volunteeredTimes;
 	}

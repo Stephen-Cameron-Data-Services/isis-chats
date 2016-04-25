@@ -163,7 +163,7 @@ public class ParticipantTransportView {
 
 	@PropertyLayout(named = "Departing Transport")
 	@MemberOrder(sequence = "21")
-	public String getDepartingTransportTypeeName() {
+	public String getDepartingTransportTypeName() {
 		return (getDepartingTransportType() != null) ? getDepartingTransportType().getName() : null;
 	}
 

@@ -127,7 +127,7 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 	}
 
 	@MemberOrder(sequence = "20")
-	@CollectionLayout(render = RenderType.LAZILY)
+	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<ActivityEvent> getCompletedActivities() {
 		ArrayList<ActivityEvent> temp = new ArrayList<>();
 		for (ActivityEvent event : getChildActivities()) {

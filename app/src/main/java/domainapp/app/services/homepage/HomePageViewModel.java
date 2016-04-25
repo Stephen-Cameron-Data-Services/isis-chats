@@ -32,7 +32,8 @@ public class HomePageViewModel {
 
 	// region > title
 	public String title() {
-		return noteRepository.allNotes().size() + " notes";
+		return "Chats Application";
+		//noteRepository.allNotes().size() + " notes";
 	}
 
 	// endregion
@@ -48,8 +49,8 @@ public class HomePageViewModel {
 
 	// region > injected services
 
-	@javax.inject.Inject
-	NoteRepository noteRepository;
+	//@javax.inject.Inject
+	//NoteRepository noteRepository;
 
 	// endregion
 }
