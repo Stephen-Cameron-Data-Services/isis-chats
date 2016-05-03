@@ -16,16 +16,16 @@ import au.com.scds.chats.datamigration.access.RegionMap;
 import au.com.scds.chats.datamigration.access.SalutationMap;
 import au.com.scds.chats.datamigration.access.TransportTypeMap;
 import au.com.scds.chats.datamigration.access.VolunteerMap;
-import au.com.scds.chats.dom.module.activity.Activities;
-import au.com.scds.chats.dom.module.activity.ActivityEvent;
-import au.com.scds.chats.dom.module.general.Locations;
-import au.com.scds.chats.dom.module.general.Persons;
-import au.com.scds.chats.dom.module.general.names.ActivityTypes;
-import au.com.scds.chats.dom.module.general.names.Regions;
-import au.com.scds.chats.dom.module.general.names.Salutations;
-import au.com.scds.chats.dom.module.general.names.TransportTypes;
-import au.com.scds.chats.dom.module.participant.Participants;
-import au.com.scds.chats.dom.module.volunteer.Volunteers;
+import au.com.scds.chats.dom.activity.Activities;
+import au.com.scds.chats.dom.activity.ActivityEvent;
+import au.com.scds.chats.dom.general.Locations;
+import au.com.scds.chats.dom.general.Persons;
+import au.com.scds.chats.dom.general.names.ActivityTypes;
+import au.com.scds.chats.dom.general.names.Regions;
+import au.com.scds.chats.dom.general.names.Salutations;
+import au.com.scds.chats.dom.general.names.TransportTypes;
+import au.com.scds.chats.dom.participant.Participants;
+import au.com.scds.chats.dom.volunteer.Volunteers;
 
 import com.google.common.collect.Lists;
 

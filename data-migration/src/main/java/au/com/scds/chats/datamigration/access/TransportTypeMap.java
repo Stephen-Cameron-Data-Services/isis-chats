@@ -9,9 +9,9 @@ import javax.persistence.EntityManager;
 
 import org.apache.isis.applib.DomainObjectContainer;
 
-import au.com.scds.chats.dom.module.general.Location;
-import au.com.scds.chats.dom.module.general.names.TransportType;
-import au.com.scds.chats.dom.module.general.names.TransportTypes;
+import au.com.scds.chats.dom.general.Location;
+import au.com.scds.chats.dom.general.names.TransportType;
+import au.com.scds.chats.dom.general.names.TransportTypes;
 
 public class TransportTypeMap {
 
@@ -22,7 +22,7 @@ public class TransportTypeMap {
 		this.em = em;
 	}
 
-	public au.com.scds.chats.dom.module.general.names.TransportType map(BigInteger id) {
+	public au.com.scds.chats.dom.general.names.TransportType map(BigInteger id) {
 		if (id == null)
 			return null;
 		else {

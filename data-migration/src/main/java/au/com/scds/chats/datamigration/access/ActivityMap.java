@@ -13,12 +13,12 @@ import org.joda.time.DateTime;
 
 import au.com.scds.chats.datamigration.access.ActivityMap;
 import au.com.scds.chats.datamigration.access.ActivityTypeMap;
-import au.com.scds.chats.dom.module.activity.Activities;
-import au.com.scds.chats.dom.module.activity.Activity;
-import au.com.scds.chats.dom.module.activity.ActivityEvent;
-import au.com.scds.chats.dom.module.activity.RecurringActivity;
-import au.com.scds.chats.dom.module.general.names.Region;
-import au.com.scds.chats.dom.module.general.names.Salutation;
+import au.com.scds.chats.dom.activity.Activities;
+import au.com.scds.chats.dom.activity.Activity;
+import au.com.scds.chats.dom.activity.ActivityEvent;
+import au.com.scds.chats.dom.activity.RecurringActivity;
+import au.com.scds.chats.dom.general.names.Region;
+import au.com.scds.chats.dom.general.names.Salutation;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

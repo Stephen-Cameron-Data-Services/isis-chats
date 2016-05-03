@@ -7,11 +7,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import au.com.scds.chats.dom.module.activity.Activities;
-import au.com.scds.chats.dom.module.activity.ActivityEvent;
-import au.com.scds.chats.dom.module.attendance.AttendanceList;
-import au.com.scds.chats.dom.module.attendance.AttendanceLists;
-import au.com.scds.chats.dom.module.attendance.Attended;
+import au.com.scds.chats.dom.activity.Activities;
+import au.com.scds.chats.dom.activity.ActivityEvent;
+import au.com.scds.chats.dom.attendance.AttendanceList;
+import au.com.scds.chats.dom.attendance.AttendanceLists;
+import au.com.scds.chats.dom.attendance.Attended;
 
 import com.google.common.collect.Lists;
 

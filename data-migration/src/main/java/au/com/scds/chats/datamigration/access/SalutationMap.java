@@ -7,8 +7,8 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
-import au.com.scds.chats.dom.module.general.names.Salutation;
-import au.com.scds.chats.dom.module.general.names.Salutations;
+import au.com.scds.chats.dom.general.names.Salutation;
+import au.com.scds.chats.dom.general.names.Salutations;
 
 public class SalutationMap {
 

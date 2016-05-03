@@ -8,9 +8,9 @@ import javax.persistence.EntityManager;
 
 import org.apache.isis.applib.DomainObjectContainer;
 
-import au.com.scds.chats.dom.module.general.Address;
-import au.com.scds.chats.dom.module.general.Location;
-import au.com.scds.chats.dom.module.general.Locations;
+import au.com.scds.chats.dom.general.Address;
+import au.com.scds.chats.dom.general.Location;
+import au.com.scds.chats.dom.general.Locations;
 
 public class AddressMap {
 

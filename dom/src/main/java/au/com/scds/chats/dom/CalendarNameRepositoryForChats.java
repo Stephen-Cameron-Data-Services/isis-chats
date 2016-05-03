@@ -32,11 +32,11 @@ import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEventable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import au.com.scds.chats.dom.module.activity.ActivityEvent;
-import au.com.scds.chats.dom.module.activity.RecurringActivity;
-import au.com.scds.chats.dom.module.call.ScheduledCall;
-import au.com.scds.chats.dom.module.participant.Participant;
-import au.com.scds.chats.dom.module.volunteer.Volunteer;
+import au.com.scds.chats.dom.activity.ActivityEvent;
+import au.com.scds.chats.dom.activity.RecurringActivity;
+import au.com.scds.chats.dom.call.ScheduledCall;
+import au.com.scds.chats.dom.participant.Participant;
+import au.com.scds.chats.dom.volunteer.Volunteer;
 
 @DomainService(nature = NatureOfService.DOMAIN)
 public class CalendarNameRepositoryForChats implements CalendarNameRepository {

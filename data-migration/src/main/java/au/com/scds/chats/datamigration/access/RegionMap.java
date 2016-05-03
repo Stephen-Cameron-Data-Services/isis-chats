@@ -5,8 +5,8 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
-import au.com.scds.chats.dom.module.general.names.Region;
-import au.com.scds.chats.dom.module.general.names.Regions;
+import au.com.scds.chats.dom.general.names.Region;
+import au.com.scds.chats.dom.general.names.Regions;
 
 public class RegionMap {
 
@@ -17,7 +17,7 @@ public class RegionMap {
 		this.em = em;
 	}
 
-	public au.com.scds.chats.dom.module.general.names.Region map(int id) {
+	public au.com.scds.chats.dom.general.names.Region map(int id) {
 		Integer regionId = Integer.valueOf(id);
 		if (regionId == null) {
 			System.out.println("region id param is null");

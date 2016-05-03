@@ -22,8 +22,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import au.com.scds.chats.dom.module.activity.Activities;
-import au.com.scds.chats.dom.module.activity.ActivityEvent;
+import au.com.scds.chats.dom.activity.Activities;
+import au.com.scds.chats.dom.activity.ActivityEvent;
 import au.com.scds.chats.integtests.tests.DomainAppIntegTest;
 
 

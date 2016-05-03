@@ -10,9 +10,9 @@ import org.apache.isis.applib.fixturescripts.FixtureScripts;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import au.com.scds.chats.dom.module.activity.Activities;
-import au.com.scds.chats.dom.module.activity.ActivityEvent;
-import au.com.scds.chats.dom.module.activity.RecurringActivity;
+import au.com.scds.chats.dom.activity.Activities;
+import au.com.scds.chats.dom.activity.ActivityEvent;
+import au.com.scds.chats.dom.activity.RecurringActivity;
 import au.com.scds.chats.integtests.tests.DomainAppIntegTest;
 import au.com.scds.chats.integtests.tests.module.activity.ActivitiesIntegTest;
 //import au.com.scds.chats.dom.module.reports.ParticipantDateLastAttendedResult;

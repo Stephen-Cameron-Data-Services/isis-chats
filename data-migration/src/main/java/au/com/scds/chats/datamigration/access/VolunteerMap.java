@@ -18,14 +18,14 @@ import org.apache.isis.applib.DomainObjectContainer;
 import org.joda.time.DateTime;
 
 import au.com.scds.chats.datamigration.model.ActivitiesPerson;
-import au.com.scds.chats.dom.module.activity.Activity;
-import au.com.scds.chats.dom.module.general.Person;
-import au.com.scds.chats.dom.module.general.Persons;
-import au.com.scds.chats.dom.module.participant.Participant;
-import au.com.scds.chats.dom.module.participant.Participants;
-import au.com.scds.chats.dom.module.participant.Participation;
-import au.com.scds.chats.dom.module.volunteer.Volunteer;
-import au.com.scds.chats.dom.module.volunteer.Volunteers;
+import au.com.scds.chats.dom.activity.Activity;
+import au.com.scds.chats.dom.general.Person;
+import au.com.scds.chats.dom.general.Persons;
+import au.com.scds.chats.dom.participant.Participant;
+import au.com.scds.chats.dom.participant.Participants;
+import au.com.scds.chats.dom.participant.Participation;
+import au.com.scds.chats.dom.volunteer.Volunteer;
+import au.com.scds.chats.dom.volunteer.Volunteers;
 
 public class VolunteerMap extends BaseMap {
 

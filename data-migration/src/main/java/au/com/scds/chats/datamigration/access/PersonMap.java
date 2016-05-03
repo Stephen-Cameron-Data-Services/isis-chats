@@ -10,8 +10,8 @@ import javax.persistence.EntityManager;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.joda.time.LocalDate;
 
-import au.com.scds.chats.dom.module.general.Person;
-import au.com.scds.chats.dom.module.general.Persons;
+import au.com.scds.chats.dom.general.Person;
+import au.com.scds.chats.dom.general.Persons;
 
 public class PersonMap extends BaseMap {
 

@@ -9,17 +9,17 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import au.com.scds.chats.datamigration.model.Interaction;
-import au.com.scds.chats.dom.module.activity.Activities;
-import au.com.scds.chats.dom.module.activity.ActivityEvent;
-import au.com.scds.chats.dom.module.attendance.AttendanceList;
-import au.com.scds.chats.dom.module.attendance.AttendanceLists;
-import au.com.scds.chats.dom.module.attendance.Attended;
-import au.com.scds.chats.dom.module.call.CallSchedules;
-import au.com.scds.chats.dom.module.call.ScheduledCall;
-import au.com.scds.chats.dom.module.participant.Participant;
-import au.com.scds.chats.dom.module.participant.Participants;
-import au.com.scds.chats.dom.module.volunteer.Volunteer;
-import au.com.scds.chats.dom.module.volunteer.Volunteers;
+import au.com.scds.chats.dom.activity.Activities;
+import au.com.scds.chats.dom.activity.ActivityEvent;
+import au.com.scds.chats.dom.attendance.AttendanceList;
+import au.com.scds.chats.dom.attendance.AttendanceLists;
+import au.com.scds.chats.dom.attendance.Attended;
+import au.com.scds.chats.dom.call.CallSchedules;
+import au.com.scds.chats.dom.call.ScheduledCall;
+import au.com.scds.chats.dom.participant.Participant;
+import au.com.scds.chats.dom.participant.Participants;
+import au.com.scds.chats.dom.volunteer.Volunteer;
+import au.com.scds.chats.dom.volunteer.Volunteers;
 
 import com.google.common.collect.Lists;
 

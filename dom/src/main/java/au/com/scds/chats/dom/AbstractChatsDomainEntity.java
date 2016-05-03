@@ -39,8 +39,8 @@ import org.isisaddons.module.security.dom.user.ApplicationUserRepository;
 
 import org.joda.time.DateTime;
 
-import au.com.scds.chats.dom.module.general.names.Region;
-import au.com.scds.chats.dom.module.general.names.Regions;
+import au.com.scds.chats.dom.general.names.Region;
+import au.com.scds.chats.dom.general.names.Regions;
 
 /**
  * Base class of the Chats Entity Inheritance Tree.
