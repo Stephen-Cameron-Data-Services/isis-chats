@@ -34,7 +34,7 @@ import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEventable;
 import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.attendance.AttendanceList;
-import au.com.scds.chats.dom.attendance.Attended;
+import au.com.scds.chats.dom.attendance.Attend;
 import au.com.scds.chats.dom.general.Address;
 import au.com.scds.chats.dom.general.names.ActivityType;
 import au.com.scds.chats.dom.participant.Participant;
@@ -134,7 +134,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Attendance List")
 	@NotPersistent
-	public List<Attended> getAttendance() {
+	public List<Attend> getAttendance() {
 		if(getAttendances() != null)
 			return getAttendances().getAttendeds();
 		else

@@ -79,10 +79,10 @@ public class AttendanceLists {
 	}
 
 	@Programmatic
-	public Attended createAttended(final ActivityEvent activity, final Participant participant, final Boolean attended) {
+	public Attend createAttended(final ActivityEvent activity, final Participant participant, final Boolean attended) {
 		if (activity == null || participant == null)
 			return null;
-		Attended attendance = container.newTransientInstance(Attended.class);
+		Attend attendance = container.newTransientInstance(Attend.class);
 		attendance.setActivity(activity);
 		attendance.setParticipant(participant);
 		attendance.setAttended(attended);
@@ -93,7 +93,7 @@ public class AttendanceLists {
 	}
 
 	@Programmatic
-	public void deleteAttended(Attended attended) {
+	public void deleteAttended(Attend attended) {
 		if (attended != null)
 			container.removeIfNotAlready(attended);
 	}

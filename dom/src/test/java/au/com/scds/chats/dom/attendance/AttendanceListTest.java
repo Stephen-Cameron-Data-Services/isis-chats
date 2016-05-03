@@ -24,7 +24,7 @@ import org.junit.Test;
 import au.com.scds.chats.dom.activity.ActivityEvent;
 import au.com.scds.chats.dom.attendance.AttendanceList;
 import au.com.scds.chats.dom.attendance.AttendanceLists;
-import au.com.scds.chats.dom.attendance.Attended;
+import au.com.scds.chats.dom.attendance.Attend;
 import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
@@ -44,7 +44,7 @@ public class AttendanceListTest {
 	Participants participantsRepo;
 	AttendanceLists attendanceListsRepo;
 	AttendanceList attendanceList;
-	Attended attended;
+	Attend attended;
 	ActivityEvent activity;
 
 	@Before
@@ -53,7 +53,7 @@ public class AttendanceListTest {
 		participantsRepo = new Participants(mockContainer);
 		attendanceListsRepo = new AttendanceLists(mockContainer);
 		attendanceList = new AttendanceList(attendanceListsRepo, participantsRepo);
-		attended = new Attended(mockContainer);
+		attended = new Attend(mockContainer);
 		activity = new ActivityEvent(mockContainer, participantsRepo);
 	}
 
@@ -91,7 +91,7 @@ public class AttendanceListTest {
 			Participant participant = new Participant(person);
 			context.checking(new Expectations() {
 				{
-					oneOf(mockContainer).newTransientInstance(Attended.class);
+					oneOf(mockContainer).newTransientInstance(Attend.class);
 					will(returnValue(attended));
 					oneOf(mockContainer).persistIfNotAlready(attended);
 					oneOf(mockContainer).flush();
@@ -129,7 +129,7 @@ public class AttendanceListTest {
 					will(returnValue(participant));
 					oneOf(mockContainer).persistIfNotAlready(participant);
 					oneOf(mockContainer).flush();
-					oneOf(mockContainer).newTransientInstance(Attended.class);
+					oneOf(mockContainer).newTransientInstance(Attend.class);
 					will(returnValue(attended));
 					oneOf(mockContainer).persistIfNotAlready(attended);
 					oneOf(mockContainer).flush();
@@ -155,8 +155,8 @@ public class AttendanceListTest {
 			final Participant participant2 = new Participant(person2);
 			final Participation p1 = new Participation();
 			final Participation p2 = new Participation();
-			final Attended a1 = new Attended();
-			final Attended a2 = new Attended();
+			final Attend a1 = new Attend();
+			final Attend a2 = new Attend();
 
 			context.checking(new Expectations() {
 				{
@@ -168,11 +168,11 @@ public class AttendanceListTest {
 					will(returnValue(p2));
 					oneOf(mockContainer).persistIfNotAlready(p2);
 					oneOf(mockContainer).flush();
-					oneOf(mockContainer).newTransientInstance(Attended.class);
+					oneOf(mockContainer).newTransientInstance(Attend.class);
 					will(returnValue(a1));
 					oneOf(mockContainer).persistIfNotAlready(a1);
 					oneOf(mockContainer).flush();
-					oneOf(mockContainer).newTransientInstance(Attended.class);
+					oneOf(mockContainer).newTransientInstance(Attend.class);
 					will(returnValue(a2));
 					oneOf(mockContainer).persistIfNotAlready(a2);
 					oneOf(mockContainer).flush();

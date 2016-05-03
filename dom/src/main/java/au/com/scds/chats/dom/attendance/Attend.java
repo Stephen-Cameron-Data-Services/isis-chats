@@ -57,7 +57,7 @@ import au.com.scds.chats.dom.participant.Participant;
 @DomainObjectLayout(bookmarking = BookmarkPolicy.NEVER)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-public class Attended extends AbstractChatsDomainEntity implements Comparable<Attended> {
+public class Attend extends AbstractChatsDomainEntity implements Comparable<Attend> {
 
 	private static DecimalFormat hoursFormat = new DecimalFormat("#,##0.00");
 	private ActivityEvent activity;
@@ -66,11 +66,11 @@ public class Attended extends AbstractChatsDomainEntity implements Comparable<At
 	protected DateTime startDateTime;
 	protected Boolean attended = false;
 
-	public Attended() {
+	public Attend() {
 		super();
 	}
 
-	public Attended(DomainObjectContainer container) {
+	public Attend(DomainObjectContainer container) {
 		this.container = container;
 	}
 
@@ -189,7 +189,7 @@ public class Attended extends AbstractChatsDomainEntity implements Comparable<At
 
 	@Action(invokeOn = InvokeOn.OBJECT_AND_COLLECTION)
 	@MemberOrder(name = "wasattended", sequence = "21.1")
-	public Attended wasAttended() {
+	public Attend wasAttended() {
 		if (!getAttended())
 			setAttended(true);
 		return actionInvocationContext.getInvokedOn().isCollection() ? null : this;
@@ -197,7 +197,7 @@ public class Attended extends AbstractChatsDomainEntity implements Comparable<At
 
 	@Action(invokeOn = InvokeOn.OBJECT_AND_COLLECTION)
 	@MemberOrder(name = "wasattended", sequence = "22.1")
-	public Attended wasNotAttended() {
+	public Attend wasNotAttended() {
 		if (getAttended())
 			setAttended(false);
 		return actionInvocationContext.getInvokedOn().isCollection() ? null : this;
@@ -205,7 +205,7 @@ public class Attended extends AbstractChatsDomainEntity implements Comparable<At
 
 	@Action(invokeOn = InvokeOn.OBJECT_AND_COLLECTION)
 	@MemberOrder(name = "enddatetime", sequence = "23.1")
-	public Attended updateDatesAndTimes(@ParameterLayout(named="Start Date Time") DateTime start, @ParameterLayout(named="End Date Time") DateTime end) {
+	public Attend updateDatesAndTimes(@ParameterLayout(named="Start Date Time") DateTime start, @ParameterLayout(named="End Date Time") DateTime end) {
 		boolean isColl = actionInvocationContext.getInvokedOn().isCollection();
 		if (start != null && end != null) {
 			if (end.isBefore(start)) {
@@ -247,7 +247,7 @@ public class Attended extends AbstractChatsDomainEntity implements Comparable<At
 
 	@Override
 	@Programmatic
-	public int compareTo(Attended o) {
+	public int compareTo(Attend o) {
 		return getParticipant().getPerson().compareTo(o.getParticipant().getPerson());
 	}
 

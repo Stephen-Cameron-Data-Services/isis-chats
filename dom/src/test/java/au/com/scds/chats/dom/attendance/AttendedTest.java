@@ -20,7 +20,7 @@ import au.com.scds.chats.dom.activity.Activity;
 import au.com.scds.chats.dom.activity.ActivityEvent;
 import au.com.scds.chats.dom.attendance.AttendanceList;
 import au.com.scds.chats.dom.attendance.AttendanceLists;
-import au.com.scds.chats.dom.attendance.Attended;
+import au.com.scds.chats.dom.attendance.Attend;
 import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
@@ -38,7 +38,7 @@ public class AttendedTest {
 	Participants participantsRepo;
 
 	AttendanceList attendanceList;
-	Attended attended;
+	Attend attended;
 	ActivityEvent activity;
 
 	@Before
@@ -46,7 +46,7 @@ public class AttendedTest {
 		participantsRepo = new Participants(mockContainer);
 		attendanceListsRepo = new AttendanceLists(mockContainer);
 		attendanceList = new AttendanceList(attendanceListsRepo, participantsRepo);
-		attended = new Attended(mockContainer);
+		attended = new Attend(mockContainer);
 		attended.actionInvocationContext = ActionInvocationContext.onObject(attended);
 		activity = new ActivityEvent(mockContainer, participantsRepo);
 	}

@@ -11,7 +11,7 @@ import au.com.scds.chats.dom.activity.Activities;
 import au.com.scds.chats.dom.activity.ActivityEvent;
 import au.com.scds.chats.dom.attendance.AttendanceList;
 import au.com.scds.chats.dom.attendance.AttendanceLists;
-import au.com.scds.chats.dom.attendance.Attended;
+import au.com.scds.chats.dom.attendance.Attend;
 
 import com.google.common.collect.Lists;
 
@@ -85,7 +85,7 @@ public class CreateAttendedance extends IntegrationTestAbstract {
 			System.out.println(i++ + ": "  + event.getName());
 			AttendanceList list = attendances.createActivityAttendanceList(event);
 			list.addAllAttendeds();
-			for(Attended attended: list.getAttendeds()){
+			for(Attend attended: list.getAttendeds()){
 				attended.setDatesAndTimes(event.getStartDateTime(), event.getApproximateEndDateTime());
 			}
 		}

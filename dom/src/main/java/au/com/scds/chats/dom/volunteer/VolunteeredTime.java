@@ -48,7 +48,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
-import au.com.scds.chats.dom.attendance.Attended;
+import au.com.scds.chats.dom.attendance.Attend;
 
 @DomainObject(objectType = "VOLUNTEERED_TIME")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.NEVER)
