@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package au.com.scds.chats.dom.module.report.view;
+package au.com.scds.chats.dom.report.view;
 
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdentityType;
@@ -64,7 +64,7 @@ import org.joda.time.LocalDate;
 @Queries({
 		@Query(name = "allVolunteeredTimeForCallsByYearMonth",
 				language = "JDOQL",
-				value = "SELECT FROM au.com.scds.chats.dom.module.report.view.VolunteeredTimeForCallsByYearMonth") })
+				value = "SELECT FROM au.com.scds.chats.dom.report.view.VolunteeredTimeForCallsByYearMonth") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class VolunteeredTimeForCallsByYearMonth {
 

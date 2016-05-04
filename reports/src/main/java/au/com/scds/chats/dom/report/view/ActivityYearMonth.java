@@ -1,4 +1,4 @@
-package au.com.scds.chats.dom.module.report.view;
+package au.com.scds.chats.dom.report.view;
 
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdentityType;
@@ -47,7 +47,7 @@ import org.apache.isis.applib.annotation.ViewModel;
 						+ "  activity.region_name, "
 						+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime);") })
 @Queries({
-		@Query(name = "findActivityYearMonth", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.ActivityYearMonth ") })
+		@Query(name = "findActivityYearMonth", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityYearMonth ") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ActivityYearMonth {
 	private String activityName;

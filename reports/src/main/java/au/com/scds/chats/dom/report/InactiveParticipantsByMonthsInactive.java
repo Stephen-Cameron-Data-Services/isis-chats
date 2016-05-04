@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package au.com.scds.chats.dom.module.report;
+package au.com.scds.chats.dom.report;
 
 import java.util.List;
 
@@ -32,9 +32,9 @@ import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.query.QueryDefault;
 
 import au.com.scds.chats.dom.general.Person;
-import au.com.scds.chats.dom.module.report.view.InactiveParticipant;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
+import au.com.scds.chats.dom.report.view.InactiveParticipant;
 
 @DomainService(nature=NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.5")

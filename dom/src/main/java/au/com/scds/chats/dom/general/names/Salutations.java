@@ -26,8 +26,8 @@ import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
 
 
-@DomainService(repositoryFor = Salutation.class)
-@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.10")
+@DomainService(nature = NatureOfService.DOMAIN,repositoryFor = Salutation.class)
+//@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.10")
 public class Salutations {
 
 	@Action(semantics = SemanticsOf.SAFE)

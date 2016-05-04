@@ -16,7 +16,7 @@
 *  specific language governing permissions and limitations
 *  under the License.
 */
-package au.com.scds.chats.dom.module.report.view;
+package au.com.scds.chats.dom.report.view;
 
 import java.math.BigInteger;
 
@@ -76,10 +76,10 @@ import org.joda.time.LocalDate;
 @Queries({
 	@Query(name = "allActivityParticipantAttendance",
 			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.module.report.view.ActivityParticipantAttendance"),
+			value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityParticipantAttendance"),
 	@Query(name = "allParticipantActivityForPeriodAndRegion",
 			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.module.report.view.ActivityParticipantAttendance pa "
+			value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityParticipantAttendance pa "
 					+ "WHERE pa.startDateTime >= :periodStartDateTime && pa.startDateTime <= :periodEndDateTime && pa.regionName == :region"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ActivityParticipantAttendance {

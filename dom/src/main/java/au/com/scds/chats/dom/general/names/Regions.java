@@ -25,8 +25,8 @@ import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
 
-@DomainService(repositoryFor = Region.class)
-@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.8")
+@DomainService(nature = NatureOfService.DOMAIN,repositoryFor = Region.class)
+//@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.8")
 public class Regions {
 
 	@Action(semantics = SemanticsOf.SAFE)

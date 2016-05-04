@@ -27,10 +27,10 @@ import org.apache.isis.applib.annotation.PropertyLayout;
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Queries({
 	@Query(name = "findContactTypeByName", language = "JDOQL", value = "SELECT "
-			+ "FROM au.com.scds.chats.dom.module.general.names.ContactType "
+			+ "FROM au.com.scds.chats.dom.general.names.ContactType "
 			+ "WHERE name == :name"), 
 	@Query(name = "findAllContactTypes", language = "JDOQL", value = "SELECT "
-			+ "FROM au.com.scds.chats.dom.module.general.names.ContactType "
+			+ "FROM au.com.scds.chats.dom.general.names.ContactType "
 			+ "ORDER BY name")})
 public class ContactType extends ClassificationValue{
 

@@ -29,8 +29,8 @@ import org.apache.isis.applib.services.i18n.TranslatableString;
 @DomainObject(objectType = "PROVIDER")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-@Queries({ @Query(name = "listAllProviders", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.activity.Provider "),
-		@Query(name = "findProvidersByName", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.activity.Provider " + "WHERE name.indexOf(:name) >= 0 ") })
+@Queries({ @Query(name = "listAllProviders", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.activity.Provider "),
+		@Query(name = "findProvidersByName", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.activity.Provider " + "WHERE name.indexOf(:name) >= 0 ") })
 @Unique(name = "Provider_name_UNQ", members = { "name" })
 public class Provider {
 

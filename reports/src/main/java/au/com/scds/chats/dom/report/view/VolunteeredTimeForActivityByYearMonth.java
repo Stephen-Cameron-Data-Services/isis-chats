@@ -1,4 +1,4 @@
-package au.com.scds.chats.dom.module.report.view;
+package au.com.scds.chats.dom.report.view;
 
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdentityType;
@@ -42,7 +42,7 @@ import org.apache.isis.applib.annotation.ViewModel;
 						"  aym.regionName = vtas.regionName AND " +
 						"  aym.yearMonth = vtas.yearMonth;") })
 @Queries({
-	@Query(name = "allVolunteeredTimeForActivityByYearMonth", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.VolunteeredTimeForActivityByYearMonth") })
+	@Query(name = "allVolunteeredTimeForActivityByYearMonth", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.VolunteeredTimeForActivityByYearMonth") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class VolunteeredTimeForActivityByYearMonth {
 

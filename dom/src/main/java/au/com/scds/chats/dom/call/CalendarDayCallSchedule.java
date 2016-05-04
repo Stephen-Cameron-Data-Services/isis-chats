@@ -74,8 +74,8 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-@Queries({ @Query(name = "findCallSchedule", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.call.CalendarDayCallSchedule "),
-		@Query(name = "findCallScheduleByVolunteer", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.call.CalendarDayCallSchedule WHERE allocatedVolunteer == :volunteer ") })
+@Queries({ @Query(name = "findCallSchedule", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.call.CalendarDayCallSchedule "),
+		@Query(name = "findCallScheduleByVolunteer", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.call.CalendarDayCallSchedule WHERE allocatedVolunteer == :volunteer ") })
 public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implements CalendarEventable, Comparable<CalendarDayCallSchedule> {
 
 	private LocalDate calendarDate;

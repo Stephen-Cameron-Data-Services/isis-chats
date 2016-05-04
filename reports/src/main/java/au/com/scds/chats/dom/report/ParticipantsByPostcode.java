@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package au.com.scds.chats.dom.module.report;
+package au.com.scds.chats.dom.report;
 
 import java.util.List;
 

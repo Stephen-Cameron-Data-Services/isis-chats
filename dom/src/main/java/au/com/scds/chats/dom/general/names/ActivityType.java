@@ -26,10 +26,10 @@ import org.apache.isis.applib.annotation.PropertyLayout;
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Queries({
 	@Query(name = "findActivityTypeByName", language = "JDOQL", value = "SELECT "
-			+ "FROM au.com.scds.chats.dom.module.general.names.ActivityType "
+			+ "FROM au.com.scds.chats.dom.general.names.ActivityType "
 			+ "WHERE name == :name"), 
 	@Query(name = "findAllActivityTypes", language = "JDOQL", value = "SELECT "
-			+ "FROM  au.com.scds.chats.dom.module.general.names.ActivityType "
+			+ "FROM  au.com.scds.chats.dom.general.names.ActivityType "
 			+ "ORDER BY name")})
 public class ActivityType extends ClassificationValue{
 

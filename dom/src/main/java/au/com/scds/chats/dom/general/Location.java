@@ -49,8 +49,8 @@ import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, value = "LOCATION")
-@Queries({ @Query(name = "findLocationByName", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.general.Location " + "WHERE name == :name"),
-		@Query(name = "findAllLocations", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.module.general.Location " + "ORDER BY name") })
+@Queries({ @Query(name = "findLocationByName", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.general.Location " + "WHERE name == :name"),
+		@Query(name = "findAllLocations", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.general.Location " + "ORDER BY name") })
 public class Location extends AbstractDomainObject implements Locatable {
 
 	private String name;

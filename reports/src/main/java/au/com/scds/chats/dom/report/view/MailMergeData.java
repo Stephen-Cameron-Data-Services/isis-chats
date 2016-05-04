@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package au.com.scds.chats.dom.module.report.view;
+package au.com.scds.chats.dom.report.view;
 
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdentityType;
@@ -94,9 +94,9 @@ import org.joda.time.LocalDate;
 						+ "ON "
 						+ "  location.location_id = person.mailaddress_location_id; ") })
 @Queries({
-		@Query(name = "listMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.MailMergeData "),
-		@Query(name = "listActiveParticipantMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.MailMergeData WHERE participantStatus == 'ACTIVE'"),
-		@Query(name = "listActiveVolunteerMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.MailMergeData WHERE volunteerStatus == 'ACTIVE'") })
+		@Query(name = "listMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.MailMergeData "),
+		@Query(name = "listActiveParticipantMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.MailMergeData WHERE participantStatus == 'ACTIVE'"),
+		@Query(name = "listActiveVolunteerMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.MailMergeData WHERE volunteerStatus == 'ACTIVE'") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class MailMergeData {
 

@@ -28,10 +28,10 @@ import au.com.scds.chats.dom.general.names.ClassificationValue;
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Queries({
 	@Query(name = "findVolunteerRoleByName", language = "JDOQL", value = "SELECT "
-			+ "FROM au.com.scds.chats.dom.module.volunteer.VolunteerRole "
+			+ "FROM au.com.scds.chats.dom.volunteer.VolunteerRole "
 			+ "WHERE name == :name"), 
 	@Query(name = "findAllVolunteerRoles", language = "JDOQL", value = "SELECT "
-			+ "FROM  au.com.scds.chats.dom.module.volunteer.VolunteerRole "
+			+ "FROM  au.com.scds.chats.dom.volunteer.VolunteerRole "
 			+ "ORDER BY name")})
 public class VolunteerRole extends ClassificationValue{
 
@@ -44,7 +44,7 @@ public class VolunteerRole extends ClassificationValue{
 		super(name);
 	}
 
-	@PropertyLayout(named="Activity Type")
+	@PropertyLayout(named="Volunteer Role")
 	@MemberOrder(sequence = "1")
 	@Override
 	public String getName() {

@@ -1,4 +1,4 @@
-package au.com.scds.chats.fixture.module.activity;
+package au.com.scds.chats.fixture.activity;
 
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.fixturescripts.FixtureScript;

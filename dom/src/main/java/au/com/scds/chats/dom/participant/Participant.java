@@ -44,12 +44,12 @@ import au.com.scds.chats.dom.general.Status;
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Queries({
 		@Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.module.participant.Participant " + "WHERE status == :status"),
+				+ "FROM au.com.scds.chats.dom.participant.Participant " + "WHERE status == :status"),
 		@Query(name = "findParticipantsBySurname", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.module.participant.Participant "
+				+ "FROM au.com.scds.chats.dom.participant.Participant "
 				+ "WHERE person.surname.indexOf(:surname) >= 0"),
 		@Query(name = "findNewOrModifiedParticipantsByPeriodAndRegion", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.module.participant.Participant "
+				+ "FROM au.com.scds.chats.dom.participant.Participant "
 				+ "WHERE ((person.createdOn >= :startDate AND person.createdOn < :startDate) "
 				+ "OR (person.modifiedOn >= :startDate AND person.modifiedOn < :startDate)) " + "AND region = :region"), })
 public class Participant extends AbstractChatsDomainEntity implements Locatable, /*Notable,*/ Comparable<Participant> {

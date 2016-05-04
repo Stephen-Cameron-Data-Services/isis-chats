@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package au.com.scds.chats.dom.module.report.view;
+package au.com.scds.chats.dom.report.view;
 
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdentityType;
@@ -88,7 +88,7 @@ import org.joda.time.DateTime;
 						+ "ORDER BY "
 						+ "  person.surname, person.firstname;") })
 @Queries({
-		@Query(name = "getParticipantPerson", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.module.report.view.ParticipantPerson WHERE activityName == :activity && startDateTime == :datetime && region == :region") })
+		@Query(name = "getParticipantPerson", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantPerson WHERE activityName == :activity && startDateTime == :datetime && region == :region") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ParticipantPerson {
 

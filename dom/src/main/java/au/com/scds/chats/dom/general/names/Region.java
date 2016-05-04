@@ -27,10 +27,10 @@ import org.apache.isis.applib.util.ObjectContracts;
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Queries({
 	@Query(name = "findRegionByName", language = "JDOQL", value = "SELECT "
-			+ "FROM au.com.scds.chats.dom.module.general.names.Region "
+			+ "FROM au.com.scds.chats.dom.general.names.Region "
 			+ "WHERE name == :name"), 
 	@Query(name = "findAllRegions", language = "JDOQL", value = "SELECT "
-			+ "FROM au.com.scds.chats.dom.module.general.names.Region "
+			+ "FROM au.com.scds.chats.dom.general.names.Region "
 			+ "ORDER BY name")})
 public class Region extends ClassificationValue implements Comparable<Region>{
 	

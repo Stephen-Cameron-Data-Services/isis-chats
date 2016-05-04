@@ -25,15 +25,17 @@ import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
 
-@DomainService(repositoryFor = TransportType.class)
-@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.12")
+@DomainService(nature = NatureOfService.DOMAIN, repositoryFor = TransportType.class)
+// @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration",
+// menuOrder = "100.12")
 public class TransportTypes {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	public List<TransportType> listAllTransportTypes() {
-		List<TransportType> list = container.allMatches(new QueryDefault<>(TransportType.class, "findAllTransportTypes"));
+		List<TransportType> list = container
+				.allMatches(new QueryDefault<>(TransportType.class, "findAllTransportTypes"));
 		return list;
 	}
 
@@ -44,14 +46,14 @@ public class TransportTypes {
 		final TransportType obj = create(name);
 		return listAllTransportTypes();
 	}
-	
+
 	@Programmatic
-	public TransportType create(String name){
+	public TransportType create(String name) {
 		final TransportType obj = container.newTransientInstance(TransportType.class);
 		obj.setName(name);
 		container.persistIfNotAlready(obj);
 		container.flush();
-		return obj;		
+		return obj;
 	}
 
 	@Programmatic
@@ -74,7 +76,8 @@ public class TransportTypes {
 		if (name == null)
 			return null;
 		else
-			return container.firstMatch(new QueryDefault<>(TransportType.class, "findTransportTypeByName", "name", name));
+			return container
+					.firstMatch(new QueryDefault<>(TransportType.class, "findTransportTypeByName", "name", name));
 	}
 
 	@javax.inject.Inject

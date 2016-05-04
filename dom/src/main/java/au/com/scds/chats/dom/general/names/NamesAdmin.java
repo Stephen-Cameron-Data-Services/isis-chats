@@ -23,15 +23,14 @@ import java.util.List;
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 
-@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.10")
-public class NamesAdministration {
+@DomainService()
+@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.14")
+public class NamesAdmin {
 
-	
-    @CollectionLayout(render = RenderType.LAZILY)
-    public List<ActivityType> getActivityTypes() {
-        return activityTypes.listAllActivityTypes();
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "1")
+    public Names nameLists() {
+        return new Names();
     }
-    
-	@javax.inject.Inject
-	ActivityTypes activityTypes;
 }

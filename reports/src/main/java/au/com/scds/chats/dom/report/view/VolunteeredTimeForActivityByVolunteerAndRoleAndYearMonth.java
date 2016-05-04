@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package au.com.scds.chats.dom.module.report.view;
+package au.com.scds.chats.dom.report.view;
 
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdentityType;
@@ -38,63 +38,84 @@ import org.joda.time.LocalDate;
 @DomainObject(editing = Editing.DISABLED)
 @PersistenceCapable(
 		identityType = IdentityType.NONDURABLE,
-		table = "VolunteeredTimeByVolunteerAndRoleAndYearMonth",
+		table = "VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth",
 		extensions = { @Extension(
 				vendorName = "datanucleus",
 				key = "view-definition",
-				value = "CREATE VIEW VolunteeredTimeByVolunteerAndRoleAndYearMonth "
+				value = "CREATE VIEW VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth "
 						+ "( "
-						+ " {this.surname}, "
-						+ " {this.firstName}, "
-						+ " {this.birthDate}, "
-						+ " {this.regionName}, "
-						+ " {this.volunteerStatus}, "
-						+ " {this.volunteerRole}, "
-						+ " {this.yearMonth}, "
-						+ " {this.hoursVolunteered} "
+						+ "  {this.activityName}, "
+						+ "  {this.activityRegion}, "
+						+ "  {this.activityYearMonth}, "						
+						+ "  {this.surname}, "
+						+ "  {this.firstName}, "
+						+ "  {this.birthDate}, "
+						+ "  {this.volunteerStatus}, "
+						+ "  {this.hoursVolunteered} "
 						+ ") AS "
 						+ "SELECT  "
+						+ "  activity.name as activityName, "						
+						+ "  activity.region_name as activityRegion,  "	
+						+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime) as activityYearMonth,  "
 						+ "  person.surname,  "
 						+ "  person.firstname AS firstName,  "
 						+ "  person.birthdate AS birthDate,  "
-						+ "  person.region_name AS regionName,  "
-						+ "  volunteer.status as volunteerStatus, "
-						+ "  CASE volunteeredtime.role  "
-						+ "    WHEN 'VTACTIVITY' THEN 'ACTIVITIES' "
-						+ "    ELSE volunteeredtime.role "
-						+ "  END AS volunteerRole, "
-						+ "  EXTRACT(YEAR_MONTH FROM volunteeredtime.startdatetime) as yearMonth,  "
+						+ "  volunteer.status AS volunteerStatus, "
 						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime))/60,1) as hoursVolunteered  "
 						+ "FROM  "
+						+ "  activity, "	
 						+ "  volunteeredtime,  "
 						+ "  volunteer,  "
 						+ "  person  "
 						+ "WHERE  "
-						+ "  volunteer.volunteer_id = volunteeredtime.volunteer_volunteer_id AND  "
-						+ "  volunteer.person_person_id = person.person_id AND   "
-						+ "  volunteer.status <> 'EXITED'  "
+						+ "  volunteeredtime.activity_activity_id = activity.activity_id AND "						
+						+ "  volunteer.volunteer_id  = volunteeredtime.volunteer_volunteer_id AND  "
+						+ "  person.person_id = volunteer.person_person_id "
 						+ "GROUP BY  "
-						+ "  volunteer.volunteer_id,  "
-						+ "  volunteeredtime.role,  "
-						+ "  EXTRACT(YEAR_MONTH FROM volunteeredtime.startdatetime);") })
+						+ "  activity.name,  "
+						+ "  activity.region_name, "
+						+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime), "						
+						+ "  volunteeredtime.volunteer_volunteer_id;") })
 @Queries({
-		@Query(name = "allVolunteeredTimeByVolunteerAndRoleAndYearMonth",
+		@Query(name = "allVolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth",
 				language = "JDOQL",
-				value = "SELECT FROM au.com.scds.chats.dom.module.report.view.VolunteeredTimeByVolunteerAndRoleAndYearMonth") })
+				value = "SELECT FROM au.com.scds.chats.dom.report.view.VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class VolunteeredTimeByVolunteerAndRoleAndYearMonth {
+public class VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth {
 
+	public String activityName;
+	public String activityRegion;
+	public Integer activityYearMonth;
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
-	public String regionName;
 	public String volunteerStatus;
-	public String volunteerRole;
-	public Integer yearMonth;
 	public Float hoursVolunteered;
+
+
 
 	@Property()
 	@MemberOrder(sequence = "1")
+	public String getActivityName() {
+		return activityName;
+	}
+
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
+	}	
+	
+	@Property()
+	@MemberOrder(sequence = "2")
+	public String getActivityRegion() {
+		return activityRegion;
+	}
+
+	public void setActivityRegion(String region) {
+		this.activityRegion = region;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "3")
 	public String getSurname() {
 		return surname;
 	}
@@ -104,7 +125,7 @@ public class VolunteeredTimeByVolunteerAndRoleAndYearMonth {
 	}
 
 	@Property()
-	@MemberOrder(sequence = "2")
+	@MemberOrder(sequence = "4")
 	public String getFirstName() {
 		return firstName;
 	}
@@ -114,7 +135,7 @@ public class VolunteeredTimeByVolunteerAndRoleAndYearMonth {
 	}
 
 	@Property()
-	@MemberOrder(sequence = "3")
+	@MemberOrder(sequence = "5")
 	public LocalDate getBirthDate() {
 		return birthDate;
 	}
@@ -124,27 +145,7 @@ public class VolunteeredTimeByVolunteerAndRoleAndYearMonth {
 	}
 
 	@Property()
-	@MemberOrder(sequence = "4")
-	public String getRegionName() {
-		return regionName;
-	}
-
-	public void setRegionName(String region) {
-		this.regionName = region;
-	}
-
-	@Property()
-	@MemberOrder(sequence = "5.1")
-	public String getVolunteerRole() {
-		return volunteerRole;
-	}
-
-	public void setVolunteerRole(String volunteerRole) {
-		this.volunteerRole = volunteerRole;
-	}
-
-	@Property()
-	@MemberOrder(sequence = "5.2")
+	@MemberOrder(sequence = "6")
 	public String getVolunteerStatus() {
 		return volunteerStatus;
 	}
@@ -155,12 +156,12 @@ public class VolunteeredTimeByVolunteerAndRoleAndYearMonth {
 
 	@Property()
 	@MemberOrder(sequence = "7")
-	public Integer getYearMonth() {
-		return yearMonth;
+	public Integer getActivityYearMonth() {
+		return activityYearMonth;
 	}
 
-	public void setYearMonth(Integer yearMonth) {
-		this.yearMonth = yearMonth;
+	public void setActivityYearMonth(Integer yearMonth) {
+		this.activityYearMonth = yearMonth;
 	}
 
 	@Property()

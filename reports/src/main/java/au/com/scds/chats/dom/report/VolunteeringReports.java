@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package au.com.scds.chats.dom.module.report;
+package au.com.scds.chats.dom.report;
 
 import java.util.List;
 
@@ -29,11 +29,11 @@ import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
 
-import au.com.scds.chats.dom.module.report.view.VolunteeredTimeByVolunteerAndRoleAndYearMonth;
-import au.com.scds.chats.dom.module.report.view.VolunteeredTimeForActivityByYearMonth;
-import au.com.scds.chats.dom.module.report.view.VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth;
-import au.com.scds.chats.dom.module.report.view.VolunteeredTimeForCallsByYearMonth;
-import au.com.scds.chats.dom.module.report.view.VolunteeredTimeForCallsByVolunteerAndYearMonth;
+import au.com.scds.chats.dom.report.view.VolunteeredTimeByVolunteerAndRoleAndYearMonth;
+import au.com.scds.chats.dom.report.view.VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth;
+import au.com.scds.chats.dom.report.view.VolunteeredTimeForActivityByYearMonth;
+import au.com.scds.chats.dom.report.view.VolunteeredTimeForCallsByVolunteerAndYearMonth;
+import au.com.scds.chats.dom.report.view.VolunteeredTimeForCallsByYearMonth;
 
 @DomainService(nature=NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.1")

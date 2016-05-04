@@ -31,8 +31,9 @@ import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
 
-@DomainService(repositoryFor = Provider.class)
-@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "80.1")
+//NOT USED
+//@DomainService(repositoryFor = Provider.class)
+//@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "80.1")
 public class Providers {
 
 	@Action(semantics = SemanticsOf.SAFE)

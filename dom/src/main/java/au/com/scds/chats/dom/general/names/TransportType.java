@@ -26,10 +26,10 @@ import org.apache.isis.applib.annotation.PropertyLayout;
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Queries({
 	@Query(name = "findTransportTypeByName", language = "JDOQL", value = "SELECT "
-			+ "FROM au.com.scds.chats.dom.module.general.names.TransportType "
+			+ "FROM au.com.scds.chats.dom.general.names.TransportType "
 			+ "WHERE name == :name"), 
 	@Query(name = "findAllTransportTypes", language = "JDOQL", value = "SELECT "
-			+ "FROM  au.com.scds.chats.dom.module.general.names.TransportType "
+			+ "FROM  au.com.scds.chats.dom.general.names.TransportType "
 			+ "ORDER BY name")})
 public class TransportType extends ClassificationValue{
 

@@ -25,8 +25,9 @@ import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
 
-@DomainService(repositoryFor = ActivityType.class)
-@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.1")
+@DomainService(nature = NatureOfService.DOMAIN, repositoryFor = ActivityType.class)
+// @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration",
+// menuOrder = "100.1")
 public class ActivityTypes {
 
 	@Action(semantics = SemanticsOf.SAFE)
@@ -44,14 +45,14 @@ public class ActivityTypes {
 		final ActivityType obj = create(name);
 		return listAllActivityTypes();
 	}
-	
+
 	@Programmatic
-	public ActivityType create(String name){
+	public ActivityType create(String name) {
 		final ActivityType obj = container.newTransientInstance(ActivityType.class);
 		obj.setName(name);
 		container.persistIfNotAlready(obj);
 		container.flush();
-		return obj;		
+		return obj;
 	}
 
 	@Programmatic
@@ -79,6 +80,5 @@ public class ActivityTypes {
 
 	@javax.inject.Inject
 	DomainObjectContainer container;
-
 
 }
