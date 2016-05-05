@@ -51,6 +51,7 @@ import org.joda.time.LocalDate;
 						+ "  {this.middleName}, "
 						+ "  {this.preferredName}, "
 						+ "  {this.birthDate}, "
+						+ "  {this.age}, "
 						+ "  {this.homePhoneNumber}, "
 						+ "  {this.mobilePhoneNumber}, "
 						+ "  {this.emailAddress}, "
@@ -69,6 +70,7 @@ import org.joda.time.LocalDate;
 						+ "  person.middlename AS middleName, "
 						+ "  person.preferredname AS preferredName, "
 						+ "  person.birthdate AS birthDate, "
+						+ "  timestampdiff(year,person.birthdate,curdate()) AS age, "
 						+ "  person.homephonenumber AS homePhoneNumber, "
 						+ "  person.mobilephonenumber AS mobilePhoneNumber, "
 						+ "  person.emailaddress AS emailAddress, "
@@ -106,6 +108,7 @@ public class MailMergeData {
 	public String middleName;
 	public String preferredName;
 	public LocalDate birthDate;
+	public Integer age;
 	public String homePhoneNumber;
 	public String mobilePhoneNumber;
 	public String emailAddress;
@@ -172,13 +175,23 @@ public class MailMergeData {
 	}
 
 	@Property()
-	@MemberOrder(sequence = "6")
+	@MemberOrder(sequence = "6.1")
 	public LocalDate getBirthDate() {
 		return birthDate;
 	}
 
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "6.2")
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
 	}
 
 	@Property()

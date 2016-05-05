@@ -78,6 +78,7 @@ public class Persons {
 		return person;
 	}
 	
+	@Programmatic
 	public Person findPerson(String firstname, String surname, LocalDate dob) {
 		return container.firstMatch(new QueryDefault<>(Person.class,
 				"findPerson", "firstname", firstname, "surname", surname, "birthdate", dob));

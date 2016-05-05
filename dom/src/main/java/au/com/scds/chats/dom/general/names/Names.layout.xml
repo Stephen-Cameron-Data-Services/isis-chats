@@ -6,11 +6,10 @@
 	<row>
 		<col span="12" unreferencedActions="true">
 			<ns2:domainObject />
-			<ns2:action id="clearHints" />
+			<ns2:action id="clearHints" hidden="EVERYWHERE"/>
 			<ns2:action id="downloadLayoutXml" />
 			<ns2:action id="downloadJdoMetadata" />
 			<ns2:action id="rebuildMetamodel" />
-
 		</col>
 	</row>
 	<row>
@@ -57,6 +56,15 @@
 						<col span="6">
 							<ns2:collection id="volunteerRoles">
 								<ns2:action id="createVolunteerRole" defaultView="table"/>
+							</ns2:collection>
+						</col>
+					</row>
+				</tab>
+				<tab name="Suburbs">
+					<row>
+						<col span="6">
+							<ns2:collection id="suburbs">
+								<ns2:action id="createSuburb" defaultView="table"/>
 							</ns2:collection>
 						</col>
 					</row>

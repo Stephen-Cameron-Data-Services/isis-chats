@@ -64,7 +64,7 @@ public class Participants {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	@SuppressWarnings("all")
-	public List<Participant> listActive() {
+	public List<Participant> listActive(AgeGroup ageClass) {
 		return container.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.ACTIVE));
 		/*
 		 * TODO replace all queries with typesafe final QParticipant p =

@@ -37,8 +37,10 @@ import org.apache.isis.applib.annotation.*;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 import org.isisaddons.wicket.gmap3.cpt.service.LocationLookupService;
-
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
+import org.joda.time.Period;
+import org.joda.time.Years;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.RegexValidation;
@@ -50,11 +52,16 @@ import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.general.names.Salutation;
 import au.com.scds.chats.dom.general.names.Salutations;
+import au.com.scds.chats.dom.general.names.Suburb;
+import au.com.scds.chats.dom.general.names.Suburbs;
 
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Unique(name = "Person_UNQ", members = { "firstname", "surname", "birthdate" })
-@Queries({ @Query(name = "findPersonsBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.general.Person " + "WHERE surname == :surname"), 
-	       @Query(name = "findPerson", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.general.Person " + "WHERE firstname == :firstname && surname == :surname && birthdate == :birthdate")})
+@Queries({
+		@Query(name = "findPersonsBySurname", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.general.Person " + "WHERE surname == :surname"),
+		@Query(name = "findPerson", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.general.Person "
+				+ "WHERE firstname == :firstname && surname == :surname && birthdate == :birthdate"), })
 @DomainObject(objectType = "PERSON")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = "General", middle = { "Contact Details", "Admin" })
@@ -77,8 +84,8 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	private String faxNumber;
 	private String email;
 	private Sex sex;
-	
-	public Person(){
+
+	public Person() {
 		super();
 	}
 
@@ -88,13 +95,13 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 		this.surname = surname;
 		this.birthdate = birthdate;
 	}
-	
+
 	public String title() {
 		return this.getFullname();
 	}
 
 	@Property()
-	@PropertyLayout(hidden=Where.EVERYWHERE)
+	@PropertyLayout(hidden = Where.EVERYWHERE)
 	@Column(allowsNull = "true")
 	public Long getOldId() {
 		return this.oldId;
@@ -106,14 +113,14 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 
 	@Programmatic
 	public String getFullname() {
-		return this.getFirstname() + " " + (this.getPreferredname() != null ? "(" + this.getPreferredname() + ") " : "") + (this.getMiddlename() != null ? this.getMiddlename() + " " : "")
-				+ this.getSurname();
+		return this.getFirstname() + " " + (this.getPreferredname() != null ? "(" + this.getPreferredname() + ") " : "")
+				+ (this.getMiddlename() != null ? this.getMiddlename() + " " : "") + this.getSurname();
 	}
 
 	@Property()
-	@PropertyLayout(hidden=Where.EVERYWHERE)
+	@PropertyLayout(hidden = Where.EVERYWHERE)
 	@MemberOrder(sequence = "1")
-	@Column(allowsNull="true")
+	@Column(allowsNull = "true")
 	public Salutation getSalutation() {
 		return this.salutation;
 	}
@@ -213,39 +220,35 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	public void setSex(Sex sex) {
 		this.sex = sex;
 	}
-	
-/*	@Property()
-	@PropertyLayout(hidden = Where.EVERYWHERE)
-	@MemberOrder(sequence = "7")
-	@Column(name = "region", allowsNull = "true")
-	public Region getRegion() {
-		return this.region;
-	}
 
-	public void setRegion(Region region) {
-		this.region = region;
-	}
-
-	public List<Region> choicesRegion() {
-		return regions.listAllRegions();
-	}
-
-	@Property()
-	@PropertyLayout(named = "Region")
-	@MemberOrder(sequence = "7.1")
-	@NotPersistent
-	public String getRegionName() {
-		return regions.nameForRegion(getRegion());
-	}
-
-	public void setRegionName(String name) {
-		setRegion(regions.regionForName(name));
-	}
-
-	public List<String> choicesRegionName() {
-		return regions.allNames();
-	}
-*/
+	/*
+	 * @Property()
+	 * 
+	 * @PropertyLayout(hidden = Where.EVERYWHERE)
+	 * 
+	 * @MemberOrder(sequence = "7")
+	 * 
+	 * @Column(name = "region", allowsNull = "true") public Region getRegion() {
+	 * return this.region; }
+	 * 
+	 * public void setRegion(Region region) { this.region = region; }
+	 * 
+	 * public List<Region> choicesRegion() { return regions.listAllRegions(); }
+	 * 
+	 * @Property()
+	 * 
+	 * @PropertyLayout(named = "Region")
+	 * 
+	 * @MemberOrder(sequence = "7.1")
+	 * 
+	 * @NotPersistent public String getRegionName() { return
+	 * regions.nameForRegion(getRegion()); }
+	 * 
+	 * public void setRegionName(String name) {
+	 * setRegion(regions.regionForName(name)); }
+	 * 
+	 * public List<String> choicesRegionName() { return regions.allNames(); }
+	 */
 	@Property()
 	@PropertyLayout(hidden = Where.EVERYWHERE)
 	@MemberOrder(sequence = "8")
@@ -274,10 +277,9 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 		return contactTypes.allNames();
 	}
 
-
 	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(hidden = Where.ALL_TABLES)
-	//@MemberOrder(name = "Contact Details", sequence = "1")
+	// @MemberOrder(name = "Contact Details", sequence = "1")
 	@Column(allowsNull = "true")
 	public Address getStreetAddress() {
 		return streetAddress;
@@ -296,26 +298,38 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	}
 
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	//@MemberOrder(name = "streetaddress", sequence = "1")
-	public Person updateStreetAddress(@ParameterLayout(named = "Street 1") String street1, 
+	// @MemberOrder(name = "streetaddress", sequence = "1")
+	public Person updateStreetAddress(@ParameterLayout(named = "Street 1") String street1,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Suburb") String suburb, 
-			@Parameter(optionality = Optionality.MANDATORY, regexPattern=RegexValidation.Address.POSTCODE) @ParameterLayout(named = "Postcode") String postcode,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Suburb") String suburb,
+			@Parameter(optionality = Optionality.MANDATORY, regexPattern = RegexValidation.Address.POSTCODE) @ParameterLayout(named = "Postcode") String postcode,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Is Mail Address Too?") Boolean isMailAddress) {
 		Address newAddress = container.newTransientInstance(Address.class);
 		newAddress.setStreet1(street1);
 		newAddress.setStreet2(street2);
-		newAddress.setPostcode(postcode);
+
+		// newAddress.setPostcode(postcode);
 		newAddress.setSuburb(suburb);
-		//do geocoding
+		Suburb s = suburbs.suburbForName(suburb);
+		if (s != null) {
+			newAddress.setPostcode(s.getPostcode().toString());
+		} else {
+			return this;
+		}
+		// do geocoding, don't fail action if not geocoded
 		newAddress.updateGeocodedLocation();
 		Address oldAddress = getStreetAddress();
 		container.persistIfNotAlready(newAddress);
 		setStreetAddress(newAddress);
-		if (oldAddress != null)
-			container.removeIfNotAlready(oldAddress);
-		if (isMailAddress != null && isMailAddress == true)
+		// remove old address if replacing
+		if (isMailAddress != null && isMailAddress == true) {
 			setMailAddress(newAddress);
+			container.removeIfNotAlready(oldAddress);
+		} else {
+			// if current mail address not same as old address then remove old
+			if (!oldAddress.equals(getMailAddress()))
+				container.removeIfNotAlready(oldAddress);
+		}
 		return this;
 	}
 
@@ -339,9 +353,22 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 		return false;
 	}
 
+	public List<String> autoComplete2UpdateStreetAddress(@MinLength(3) String search) {
+		System.out.println("SEARCHING");
+		return suburbs.listSuburbNamesLike(search);
+	}
+
+	public String validate2UpdateStreetAddress(String name) {
+		Suburb s = suburbs.suburbForName(name);
+		if (s != null) {
+			return null;
+		} else
+			return "Unknown suburb, please check spelling and use proper case";
+	}
+
 	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(hidden = Where.ALL_TABLES)
-	//@MemberOrder(name = "Contact Details", sequence = "2")
+	// @MemberOrder(name = "Contact Details", sequence = "2")
 	@Column(allowsNull = "true")
 	public Address getMailAddress() {
 		return mailAddress;
@@ -360,8 +387,9 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	}
 
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	//@MemberOrder(name = "mailaddress", sequence = "1")
-	public Person updateMailAddress(@ParameterLayout(named = "Street 1") String street1, @Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
+	// @MemberOrder(name = "mailaddress", sequence = "1")
+	public Person updateMailAddress(@ParameterLayout(named = "Street 1") String street1,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
 			@ParameterLayout(named = "Suburb") String suburb, @ParameterLayout(named = "Postcode") String postcode) {
 		Address newAddress = container.newTransientInstance(Address.class);
 		newAddress.setStreet1(street1);
@@ -392,7 +420,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 		return getMailAddress() != null ? getMailAddress().getPostcode() : null;
 	}
 
-	@Property(regexPattern=RegexValidation.CommunicationChannel.PHONENUMBER)
+	@Property(regexPattern = RegexValidation.CommunicationChannel.PHONENUMBER)
 	@PropertyLayout(named = "Home Phone Number")
 	@MemberOrder(name = "Contact Details", sequence = "3")
 	@Column(allowsNull = "true")
@@ -404,7 +432,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 		this.homePhoneNumber = homePhoneNumber;
 	}
 
-	@Property(regexPattern=RegexValidation.CommunicationChannel.PHONENUMBER)
+	@Property(regexPattern = RegexValidation.CommunicationChannel.PHONENUMBER)
 	@PropertyLayout(named = "Mobile Phone Number")
 	@MemberOrder(name = "Contact Details", sequence = "4")
 	@Column(allowsNull = "true")
@@ -416,7 +444,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 		this.mobilePhoneNumber = mobilePhoneNumber;
 	}
 
-	@Property(regexPattern=RegexValidation.CommunicationChannel.PHONENUMBER)
+	@Property(regexPattern = RegexValidation.CommunicationChannel.PHONENUMBER)
 	@PropertyLayout(named = "Fixed Phone Number")
 	@MemberOrder(name = "Contact Details", sequence = "5")
 	@Column(allowsNull = "true")
@@ -428,7 +456,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 		this.fixedPhoneNumber = fixedPhoneNumber;
 	}
 
-	@Property(regexPattern=RegexValidation.CommunicationChannel.PHONENUMBER)
+	@Property(regexPattern = RegexValidation.CommunicationChannel.PHONENUMBER)
 	@PropertyLayout(named = "Fax Number")
 	@MemberOrder(name = "Contact Details", sequence = "6")
 	@Column(allowsNull = "true")
@@ -440,7 +468,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 		this.faxNumber = faxNumber;
 	}
 
-	@Property(regexPattern=RegexValidation.CommunicationChannel.EMAIL)
+	@Property(regexPattern = RegexValidation.CommunicationChannel.EMAIL)
 	@PropertyLayout(hidden = Where.ALL_TABLES, named = "Email Address")
 	@MemberOrder(name = "Contact Details", sequence = "5")
 	@Column(allowsNull = "true")
@@ -464,6 +492,26 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 		this.englishSkill = englishSkill;
 	}
 
+	@Programmatic()
+	public Integer getDaysUntilBirthday(LocalDate futureDate) {
+		if (futureDate == null)
+			futureDate = LocalDate.now();
+		Integer diff = getBirthdate().getDayOfYear() - futureDate.getDayOfYear();
+		if (diff < 0) {
+			return 365 + diff;
+		} else {
+			return diff;
+		}
+	}
+
+	@Programmatic()
+	public Integer getAge(LocalDate futureDate) {
+		if (futureDate == null)
+			futureDate = LocalDate.now();
+		Period p = new Period(getBirthdate(), futureDate);
+		return p.getYears();
+	}
+
 	@NotPersistent
 	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
 		if (getStreetAddress() != null)
@@ -471,19 +519,23 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 		else
 			return null;
 	}
-	
+
 	@Override
 	public int compareTo(Person o) {
 		String thisNameAndBirthdate = getSurname().toUpperCase() + getFirstname().toUpperCase() + getBirthdate();
-		String otherNameAndBirthdate = o.getSurname().toUpperCase() + o.getFirstname().toUpperCase() + o.getBirthdate();;
+		String otherNameAndBirthdate = o.getSurname().toUpperCase() + o.getFirstname().toUpperCase() + o.getBirthdate();
+		;
 		return thisNameAndBirthdate.compareTo(otherNameAndBirthdate);
 	}
 
 	@Inject
 	private Salutations salutations;
 
-	//@Inject
-	//Regions regions;
+	@Inject
+	private Suburbs suburbs;
+
+	// @Inject
+	// Regions regions;
 
 	@Inject
 	ContactTypes contactTypes;

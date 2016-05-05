@@ -112,6 +112,12 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public String getFullName() {
 		return getPerson().getFullname();
 	}
+	
+	@Property(hidden = Where.NOWHERE, editing = Editing.DISABLED, editingDisabledReason = "Calculated from Person record")
+	@MemberOrder(sequence = "1.2")
+	public Integer getAge() {
+		return getPerson().getAge(null);
+	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
 	@MemberOrder(sequence = "2")

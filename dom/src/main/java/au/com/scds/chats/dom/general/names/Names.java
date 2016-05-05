@@ -80,6 +80,17 @@ public class Names {
 		volunteerRoles.createVolunteerRole(name);
 		return this;
 	}
+	
+	@CollectionLayout(render=RenderType.EAGERLY)
+	public List<Suburb> getSuburbs() {
+		return suburbs.listAllSuburbs();
+	}
+
+	public Names createSuburb(final @Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named = "Suburb Name") String name,
+			final @Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named = "Postcode") Integer postcode) {
+		suburbs.createSuburb(name, postcode);
+		return this;
+	}
 
 	@Inject
 	Regions regions;
@@ -95,4 +106,7 @@ public class Names {
 	
 	@Inject
 	VolunteerRoles volunteerRoles;
+	
+	@Inject
+	Suburbs suburbs;
 }

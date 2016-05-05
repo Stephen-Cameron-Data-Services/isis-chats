@@ -47,6 +47,7 @@ SELECT
   person.middlename AS middleName, 
   person.preferredname AS preferredName, 
   person.birthdate AS birthDate, 
+  timestampdiff(year,person.birthdate,curdate()) AS age, 
   person.homephonenumber AS homePhoneNumber, 
   person.mobilephonenumber AS mobilePhoneNumber, 
   person.emailaddress AS emailAddress, 
