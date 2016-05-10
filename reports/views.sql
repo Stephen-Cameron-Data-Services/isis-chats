@@ -21,22 +21,22 @@ SELECT
   person.birthdate AS birthDate, 
   activity.name AS activityName, 
   activity.region_name AS regionName, 
-  datediff(now(),attended.startdatetime) AS daysSinceLastAttended 
+  datediff(now(),attend.startdatetime) AS daysSinceLastattend 
 FROM 
-  attended, 
+  attend, 
   participant, 
   person, 
   activity 
 WHERE 
-  participant.participant_id = attended.participant_participant_id AND 
-  activity.activity_id = attended.activity_activity_id AND 
+  participant.participant_id = attend.participant_participant_id AND 
+  activity.activity_id = attend.activity_activity_id AND 
   participant.person_person_id = person.person_id AND 
   participant.status = 'ACTIVE'
 GROUP BY 
   participant.participant_id, 
   activity.activity_id 
 ORDER BY 
- daysSinceLastAttended DESC;
+ daysSinceLastattend DESC;
 
 #DROP VIEW MailMergeData;
 CREATE VIEW MailMergeData AS
@@ -82,16 +82,16 @@ SELECT
   activity.region_name AS regionName,
   activity.name AS activityName,
   participant.status AS participantStatus,
-  EXTRACT(YEAR_MONTH FROM attended.startdatetime) as yearMonth,
-  ROUND(SUM(TIMESTAMPDIFF(MINUTE,attended.startdatetime,attended.enddatetime))/60,1) as hoursAttended
+  EXTRACT(YEAR_MONTH FROM attend.startdatetime) as yearMonth,
+  ROUND(SUM(TIMESTAMPDIFF(MINUTE,attend.startdatetime,attend.enddatetime))/60,1) as hoursattend
 FROM
   activity,
-  attended,
+  attend,
   participant,
   person
 WHERE
-  attended.activity_activity_id = activity.activity_id AND
-  participant.participant_id = attended.participant_participant_id AND
+  attend.activity_activity_id = activity.activity_id AND
+  participant.participant_id = attend.participant_participant_id AND
   person.person_id = participant.person_person_id AND	
   participant.status <> 'EXITED'
 GROUP BY
@@ -228,14 +228,14 @@ CREATE VIEW VolunteeredTimeForCallsByYearMonth AS
 SELECT  
   EXTRACT(YEAR_MONTH FROM calendardaycallschedule.calendardate) AS callScheduleYearMonth,  
   ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime))/60,1) AS hoursVolunteered,  
-  ROUND(SUM(TIMESTAMPDIFF(MINUTE,scheduledcall.startdatetime,scheduledcall.enddatetime))/60,1) AS hoursOnCalls  
+  ROUND(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime))/60,1) AS hoursOnCalls  
 FROM  
   calendardaycallschedule, 
   volunteeredtime, 
-  scheduledcall 
+  telephonecall 
 WHERE  
   volunteeredtime.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id AND 
-  scheduledcall.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id 
+  telephonecall.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id 
 GROUP BY  
   EXTRACT(YEAR_MONTH FROM calendardaycallschedule.calendardate);
 
@@ -252,7 +252,7 @@ SELECT
 FROM 
   calendardaycallschedule AS CDCS
 LEFT OUTER JOIN
-  scheduledcall AS SC
+  telephonecall AS SC
 ON
   SC.callschedule_calendardaycallschedule_id = CDCS.calendardaycallschedule_id
 LEFT OUTER JOIN
@@ -300,20 +300,20 @@ SELECT
   person.birthdate AS birthDate,
   person.region_name AS regionName,
   participant.status AS participantStatus,
-	EXTRACT(YEAR_MONTH FROM scheduledcall.startdatetime) as yearMonth,
-	ROUND(SUM(TIMESTAMPDIFF(MINUTE,scheduledcall.startdatetime,scheduledcall.enddatetime))/60,1) as callHoursTotal
+	EXTRACT(YEAR_MONTH FROM telephonecall.startdatetime) as yearMonth,
+	ROUND(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime))/60,1) as callHoursTotal
 FROM
-  scheduledcall,
+  telephonecall,
   participant,
   person
 WHERE
-  participant.participant_id = scheduledcall.participant_participant_id AND
+  participant.participant_id = telephonecall.participant_participant_id AND
   person.person_id = participant.person_person_id AND	
   participant.status <> 'EXITED' AND
-  scheduledcall.iscompleted = true
+  telephonecall.iscompleted = true
 GROUP BY
   participant.participant_id,
-  EXTRACT(YEAR_MONTH FROM scheduledcall.startdatetime);
+  EXTRACT(YEAR_MONTH FROM telephonecall.startdatetime);
 
 #DROP VIEW ActivityParticipantAttendance
 CREATE VIEW ActivityParticipantAttendance AS 
@@ -325,13 +325,13 @@ SELECT
   activity.region_name AS regionName, 
   activity.startdatetime AS startDateTime, 						
   participant.status AS participantStatus, 
-  TIMESTAMPDIFF(MINUTE,attended.startdatetime,attended.enddatetime) as minutesAttended 
+  TIMESTAMPDIFF(MINUTE,attend.startdatetime,attend.enddatetime) as minutesattend 
 FROM 
   activity, 
-  attended, 						
+  attend, 						
   participant, 
   person 
 WHERE 
-  attended.activity_activity_id = activity.activity_id AND 
-  participant.participant_id = attended.participant_participant_id AND 
+  attend.activity_activity_id = activity.activity_id AND 
+  participant.participant_id = attend.participant_participant_id AND 
   person.person_id = participant.person_person_id;

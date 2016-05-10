@@ -58,20 +58,20 @@ import org.joda.time.LocalDate;
 						+ "  person.birthdate AS birthDate, "
 						+ "  person.region_name AS regionName, "
 						+ "  participant.status AS participantStatus, "
-						+ "	EXTRACT(YEAR_MONTH FROM scheduledcall.startdatetime) as yearMonth, "
-						+ "	ROUND(SUM(TIMESTAMPDIFF(MINUTE,scheduledcall.startdatetime,scheduledcall.enddatetime))/60,1) as callHoursTotal "
+						+ "	EXTRACT(YEAR_MONTH FROM telephonecall.startdatetime) as yearMonth, "
+						+ "	ROUND(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime))/60,1) as callHoursTotal "
 						+ "FROM "
-						+ "  scheduledcall, "						
+						+ "  telephonecall, "						
 						+ "  participant, "
 						+ "  person "
 						+ "WHERE "
-						+ "  participant.participant_id = scheduledcall.participant_participant_id AND "
+						+ "  participant.participant_id = telephonecall.participant_participant_id AND "
 						+ "  person.person_id = participant.person_person_id AND "							
 						+ "  participant.status <> 'EXITED' AND "
-						+ "  scheduledcall.iscompleted = true "						
+						+ "  telephonecall.iscompleted = true "						
 						+ "GROUP BY "
 						+ "  participant.participant_id, "
-						+ "  EXTRACT(YEAR_MONTH FROM scheduledcall.startdatetime);") })
+						+ "  EXTRACT(YEAR_MONTH FROM telephonecall.startdatetime);") })
 @Queries({
 	@Query(name = "allCallsDurationByParticipantAndMonth",
 			language = "JDOQL",

@@ -45,14 +45,25 @@ import au.com.scds.chats.dom.general.Status;
 @Queries({
 		@Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.participant.Participant " + "WHERE status == :status"),
+		@Query(name = "listParticipantsByStatusAndBirthdateBelow", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.participant.Participant WHERE status == :status "
+				+ "AND person.birthdate.isBefore(:upperLimit)"),
+		@Query(name = "listParticipantsByStatusAndBirthdateAbove", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.participant.Participant WHERE status == :status "
+				+ "AND person.birthdate.isAfter(:lowerLimit)"),
+		@Query(name = "listParticipantsByStatusAndBirthdateBetween", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.participant.Participant WHERE status == :status "
+				+ "AND person.birthdate.isAfter(:lowerLimit) "
+				+ "AND person.birthdate.isBefore(:upperLimit) "),
 		@Query(name = "findParticipantsBySurname", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.participant.Participant "
 				+ "WHERE person.surname.indexOf(:surname) >= 0"),
 		@Query(name = "findNewOrModifiedParticipantsByPeriodAndRegion", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.participant.Participant "
 				+ "WHERE ((person.createdOn >= :startDate AND person.createdOn < :startDate) "
-				+ "OR (person.modifiedOn >= :startDate AND person.modifiedOn < :startDate)) " + "AND region = :region"), })
-public class Participant extends AbstractChatsDomainEntity implements Locatable, /*Notable,*/ Comparable<Participant> {
+				+ "OR (person.modifiedOn >= :startDate AND person.modifiedOn < :startDate)) AND region = :region"), })
+public class Participant extends AbstractChatsDomainEntity
+		implements Locatable, /* Notable, */ Comparable<Participant> {
 
 	private Person person;
 	private Status status = Status.ACTIVE;
@@ -66,8 +77,8 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	private ParticipantNotes notes;
 	@Persistent(mappedBy = "participant")
 	protected SortedSet<Participation> participations = new TreeSet<Participation>();
-	
-	//Social Factor Properties
+
+	// Social Factor Properties
 	private String limitingHealthIssues;
 	private String otherLimitingFactors;
 	private String driversLicence;
@@ -112,7 +123,7 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public String getFullName() {
 		return getPerson().getFullname();
 	}
-	
+
 	@Property(hidden = Where.NOWHERE, editing = Editing.DISABLED, editingDisabledReason = "Calculated from Person record")
 	@MemberOrder(sequence = "1.2")
 	public Integer getAge() {
@@ -292,9 +303,6 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public int compareTo(final Participant o) {
 		return this.getPerson().compareTo(o.getPerson());
 	}
-	
-
-
 
 	@Property()
 	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)

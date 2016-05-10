@@ -5,15 +5,80 @@
 
 	<include schemaLocation=""></include>
 	<include schemaLocation=""></include>
-	<element name="recurringActivity" type="tns:RecurringActivity" />
-	<element name="participant" type="tns:Participant" />
-	<element name="volunteer" type="tns:Volunteer" />
-	<complexType name="Activity">
+	<element name="names" type="tns:NamesFixture" />
+	<complexType name="NamesFixture">
 		<sequence>
-			<element name="activityType" type="tns:ActivityType"
+			<element name="regions" minOccurs="1" maxOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="region" type="tns:RegionFixture" minOccurs="1"
+							maxOccurs="unbounded">
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="activityTypes" maxOccurs="1" minOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="activityType" type="tns:ActivityTypeFixture"
+							minOccurs="1" maxOccurs="unbounded">
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="transportTypes" maxOccurs="1" minOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="transportType" type="tns:TransportTypeFixture"
+							minOccurs="1" maxOccurs="unbounded">
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="periodicities" maxOccurs="1" minOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="periodicity" type="tns:PeriodicityFixture"
+							minOccurs="1" maxOccurs="unbounded">
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="contactTypes" maxOccurs="1" minOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="contactType" type="tns:ContactTypeFixture"
+							minOccurs="1" maxOccurs="unbounded">
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="sexes" maxOccurs="1" minOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="sex" type="tns:SexFixture" minOccurs="1"
+							maxOccurs="unbounded">
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="statuses" maxOccurs="1" minOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="status" type="tns:StatusFixture" minOccurs="1"
+							maxOccurs="unbounded">
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+	<complexType name="ActivityFixture">
+		<sequence>
+			<element name="activityType" type="tns:ActivityTypeFixture"
 				maxOccurs="1" minOccurs="0">
 			</element>
-			<element name="address" type="tns:Address" maxOccurs="1"
+			<element name="address" type="tns:AddressFixture" maxOccurs="1"
 				minOccurs="0">
 			</element>
 			<element name="startDateTime" type="dateTime" maxOccurs="1"
@@ -30,7 +95,7 @@
 			<element name="participations" maxOccurs="1" minOccurs="0">
 				<complexType>
 					<sequence>
-						<element name="participation" type="tns:Participation"
+						<element name="participation" type="tns:ParticipationFixture"
 							maxOccurs="unbounded" minOccurs="0">
 						</element>
 					</sequence>
@@ -39,7 +104,7 @@
 			<element name="volunteeredTimes" maxOccurs="1" minOccurs="0">
 				<complexType>
 					<sequence>
-						<element name="volunteeredTime" type="tns:VolunteeredTime"
+						<element name="volunteeredTime" type="tns:VolunteeredTimeFixture"
 							maxOccurs="unbounded" minOccurs="0">
 						</element>
 					</sequence>
@@ -47,38 +112,41 @@
 			</element>
 		</sequence>
 	</complexType>
-	<simpleType name="ActivityType">
+	<simpleType name="ActivityTypeFixture">
 		<restriction base="string"></restriction>
 	</simpleType>
-	<complexType name="Address"></complexType>
-	<complexType name="Participant">
+	<complexType name="AddressFixture"></complexType>
+	<complexType name="ParticipantFixture">
 		<sequence>
-			<element name="person" type="tns:Person"></element>
+			<element name="person" type="tns:PersonFixture"></element>
 		</sequence>
 	</complexType>
-	<complexType name="Volunteer">
+	<complexType name="VolunteerFixture">
 		<sequence>
-			<element name="person" type="tns:Person"></element>
-		</sequence>	
-	</complexType>
-	<complexType name="Person">
-		<sequence>
-			<element name="firstname" type="string" maxOccurs="1" minOccurs="1" nillable="false"></element>
-			<element name="surname" type="string" maxOccurs="1" minOccurs="1" nillable="false"></element>
-			<element name="dateOfBirth" type="date" maxOccurs="1" minOccurs="1" nillable="false"></element>
+			<element name="person" type="tns:PersonFixture"></element>
 		</sequence>
 	</complexType>
-	<complexType name="RecurringActivity">
+	<complexType name="PersonFixture">
+		<sequence>
+			<element name="firstname" type="string" maxOccurs="1"
+				minOccurs="1" nillable="false"></element>
+			<element name="surname" type="string" maxOccurs="1"
+				minOccurs="1" nillable="false"></element>
+			<element name="dateOfBirth" type="date" maxOccurs="1"
+				minOccurs="1" nillable="false"></element>
+		</sequence>
+	</complexType>
+	<complexType name="RecurringActivityFixture">
 		<complexContent>
-			<extension base="tns:Activity"></extension>
+			<extension base="tns:ActivityFixture"></extension>
 		</complexContent>
 	</complexType>
-	<complexType name="ActivityEvent">
+	<complexType name="ActivityEventFixture">
 		<complexContent>
-			<extension base="tns:Activity"></extension>
+			<extension base="tns:ActivityFixture"></extension>
 		</complexContent>
 	</complexType>
-	<simpleType name="Periodicity">
+	<simpleType name="PeriodicityFixture">
 		<restriction base="string">
 			<enumeration value="WEEKLY"></enumeration>
 			<enumeration value="FORTNIGHTLY"></enumeration>
@@ -87,22 +155,22 @@
 		</restriction>
 	</simpleType>
 
-	<complexType name="AttendanceList"></complexType>
+	<complexType name="AttendanceListFixture"></complexType>
 
-	<complexType name="Attend"></complexType>
+	<complexType name="AttendFixture"></complexType>
 
-	<complexType name="CalendarDayCallSchedule"></complexType>
+	<complexType name="CalendarDayCallScheduleFixture"></complexType>
 
-	<complexType name="ScheduledCall"></complexType>
+	<complexType name="ScheduledCallFixture"></complexType>
 
-	<simpleType name="Sex">
+	<simpleType name="SexFixture">
 		<restriction base="string">
 			<enumeration value="MALE"></enumeration>
 			<enumeration value="FEMALE"></enumeration>
 		</restriction>
 	</simpleType>
 
-	<simpleType name="Status">
+	<simpleType name="StatusFixture">
 		<restriction base="string">
 			<enumeration value="ACTIVE"></enumeration>
 			<enumeration value="INACTIVE"></enumeration>
@@ -111,109 +179,42 @@
 		</restriction>
 	</simpleType>
 
-	<simpleType name="Region">
+	<simpleType name="RegionFixture">
 		<restriction base="string"></restriction>
 	</simpleType>
 
-	<simpleType name="TransportType">
+	<simpleType name="TransportTypeFixture">
 		<restriction base="string"></restriction>
 	</simpleType>
 
-	<simpleType name="ContactType">
+	<simpleType name="ContactTypeFixture">
 		<restriction base="string"></restriction>
 	</simpleType>
 
-	<simpleType name="Note">
+	<simpleType name="NoteFixture">
 		<restriction base="string"></restriction>
 	</simpleType>
 
-	<complexType name="Participation">
+	<complexType name="ParticipationFixture">
 		<sequence>
-			<element name="person" type="tns:Person" maxOccurs="1" minOccurs="1"></element>
+			<element name="person" type="tns:PersonFixture" maxOccurs="1"
+				minOccurs="1"></element>
 		</sequence>
 	</complexType>
 
-	<complexType name="VolunteeredTime"></complexType>
+	<complexType name="VolunteeredTimeFixture"></complexType>
 
-	<complexType name="VolunteeredTimeForActivity">
+	<complexType name="VolunteeredTimeForActivityFixture">
 		<complexContent>
-			<extension base="tns:VolunteeredTime"></extension>
+			<extension base="tns:VolunteeredTimeFixture"></extension>
 		</complexContent>
 	</complexType>
 
-	<complexType name="VolunteeredTimeForCalls">
+	<complexType name="VolunteeredTimeForCallsFixture">
 		<complexContent>
-			<extension base="tns:VolunteeredTime"></extension>
+			<extension base="tns:VolunteeredTimeFixture"></extension>
 		</complexContent>
 	</complexType>
 
-	<element name="names">
-		<complexType>
-			<sequence>
-				<element name="regions" minOccurs="1" maxOccurs="1">
-					<complexType>
-						<sequence>
-							<element name="region" type="tns:Region" minOccurs="1"
-								maxOccurs="unbounded">
-							</element>
-						</sequence>
-					</complexType>
-				</element>
-				<element name="activityTypes" maxOccurs="1" minOccurs="1">
-					<complexType>
-						<sequence>
-							<element name="activityType" type="tns:ActivityType" minOccurs="1"
-								maxOccurs="unbounded">
-							</element>
-						</sequence>
-					</complexType>
-				</element>
-				<element name="transportTypes" maxOccurs="1" minOccurs="1">
-					<complexType>
-						<sequence>
-							<element name="transportType" type="tns:TransportType"
-								minOccurs="1" maxOccurs="unbounded">
-							</element>
-						</sequence>
-					</complexType>
-				</element>
-				<element name="periodicities" maxOccurs="1" minOccurs="1">
-					<complexType>
-						<sequence>
-							<element name="periodicity" type="tns:Periodicity"
-								minOccurs="1" maxOccurs="unbounded">
-							</element>
-						</sequence>
-					</complexType>
-				</element>
-				<element name="contactTypes" maxOccurs="1" minOccurs="1">
-					<complexType>
-						<sequence>
-							<element name="contactType" type="tns:ContactType"
-								minOccurs="1" maxOccurs="unbounded">
-							</element>
-						</sequence>
-					</complexType>
-				</element>
-				<element name="sexes" maxOccurs="1" minOccurs="1">
-					<complexType>
-						<sequence>
-							<element name="sex" type="tns:Sex" minOccurs="1"
-								maxOccurs="unbounded">
-							</element>
-						</sequence>
-					</complexType>
-				</element>
-				<element name="statuses" maxOccurs="1" minOccurs="1">
-					<complexType>
-						<sequence>
-							<element name="status" type="tns:Status" minOccurs="1"
-								maxOccurs="unbounded">
-							</element>
-						</sequence>
-					</complexType>
-				</element>
-			</sequence>
-		</complexType>
-	</element>
+
 </schema>

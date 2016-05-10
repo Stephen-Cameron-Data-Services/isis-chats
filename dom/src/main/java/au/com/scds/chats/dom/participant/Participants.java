@@ -37,6 +37,7 @@ import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.activity.Activity;
@@ -64,42 +65,68 @@ public class Participants {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	@SuppressWarnings("all")
-	public List<Participant> listActive(AgeGroup ageClass) {
-		return container.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.ACTIVE));
+	public List<Participant> listActive(@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageClass) {
+		switch (ageClass) {
+		case All:
+			return container.allMatches(
+					new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.ACTIVE));
+		case Under_Sixty_Five:
+			DateTime upperLimit = DateTime.now().withTimeAtStartOfDay().minusYears(65);
+			return container.allMatches(new QueryDefault<>(Participant.class,
+					"listParticipantsByStatusAndBirthdateBelow", 
+					"status", Status.ACTIVE, 
+					"upperLimit", upperLimit));
+		case Sixty_Five_and_Over:
+			DateTime lowerLimit = DateTime.now().withTimeAtStartOfDay().minusYears(65);
+			return container.allMatches(new QueryDefault<>(Participant.class,
+					"listParticipantsByStatusAndBirthdateAbove", 
+					"status", Status.ACTIVE, 
+					"lowerLimit", lowerLimit));
+		}
+		return null;
 		/*
 		 * TODO replace all queries with typesafe final QParticipant p =
 		 * QParticipant.candidate(); return
 		 * isisJdoSupport.executeQuery(Participant.class,
 		 * p.status.eq(Status.ACTIVE));
 		 */
+
 	}
 	
+	public AgeGroup default0ListActive(){
+		return AgeGroup.All;
+	}
+
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
 	public List<Participant> listInactive() {
-		return container.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.INACTIVE));
+		return container.allMatches(
+				new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.INACTIVE));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "3")
 	public List<Participant> listToExit() {
-		return container.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.TO_EXIT));
+		return container.allMatches(
+				new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.TO_EXIT));
 	}
-	
+
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "3")
 	public List<Participant> listExited() {
-		return container.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.EXITED));
+		return container
+				.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.EXITED));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "4")
 	public List<Participant> findBySurname(@ParameterLayout(named = "Surname") final String surname) {
-		return container.allMatches(new QueryDefault<>(Participant.class, "findParticipantsBySurname", "surname", surname));
+		return container
+				.allMatches(new QueryDefault<>(Participant.class, "findParticipantsBySurname", "surname", surname));
 	}
 
 	@MemberOrder(sequence = "5")
@@ -112,15 +139,19 @@ public class Participants {
 	@Programmatic
 	public Participant newParticipant(final String firstname, final String surname, final LocalDate dob) {
 		// check of existing Participant
-		List<Participant> participants = container.allMatches(new QueryDefault<>(Participant.class, "findParticipantsBySurname", "surname", surname));
+		List<Participant> participants = container
+				.allMatches(new QueryDefault<>(Participant.class, "findParticipantsBySurname", "surname", surname));
 		for (Participant participant : participants) {
-			if (participant.getPerson().getFirstname().equalsIgnoreCase(firstname) && participant.getPerson().getBirthdate().equals(dob)) {
-				container.informUser("An existing Participant with same first-name, surname and date-of-birth properties has been found");
+			if (participant.getPerson().getFirstname().equalsIgnoreCase(firstname)
+					&& participant.getPerson().getBirthdate().equals(dob)) {
+				container.informUser(
+						"An existing Participant with same first-name, surname and date-of-birth properties has been found");
 				return participant;
 			}
 		}
 		// check if existing Person
-		List<Person> persons = container.allMatches(new QueryDefault<>(Person.class, "findPersonsBySurname", "surname", surname));
+		List<Person> persons = container
+				.allMatches(new QueryDefault<>(Person.class, "findPersonsBySurname", "surname", surname));
 		Person person = null;
 		for (Person p : persons) {
 			if (p.getFirstname().equalsIgnoreCase(firstname) && p.getBirthdate().equals(dob)) {
@@ -146,7 +177,8 @@ public class Participants {
 	}
 
 	@Programmatic
-	public Participant newParticipant(final String fullName, final String preferredName, final String mobilePhoneNumber, final String homePhoneNumber, final String email, final LocalDate dob) {
+	public Participant newParticipant(final String fullName, final String preferredName, final String mobilePhoneNumber,
+			final String homePhoneNumber, final String email, final LocalDate dob) {
 
 		final Participant p = container.newTransientInstance(Participant.class);
 		/*
@@ -182,7 +214,7 @@ public class Participants {
 		container.flush();
 		return participation;
 	}
-	
+
 	@Programmatic
 	public Participation createParticipation(Activity activity, Participant participant, Region region) {
 		Participation participation = container.newTransientInstance(Participation.class);
@@ -239,7 +271,7 @@ public class Participants {
 		container.flush();
 		return;
 	}
-	
+
 	@Programmatic
 	public void createParticipantNotes(Participant participant) {
 		if (participant == null || participant.getNotes() != null)
@@ -257,6 +289,5 @@ public class Participants {
 
 	@Inject
 	private IsisJdoSupport isisJdoSupport;
-
 
 }

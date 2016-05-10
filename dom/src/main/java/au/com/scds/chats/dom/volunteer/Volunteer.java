@@ -52,6 +52,7 @@ import au.com.scds.chats.dom.call.CallSchedules;
 import au.com.scds.chats.dom.call.ScheduledCall;
 import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Status;
+import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 
@@ -95,7 +96,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements /*Notable,*/
 	}
 
 	public List<Participant> choices0AddScheduledCall() {
-		List<Participant> list = participantsRepo.listActive();
+		List<Participant> list = participantsRepo.listActive(AgeGroup.All);
 		return list;
 	}
 

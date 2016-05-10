@@ -40,6 +40,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
 import au.com.scds.chats.dom.general.names.Region;
+import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
@@ -91,7 +92,7 @@ public class CallSchedules {
 	}
 
 	public List<Participant> choices0ListCallsToActiveParticipant(){
-		return participants.listActive();
+		return participants.listActive(AgeGroup.All);
 	}
 	
 	@Action(semantics = SemanticsOf.SAFE)

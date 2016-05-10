@@ -57,6 +57,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
+import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
@@ -203,7 +204,7 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	}
 	
 	public List<Participant> choices0AddNewCall() {
-		return participantsRepo.listActive();
+		return participantsRepo.listActive(AgeGroup.All);
 	}
 
 	public DateTime default1AddNewCall() {

@@ -50,6 +50,7 @@ import au.com.scds.chats.dom.volunteer.Volunteer;
  * @author stevec
  */
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
+@Discriminator(value = "SCHEDULED")
 @Queries({
 		@Query(name = "find", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.call.ScheduledCall "),
 		@Query(name = "findScheduledCallsByVolunteer", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.call.ScheduledCall WHERE volunteer == :volunteer "),
@@ -61,15 +62,12 @@ import au.com.scds.chats.dom.volunteer.Volunteer;
 @DomainObject(objectType = "SCHEDULED_CALL")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
-public class ScheduledCall extends AbstractChatsDomainEntity implements Comparable<ScheduledCall> /*, Notable */ {
+public class ScheduledCall extends Call implements Comparable<ScheduledCall> , Notable {
 
-	private Participant participant;
 	private Volunteer allocatedVolunteer;
 	private CalendarDayCallSchedule callSchedule;
 	private DateTime scheduledDateTime;
 	private Boolean isCompleted = false;
-	private DateTime startDateTime;
-	private DateTime endDateTime;
 
 	private static DecimalFormat hoursFormat = new DecimalFormat("#,##0.00");
 
@@ -82,18 +80,6 @@ public class ScheduledCall extends AbstractChatsDomainEntity implements Comparab
 
 	public String title() {
 		return "Call to: " + getParticipant().getFullName();
-	}
-
-	@Property(hidden = Where.REFERENCES_PARENT)
-	@PropertyLayout()
-	@MemberOrder(sequence = "1")
-	@Column(allowsNull = "true")
-	public Participant getParticipant() {
-		return participant;
-	}
-
-	void setParticipant(final Participant participant) {
-		this.participant = participant;
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
@@ -157,30 +143,6 @@ public class ScheduledCall extends AbstractChatsDomainEntity implements Comparab
 			}
 		} else
 			setIsCompleted(isCompleted);
-	}
-
-	@Property(editing = Editing.DISABLED, editingDisabledReason = "Use 'Start Call' to set")
-	@PropertyLayout(hidden = Where.PARENTED_TABLES)
-	@MemberOrder(sequence = "4")
-	@Column(allowsNull = "true")
-	public DateTime getStartDateTime() {
-		return startDateTime;
-	}
-
-	public void setStartDateTime(final DateTime startDateTime) {
-		this.startDateTime = startDateTime;
-	}
-
-	@Property(editing = Editing.DISABLED, editingDisabledReason = "Use 'End Call' to set")
-	@PropertyLayout(hidden = Where.PARENTED_TABLES)
-	@MemberOrder(sequence = "5")
-	@Column(allowsNull = "true")
-	public DateTime getEndDateTime() {
-		return endDateTime;
-	}
-
-	public void setEndDateTime(final DateTime endDateTime) {
-		this.endDateTime = endDateTime;
 	}
 
 	@Property(editing = Editing.DISABLED, notPersisted = true)

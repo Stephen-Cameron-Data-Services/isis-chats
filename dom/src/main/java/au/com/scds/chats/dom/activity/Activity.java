@@ -48,6 +48,7 @@ import au.com.scds.chats.dom.general.names.ActivityType;
 import au.com.scds.chats.dom.general.names.ActivityTypes;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
+import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.participant.Participation;
@@ -413,7 +414,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	}
 
 	public List<Participant> choices0AddParticipant() {
-		return participantsRepo.listActive();
+		return participantsRepo.listActive(AgeGroup.All);
 	}
 
 	public List<Participant> choices0RemoveParticipant() {

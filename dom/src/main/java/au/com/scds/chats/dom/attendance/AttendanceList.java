@@ -34,6 +34,7 @@ import org.apache.isis.applib.annotation.*;
 import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.activity.ActivityEvent;
+import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.participant.Participation;
@@ -128,7 +129,7 @@ public class AttendanceList {
 	}
 
 	public List<Participant> choices0AddAttended() {
-		List<Participant> list = participantsRepo.listActive();
+		List<Participant> list = participantsRepo.listActive(AgeGroup.All);
 		List<Participant> temp = new ArrayList<>(list);
 		for (Participant participant : list) {
 			for (Attend attendee : getAttendeds()) {

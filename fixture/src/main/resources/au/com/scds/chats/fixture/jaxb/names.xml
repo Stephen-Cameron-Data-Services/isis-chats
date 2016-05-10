@@ -4,6 +4,7 @@
     <tns:region>NORTH</tns:region>
     <tns:region>SOUTH</tns:region>
     <tns:region>NORTH-WEST</tns:region>
+    <tns:region>STATEWIDE</tns:region>
   </tns:regions>
   <tns:activityTypes>
     <tns:activityType>Luncheon</tns:activityType>

@@ -51,14 +51,14 @@ import org.joda.time.LocalDate;
 						+ "SELECT  "
 						+ "  EXTRACT(YEAR_MONTH FROM calendardaycallschedule.calendardate) AS callScheduleYearMonth,  "
 						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime))/60,1) AS hoursVolunteered,  "
-						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,scheduledcall.startdatetime,scheduledcall.enddatetime))/60,1) AS hoursOnCalls  "
+						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime))/60,1) AS hoursOnCalls  "
 						+ "FROM  "
 						+ "  calendardaycallschedule, "
 						+ "  volunteeredtime, "
-						+ "  scheduledcall "
+						+ "  telephonecall "
 						+ "WHERE  "
 						+ "  volunteeredtime.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id AND "
-						+ "  scheduledcall.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id "
+						+ "  telephonecall.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id "
 						+ "GROUP BY  "
 						+ "  EXTRACT(YEAR_MONTH FROM calendardaycallschedule.calendardate);") })
 @Queries({

@@ -32,6 +32,7 @@ import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.query.QueryDefault;
 
 import au.com.scds.chats.dom.general.Person;
+import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.report.view.InactiveParticipant;
@@ -50,7 +51,7 @@ public class InactiveParticipantsByMonthsInactive {
 	}
 	
 	public List<Participant> choices0FindParticipantActivity(){
-		return participantsRepo.listActive();
+		return participantsRepo.listActive(AgeGroup.All);
 	}
 	
 	@Inject

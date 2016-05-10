@@ -31,6 +31,7 @@ import com.google.common.collect.ImmutableMap;
 
 import au.com.scds.chats.dom.DomainAppDomainModule;
 // import au.com.scds.chats.fixture.DomainAppFixtureModule;
+import au.com.scds.chats.fixture.DomainAppFixtureModule;
 
 /**
  * Bootstrap the application.
@@ -44,7 +45,7 @@ public class DomainAppAppManifest implements AppManifest {
     public List<Class<?>> getModules() {
         return Arrays.asList(
                 DomainAppDomainModule.class,  // domain (entities and repositories)
-                // DomainAppFixtureModule.class, // fixtures
+                DomainAppFixtureModule.class, // fixtures
                 DomainAppAppModule.class,     // home page service etc
                 org.isisaddons.module.security.SecurityModule.class,         // security 
                 org.isisaddons.wicket.gmap3.cpt.service.Gmap3ServiceModule.class, //Google Gmap Geocoding Service
