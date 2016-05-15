@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package au.com.scds.chats.dom.general.names;
+package au.com.scds.chats.dom.general;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +41,9 @@ public class Suburbs {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
-	public List<Suburb> createSuburb(final @ParameterLayout(named = "Activity Type Name") String name, Integer postcode) {
+	public Suburb createSuburb(final @ParameterLayout(named = "Activity Type Name") String name, Integer postcode) {
 		final Suburb obj = create(name, postcode);
-		return listAllSuburbs();
+		return obj;
 	}
 
 	@Programmatic

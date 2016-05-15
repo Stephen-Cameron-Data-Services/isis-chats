@@ -1,0 +1,1 @@
+xjc -d D:/temp/isis-chats/fixture/src/main/java/ ChatsFixtures.xsd

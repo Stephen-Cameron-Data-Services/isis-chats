@@ -67,9 +67,9 @@ public class ActivitiesTest {
             //assertThat(obj.getLocation()).isNull();
             //assertThat(obj.getLocationName()).isNull();
             assertThat(obj.getDescription()).isNull();
-            assertThat(obj.getIsRestricted()).isNull();
+            //assertThat(obj.getIsRestricted()).isNull();
             assertThat(obj.getCostForParticipant()).isNull();
-            assertThat(obj.getScheduleId()).isNull();
+            //assertThat(obj.getScheduleId()).isNull();
             assertThat(obj.getApproximateEndDateTime()).isNull();
             assertThat(obj.getStartDateTime()).isEqualTo(dateTime);
         }

@@ -34,6 +34,7 @@ import org.apache.isis.applib.annotation.*;
 import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.activity.ActivityEvent;
+import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
@@ -59,10 +60,11 @@ public class AttendanceList {
 
 	private ActivityEvent parentActivity;
 	private List<Attend> attendeds = new ArrayList<>();
-	
-	public AttendanceList(){}
 
-	//used for testing only
+	public AttendanceList() {
+	}
+
+	// used for testing only
 	public AttendanceList(AttendanceLists attendanceListsRepo, Participants participantsRepo) {
 		this.attendanceListsRepo = attendanceListsRepo;
 		this.participantsRepo = participantsRepo;
@@ -143,9 +145,11 @@ public class AttendanceList {
 	@Action
 	@ActionLayout(named = "Add New")
 	@MemberOrder(name = "attendeds", sequence = "3")
-	public AttendanceList addNewParticipantAndAttended(final @ParameterLayout(named = "First name") String firstname, final @ParameterLayout(named = "Family name") String surname,
-			final @ParameterLayout(named = "Date of Birth") LocalDate dob) {
-		Participant p = participantsRepo.newParticipant(firstname, surname, dob);
+	public AttendanceList addNewParticipantAndAttended(final @ParameterLayout(named = "First name") String firstname,
+			final @ParameterLayout(named = "Family name") String surname,
+			final @ParameterLayout(named = "Date of Birth") LocalDate dob,
+			final @ParameterLayout(named = "Sex") Sex sex) {
+		Participant p = participantsRepo.newParticipant(firstname, surname, dob, sex);
 		addAttended(p);
 		return this;
 	}

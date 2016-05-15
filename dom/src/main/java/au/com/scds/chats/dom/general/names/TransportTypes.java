@@ -42,9 +42,9 @@ public class TransportTypes {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
-	public List<TransportType> createTransportType(final @ParameterLayout(named = "Transport Type Name") String name) {
+	public TransportType createTransportType(final @ParameterLayout(named = "Transport Type Name") String name) {
 		final TransportType obj = create(name);
-		return listAllTransportTypes();
+		return obj;
 	}
 
 	@Programmatic

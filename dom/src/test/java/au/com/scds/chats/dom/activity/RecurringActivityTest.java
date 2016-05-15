@@ -282,24 +282,24 @@ public class RecurringActivityTest {
 			assertThat(parent.getCostForParticipant()).isNull(); 
 			assertThat(parent.getDescription()).isNull(); 
 			//assertThat(parent.getAddressLocationName()).isNull(); 
-			assertThat(parent.getIsRestricted()).isNull(); 
-			assertThat(parent.getScheduleId()).isNull();
+			//assertThat(parent.getIsRestricted()).isNull(); 
+			//assertThat(parent.getScheduleId()).isNull();
 			
 			assertThat(event1.getActivityType()).isNull(); 
 			//assertThat(event1.getApproximateEndDateTime()).isNull(); 
 			assertThat(event1.getCostForParticipant()).isNull(); 
 			assertThat(event1.getDescription()).isNull(); 
 			//assertThat(event1.getAddressLocationName()).isNull(); 
-			assertThat(event1.getIsRestricted()).isNull(); 
-			assertThat(event1.getScheduleId()).isNull(); 
+			//assertThat(event1.getIsRestricted()).isNull(); 
+			//assertThat(event1.getScheduleId()).isNull(); 
 			
 			assertThat(event2.getActivityType()).isNull(); 			
 			//assertThat(event2.getApproximateEndDateTime()).isNull(); 
 			assertThat(event2.getCostForParticipant()).isNull(); 
 			assertThat(event2.getDescription()).isNull(); 
 			//assertThat(event2.getAddressLocationName()).isNull(); 
-			assertThat(event2.getIsRestricted()).isNull(); 
-			assertThat(event2.getScheduleId()).isNull();
+			//assertThat(event2.getIsRestricted()).isNull(); 
+			//assertThat(event2.getScheduleId()).isNull();
 			
 			//// ActivityType
 			parent.setActivityType(new ActivityType("TEST1"));

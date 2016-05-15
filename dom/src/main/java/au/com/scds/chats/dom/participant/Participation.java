@@ -84,7 +84,7 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 		}
 	}
 
-	@Property()
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Created from Parent Activity")
 	@PropertyLayout(hidden = Where.REFERENCES_PARENT)
 	@MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
@@ -109,7 +109,7 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 		this.oldId = id;
 	}
 
-	@Property()
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Created from Parent Activity")
 	@PropertyLayout(hidden = Where.REFERENCES_PARENT)
 	@MemberOrder(sequence = "3")
 	@Column(allowsNull = "false")
@@ -243,9 +243,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 		// TODO needs more
 		// return ObjectContracts.compare(o, this,"activity","participant");
 
-		return ComparisonChain.start().compare(getActivity(),
-				o.getActivity()).compare(getParticipant(),
-				o.getParticipant()).result();
+		return ComparisonChain.start().compare(getActivity(), o.getActivity())
+				.compare(getParticipant(), o.getParticipant()).result();
 		// return getParticipant().compareTo(o.getParticipant());
 	}
 

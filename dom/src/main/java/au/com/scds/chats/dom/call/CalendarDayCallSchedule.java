@@ -94,7 +94,7 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	}
 
 	// for mock testing
-	public CalendarDayCallSchedule(DomainObjectContainer container, CallSchedules schedules, Participants participants, Volunteers volunteers) {
+	public CalendarDayCallSchedule(DomainObjectContainer container, Calls schedules, Participants participants, Volunteers volunteers) {
 		this.container = container;
 		this.callScheduler = schedules;
 		this.participantsRepo = participants;
@@ -279,7 +279,7 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	}
 
 	@Inject()
-	CallSchedules callScheduler;
+	Calls callScheduler;
 
 	@Inject()
 	DomainObjectContainer container;

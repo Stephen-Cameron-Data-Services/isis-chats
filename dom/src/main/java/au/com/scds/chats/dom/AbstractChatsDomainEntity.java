@@ -152,7 +152,8 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 					System.out.println("Error: user tenancy not found");
 				}
 			} else {
-				System.out.println("Error: userRepository is null");
+				System.out.println("Error: userRepository is null, setting region to TEST");
+				setRegion(regions.regionForName("TEST"));
 			}
 		} else {
 			setLastModifiedBy(updatedBy);
@@ -170,7 +171,7 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 	@Programmatic
 	public ApplicationTenancy getApplicationTenancy() {
 		ApplicationTenancy tenancy = new ApplicationTenancy();
-		if (getRegion().getName().equals("STATEWIDE"))
+		if (getRegion().getName().equals("STATEWIDE") || getRegion().getName().equals("TEST"))
 			tenancy.setPath("/");
 		else {
 			tenancy.setPath("/" + getRegion().getName() + "_");

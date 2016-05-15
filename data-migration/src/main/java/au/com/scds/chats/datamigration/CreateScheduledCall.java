@@ -14,7 +14,7 @@ import au.com.scds.chats.dom.activity.ActivityEvent;
 import au.com.scds.chats.dom.attendance.AttendanceList;
 import au.com.scds.chats.dom.attendance.AttendanceLists;
 import au.com.scds.chats.dom.attendance.Attend;
-import au.com.scds.chats.dom.call.CallSchedules;
+import au.com.scds.chats.dom.call.Calls;
 import au.com.scds.chats.dom.call.ScheduledCall;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
@@ -51,7 +51,7 @@ public class CreateScheduledCall extends IntegrationTestAbstract {
 	DomainObjectContainer container;
 
 	@Inject
-	CallSchedules schedules;
+	Calls schedules;
 
 	@Inject
 	Volunteers volunteers;

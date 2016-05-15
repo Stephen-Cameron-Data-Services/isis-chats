@@ -44,7 +44,7 @@ public class Persons {
 	public Persons(){}
 	
 	//for testing only
-	public Persons(DomainObjectContainer mockContainer) {
+	public Persons(DomainObjectContainer container) {
 		this.container = container;
 	}
 
@@ -65,14 +65,23 @@ public class Persons {
 	}
 	
 	@Programmatic
-	public Person createPerson(String firstname, String surname, LocalDate dob, Region region) {
+	public Person createPerson(String firstname, String surname, LocalDate dob, Sex sex) throws Exception{
+
+		if (firstname == null || firstname.trim().equals(""))
+			throw new Exception("firstname is not set!");
+		if (surname == null || surname.trim().equals(""))
+			throw new Exception("surname is not set!");
+		if (dob == null)
+			throw new Exception("birthdate is not set!");
+		if (sex == null)
+			throw new Exception("sex is not set!");
+		
 		Person person = container.newTransientInstance(Person.class);
 		person.setFirstname(firstname);
 		person.setSurname(surname);
-		if(dob == null)
-			dob = new LocalDate("1900-01-01");
 		person.setBirthdate(dob);
-		person.setRegion(region);
+		person.setSex(sex);
+		person.buildSlk();
 		container.persistIfNotAlready(person);
 		container.flush();
 		return person;

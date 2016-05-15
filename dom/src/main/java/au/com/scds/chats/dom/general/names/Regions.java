@@ -40,12 +40,12 @@ public class Regions {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
-	public List<Region> createRegion(final @ParameterLayout(named = "Region Name") String name) {
+	public Region createRegion(final @ParameterLayout(named = "Region Name") String name) {
 		final Region obj = container.newTransientInstance(Region.class);
 		obj.setName(name);
 		container.persistIfNotAlready(obj);
 		container.flush();
-		return listAllRegions();
+		return obj;
 	}
 
 	@Programmatic

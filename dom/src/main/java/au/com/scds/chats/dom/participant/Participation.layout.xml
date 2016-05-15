@@ -6,59 +6,38 @@
 	<row>
 		<col span="12" unreferencedActions="true">
 			<ns2:domainObject />
+			<ns2:action id="clearHints" position="RIGHT"/>
 		</col>
 	</row>
 	<row>
-		<col span="12">
+		<col span="12" unreferencedCollections="true">
 			<tabGroup>
 				<tab name="General">
 					<row>
 						<col span="6">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
-								<ns2:property id="salutationName" />
-								<ns2:property id="firstname" />
-								<ns2:property id="preferredname" />
-								<ns2:property id="middlename" />
-								<ns2:property id="surname" />
-								<ns2:property id="birthdate" />
-								<ns2:property id="sex" />
-								<ns2:property id="slk" />								
-								<ns2:property id="englishSkill" />
-								<ns2:property id="contactTypeName" />
-
+								<ns2:property id="activity" />
+								<ns2:property id="participant" />								
+								<ns2:property id="roleId" hidden="EVERYWHERE"/>
+								<ns2:property id="oldId" hidden="EVERYWHERE"/>
+								<ns2:property id="arrivingTransportType" hidden="EVERYWHERE"/>
+								<ns2:property id="arrivingTransportTypeName" />
+								<ns2:property id="pickupTime" />
+								<ns2:property id="departingTransportType" hidden="EVERYWHERE"/>
+								<ns2:property id="departingTransportTypeName" />
+								<ns2:property id="dropoffTime" />
+								<ns2:property id="transportTime" />
+								<ns2:property id="transportNotes" />
 							</ns2:fieldSet>
 						</col>
 						<col span="12" unreferencedCollections="true" />
 					</row>
 				</tab>
-				<tab name="Contact">
-					<row>
-						<col span="6">
-							<ns2:fieldSet name="Contact" id="contactDetails">
-								<ns2:property id="homePhoneNumber" />
-								<ns2:property id="mobilePhoneNumber" />
-								<ns2:property id="emailAddress" />
-								<ns2:property id="fixedPhoneNumber" />
-								<ns2:property id="faxNumber" />
-							</ns2:fieldSet>
-						</col>
-						<col span="6">
-							<ns2:fieldSet name="Address" id="addressDetails">
-								<ns2:property id="streetAddress" />
-								<ns2:property id="mailAddress" />
-								<ns2:property id="location" />
-								<ns2:action id="updateStreetAddress" />
-								<ns2:action id="updateMailAddress" />
-							</ns2:fieldSet>
-						</col>
-					</row>
-				</tab>
 				<tab name="Other">
 					<row>
 						<col span="4">
-							<ns2:fieldSet name="Admin" id="admin">
-								<ns2:property id="oldId" />
+							<ns2:fieldSet name="Admin" id="other">
 								<ns2:property id="datanucleusIdLong" />
 								<ns2:property id="datanucleusVersionLong" />
 								<ns2:property id="datanucleusVersionTimestamp" />
@@ -66,8 +45,8 @@
 								<ns2:property id="createdOn" />
 								<ns2:property id="lastModifiedBy" />
 								<ns2:property id="lastModifiedOn" />
-								<ns2:property id="regionName" />								
-								<ns2:property id="region" />
+								<ns2:property id="region" hidden="EVERYWHERE" />
+								<ns2:property id="regionName" />
 							</ns2:fieldSet>
 						</col>
 					</row>

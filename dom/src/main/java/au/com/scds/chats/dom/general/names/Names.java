@@ -21,6 +21,8 @@ import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.annotation.ViewModel;
 import org.apache.isis.applib.query.QueryDefault;
 
+import au.com.scds.chats.dom.general.Suburb;
+import au.com.scds.chats.dom.general.Suburbs;
 import au.com.scds.chats.dom.volunteer.VolunteerRole;
 import au.com.scds.chats.dom.volunteer.VolunteerRoles;
 

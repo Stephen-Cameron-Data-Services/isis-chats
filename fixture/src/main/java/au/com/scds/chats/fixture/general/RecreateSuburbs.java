@@ -9,35 +9,33 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.isis.applib.fixturescripts.FixtureScript;
+
+import au.com.scds.chats.dom.general.Suburbs;
 import au.com.scds.chats.dom.general.names.Names;
 import au.com.scds.chats.fixture.jaxb.generated.NamesFixture;
 import au.com.scds.chats.fixture.jaxb.generated.ObjectFactory;
+import au.com.scds.chats.fixture.jaxb.generated.SuburbsFixture;
 
-public class RecreateNames extends FixtureScript {
+
+public class RecreateSuburbs extends FixtureScript {
 	
-    public RecreateNames() {
+    public RecreateSuburbs() {
         withDiscoverability(Discoverability.DISCOVERABLE);
     }
     
 	@Override
 	protected void execute(ExecutionContext ec) {
 
-		Names names = new Names();
+		Suburbs suburbs = new Suburbs();
 		
 		try {
-			InputStream is = NamesFixture.class.getResourceAsStream("/au/com/scds/chats/fixture/jaxb/names.xml");
+			InputStream is = NamesFixture.class.getResourceAsStream("/au/com/scds/chats/fixture/jaxb/suburbs.xml");
 			JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			NamesFixture fixture = ((JAXBElement<NamesFixture>) jaxbUnmarshaller.unmarshal(is)).getValue();
-			for(String region: fixture.getRegions().getRegion())
-				wrap(names).createRegion(region);
-			for(String type: fixture.getActivityTypes().getActivityType())
-				wrap(names).createActivityType(type);
-			for(String type: fixture.getTransportTypes().getTransportType())
-				wrap(names).createTransportType(type);
-			//for(PeriodicityFixture periodicity: fixture.getPeriodicities().getPeriodicity())
-				//System.out.println(periodicity.value());			
-			ec.addResult(this, names);
+			SuburbsFixture fixture = ((JAXBElement<SuburbsFixture>) jaxbUnmarshaller.unmarshal(is)).getValue();
+			for(SuburbsFixture.Suburb suburb: fixture.getSuburb())
+				wrap(suburbs).createSuburb(suburb.getName(),suburb.getPostcode());			
+			ec.addResult(this, suburbs.listAllSuburbs());
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}

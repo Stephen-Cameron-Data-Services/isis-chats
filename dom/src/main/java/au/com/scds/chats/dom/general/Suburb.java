@@ -16,39 +16,51 @@
 *  specific language governing permissions and limitations
 *  under the License.
 */
-package au.com.scds.chats.dom.general.names;
+package au.com.scds.chats.dom.general;
 
 import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.PropertyLayout;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
+import au.com.scds.chats.dom.general.names.ClassificationValue;
+
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@Unique(name = "Suburb_UNQ", members = { "name", "postcode" })
 @Queries({
 		@Query(name = "findSuburbByName", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.general.names.Suburb " + "WHERE name == :name"),
+				+ "FROM au.com.scds.chats.dom.general.Suburb " + "WHERE name == :name"),
 		@Query(name = "findSuburbNamesLike", language = "JDOQL", value = "SELECT name "
-				+ "FROM au.com.scds.chats.dom.general.names.Suburb " + "WHERE name.startsWith(:name)"),
+				+ "FROM au.com.scds.chats.dom.general.Suburb " + "WHERE name.startsWith(:name)"),
 		@Query(name = "findAllSuburbs", language = "JDOQL", value = "SELECT "
-				+ "FROM  au.com.scds.chats.dom.general.names.Suburb " + "ORDER BY name") })
-public class Suburb extends ClassificationValue {
+				+ "FROM  au.com.scds.chats.dom.general.Suburb " + "ORDER BY name") })
 
+public class Suburb {
+
+	private String name;
 	private Integer postcode;
 
 	public Suburb() {
-		super();
 	}
 
 	// use for testing only
-	public Suburb(String name) {
-		super(name);
+	public Suburb(String name, Integer postcode) {
+		this.name = name;
+	}
+	
+	public String title(){
+		return getName() + " (" + getPostcode() + ")";
 	}
 
 	@PropertyLayout(named = "Suburb")
 	@MemberOrder(sequence = "1")
-	@Override
+	@Column(allowsNull="false")
 	public String getName() {
-		return super.getName();
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@MemberOrder(sequence = "2")

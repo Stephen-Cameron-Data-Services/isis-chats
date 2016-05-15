@@ -50,12 +50,12 @@ public class ContactTypes {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
-	public List<ContactType> createContactType(final @ParameterLayout(named = "ContactType Name") String name) {
+	public ContactType createContactType(final @ParameterLayout(named = "ContactType Name") String name) {
 		final ContactType obj = container.newTransientInstance(ContactType.class);
 		obj.setName(name);
 		container.persistIfNotAlready(obj);
 		container.flush();
-		return listAllContactTypes();
+		return obj;
 	}
 
 	@Programmatic

@@ -48,7 +48,7 @@ import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.call.CalendarDayCallSchedule;
-import au.com.scds.chats.dom.call.CallSchedules;
+import au.com.scds.chats.dom.call.Calls;
 import au.com.scds.chats.dom.call.ScheduledCall;
 import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Status;
@@ -212,7 +212,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements /*Notable,*/
 	protected Volunteers volunteers;
 	
 	@Inject
-	protected CallSchedules schedulesRepo;
+	protected Calls schedulesRepo;
 
 	@Inject
 	protected Participants participantsRepo;

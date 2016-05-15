@@ -42,6 +42,8 @@ import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.activity.Activity;
 import au.com.scds.chats.dom.general.Person;
+import au.com.scds.chats.dom.general.Persons;
+import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.dom.general.names.Region;
 
@@ -71,19 +73,17 @@ public class Participants {
 			return container.allMatches(
 					new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.ACTIVE));
 		case Under_Sixty_Five:
-			DateTime upperLimit = DateTime.now().withTimeAtStartOfDay().minusYears(65);
+			LocalDate lowerLimit = LocalDate.now().minusYears(65);
 			return container.allMatches(new QueryDefault<>(Participant.class,
-					"listParticipantsByStatusAndBirthdateBelow", 
-					"status", Status.ACTIVE, 
-					"upperLimit", upperLimit));
+					"listParticipantsByStatusAndBirthdateAbove", "status", Status.ACTIVE, "lowerLimit", lowerLimit));
 		case Sixty_Five_and_Over:
-			DateTime lowerLimit = DateTime.now().withTimeAtStartOfDay().minusYears(65);
+			LocalDate upperLimit = LocalDate.now().minusYears(65).plusDays(1);
 			return container.allMatches(new QueryDefault<>(Participant.class,
-					"listParticipantsByStatusAndBirthdateAbove", 
-					"status", Status.ACTIVE, 
-					"lowerLimit", lowerLimit));
+					"listParticipantsByStatusAndBirthdateBelow", "status", Status.ACTIVE, "upperLimit", upperLimit));
+		default:
+			return null;
 		}
-		return null;
+
 		/*
 		 * TODO replace all queries with typesafe final QParticipant p =
 		 * QParticipant.candidate(); return
@@ -92,8 +92,8 @@ public class Participants {
 		 */
 
 	}
-	
-	public AgeGroup default0ListActive(){
+
+	public AgeGroup default0ListActive() {
 		return AgeGroup.All;
 	}
 
@@ -132,12 +132,14 @@ public class Participants {
 	@MemberOrder(sequence = "5")
 	public Participant create(final @Parameter(maxLength = 100) @ParameterLayout(named = "First name") String firstname,
 			final @Parameter(maxLength = 100) @ParameterLayout(named = "Family name") String surname,
-			final @ParameterLayout(named = "Date of Birth") LocalDate dob) {
-		return newParticipant(firstname, surname, dob);
+			final @ParameterLayout(named = "Date of Birth") LocalDate dob,
+			final @ParameterLayout(named = "Sex") Sex sex) {
+		return newParticipant(firstname, surname, dob, sex);
 	}
 
 	@Programmatic
-	public Participant newParticipant(final String firstname, final String surname, final LocalDate dob) {
+	public Participant newParticipant(final String firstname, final String surname, final LocalDate dob,
+			final Sex sex) {
 		// check of existing Participant
 		List<Participant> participants = container
 				.allMatches(new QueryDefault<>(Participant.class, "findParticipantsBySurname", "surname", surname));
@@ -149,25 +151,14 @@ public class Participants {
 				return participant;
 			}
 		}
-		// check if existing Person
-		List<Person> persons = container
-				.allMatches(new QueryDefault<>(Person.class, "findPersonsBySurname", "surname", surname));
-		Person person = null;
-		for (Person p : persons) {
-			if (p.getFirstname().equalsIgnoreCase(firstname) && p.getBirthdate().equals(dob)) {
-				// use this found person
-				person = p;
-				break;
-			}
-		}
-		// create new Person?
+		// find or create Person
+		Person person = persons.findPerson(firstname, surname, dob);
 		if (person == null) {
-			person = container.newTransientInstance(Person.class);
-			person.setFirstname(firstname);
-			person.setSurname(surname);
-			person.setBirthdate(dob);
-			container.persistIfNotAlready(person);
-			container.flush();
+			try{
+			person = persons.createPerson(firstname, surname, dob, sex);
+			}catch(Exception e){
+				//discard as validating SLK inputs
+			}
 		}
 		final Participant participant = container.newTransientInstance(Participant.class);
 		participant.setPerson(person);
@@ -230,8 +221,8 @@ public class Participants {
 
 	@Programmatic
 	public void deleteParticipation(Participation participation) {
-		participation.getActivity().removeParticipation(participation);
-		participation.getParticipant().removeParticipation(participation);
+		// participation.getActivity().removeParticipation(participation);
+		// participation.getParticipant().removeParticipation(participation);
 		container.removeIfNotAlready(participation);
 		container.flush();
 	}
@@ -283,6 +274,9 @@ public class Participants {
 		container.flush();
 		return;
 	}
+	
+	@Inject
+	Persons persons;
 
 	@Inject
 	DomainObjectContainer container;

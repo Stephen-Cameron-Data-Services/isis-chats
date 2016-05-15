@@ -1,43 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tns:names xmlns:tns="http://scds.com.au/chats/fixture/jaxb/generated" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://scds.com.au/chats/fixture/jaxb/generated ../../../../../../../java/au/com/scds/chats/fixture/jaxb/ChatsFixtures.xsd ">
-  <tns:regions>
-    <tns:region>NORTH</tns:region>
-    <tns:region>SOUTH</tns:region>
-    <tns:region>NORTH-WEST</tns:region>
-    <tns:region>STATEWIDE</tns:region>
-  </tns:regions>
-  <tns:activityTypes>
-    <tns:activityType>Luncheon</tns:activityType>
-    <tns:activityType>One Off</tns:activityType>
-    <tns:activityType>Public Event</tns:activityType>
-    <tns:activityType>Regular Activity</tns:activityType>
-  </tns:activityTypes>
-  <tns:transportTypes>
-    <tns:transportType>Chats Share</tns:transportType>
-    <tns:transportType>Community Transport</tns:transportType>
-    <tns:transportType>Lifeline Vehicle</tns:transportType>
-    <tns:transportType>Outsource</tns:transportType>
-    <tns:transportType>Self Travel</tns:transportType>
-    <tns:transportType>Taxi</tns:transportType>
-    <tns:transportType>Unknown</tns:transportType>
-  </tns:transportTypes>
-  <tns:periodicities>
-    <tns:periodicity>WEEKLY</tns:periodicity>
-    <tns:periodicity>FORTNIGHTLY</tns:periodicity>
-    <tns:periodicity>MONTHLY</tns:periodicity>
-    <tns:periodicity>BIMONTHLY</tns:periodicity>
-  </tns:periodicities>
-  <tns:contactTypes>
-    <tns:contactType>tns:contactType</tns:contactType>
-  </tns:contactTypes>
-  <tns:sexes>
-    <tns:sex>MALE</tns:sex>
-    <tns:sex>FEMALE</tns:sex>    
-  </tns:sexes>
-  <tns:statuses>
-    <tns:status>ACTIVE</tns:status>
-    <tns:status>INACTIVE</tns:status>
-    <tns:status>TO_EXIT</tns:status>
-    <tns:status>EXITED</tns:status>            
-  </tns:statuses>
+<tns:names xmlns:tns="http://scds.com.au/chats/fixture/jaxb/generated"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://scds.com.au/chats/fixture/jaxb/generated ../../../../../../../java/au/com/scds/chats/fixture/jaxb/ChatsFixtures.xsd ">
+	<tns:regions>
+		<tns:region>NORTH</tns:region>
+		<tns:region>SOUTH</tns:region>
+		<tns:region>NORTH-WEST</tns:region>
+		<tns:region>STATEWIDE</tns:region>
+		<tns:region>TEST</tns:region>
+	</tns:regions>
+	<tns:activityTypes>
+		<tns:activityType>Luncheon</tns:activityType>
+		<tns:activityType>One Off</tns:activityType>
+		<tns:activityType>Public Event</tns:activityType>
+		<tns:activityType>Regular Activity</tns:activityType>
+	</tns:activityTypes>
+	<tns:transportTypes>
+		<tns:transportType>Chats Share</tns:transportType>
+		<tns:transportType>Community Transport</tns:transportType>
+		<tns:transportType>Lifeline Vehicle</tns:transportType>
+		<tns:transportType>Outsource</tns:transportType>
+		<tns:transportType>Self Travel</tns:transportType>
+		<tns:transportType>Taxi</tns:transportType>
+		<tns:transportType>Unknown</tns:transportType>
+	</tns:transportTypes>
+	<tns:periodicities>
+		<tns:periodicity>WEEKLY</tns:periodicity>
+		<tns:periodicity>FORTNIGHTLY</tns:periodicity>
+		<tns:periodicity>MONTHLY</tns:periodicity>
+		<tns:periodicity>BIMONTHLY</tns:periodicity>
+	</tns:periodicities>
+	<tns:contactTypes>
+		<tns:contactType>tns:contactType</tns:contactType>
+	</tns:contactTypes>
+	<tns:sexes>
+		<tns:sex>MALE</tns:sex>
+		<tns:sex>FEMALE</tns:sex>
+	</tns:sexes>
+	<tns:statuses>
+		<tns:status>ACTIVE</tns:status>
+		<tns:status>INACTIVE</tns:status>
+		<tns:status>TO_EXIT</tns:status>
+		<tns:status>EXITED</tns:status>
+	</tns:statuses>
+	<tns:volunteerRoles>
+		<tns:volunteerRole>Volunteer Driver</tns:volunteerRole>
+		<tns:volunteerRole>Activity Host</tns:volunteerRole>
+		<tns:volunteerRole>Volunteer Caller</tns:volunteerRole>
+	</tns:volunteerRoles>
 </tns:names>

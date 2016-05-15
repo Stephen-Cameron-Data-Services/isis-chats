@@ -48,18 +48,48 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 
 @DomainService(nature = NatureOfService.VIEW_MENU_ONLY, repositoryFor = CalendarDayCallSchedule.class)
 @DomainServiceLayout(named="Calls", menuOrder = "50") 
-public class CallSchedules {
+public class Calls {
 	
 	//work around for data-migration
 	//TODO
-	public Region region;
+	//public Region region;
 
-	public CallSchedules( ) {}
+	public Calls( ) {}
 
-	public CallSchedules(DomainObjectContainer container, Volunteers volunteers, Participants participants ) {
+	public Calls(DomainObjectContainer container, Volunteers volunteers, Participants participants ) {
 		this.container = container;
 		this.volunteers  = volunteers;
 		this.participants = participants;
+	}
+	
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@MemberOrder(sequence = "1")
+	public CareCall createCareCall(){
+		CareCall call = container.newTransientInstance(CareCall.class);
+		container.persistIfNotAlready(call);
+		container.flush();
+		return call;
+	}
+	
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@MemberOrder(sequence = "2")
+	public ReconnectCall createReconnectCall(){
+		ReconnectCall call = container.newTransientInstance(ReconnectCall.class);
+		container.persistIfNotAlready(call);
+		container.flush();
+		return call;
+	}
+	
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@MemberOrder(sequence = "3")
+	public SurveyCall createSurveyCall(){
+		SurveyCall call = container.newTransientInstance(SurveyCall.class);
+		container.persistIfNotAlready(call);
+		container.flush();
+		return call;
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
@@ -179,7 +209,7 @@ public class CallSchedules {
 	ScheduledCall createScheduledCall(CalendarDayCallSchedule callSchedule, LocalTime time) throws Exception {
 		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
 		//TODO
-		call.setRegion(region);
+		//call.setRegion(region);
 		//set the scheduled date-time for comparable to work in the call-back
 		call.setScheduledDateTime(callSchedule.getCalendarDate().toDateTime(time));
 		//call back to the schedule to increment total calls

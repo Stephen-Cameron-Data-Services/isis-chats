@@ -44,6 +44,7 @@ import au.com.scds.chats.dom.general.Address;
 import au.com.scds.chats.dom.general.Location;
 import au.com.scds.chats.dom.general.Locations;
 import au.com.scds.chats.dom.general.Person;
+import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.general.names.ActivityType;
 import au.com.scds.chats.dom.general.names.ActivityTypes;
 import au.com.scds.chats.dom.general.names.Region;
@@ -58,22 +59,22 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 @PersistenceCapable(table = "activity", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Unique(name = "Activity_UNQ", members = { "name", "startDateTime", "region" })
-@Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column =
-		"classifier", value = "_ACTIVITY")
+@Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "classifier", value = "_ACTIVITY")
 public abstract class Activity extends AbstractChatsDomainEntity implements Locatable, Comparable<Activity> {
 
 	private Long oldId; // id copied from old system
 	protected String name;
-	protected Provider provider;
+	protected String abbreviatedName;
+	//protected Provider provider;
 	protected ActivityType activityType;
 	protected DateTime approximateEndDateTime;
-	protected Long copiedFromActivityId;
+	//protected Long copiedFromActivityId;
 	protected String costForParticipant;
 	protected String description;
 	protected DateTime startDateTime;
 	protected Address address;
-	protected Boolean isRestricted;
-	protected Long scheduleId;
+	//protected Boolean isRestricted;
+	//protected Long scheduleId;
 	@Persistent(mappedBy = "activity")
 	protected SortedSet<Participation> participations = new TreeSet<>();
 	@Persistent(mappedBy = "activity")
@@ -85,7 +86,8 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	public Activity() {
 	}
 
-	public Activity(DomainObjectContainer container, Participants participants, Volunteers volunteers, Providers activityProviders, ActivityTypes activityTypes, Locations locations) {
+	public Activity(DomainObjectContainer container, Participants participants, Volunteers volunteers,
+			Providers activityProviders, ActivityTypes activityTypes, Locations locations) {
 		this.container = container;
 		this.participantsRepo = participants;
 		this.volunteersRepo = volunteers;
@@ -109,7 +111,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	}
 
 	@Property(hidden = Where.NOWHERE)
-	//@MemberOrder(sequence = "1")
+	// @MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
 	public String getName() {
 		return name;
@@ -119,15 +121,26 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		this.name = name;
 	}
 
+	@Property(maxLength = 25)
+	// @MemberOrder(sequence = "1")
+	@Column(allowsNull = "true")
+	public String getAbbreviatedName() {
+		return abbreviatedName;
+	}
+
+	public void setAbbreviatedName(String abbreviatedName) {
+		this.abbreviatedName = abbreviatedName;
+	}
+
 	/**
 	 * Compares based on startDateTime, putting most more recent first.
 	 */
 	public int compareTo(final Activity other) {
-		//return ObjectContracts.compare(other, this,  "startDateTime");
+		// return ObjectContracts.compare(other, this, "startDateTime");
 		return ObjectContracts.compare(other, this, "name", "startDateTime", "region");
-		
-		//return ComparisonChain.start().compare(getName(),
-				//other.getName()).compare(getStartDateTime(),other.getStartDateTime()).compare(getRegion(),other.getRegion()).result();
+
+		// return ComparisonChain.start().compare(getName(),
+		// other.getName()).compare(getStartDateTime(),other.getStartDateTime()).compare(getRegion(),other.getRegion()).result();
 
 		// if (other != null)
 		// return other.getStartDateTime().compareTo(getStartDateTime());
@@ -136,8 +149,8 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
-	//@MemberOrder(sequence = "2")
+	/*@Property(hidden = Where.ALL_TABLES)
+	// @MemberOrder(sequence = "2")
 	@Column(allowsNull = "true")
 	public Provider getProvider() {
 		return provider;
@@ -149,7 +162,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	public List<Provider> choicesProvider() {
 		return activityProvidersRepo.listAllProviders();
-	}
+	}*/
 
 	@Property(hidden = Where.EVERYWHERE)
 	@Column(allowsNull = "true")
@@ -163,7 +176,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Activity Type")
-	//@MemberOrder(sequence = "5")
+	// @MemberOrder(sequence = "5")
 	@NotPersistent
 	public String getActivityTypeName() {
 		return getActivityType() != null ? this.getActivityType().getName() : null;
@@ -179,7 +192,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Approx. End Date & Time")
-	//@MemberOrder(sequence = "6")
+	// @MemberOrder(sequence = "6")
 	@Column(allowsNull = "true")
 	public DateTime getApproximateEndDateTime() {
 		return approximateEndDateTime;
@@ -191,7 +204,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Cost For Participant")
-	//@MemberOrder(sequence = "8")
+	// @MemberOrder(sequence = "8")
 	@Column(allowsNull = "true")
 	public String getCostForParticipant() {
 		return costForParticipant;
@@ -202,7 +215,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
-	//@MemberOrder(sequence = "9")
+	// @MemberOrder(sequence = "9")
 	@Column(allowsNull = "true")
 	public String getDescription() {
 		return description;
@@ -214,7 +227,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Property(hidden = Where.NOWHERE)
 	@PropertyLayout()
-	//@MemberOrder(sequence = "10")
+	// @MemberOrder(sequence = "10")
 	@Column(allowsNull = "false")
 	public DateTime getStartDateTime() {
 		return this.startDateTime;
@@ -238,15 +251,15 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Property()
 	@PropertyLayout(named = "Location Name")
-	//@MemberOrder(name = "Location", sequence = "1")
+	// @MemberOrder(name = "Location", sequence = "1")
 	@NotPersistent
 	public String getAddressLocationName() {
-		return (getAddress() != null) ? getAddress().getName() : null; 
+		return (getAddress() != null) ? getAddress().getName() : null;
 	}
 
 	@Property()
 	@PropertyLayout(named = "Address", hidden = Where.ALL_TABLES)
-	//@MemberOrder(name = "Location", sequence = "2")
+	// @MemberOrder(name = "Location", sequence = "2")
 	@NotPersistent
 	public String getFullAddress() {
 		return (getAddress() != null) ? getAddress().title() : null;
@@ -254,7 +267,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Lat-Long")
-	//@MemberOrder(name = "Location", sequence = "3")
+	// @MemberOrder(name = "Location", sequence = "3")
 	@NotPersistent
 	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
 		return (getAddress() != null) ? getAddress().getLocation() : null;
@@ -263,8 +276,9 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	@Action()
 	@ActionLayout(named = "Set Location")
 	// Address extends Location
-	//@MemberOrder(name = "location", sequence = "1")
-	public Activity updateAddress(@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Location") String name,
+	// @MemberOrder(name = "location", sequence = "1")
+	public Activity updateAddress(
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Location") String name,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 1") String street1,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Suburb") String suburb,
@@ -275,7 +289,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		address.setStreet2(street2);
 		address.setPostcode(postcode);
 		address.setSuburb(suburb);
-		//TODO consider empty address values, reset to null
+		// TODO consider empty address values, reset to null
 		address.updateGeocodedLocation();
 		Address oldAddress = getAddress();
 		setAddress(address);
@@ -304,9 +318,9 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		return getAddress() != null ? getAddress().getPostcode() : null;
 	}
 
-	@Property(hidden = Where.EVERYWHERE)
+	/*@Property(hidden = Where.EVERYWHERE)
 	@PropertyLayout(named = "Is Restricted")
-	//@MemberOrder(sequence = "13")
+	// @MemberOrder(sequence = "13")
 	@Column(allowsNull = "true")
 	public Boolean getIsRestricted() {
 		return isRestricted;
@@ -314,11 +328,11 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	public void setIsRestricted(Boolean isRestricted) {
 		this.isRestricted = isRestricted;
-	}
+	}*/
 
-	@Property(hidden = Where.EVERYWHERE)
+	/*@Property(hidden = Where.EVERYWHERE)
 	@PropertyLayout(named = "Schedule Id")
-	//@MemberOrder(sequence = "14")
+	// @MemberOrder(sequence = "14")
 	@Column(allowsNull = "true")
 	public Long getScheduleId() {
 		return scheduleId;
@@ -326,9 +340,9 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	public void setScheduleId(Long scheduleId) {
 		this.scheduleId = scheduleId;
-	}
+	}*/
 
-	@Property(hidden = Where.EVERYWHERE)
+	/*@Property(hidden = Where.EVERYWHERE)
 	@Column(allowsNull = "true")
 	public Long getCopiedFromActivityId() {
 		return copiedFromActivityId;
@@ -336,10 +350,10 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	public void setCopiedFromActivityId(Long copiedFromActivityId) {
 		this.copiedFromActivityId = copiedFromActivityId;
-	}
+	}*/
 
 	@Property()
-	//@MemberOrder(sequence = "100")
+	// @MemberOrder(sequence = "100")
 	@CollectionLayout(named = "Participation", render = RenderType.EAGERLY)
 	public SortedSet<Participation> getParticipations() {
 		return participations;
@@ -382,28 +396,31 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Action()
 	@ActionLayout(named = "Add")
-	//@MemberOrder(name = "participations", sequence = "1")
+	// @MemberOrder(name = "participations", sequence = "1")
 	public Activity addParticipant(final Participant participant) {
 		if (findParticipation(participant) == null) {
 			participantsRepo.createParticipation(this, participant);
 		} else {
-			container.informUser("A Participant (" + participant.getFullName() + ") is already participating in this Activity");
+			container.informUser(
+					"A Participant (" + participant.getFullName() + ") is already participating in this Activity");
 		}
 		return this;
 	}
 
 	@Action()
 	@ActionLayout(named = "Add New")
-	//@MemberOrder(name = "participations", sequence = "2")
-	public Activity addNewParticipant(final @ParameterLayout(named = "First name") String firstname, final @ParameterLayout(named = "Surname") String surname,
-			final @ParameterLayout(named = "Date of Birth") LocalDate dob) {
-		addParticipant(participantsRepo.newParticipant(firstname, surname, dob));
+	// @MemberOrder(name = "participations", sequence = "2")
+	public Activity addNewParticipant(final @ParameterLayout(named = "First name") String firstname,
+			final @ParameterLayout(named = "Surname") String surname,
+			final @ParameterLayout(named = "Date of Birth") LocalDate dob,
+			final @ParameterLayout(named = "Sex") Sex sex) {
+		addParticipant(participantsRepo.newParticipant(firstname, surname, dob, sex));
 		return this;
 	}
 
 	@Action()
 	@ActionLayout(named = "Remove")
-	//@MemberOrder(name = "participations", sequence = "3")
+	// @MemberOrder(name = "participations", sequence = "3")
 	public Activity removeParticipant(final Participant participant) {
 		if (participant == null)
 			return this;
@@ -422,7 +439,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	}
 
 	@Property()
-	//@MemberOrder(sequence = "100")
+	// @MemberOrder(sequence = "100")
 	@CollectionLayout(named = "Volunteered Time", render = RenderType.EAGERLY)
 	protected List<VolunteeredTimeForActivity> getVolunteeredTimes() {
 		return volunteeredTimes;

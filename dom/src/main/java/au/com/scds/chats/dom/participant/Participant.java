@@ -44,19 +44,19 @@ import au.com.scds.chats.dom.general.Status;
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Queries({
 		@Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.participant.Participant " + "WHERE status == :status"),
+				+ "FROM au.com.scds.chats.dom.participant.Participant p WHERE status == :status"),
 		@Query(name = "listParticipantsByStatusAndBirthdateBelow", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.participant.Participant WHERE status == :status "
-				+ "AND person.birthdate.isBefore(:upperLimit)"),
+				+ "FROM au.com.scds.chats.dom.participant.Participant  WHERE status == :status "
+				+ "&& person.birthdate < :upperLimit"),
 		@Query(name = "listParticipantsByStatusAndBirthdateAbove", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.participant.Participant WHERE status == :status "
-				+ "AND person.birthdate.isAfter(:lowerLimit)"),
+				+ "FROM au.com.scds.chats.dom.participant.Participant  WHERE status == :status "
+				+ "&& person.birthdate > :lowerLimit"),
 		@Query(name = "listParticipantsByStatusAndBirthdateBetween", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.participant.Participant WHERE status == :status "
-				+ "AND person.birthdate.isAfter(:lowerLimit) "
-				+ "AND person.birthdate.isBefore(:upperLimit) "),
+				+ "FROM au.com.scds.chats.dom.participant.Participant  WHERE status == :status "
+				+ "&& person.birthdate > :lowerLimit "
+				+ "&& person.birthdate < :upperLimit "),
 		@Query(name = "findParticipantsBySurname", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.participant.Participant "
+				+ "FROM au.com.scds.chats.dom.participant.Participant  "
 				+ "WHERE person.surname.indexOf(:surname) >= 0"),
 		@Query(name = "findNewOrModifiedParticipantsByPeriodAndRegion", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.participant.Participant "

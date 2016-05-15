@@ -252,7 +252,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		return list;
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
+	/*@Property(hidden = Where.ALL_TABLES)
 	@Override
 	@NotPersistent
 	public Provider getProvider() {
@@ -260,7 +260,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 			return getParentActivity().getProvider();
 		}
 		return super.getProvider();
-	}
+	}*/
 
 	@Property(hidden = Where.EVERYWHERE)
 	@Override
@@ -363,7 +363,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		return super.getLocation();
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
+	/*@Property(hidden = Where.ALL_TABLES)
 	@Override
 	@NotPersistent
 	public Boolean getIsRestricted() {
@@ -371,9 +371,9 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 			return getParentActivity().getIsRestricted();
 		}
 		return super.getIsRestricted();
-	}
+	}*/
 
-	@Property(hidden = Where.ALL_TABLES)
+	/*@Property(hidden = Where.ALL_TABLES)
 	@Override
 	@NotPersistent
 	public Long getScheduleId() {
@@ -381,6 +381,6 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 			return getParentActivity().getScheduleId();
 		}
 		return super.getScheduleId();
-	}
+	}*/
 
 }

@@ -28,6 +28,7 @@ import au.com.scds.chats.dom.activity.Activities;
 import au.com.scds.chats.dom.activity.ActivityEvent;
 import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Persons;
+import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.participant.Participation;
@@ -124,7 +125,7 @@ public class ActivityEventTest {
 				}
 			});
 
-			activity.addNewParticipant("John", "Brown", new LocalDate("1940-01-01"));
+			activity.addNewParticipant("John", "Brown", new LocalDate("1940-01-01"), Sex.MALE);
 			assertThat(activity.getParticipants().size()).isEqualTo(1);
 			assertThat(activity.getParticipants().get(0)).isEqualTo(participant);
 			assertThat(activity.findParticipation(participant)).isEqualTo(participation);
@@ -150,6 +151,7 @@ public class ActivityEventTest {
 			person2.setFirstname("Joe");
 			person2.setSurname("Blow");
 			person2.setBirthdate(new LocalDate("1940-10-10"));
+			person2.setSex(Sex.MALE);
 			Participant participant2 = new Participant(person2);
 			final List<Participant> participants2 = new ArrayList<Participant>();
 			participants2.add(participant2);
@@ -179,7 +181,7 @@ public class ActivityEventTest {
 			});
 
 			activity.addParticipant(participantsRepo.newParticipant(person1));
-			activity.addNewParticipant(person2.getFirstname(), person2.getSurname(), person2.getBirthdate());
+			activity.addNewParticipant(person2.getFirstname(), person2.getSurname(), person2.getBirthdate(), person2.getSex());
 			assertThat(activity.getParticipants().size()).isEqualTo(1);
 			assertThat(activity.getParticipants().get(0)).isEqualTo(participant1);
 			assertThat(activity.findParticipation(participant1)).isEqualTo(participation1);
@@ -200,6 +202,7 @@ public class ActivityEventTest {
 			person.setFirstname("Joe");
 			person.setSurname("Blow");
 			person.setBirthdate(new LocalDate("1940-10-10"));
+			person.setSex(Sex.MALE);
 			final List<Person> persons = new ArrayList<Person>();
 			persons.add(person);
 			//new Participant and new Participation
@@ -226,7 +229,7 @@ public class ActivityEventTest {
 				}
 			});
 
-			activity.addNewParticipant(person.getFirstname(), person.getSurname(), person.getBirthdate());
+			activity.addNewParticipant(person.getFirstname(), person.getSurname(), person.getBirthdate(), person.getSex());
 			assertThat(activity.getParticipants().size()).isEqualTo(1);
 			assertThat(activity.getParticipants().get(0)).isEqualTo(participant);
 			assertThat(activity.findParticipation(participant)).isEqualTo(participation);
@@ -243,6 +246,7 @@ public class ActivityEventTest {
 			person.setFirstname("Joe");
 			person.setSurname("Blow");
 			person.setBirthdate(new LocalDate("1940-10-10"));
+			person.setSex(Sex.MALE);
 			final List<Person> persons = new ArrayList<Person>();
 			persons.add(person);
 			//new Participant and new Participation
@@ -271,7 +275,7 @@ public class ActivityEventTest {
 				}
 			});
 
-			activity.addNewParticipant(person.getFirstname(), person.getSurname(), person.getBirthdate());
+			activity.addNewParticipant(person.getFirstname(), person.getSurname(), person.getBirthdate(), person.getSex());
 			assertThat(activity.getParticipants().size()).isEqualTo(1);
 			assertThat(activity.getParticipants().get(0)).isEqualTo(participant);
 			assertThat(activity.findParticipation(participant)).isEqualTo(participation);

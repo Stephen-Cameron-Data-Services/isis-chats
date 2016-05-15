@@ -41,12 +41,12 @@ public class Salutations {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
-	public List<Salutation> createSalutation(final @ParameterLayout(named = "Salutation Name") String name) {
+	public Salutation createSalutation(final @ParameterLayout(named = "Salutation Name") String name) {
 		final Salutation obj = container.newTransientInstance(Salutation.class);
 		obj.setName(name);
 		container.persistIfNotAlready(obj);
 		container.flush();
-		return listAllSalutations();
+		return obj;
 	}
 
 	@Programmatic

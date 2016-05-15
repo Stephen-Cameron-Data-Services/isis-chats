@@ -41,9 +41,9 @@ public class ActivityTypes {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
-	public List<ActivityType> createActivityType(final @ParameterLayout(named = "Activity Type Name") String name) {
+	public ActivityType createActivityType(final @ParameterLayout(named = "Activity Type Name") String name) {
 		final ActivityType obj = create(name);
-		return listAllActivityTypes();
+		return obj;
 	}
 
 	@Programmatic

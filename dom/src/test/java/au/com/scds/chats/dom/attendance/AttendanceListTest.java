@@ -26,6 +26,7 @@ import au.com.scds.chats.dom.attendance.AttendanceList;
 import au.com.scds.chats.dom.attendance.AttendanceLists;
 import au.com.scds.chats.dom.attendance.Attend;
 import au.com.scds.chats.dom.general.Person;
+import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.participant.Participation;
@@ -116,7 +117,8 @@ public class AttendanceListTest {
 			context.checking(new Expectations() {
 				{
 					// see if existing Participant
-					oneOf(mockContainer).allMatches(with(aQueryDefault(Participant.class, "findParticipantsBySurname")));
+					oneOf(mockContainer)
+							.allMatches(with(aQueryDefault(Participant.class, "findParticipantsBySurname")));
 					will(returnValue(participants));
 					// see if existing Person
 					oneOf(mockContainer).allMatches(with(aQueryDefault(Person.class, "findPersonsBySurname")));
@@ -138,7 +140,7 @@ public class AttendanceListTest {
 
 			// when
 			attendanceList.setParentActivity(activity);
-			attendanceList.addNewParticipantAndAttended("Mary", "Rose", new LocalDate(1950, 11, 15));
+			attendanceList.addNewParticipantAndAttended("Mary", "Rose", new LocalDate(1950, 11, 15), Sex.FEMALE);
 			// then
 			assertThat(attendanceList.getAttendeds().size()).isEqualTo(1);
 			assertThat(attendanceList.getAttendeds().get(0)).isEqualTo(attended);

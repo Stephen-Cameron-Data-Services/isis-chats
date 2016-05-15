@@ -44,10 +44,10 @@ import au.com.scds.chats.dom.volunteer.Volunteer;
  * 
  * @author stevec
  */
-@PersistenceCapable(table = "telephone_call", identityType = IdentityType.DATASTORE)
+@PersistenceCapable(table = "telephonecall", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "classifier", value = "_CALL")
-public abstract class Call extends AbstractChatsDomainEntity implements Notable {
+public abstract class Call extends AbstractChatsDomainEntity  {
 
 	private Participant participant;
 	private DateTime startDateTime;

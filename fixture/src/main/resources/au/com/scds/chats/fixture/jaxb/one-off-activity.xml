@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:one-off-activity xmlns:tns="http://scds.com.au/chats/fixture/jaxb/generated" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://scds.com.au/chats/fixture/jaxb/generated ChatsFixtures.xsd ">
+  <tns:activityType>tns:activityType</tns:activityType>
+  <tns:address>
+    <tns:location-name>tns:location-name</tns:location-name>
+    <tns:street1>tns:street1</tns:street1>
+    <tns:street2>tns:street2</tns:street2>
+    <tns:suburb>tns:suburb</tns:suburb>
+    <tns:postcode>0</tns:postcode>
+  </tns:address>
+  <tns:startDateTime>2001-12-31T12:00:00</tns:startDateTime>
+  <tns:name>tns:name</tns:name>
+  <tns:description>tns:description</tns:description>
+  <tns:costForParticipant>tns:costForParticipant</tns:costForParticipant>
+  <tns:participations>
+    <tns:participation>
+      <tns:person>
+        <tns:firstname>tns:firstname</tns:firstname>
+        <tns:surname>tns:surname</tns:surname>
+        <tns:dateOfBirth>2001-01-01</tns:dateOfBirth>
+        <tns:sex>MALE</tns:sex>
+      </tns:person>
+    </tns:participation>
+  </tns:participations>
+  <tns:volunteeredTimes>
+  </tns:volunteeredTimes>
+</tns:one-off-activity>

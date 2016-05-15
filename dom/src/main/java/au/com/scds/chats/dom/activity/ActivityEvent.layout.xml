@@ -22,15 +22,14 @@
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
 								<ns2:property id="name" />
-								<ns2:property id="parentActivity" />
-								<ns2:property id="description" />
+								<ns2:property id="abbreviatedName" hidden="ALL_TABLES"/>
+								<ns2:property id="parentActivity" hidden="ALL_TABLES"/>
+								<ns2:property id="description" hidden="ALL_TABLES"/>
 								<ns2:property id="activityTypeName" />
-								<ns2:property id="provider" />
-								<ns2:property id="scheduleId" />
 								<ns2:property id="startDateTime" />
 								<ns2:property id="approximateEndDateTime" />
-								<ns2:property id="costForParticipant" />
-								<ns2:property id="isRestricted" />
+								<ns2:property id="costForParticipant" hidden="ALL_TABLES"/>
+								<ns2:property id="isRestricted" hidden="ALL_TABLES"/>
 							</ns2:fieldSet>
 						</col>
 						<col span="6">
