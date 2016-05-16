@@ -16,15 +16,16 @@
 						<col span="12">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
-								<ns2:property id="person" />
-								<ns2:property id="fullName" />
-								<ns2:property id="homePhoneNumber" />
-								<ns2:property id="mobilePhoneNumber" />
-								<ns2:property id="emailAddress" />
-								<ns2:property id="streetAddress" />
-								<ns2:property id="mailAddress" />
-								<ns2:property id="location" />
-								<ns2:property id="status" />
+								<ns2:property id="person" hidden="ALL_TABLES"/>
+								<ns2:property id="fullName" typicalLength="30"/>
+								<ns2:property id="homePhoneNumber" typicalLength="10"/>
+								<ns2:property id="mobilePhoneNumber" typicalLength="10"/>
+								<ns2:property id="emailAddress" typicalLength="20"/>
+								<ns2:property id="streetAddress" typicalLength="40"/>
+								<ns2:property id="mailAddress" hidden="ALL_TABLES"/>
+								<ns2:property id="location" hidden="ALL_TABLES"/>
+								<ns2:property id="age" typicalLength="2"/>
+								<ns2:property id="status" typicalLength="5"/>
 							</ns2:fieldSet>
 						</col>
 					</row>
@@ -53,30 +54,30 @@
 				<tab name="Social Factors">
 					<row>
 						<col span="6">
-							<ns2:fieldSet id="origin" name="Origin">
-								<ns2:property id="placeOfOrigin" />
-								<ns2:property id="dateOfSettlement" />
+							<ns2:fieldSet id="origin" name="Origin" >
+								<ns2:property id="placeOfOrigin" hidden="ALL_TABLES"/>
+								<ns2:property id="dateOfSettlement" hidden="ALL_TABLES"/>
 							</ns2:fieldSet>
 							<ns2:fieldSet id="involvement" name="Involvement">
-								<ns2:property id="involvementInGroupsClubs" />
-								<ns2:property id="involvementInInterestsHobbies" />
+								<ns2:property id="involvementInGroupsClubs" hidden="ALL_TABLES"/>
+								<ns2:property id="involvementInInterestsHobbies" hidden="ALL_TABLES"/>
 							</ns2:fieldSet>
 							<ns2:fieldSet id="friendsandRelatives" name="Friends and Relatives">
-								<ns2:property id="closeRelatives" />
-								<ns2:property id="closeRelativeAndFriendCount" />
-								<ns2:property id="proximityOfRelatives" />
-								<ns2:property id="proximityOfFriends" />
+								<ns2:property id="closeRelatives" hidden="ALL_TABLES"/>
+								<ns2:property id="closeRelativeAndFriendCount" hidden="ALL_TABLES"/>
+								<ns2:property id="proximityOfRelatives" hidden="ALL_TABLES"/>
+								<ns2:property id="proximityOfFriends" hidden="ALL_TABLES"/>
 							</ns2:fieldSet>
 						</col>
 						<col span="6">
 							<ns2:fieldSet id="limitations" name="Limitations">
-								<ns2:property id="limitingHealthIssues" />
-								<ns2:property id="otherLimitingFactors" />
+								<ns2:property id="limitingHealthIssues" hidden="ALL_TABLES"/>
+								<ns2:property id="otherLimitingFactors" hidden="ALL_TABLES"/>
 							</ns2:fieldSet>
 							<ns2:fieldSet id="driving" name="Driving">
-								<ns2:property id="driversLicence" />
-								<ns2:property id="drivingAbility" />
-								<ns2:property id="drivingConfidence" />
+								<ns2:property id="driversLicence" hidden="ALL_TABLES"/>
+								<ns2:property id="drivingAbility" hidden="ALL_TABLES"/>
+								<ns2:property id="drivingConfidence" hidden="ALL_TABLES"/>
 							</ns2:fieldSet>
 						</col>
 					</row>
@@ -92,10 +93,14 @@
 					<row>
 						<col span="4">
 							<ns2:fieldSet name="Admin" id="other">
-								<ns2:property id="createdBy" />
-								<ns2:property id="createdOn" />
-								<ns2:property id="lastModifiedBy" />
-								<ns2:property id="lastModifiedOn" />
+								<ns2:property id="datanucleusIdLong" hidden="ALL_TABLES"/>
+								<ns2:property id="datanucleusVersionLong" hidden="ALL_TABLES"/>
+								<ns2:property id="datanucleusVersionTimestamp" hidden="ALL_TABLES"/>
+								<ns2:property id="createdBy" hidden="ALL_TABLES"/>
+								<ns2:property id="createdOn" hidden="ALL_TABLES"/>
+								<ns2:property id="lastModifiedBy" hidden="ALL_TABLES"/>
+								<ns2:property id="lastModifiedOn" hidden="ALL_TABLES"/>
+								<ns2:property id="region" hidden="EVERYWHERE" />
 								<ns2:property id="regionName" />
 							</ns2:fieldSet>
 						</col>

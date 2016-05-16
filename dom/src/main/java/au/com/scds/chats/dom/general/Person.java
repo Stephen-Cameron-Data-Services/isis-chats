@@ -352,9 +352,6 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	public Person updateStreetAddress(@ParameterLayout(named = "Street 1") String street1,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Suburb") Suburb suburb,
-			// @Parameter(optionality = Optionality.MANDATORY, regexPattern =
-			// RegexValidation.Address.POSTCODE) @ParameterLayout(named =
-			// "Postcode") String postcode,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Is Mail Address Too?") Boolean isMailAddress) {
 		Address newAddress = container.newTransientInstance(Address.class);
 		newAddress.setStreet1(street1);
@@ -386,7 +383,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	}
 
 	public Suburb default2UpdateStreetAddress() {
-		return getStreetAddress() != null ? suburbs.suburbForName(getStreetAddress().getSuburb()) : null;
+		return getStreetAddress() != null ? suburbs.findSuburb(getStreetAddress().getSuburb(),new Integer(getStreetAddress().getPostcode())) : null;
 	}
 
 	public List<Suburb> choices2UpdateStreetAddress() {

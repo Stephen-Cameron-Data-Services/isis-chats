@@ -51,7 +51,7 @@ public class PersonTest {
 			}
 			assertThat(person.getFirstname()).isEqualTo("Test");
 			assertThat(person.getSurname()).isEqualTo("Person");
-			assertThat(person.getBirthdate()).isEqualTo(new LocalDate(1900, 01, 10));
+			assertThat(person.getBirthdate()).isEqualTo(new LocalDate(1900, 01, 01));
 			assertThat(person.getSex()).isEqualTo(Sex.MALE);
 			assertThat(person.getSlk()).isEqualTo("EROES010119001");
 		}

@@ -30,20 +30,30 @@ import org.apache.isis.applib.query.QueryDefault;
 // menuOrder = "100.1")
 public class Suburbs {
 
-	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "1")
-	public List<Suburb> listAllSuburbs() {
-		List<Suburb> list = container.allMatches(new QueryDefault<>(Suburb.class, "findAllSuburbs"));
-		return list;
-	}
+
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "2")
+	//@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	//@MemberOrder(sequence = "2")
 	public Suburb createSuburb(final @ParameterLayout(named = "Activity Type Name") String name, Integer postcode) {
 		final Suburb obj = create(name, postcode);
 		return obj;
+	}
+	
+	@Action(semantics = SemanticsOf.SAFE)
+	public Suburb findSuburb(String name, Integer postcode) {
+		if (name == null || postcode == null)
+			return null;
+		else
+			return container.firstMatch(new QueryDefault<>(Suburb.class, "findSuburbByNameAndPostcode", "name", name, "postcode", postcode));
+	}
+	
+	@Action(semantics = SemanticsOf.SAFE)
+	//@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	//@MemberOrder(sequence = "1")
+	public List<Suburb> listAllSuburbs() {
+		List<Suburb> list = container.allMatches(new QueryDefault<>(Suburb.class, "findAllSuburbs"));
+		return list;
 	}
 
 	@Programmatic
@@ -70,7 +80,7 @@ public class Suburbs {
 		}
 		return names;
 	}
-	
+
 	@Programmatic
 	public List<String> listSuburbNamesLike(String search) {
 		if (search == null)
@@ -79,18 +89,10 @@ public class Suburbs {
 			return container.allMatches(new QueryDefault<>(String.class, "findSuburbNamesLike", "name", search));
 	}
 
-	@Programmatic
-	public Suburb suburbForName(String name) {
-		if (name == null)
-			return null;
-		else
-			return container.firstMatch(new QueryDefault<>(Suburb.class, "findSuburbByName", "name", name));
-	}
+
 
 	@javax.inject.Inject
 	DomainObjectContainer container;
-
-
 
 
 

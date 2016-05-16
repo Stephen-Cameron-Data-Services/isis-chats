@@ -22,6 +22,7 @@ import au.com.scds.chats.dom.attendance.AttendanceList;
 import au.com.scds.chats.dom.attendance.AttendanceLists;
 import au.com.scds.chats.dom.attendance.Attend;
 import au.com.scds.chats.dom.general.Person;
+import au.com.scds.chats.dom.general.Persons;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 
@@ -36,6 +37,7 @@ public class AttendedTest {
 
 	AttendanceLists attendanceListsRepo;
 	Participants participantsRepo;
+	Persons personsRepo;
 
 	AttendanceList attendanceList;
 	Attend attended;
@@ -43,7 +45,8 @@ public class AttendedTest {
 
 	@Before
 	public void setUp() throws Exception {
-		participantsRepo = new Participants(mockContainer);
+		personsRepo = new Persons(mockContainer);
+		participantsRepo = new Participants(mockContainer,personsRepo);
 		attendanceListsRepo = new AttendanceLists(mockContainer);
 		attendanceList = new AttendanceList(attendanceListsRepo, participantsRepo);
 		attended = new Attend(mockContainer);

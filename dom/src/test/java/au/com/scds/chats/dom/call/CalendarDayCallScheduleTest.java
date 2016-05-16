@@ -17,6 +17,7 @@ import org.junit.Test;
 import au.com.scds.chats.dom.call.CalendarDayCallSchedule;
 import au.com.scds.chats.dom.call.Calls;
 import au.com.scds.chats.dom.call.ScheduledCall;
+import au.com.scds.chats.dom.general.Persons;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
@@ -34,11 +35,13 @@ public class CalendarDayCallScheduleTest {
 	CalendarDayCallSchedule schedule;
 	Volunteers volunteers;
 	Participants participants;
+	Persons persons;
 
 	@Before
 	public void setUp() throws Exception {
+		persons = new Persons();
 		volunteers = new Volunteers(mockContainer);
-		participants = new Participants(mockContainer);
+		participants = new Participants(mockContainer,persons);
 		schedules = new Calls(mockContainer, volunteers, participants);
 		schedule = new CalendarDayCallSchedule(mockContainer, schedules, participants, volunteers);
 	}

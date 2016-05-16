@@ -36,6 +36,7 @@ import org.joda.time.DateTime;
 import au.com.scds.chats.dom.attendance.AttendanceList;
 import au.com.scds.chats.dom.attendance.Attend;
 import au.com.scds.chats.dom.general.Address;
+import au.com.scds.chats.dom.general.Suburb;
 import au.com.scds.chats.dom.general.names.ActivityType;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
@@ -340,16 +341,17 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	public String default2UpdateAddress() {
 		return getSelfOrParentAddress() != null ? getSelfOrParentAddress().getStreet2() : null;
 	}
-
+	
 	@Override
-	public String default3UpdateAddress() {
-		return getSelfOrParentAddress() != null ? getSelfOrParentAddress().getSuburb() : null;
+	public Suburb default3UpdateAddress() {
+		return getSelfOrParentAddress() != null ? suburbs.findSuburb(getSelfOrParentAddress().getSuburb(),new Integer(getSelfOrParentAddress().getPostcode())) : null;
 	}
 
 	@Override
-	public String default4UpdateAddress() {
-		return getSelfOrParentAddress() != null ? getSelfOrParentAddress().getPostcode() : null;
+	public List<Suburb> choices3UpdateAddress() {
+		return suburbs.listAllSuburbs();
 	}
+
 
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Lat-Long")

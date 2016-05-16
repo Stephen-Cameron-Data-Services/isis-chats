@@ -28,8 +28,8 @@ import au.com.scds.chats.dom.general.names.ClassificationValue;
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Unique(name = "Suburb_UNQ", members = { "name", "postcode" })
 @Queries({
-		@Query(name = "findSuburbByName", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.general.Suburb " + "WHERE name == :name"),
+		@Query(name = "findSuburbByNameAndPostcode", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.general.Suburb WHERE name == :name && postcode == :postcode"),
 		@Query(name = "findSuburbNamesLike", language = "JDOQL", value = "SELECT name "
 				+ "FROM au.com.scds.chats.dom.general.Suburb " + "WHERE name.startsWith(:name)"),
 		@Query(name = "findAllSuburbs", language = "JDOQL", value = "SELECT "

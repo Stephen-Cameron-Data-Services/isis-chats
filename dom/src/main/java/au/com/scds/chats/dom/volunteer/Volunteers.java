@@ -42,6 +42,8 @@ import org.joda.time.LocalDate;
 import au.com.scds.chats.dom.activity.Activity;
 import au.com.scds.chats.dom.call.CalendarDayCallSchedule;
 import au.com.scds.chats.dom.general.Person;
+import au.com.scds.chats.dom.general.Persons;
+import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.volunteer.Volunteer;
@@ -97,12 +99,13 @@ public class Volunteers {
 	@MemberOrder(sequence = "5")
 	public Volunteer create(final @Parameter(maxLength = 100) @ParameterLayout(named = "First name") String firstname,
 			final @Parameter(maxLength = 100) @ParameterLayout(named = "Family name") String surname,
-			final @ParameterLayout(named = "Date of Birth") LocalDate dob) {
-		return newVolunteer(firstname, surname, dob);
+			final @ParameterLayout(named = "Date of Birth") LocalDate dob, 
+			Sex sex) {
+		return newVolunteer(firstname, surname, dob, sex);
 	}
 
 	@Programmatic
-	public Volunteer newVolunteer(final String firstname, final String surname, final LocalDate dob) {
+	public Volunteer newVolunteer(final String firstname, final String surname, final LocalDate dob, Sex sex) {
 		// check of existing Volunteer
 		List<Volunteer> volunteers = container.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersBySurname", "surname", surname));
 		for (Volunteer volunteer : volunteers) {
@@ -111,24 +114,14 @@ public class Volunteers {
 				return volunteer;
 			}
 		}
-		// check if existing Person
-		List<Person> persons = container.allMatches(new QueryDefault<>(Person.class, "findPersonsBySurname", "surname", surname));
-		Person person = null;
-		for (Person p : persons) {
-			if (p.getFirstname().equalsIgnoreCase(firstname) && p.getBirthdate().equals(dob)) {
-				// use this found person
-				person = p;
-				break;
-			}
-		}
-		// create new Person?
+		// find or create Person
+		Person person = persons.findPerson(firstname, surname, dob);
 		if (person == null) {
-			person = container.newTransientInstance(Person.class);
-			person.setFirstname(firstname);
-			person.setSurname(surname);
-			person.setBirthdate(dob);
-			container.persistIfNotAlready(person);
-			container.flush();
+			try{
+			person = persons.createPerson(firstname, surname, dob, sex);
+			}catch(Exception e){
+				//discard as validating SLK inputs
+			}
 		}
 		final Volunteer volunteer = container.newTransientInstance(Volunteer.class);
 		volunteer.setPerson(person);
@@ -204,6 +197,9 @@ public class Volunteers {
 
 	@Inject
 	DomainObjectContainer container;
+	
+	@Inject
+	Persons persons;
 	
 	@Inject 
 	VolunteerRoles volunteerRoles;

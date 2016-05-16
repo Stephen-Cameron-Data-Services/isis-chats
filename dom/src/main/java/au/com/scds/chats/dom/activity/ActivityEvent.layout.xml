@@ -22,22 +22,21 @@
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
 								<ns2:property id="name" />
-								<ns2:property id="abbreviatedName" hidden="ALL_TABLES"/>
+								<ns2:property id="abbreviatedName" hidden="ALL_TABLES" />
 								<ns2:property id="parentActivity" hidden="ALL_TABLES"/>
 								<ns2:property id="description" hidden="ALL_TABLES"/>
 								<ns2:property id="activityTypeName" />
 								<ns2:property id="startDateTime" />
 								<ns2:property id="approximateEndDateTime" />
 								<ns2:property id="costForParticipant" hidden="ALL_TABLES"/>
-								<ns2:property id="isRestricted" hidden="ALL_TABLES"/>
 							</ns2:fieldSet>
 						</col>
 						<col span="6">
 							<ns2:fieldSet name="Location" id="location">
 								<ns2:action id="updateAddress" />
-								<ns2:property id="addressLocationName" />
+								<ns2:property id="addressLocationName"/>
 								<ns2:property id="fullAddress" />
-								<ns2:property id="location" />
+								<ns2:property id="location" hidden="ALL_TABLES"/>
 							</ns2:fieldSet>
 
 						</col>
@@ -82,13 +81,13 @@
 					<row>
 						<col span="4">
 							<ns2:fieldSet name="Admin" id="admin">
-								<ns2:property id="datanucleusIdLong" />
-								<ns2:property id="datanucleusVersionTimestamp" />
-								<ns2:property id="datanucleusVersionLong" />
-								<ns2:property id="createdBy" />
-								<ns2:property id="createdOn" />
-								<ns2:property id="lastModifiedBy" />
-								<ns2:property id="lastModifiedOn" />
+								<ns2:property id="datanucleusIdLong" hidden="ALL_TABLES"/>
+								<ns2:property id="datanucleusVersionTimestamp" hidden="ALL_TABLES"/>
+								<ns2:property id="datanucleusVersionLong" hidden="ALL_TABLES"/>
+								<ns2:property id="createdBy" hidden="ALL_TABLES"/>
+								<ns2:property id="createdOn" hidden="ALL_TABLES"/>
+								<ns2:property id="lastModifiedBy" hidden="ALL_TABLES"/>
+								<ns2:property id="lastModifiedOn" hidden="ALL_TABLES"/>
 								<ns2:property id="regionName" />
 							</ns2:fieldSet>
 						</col>

@@ -54,8 +54,9 @@ public class Participants {
 	public Participants() {
 	}
 
-	public Participants(DomainObjectContainer container) {
+	public Participants(DomainObjectContainer container, Persons persons) {
 		this.container = container;
+		this.persons = persons;
 	}
 
 	@Programmatic
@@ -221,6 +222,9 @@ public class Participants {
 
 	@Programmatic
 	public void deleteParticipation(Participation participation) {
+		//TODO why does this no longer work in 1.12.1?
+		//(throws an error about reading from a deleted object.)
+		//means unit test no longer works.
 		// participation.getActivity().removeParticipation(participation);
 		// participation.getParticipant().removeParticipation(participation);
 		container.removeIfNotAlready(participation);

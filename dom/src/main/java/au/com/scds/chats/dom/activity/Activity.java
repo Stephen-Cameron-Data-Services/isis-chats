@@ -45,6 +45,8 @@ import au.com.scds.chats.dom.general.Location;
 import au.com.scds.chats.dom.general.Locations;
 import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Sex;
+import au.com.scds.chats.dom.general.Suburb;
+import au.com.scds.chats.dom.general.Suburbs;
 import au.com.scds.chats.dom.general.names.ActivityType;
 import au.com.scds.chats.dom.general.names.ActivityTypes;
 import au.com.scds.chats.dom.general.names.Region;
@@ -65,16 +67,16 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	private Long oldId; // id copied from old system
 	protected String name;
 	protected String abbreviatedName;
-	//protected Provider provider;
+	// protected Provider provider;
 	protected ActivityType activityType;
 	protected DateTime approximateEndDateTime;
-	//protected Long copiedFromActivityId;
+	// protected Long copiedFromActivityId;
 	protected String costForParticipant;
 	protected String description;
 	protected DateTime startDateTime;
 	protected Address address;
-	//protected Boolean isRestricted;
-	//protected Long scheduleId;
+	// protected Boolean isRestricted;
+	// protected Long scheduleId;
 	@Persistent(mappedBy = "activity")
 	protected SortedSet<Participation> participations = new TreeSet<>();
 	@Persistent(mappedBy = "activity")
@@ -149,20 +151,18 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	}
 
-	/*@Property(hidden = Where.ALL_TABLES)
-	// @MemberOrder(sequence = "2")
-	@Column(allowsNull = "true")
-	public Provider getProvider() {
-		return provider;
-	}
-
-	public void setProvider(final Provider provider) {
-		this.provider = provider;
-	}
-
-	public List<Provider> choicesProvider() {
-		return activityProvidersRepo.listAllProviders();
-	}*/
+	/*
+	 * @Property(hidden = Where.ALL_TABLES) // @MemberOrder(sequence = "2")
+	 * 
+	 * @Column(allowsNull = "true") public Provider getProvider() { return
+	 * provider; }
+	 * 
+	 * public void setProvider(final Provider provider) { this.provider =
+	 * provider; }
+	 * 
+	 * public List<Provider> choicesProvider() { return
+	 * activityProvidersRepo.listAllProviders(); }
+	 */
 
 	@Property(hidden = Where.EVERYWHERE)
 	@Column(allowsNull = "true")
@@ -214,7 +214,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		this.costForParticipant = costForParticipant;
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
+	@Property(hidden = Where.ALL_TABLES, maxLength = 1000)
 	// @MemberOrder(sequence = "9")
 	@Column(allowsNull = "true")
 	public String getDescription() {
@@ -279,16 +279,15 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	// @MemberOrder(name = "location", sequence = "1")
 	public Activity updateAddress(
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Location") String name,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 1") String street1,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Street 1") String street1,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Suburb") String suburb,
-			@Parameter(optionality = Optionality.OPTIONAL, regexPattern = RegexValidation.Address.POSTCODE) @ParameterLayout(named = "Postcode") String postcode) {
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Suburb") Suburb suburb) {
 		Address address = locationsRepo.createAddress();
 		address.setName(name);
 		address.setStreet1(street1);
 		address.setStreet2(street2);
-		address.setPostcode(postcode);
-		address.setSuburb(suburb);
+		address.setPostcode(suburb.getPostcode().toString());
+		address.setSuburb(suburb.getName());
 		// TODO consider empty address values, reset to null
 		address.updateGeocodedLocation();
 		Address oldAddress = getAddress();
@@ -306,51 +305,61 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		return getAddress() != null ? getAddress().getStreet1() : null;
 	}
 
-	public String default3UpdateAddress() {
-		return getAddress() != null ? getAddress().getSuburb() : null;
-	}
-
 	public String default2UpdateAddress() {
 		return getAddress() != null ? getAddress().getStreet2() : null;
 	}
 
-	public String default4UpdateAddress() {
-		return getAddress() != null ? getAddress().getPostcode() : null;
+	public Suburb default3UpdateAddress() {
+		return getAddress() != null
+				? suburbs.findSuburb(getAddress().getSuburb(), new Integer(getAddress().getPostcode()))
+				: null;
 	}
 
-	/*@Property(hidden = Where.EVERYWHERE)
-	@PropertyLayout(named = "Is Restricted")
-	// @MemberOrder(sequence = "13")
-	@Column(allowsNull = "true")
-	public Boolean getIsRestricted() {
-		return isRestricted;
+	public List<Suburb> choices3UpdateAddress() {
+		return suburbs.listAllSuburbs();
 	}
 
-	public void setIsRestricted(Boolean isRestricted) {
-		this.isRestricted = isRestricted;
+	/*@Programmatic()
+	public void updateAddress(String locationName, String street1, String street2, String suburb, int postcode) {
+		Suburb s = suburbs.findSuburb(suburb, postcode);
+		if (s != null) {
+			updateAddress(locationName, street1, street2, s);
+		}
 	}*/
 
-	/*@Property(hidden = Where.EVERYWHERE)
-	@PropertyLayout(named = "Schedule Id")
-	// @MemberOrder(sequence = "14")
-	@Column(allowsNull = "true")
-	public Long getScheduleId() {
-		return scheduleId;
-	}
+	/*
+	 * @Property(hidden = Where.EVERYWHERE)
+	 * 
+	 * @PropertyLayout(named = "Is Restricted") // @MemberOrder(sequence = "13")
+	 * 
+	 * @Column(allowsNull = "true") public Boolean getIsRestricted() { return
+	 * isRestricted; }
+	 * 
+	 * public void setIsRestricted(Boolean isRestricted) { this.isRestricted =
+	 * isRestricted; }
+	 */
 
-	public void setScheduleId(Long scheduleId) {
-		this.scheduleId = scheduleId;
-	}*/
+	/*
+	 * @Property(hidden = Where.EVERYWHERE)
+	 * 
+	 * @PropertyLayout(named = "Schedule Id") // @MemberOrder(sequence = "14")
+	 * 
+	 * @Column(allowsNull = "true") public Long getScheduleId() { return
+	 * scheduleId; }
+	 * 
+	 * public void setScheduleId(Long scheduleId) { this.scheduleId =
+	 * scheduleId; }
+	 */
 
-	/*@Property(hidden = Where.EVERYWHERE)
-	@Column(allowsNull = "true")
-	public Long getCopiedFromActivityId() {
-		return copiedFromActivityId;
-	}
-
-	public void setCopiedFromActivityId(Long copiedFromActivityId) {
-		this.copiedFromActivityId = copiedFromActivityId;
-	}*/
+	/*
+	 * @Property(hidden = Where.EVERYWHERE)
+	 * 
+	 * @Column(allowsNull = "true") public Long getCopiedFromActivityId() {
+	 * return copiedFromActivityId; }
+	 * 
+	 * public void setCopiedFromActivityId(Long copiedFromActivityId) {
+	 * this.copiedFromActivityId = copiedFromActivityId; }
+	 */
 
 	@Property()
 	// @MemberOrder(sequence = "100")
@@ -474,5 +483,8 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Inject
 	protected ActivityTypes activityTypesRepo;
+
+	@Inject
+	protected Suburbs suburbs;
 
 }

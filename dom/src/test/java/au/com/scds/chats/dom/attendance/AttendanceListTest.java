@@ -26,6 +26,7 @@ import au.com.scds.chats.dom.attendance.AttendanceList;
 import au.com.scds.chats.dom.attendance.AttendanceLists;
 import au.com.scds.chats.dom.attendance.Attend;
 import au.com.scds.chats.dom.general.Person;
+import au.com.scds.chats.dom.general.Persons;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
@@ -42,6 +43,7 @@ public class AttendanceListTest {
 	@Mock
 	ActionInvocationContext actionInvocationContext;
 
+	Persons persons;
 	Participants participantsRepo;
 	AttendanceLists attendanceListsRepo;
 	AttendanceList attendanceList;
@@ -50,8 +52,9 @@ public class AttendanceListTest {
 
 	@Before
 	public void setUp() throws Exception {
+		persons = new Persons(mockContainer);
 		attendanceListsRepo = new AttendanceLists(mockContainer);
-		participantsRepo = new Participants(mockContainer);
+		participantsRepo = new Participants(mockContainer, persons);
 		attendanceListsRepo = new AttendanceLists(mockContainer);
 		attendanceList = new AttendanceList(attendanceListsRepo, participantsRepo);
 		attended = new Attend(mockContainer);
@@ -121,8 +124,8 @@ public class AttendanceListTest {
 							.allMatches(with(aQueryDefault(Participant.class, "findParticipantsBySurname")));
 					will(returnValue(participants));
 					// see if existing Person
-					oneOf(mockContainer).allMatches(with(aQueryDefault(Person.class, "findPersonsBySurname")));
-					will(returnValue(persons));
+					oneOf(mockContainer).firstMatch(with(aQueryDefault(Person.class, "findPerson")));
+					will(returnValue(null));
 					oneOf(mockContainer).newTransientInstance(Person.class);
 					will(returnValue(person));
 					oneOf(mockContainer).persistIfNotAlready(person);
