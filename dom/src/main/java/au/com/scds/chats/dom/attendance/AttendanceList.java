@@ -75,8 +75,8 @@ public class AttendanceList {
 	}
 
 	@Property()
-	@PropertyLayout()
-	@MemberOrder(sequence = "1")
+	//@PropertyLayout()
+	//@MemberOrder(sequence = "1")
 	@Column(allowsNull = "true")
 	public ActivityEvent getParentActivity() {
 		return parentActivity;
@@ -87,8 +87,8 @@ public class AttendanceList {
 	}
 
 	@Property()
-	@CollectionLayout(render = RenderType.EAGERLY, named = "Attendance")
-	@MemberOrder(sequence = "101")
+	//@CollectionLayout(render = RenderType.EAGERLY, named = "Attendance")
+	//@MemberOrder(sequence = "101")
 	public final List<Attend> getAttendeds() {
 		return attendeds;
 	}
@@ -100,7 +100,7 @@ public class AttendanceList {
 
 	@Action
 	@ActionLayout(named = "Add All Participants")
-	@MemberOrder(name = "attendeds", sequence = "1")
+	//@MemberOrder(name = "attendeds", sequence = "1")
 	public AttendanceList addAllAttendeds() {
 		for (Participation participation : getParentActivity().getParticipations()) {
 			Participant participant = participation.getParticipant();
@@ -123,7 +123,7 @@ public class AttendanceList {
 
 	@Action
 	@ActionLayout(named = "Add")
-	@MemberOrder(name = "attendeds", sequence = "2")
+	//@MemberOrder(name = "attendeds", sequence = "2")
 	public AttendanceList addAttended(@Parameter(optionality = Optionality.MANDATORY) Participant participant) {
 		Attend attended = attendanceListsRepo.createAttended(parentActivity, participant, true);
 		getAttendeds().add(attended);
@@ -144,7 +144,7 @@ public class AttendanceList {
 
 	@Action
 	@ActionLayout(named = "Add New")
-	@MemberOrder(name = "attendeds", sequence = "3")
+	//@MemberOrder(name = "attendeds", sequence = "3")
 	public AttendanceList addNewParticipantAndAttended(final @ParameterLayout(named = "First name") String firstname,
 			final @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob,
@@ -156,7 +156,7 @@ public class AttendanceList {
 
 	@Action
 	@ActionLayout(named = "Do Bulk Updates")
-	@MemberOrder(name = "attendeds", sequence = "4")
+	//@MemberOrder(name = "attendeds", sequence = "4")
 	public List<Attend> bulkAction() {
 		return getAttendeds();
 	}

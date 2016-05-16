@@ -52,7 +52,7 @@ public abstract class Call extends AbstractChatsDomainEntity  {
 	private Participant participant;
 	private DateTime startDateTime;
 	private DateTime endDateTime;
-	private String notes;
+	private String summaryNotes;
 
 	private static DecimalFormat hoursFormat = new DecimalFormat("#,##0.00");
 
@@ -119,12 +119,12 @@ public abstract class Call extends AbstractChatsDomainEntity  {
 	@Property()
 	@MemberOrder(sequence = "7")
 	@Column(allowsNull = "true", length = 1000)
-	public String getNotes() {
-		return notes;
+	public String getSummaryNotes() {
+		return summaryNotes;
 	}
 
-	public void setNotes(String notes) {
-		this.notes = notes;
+	public void setSummaryNotes(String notes) {
+		this.summaryNotes = notes;
 	}
 
 	@Programmatic

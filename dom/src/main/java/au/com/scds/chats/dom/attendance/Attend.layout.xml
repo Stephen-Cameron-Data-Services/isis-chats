@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<grid
+	xsi:schemaLocation="http://isis.apache.org/applib/layout/component http://isis.apache.org/applib/layout/component/component.xsd http://isis.apache.org/applib/layout/grid/bootstrap3 http://isis.apache.org/applib/layout/grid/bootstrap3/bootstrap3.xsd"
+	xmlns="http://isis.apache.org/applib/layout/grid/bootstrap3" xmlns:ns2="http://isis.apache.org/applib/layout/component"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<row>
+		<col span="12" unreferencedActions="true">
+			<ns2:domainObject />
+			<ns2:action id="clearHints" position="RIGHT" />
+		</col>
+	</row>
+	<row>
+		<col span="12">
+			<tabGroup>
+				<tab name="General">
+					<row>
+						<col span="6">
+							<ns2:fieldSet name="General" id="general"
+								unreferencedProperties="true">
+								<ns2:action id="Delete" />
+								<ns2:property id="activity" hidden="ALL_TABLES" />
+								<ns2:property id="participant" hidden="ALL_TABLES" />
+								<ns2:property id="participantName" hidden="OBJECT_FORMS" />
+							</ns2:fieldSet>
+						</col>
+						<col span="6">
+							<ns2:fieldSet name="Attended" id="attend"
+								unreferencedProperties="true">
+								<ns2:property id="wasAttended">
+									<ns2:action id="wasAttended" />
+									<ns2:action id="wasNotAttended" />
+								</ns2:property>
+							</ns2:fieldSet>
+							<ns2:fieldSet name="Times" id="times"
+								unreferencedProperties="true">
+								<ns2:action id="updateDatesAndTimes" />
+								<ns2:property id="startDateTime" />
+								<ns2:property id="endDateTime" />
+								<ns2:property id="attendanceInterval" />
+							</ns2:fieldSet>
+						</col>
+					</row>
+				</tab>
+				<tab name="Other">
+					<row>
+						<col span="4">
+							<ns2:fieldSet name="Admin" id="admin">
+								<ns2:property id="datanucleusIdLong" hidden="ALL_TABLES" />
+								<ns2:property id="datanucleusVersionTimestamp"
+									hidden="ALL_TABLES" />
+								<ns2:property id="datanucleusVersionLong" hidden="ALL_TABLES" />
+								<ns2:property id="createdBy" hidden="ALL_TABLES" />
+								<ns2:property id="createdOn" hidden="ALL_TABLES" />
+								<ns2:property id="lastModifiedBy" hidden="ALL_TABLES" />
+								<ns2:property id="lastModifiedOn" hidden="ALL_TABLES" />
+								<ns2:property id="region" hidden="EVERYWHERE" />
+								<ns2:property id="regionName" />
+							</ns2:fieldSet>
+						</col>
+						<col span="8" unreferencedCollections="true">
+						</col>
+					</row>
+				</tab>
+			</tabGroup>
+		</col>
+	</row>
+</grid>

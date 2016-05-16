@@ -79,8 +79,8 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "This is a non-modifiable property")
-	@PropertyLayout(describedAs = "The Activity attended", hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "1")
+	//@PropertyLayout(describedAs = "The Activity attended", hidden = Where.ALL_TABLES)
+	//@MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
 	public ActivityEvent getActivity() {
 		return activity;
@@ -94,8 +94,8 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "This is a non-modifiable property")
-	@PropertyLayout(describedAs = "The Participant in the Activity", hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "2.1")
+	//@PropertyLayout(describedAs = "The Participant in the Activity", hidden = Where.ALL_TABLES)
+	//@MemberOrder(sequence = "2.1")
 	@Column(allowsNull = "false")
 	public Participant getParticipant() {
 		return participant;
@@ -106,16 +106,16 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "This is a non-modifiable property")
-	@PropertyLayout(named = "Participant", describedAs = "The Participant in the Activity", hidden = Where.OBJECT_FORMS)
-	@MemberOrder(sequence = "2.2")
+	//@PropertyLayout(named = "Participant", describedAs = "The Participant in the Activity", hidden = Where.OBJECT_FORMS)
+	//@MemberOrder(sequence = "2.2")
 	@NotPersistent
 	public String getParticipantName() {
 		return getParticipant().getFullName();
 	}
 
 	@Property()
-	@PropertyLayout(describedAs = "When the Participant joined the Activity")
-	@MemberOrder(sequence = "3.1")
+	//@PropertyLayout(describedAs = "When the Participant joined the Activity")
+	//@MemberOrder(sequence = "3.1")
 	@Column(allowsNull = "true")
 	public DateTime getStartDateTime() {
 		return startDateTime;
@@ -126,8 +126,8 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	}
 
 	@Property()
-	@PropertyLayout(describedAs = "When the Participant left the Activity")
-	@MemberOrder(sequence = "4.1")
+	//@PropertyLayout(describedAs = "When the Participant left the Activity")
+	//@MemberOrder(sequence = "4.1")
 	@Column(allowsNull = "true")
 	public DateTime getEndDateTime() {
 		return endDateTime;
@@ -137,9 +137,9 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 		this.endDateTime = endDateTime;
 	}
 
-	@Property(editing = Editing.DISABLED, notPersisted = true)
-	@PropertyLayout(describedAs = "The interval that the participant attended the activity in hours")
-	@MemberOrder(sequence = "5.1")
+	@Property(editing = Editing.DISABLED)
+	//@PropertyLayout(describedAs = "The interval that the participant attended the activity in hours")
+	//@MemberOrder(sequence = "5.1")
 	@NotPersistent
 	public String getAttendanceInterval() {
 		if (getStartDateTime() != null && getEndDateTime() != null) {
@@ -160,8 +160,8 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	}
 
 	@Property(editing = Editing.DISABLED)
-	@PropertyLayout(hidden = Where.EVERYWHERE)
-	@MemberOrder(sequence = "6.1")
+	//@PropertyLayout(hidden = Where.EVERYWHERE)
+	//@MemberOrder(sequence = "6.1")
 	@Column(allowsNull = "false")
 	Boolean getAttended() {
 		return attended;
@@ -172,15 +172,15 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	}
 
 	@Property(editing = Editing.DISABLED)
-	@PropertyLayout(describedAs = "If the Participant attended the Activity", hidden = Where.NOWHERE)
-	@MemberOrder(sequence = "6.2")
+	//@PropertyLayout(describedAs = "If the Participant attended the Activity", hidden = Where.NOWHERE)
+	//@MemberOrder(sequence = "6.2")
 	@NotPersistent()
 	public String getWasAttended() {
 		return (getAttended() ? "YES" : "NO");
 	}
 
 	@Action(invokeOn = InvokeOn.OBJECT_ONLY)
-	@MemberOrder(sequence = "20.1")
+	//@MemberOrder(sequence = "20.1")
 	public AttendanceList Delete() {
 		AttendanceList attendances = getActivity().getAttendances();
 		attendances.removeAttended(this);
@@ -188,7 +188,7 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	}
 
 	@Action(invokeOn = InvokeOn.OBJECT_AND_COLLECTION)
-	@MemberOrder(name = "wasattended", sequence = "21.1")
+	//@MemberOrder(name = "wasattended", sequence = "21.1")
 	public Attend wasAttended() {
 		if (!getAttended())
 			setAttended(true);
@@ -196,7 +196,7 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	}
 
 	@Action(invokeOn = InvokeOn.OBJECT_AND_COLLECTION)
-	@MemberOrder(name = "wasattended", sequence = "22.1")
+	//@MemberOrder(name = "wasattended", sequence = "22.1")
 	public Attend wasNotAttended() {
 		if (getAttended())
 			setAttended(false);
@@ -204,7 +204,7 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	}
 
 	@Action(invokeOn = InvokeOn.OBJECT_AND_COLLECTION)
-	@MemberOrder(name = "enddatetime", sequence = "23.1")
+	//@MemberOrder(name = "enddatetime", sequence = "23.1")
 	public Attend updateDatesAndTimes(@ParameterLayout(named="Start Date Time") DateTime start, @ParameterLayout(named="End Date Time") DateTime end) {
 		boolean isColl = actionInvocationContext.getInvokedOn().isCollection();
 		if (start != null && end != null) {

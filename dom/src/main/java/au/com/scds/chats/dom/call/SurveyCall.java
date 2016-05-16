@@ -14,7 +14,7 @@ import org.incode.module.note.dom.api.notable.Notable;
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "SURVEY")
-@DomainObject(objectType = "SURVEY_CALL")
+@DomainObject()
 public class SurveyCall extends Call implements Notable {
 
 	public String title(){

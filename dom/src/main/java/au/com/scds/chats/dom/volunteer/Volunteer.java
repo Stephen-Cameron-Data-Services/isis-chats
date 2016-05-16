@@ -58,9 +58,9 @@ import au.com.scds.chats.dom.participant.Participants;
 
 @Queries({ @Query(name = "listVolunteersByStatus", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.volunteer.Volunteer " + "WHERE status == :status"),
 		@Query(name = "findVolunteersBySurname", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.volunteer.Volunteer " + "WHERE person.surname.indexOf(:surname) >= 0"), })
-@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "VolunteerRoles", "Admin" })
+//@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "VolunteerRoles", "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-public class Volunteer extends AbstractChatsDomainEntity implements /*Notable,*/ Locatable {
+public class Volunteer extends AbstractChatsDomainEntity implements Notable, Locatable {
 
 	private Person person;
 	private Status status = Status.ACTIVE;
@@ -75,7 +75,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements /*Notable,*/
 		return TranslatableString.tr("Volunteer: {fullname}", "fullname", getPerson().getFullname());
 	}
 
-	@CollectionLayout(named = "Call Schedules", paged = 20/*, render = RenderType.EAGERLY*/)
+	//@CollectionLayout(named = "Call Schedules", paged = 20/*, render = RenderType.EAGERLY*/)
 	public SortedSet<CalendarDayCallSchedule> getScheduled() {
 		return callSchedules;
 	}
@@ -85,7 +85,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements /*Notable,*/
 	}
 
 	@Action()
-	@MemberOrder(name = "callschedules", sequence = "1")
+	//@MemberOrder(name = "callschedules", sequence = "1")
 	public Volunteer addScheduledCall(final Participant participant, final DateTime dateTime) {
 		try {
 			ScheduledCall call = schedulesRepo.createScheduledCall(this, participant, dateTime);
@@ -101,38 +101,50 @@ public class Volunteer extends AbstractChatsDomainEntity implements /*Notable,*/
 	}
 
 	@Property(editing=Editing.DISABLED)
-	@MemberOrder(sequence = "1")
+	//@MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
 	public Person getPerson() {
 		return person;
 	}
+	
+
 
 	public void setPerson(final Person person) {
 		if (this.person == null && person != null)
 			this.person = person;
 	}
+	
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
+	//@MemberOrder(sequence = "1.1")
+	public String getFullName() {
+		return getPerson().getFullname();
+	}
 
-	@MemberOrder(sequence = "2")
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
+	//@MemberOrder(sequence = "2")
 	public String getHomePhoneNumber() {
 		return getPerson().getHomePhoneNumber();
 	}
 
-	@MemberOrder(sequence = "3")
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
+	//@MemberOrder(sequence = "3")
 	public String getMobilePhoneNumber() {
 		return getPerson().getMobilePhoneNumber();
 	}
-
-	@MemberOrder(sequence = "4")
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
+	//@MemberOrder(sequence = "4")
 	public String getStreetAddress() {
 		return getPerson().getFullStreetAddress();
 	}
 
-	@MemberOrder(sequence = "5")
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
+	//@MemberOrder(sequence = "5")
 	public String getMailAddress() {
 		return getPerson().getFullMailAddress();
 	}
 
-	@MemberOrder(sequence = "6")
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
+	//@MemberOrder(sequence = "6")
 	public String getEMailAddress() {
 		return getPerson().getEmailAddress();
 	}
@@ -183,8 +195,8 @@ public class Volunteer extends AbstractChatsDomainEntity implements /*Notable,*/
 	}
 
 	@Action()
-	@ActionLayout(named="Add")
-	@MemberOrder(name = "VolunteerRoles", sequence = "1")
+	//@ActionLayout(named="Add")
+	//@MemberOrder(name = "VolunteerRoles", sequence = "1")
 	public Volunteer addVolunteerRole(VolunteerRole role) {
 		if (role != null)
 			getVolunteerRoles().add(role);
@@ -196,8 +208,8 @@ public class Volunteer extends AbstractChatsDomainEntity implements /*Notable,*/
 	}
 
 	@Action()
-	@ActionLayout(named="Remove")
-	@MemberOrder(name = "VolunteerRoles", sequence = "2")
+	//@ActionLayout(named="Remove")
+	//@MemberOrder(name = "VolunteerRoles", sequence = "2")
 	public Volunteer removeVolunteerRole(VolunteerRole role) {
 		if (role != null)
 			getVolunteerRoles().remove(role);

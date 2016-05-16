@@ -17,7 +17,7 @@
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
 								<ns2:property id="person" hidden="ALL_TABLES"/>
-								<ns2:property id="fullName" typicalLength="30"/>
+								<ns2:property id="fullName" typicalLength="30" hidden="OBJECT_FORMS"/>
 								<ns2:property id="homePhoneNumber" typicalLength="10"/>
 								<ns2:property id="mobilePhoneNumber" typicalLength="10"/>
 								<ns2:property id="emailAddress" typicalLength="20"/>
