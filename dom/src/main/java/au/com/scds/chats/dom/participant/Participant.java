@@ -53,8 +53,7 @@ import au.com.scds.chats.dom.general.Status;
 				+ "&& person.birthdate > :lowerLimit"),
 		@Query(name = "listParticipantsByStatusAndBirthdateBetween", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.participant.Participant  WHERE status == :status "
-				+ "&& person.birthdate > :lowerLimit "
-				+ "&& person.birthdate < :upperLimit "),
+				+ "&& person.birthdate > :lowerLimit " + "&& person.birthdate < :upperLimit "),
 		@Query(name = "findParticipantsBySurname", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.participant.Participant  "
 				+ "WHERE person.surname.indexOf(:surname) >= 0"),
@@ -62,20 +61,10 @@ import au.com.scds.chats.dom.general.Status;
 				+ "FROM au.com.scds.chats.dom.participant.Participant "
 				+ "WHERE ((person.createdOn >= :startDate AND person.createdOn < :startDate) "
 				+ "OR (person.modifiedOn >= :startDate AND person.modifiedOn < :startDate)) AND region = :region"), })
-public class Participant extends AbstractChatsDomainEntity
-		implements Locatable, /* Notable, */ Comparable<Participant> {
+public class Participant extends AbstractChatsDomainEntity implements Locatable, Notable, Comparable<Participant> {
 
 	private Person person;
 	private Status status = Status.ACTIVE;
-	@Persistent(mappedBy = "participant")
-	private LifeHistory lifeHistory;
-	@Persistent(mappedBy = "participant")
-	private SocialFactors socialFactors;
-	@Persistent(mappedBy = "participant")
-	private Loneliness loneliness;
-	@Persistent(mappedBy = "participant")
-	private ParticipantNotes notes;
-	@Persistent(mappedBy = "participant")
 	protected SortedSet<Participation> participations = new TreeSet<Participation>();
 
 	// Social Factor Properties
@@ -92,6 +81,59 @@ public class Participant extends AbstractChatsDomainEntity
 	private String proximityOfFriends;
 	private String involvementGC;
 	private String involvementIH;
+	private String lifeStory;
+	private String experiences;
+	private String hobbies;
+	private String interests;
+	private String loneliness;
+
+	@Property()
+	// @PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP)
+	// @MemberOrder(sequence = "1")
+	@Column(allowsNull = "true", length = 1000)
+	public String getLifeStory() {
+		return lifeStory;
+	}
+
+	public void setLifeStory(final String lifeStory) {
+		this.lifeStory = lifeStory;
+	}
+
+	@Property()
+	// @PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP)
+	// @MemberOrder(sequence = "2")
+	@Column(allowsNull = "true", length = 1000)
+	public String getLifeExperiences() {
+		return experiences;
+	}
+
+	public void setLifeExperiences(final String experiences) {
+		this.experiences = experiences;
+	}
+
+	@Property()
+	// @PropertyLayout(multiLine = 2, labelPosition = LabelPosition.TOP)
+	// @MemberOrder(sequence = "3")
+	@Column(allowsNull = "true")
+	public String getHobbies() {
+		return hobbies;
+	}
+
+	public void setHobbies(final String hobbies) {
+		this.hobbies = hobbies;
+	}
+
+	@Property()
+	// @PropertyLayout(multiLine = 2, labelPosition = LabelPosition.TOP)
+	// @MemberOrder(sequence = "4")
+	@Column(allowsNull = "true")
+	public String getInterests() {
+		return interests;
+	}
+
+	public void setInterests(final String interests) {
+		this.interests = interests;
+	}
 
 	public Participant() {
 		super();
@@ -108,7 +150,7 @@ public class Participant extends AbstractChatsDomainEntity
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "1")
+	// @MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
 	public Person getPerson() {
 		return person;
@@ -119,44 +161,44 @@ public class Participant extends AbstractChatsDomainEntity
 	}
 
 	@Property(hidden = Where.OBJECT_FORMS, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	@MemberOrder(sequence = "1.1")
+	// @MemberOrder(sequence = "1.1")
 	public String getFullName() {
 		return getPerson().getFullname();
 	}
 
 	@Property(hidden = Where.NOWHERE, editing = Editing.DISABLED, editingDisabledReason = "Calculated from Person record")
-	@MemberOrder(sequence = "1.2")
+	// @MemberOrder(sequence = "1.2")
 	public Integer getAge() {
 		return getPerson().getAge(null);
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	@MemberOrder(sequence = "2")
+	// @MemberOrder(sequence = "2")
 	public String getHomePhoneNumber() {
 		return getPerson().getHomePhoneNumber();
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	@MemberOrder(sequence = "3")
+	// @MemberOrder(sequence = "3")
 	public String getMobilePhoneNumber() {
 		return getPerson().getMobilePhoneNumber();
 	}
 
 	@Property(hidden = Where.PARENTED_TABLES, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	@MemberOrder(sequence = "4")
+	// @MemberOrder(sequence = "4")
 	public String getStreetAddress() {
 		return getPerson().getFullStreetAddress();
 	}
 
 	@Property(hidden = Where.PARENTED_TABLES, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	@PropertyLayout()
-	@MemberOrder(sequence = "5")
+	// @PropertyLayout()
+	// @MemberOrder(sequence = "5")
 	public String getMailAddress() {
 		return getPerson().getFullMailAddress();
 	}
 
 	@Property(hidden = Where.PARENTED_TABLES, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	@MemberOrder(sequence = "6")
+	// @MemberOrder(sequence = "6")
 	public String getEmailAddress() {
 		return getPerson().getEmailAddress();
 	}
@@ -178,85 +220,13 @@ public class Participant extends AbstractChatsDomainEntity
 		statuses.add(Status.TO_EXIT);
 		return statuses;
 	}
-
-	@Property(hidden = Where.EVERYWHERE)
-	@Column(allowsNull = "true")
-	public LifeHistory getLifeHistory() {
-		return lifeHistory;
-	}
-
-	public void setLifeHistory(final LifeHistory lifeHistory) {
-		this.lifeHistory = lifeHistory;
-	}
-
-	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	@ActionLayout(named = "Life History")
-	@MemberOrder(sequence = "10")
-	public LifeHistory updateLifeHistory() {
-		if (getLifeHistory() == null)
-			participantsRepo.createLifeHistory(this);
-		return getLifeHistory();
-	}
-
-	@Property(hidden = Where.EVERYWHERE)
-	@Column(allowsNull = "true")
-	public SocialFactors getSocialFactors() {
-		return socialFactors;
-	}
-
-	public void setSocialFactors(final SocialFactors socialFactors) {
-		this.socialFactors = socialFactors;
-	}
-
-	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	@ActionLayout(named = "Social Factors")
-	@MemberOrder(sequence = "11")
-	public SocialFactors updateSocialFactors() {
-		if (getSocialFactors() == null)
-			participantsRepo.createSocialFactors(this);
-		return getSocialFactors();
-	}
-
-	@Property(hidden = Where.EVERYWHERE)
-	@Column(allowsNull = "true")
-	public Loneliness getLoneliness() {
-		return loneliness;
-	}
-
-	public void setLoneliness(final Loneliness loneliness) {
-		this.loneliness = loneliness;
-	}
-
-	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	@ActionLayout(named = "Loneliness")
-	@MemberOrder(sequence = "12")
-	public Loneliness updateLoneliness() {
-		if (getLoneliness() == null)
-			participantsRepo.createLoneliness(this);
-		return getLoneliness();
-	}
-
-	@Property(hidden = Where.EVERYWHERE)
-	@Column(allowsNull = "true")
-	public ParticipantNotes getNotes() {
-		return notes;
-	}
-
-	public void setNotes(ParticipantNotes notes) {
-		this.notes = notes;
-	}
-
-	@Action(semantics = SemanticsOf.IDEMPOTENT)
-	@ActionLayout(named = "Notes")
-	@MemberOrder(sequence = "13")
-	public ParticipantNotes updateNotes() {
-		if (getNotes() == null)
-			participantsRepo.createParticipantNotes(this);
-		return getNotes();
-	}
+	
+	
+	
+	
 
 	@Property()
-	@MemberOrder(sequence = "100")
+	// @MemberOrder(sequence = "100")
 	@CollectionLayout(named = "Participation", render = RenderType.EAGERLY)
 	public SortedSet<Participation> getParticipations() {
 		return participations;
@@ -305,8 +275,8 @@ public class Participant extends AbstractChatsDomainEntity
 	}
 
 	@Property()
-	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
-	@MemberOrder(name = "Limitations", sequence = "1")
+	// @PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	// @MemberOrder(name = "Limitations", sequence = "1")
 	@Column(allowsNull = "true")
 	public String getLimitingHealthIssues() {
 		return limitingHealthIssues;
@@ -317,8 +287,8 @@ public class Participant extends AbstractChatsDomainEntity
 	}
 
 	@Property()
-	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
-	@MemberOrder(name = "Limitations", sequence = "2")
+	// @PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	// @MemberOrder(name = "Limitations", sequence = "2")
 	@Column(allowsNull = "true")
 	public String getOtherLimitingFactors() {
 		return otherLimitingFactors;
@@ -329,8 +299,8 @@ public class Participant extends AbstractChatsDomainEntity
 	}
 
 	@Property()
-	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
-	@MemberOrder(name = "Driving", sequence = "3")
+	// @PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	// @MemberOrder(name = "Driving", sequence = "3")
 	@Column(allowsNull = "true")
 	public String getDriversLicence() {
 		return driversLicence;
@@ -341,8 +311,8 @@ public class Participant extends AbstractChatsDomainEntity
 	}
 
 	@Property()
-	@PropertyLayout(labelPosition = LabelPosition.TOP)
-	@MemberOrder(name = "Driving", sequence = "4")
+	// @PropertyLayout(labelPosition = LabelPosition.TOP)
+	// @MemberOrder(name = "Driving", sequence = "4")
 	@Column(allowsNull = "true")
 	public String getDrivingAbility() {
 		return drivingAbility;
@@ -353,8 +323,8 @@ public class Participant extends AbstractChatsDomainEntity
 	}
 
 	@Property()
-	@PropertyLayout(labelPosition = LabelPosition.TOP)
-	@MemberOrder(name = "Driving", sequence = "5")
+	// @PropertyLayout(labelPosition = LabelPosition.TOP)
+	// @MemberOrder(name = "Driving", sequence = "5")
 	@Column(allowsNull = "true")
 	public String getDrivingConfidence() {
 		return drivingConfidence;
@@ -365,8 +335,8 @@ public class Participant extends AbstractChatsDomainEntity
 	}
 
 	@Property()
-	@PropertyLayout(labelPosition = LabelPosition.TOP)
-	@MemberOrder(sequence = "6")
+	// @PropertyLayout(labelPosition = LabelPosition.TOP)
+	// @MemberOrder(sequence = "6")
 	@Column(allowsNull = "true")
 	public String getPlaceOfOrigin() {
 		return placeOfOrigin;
@@ -377,8 +347,8 @@ public class Participant extends AbstractChatsDomainEntity
 	}
 
 	@Property()
-	@PropertyLayout(labelPosition = LabelPosition.TOP)
-	@MemberOrder(sequence = "7")
+	// @PropertyLayout(labelPosition = LabelPosition.TOP)
+	// @MemberOrder(sequence = "7")
 	@Column(allowsNull = "true")
 	public LocalDate getDateOfSettlement() {
 		return dateOfSettlement;
@@ -389,8 +359,8 @@ public class Participant extends AbstractChatsDomainEntity
 	}
 
 	@Property()
-	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
-	@MemberOrder(name = "Friends and Relatives", sequence = "8")
+	// @PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	// @MemberOrder(name = "Friends and Relatives", sequence = "8")
 	@Column(allowsNull = "true")
 	public String getCloseRelatives() {
 		return closeRelatives;
@@ -401,8 +371,8 @@ public class Participant extends AbstractChatsDomainEntity
 	}
 
 	@Property()
-	@PropertyLayout(labelPosition = LabelPosition.TOP)
-	@MemberOrder(name = "Friends and Relatives", sequence = "9")
+	// @PropertyLayout(labelPosition = LabelPosition.TOP)
+	// @MemberOrder(name = "Friends and Relatives", sequence = "9")
 	@Column(allowsNull = "true")
 	public Integer getCloseRelativeAndFriendCount() {
 		return closeRlFrCount;
@@ -413,8 +383,8 @@ public class Participant extends AbstractChatsDomainEntity
 	}
 
 	@Property()
-	@PropertyLayout(labelPosition = LabelPosition.TOP)
-	@MemberOrder(name = "Friends and Relatives", sequence = "10")
+	// @PropertyLayout(labelPosition = LabelPosition.TOP)
+	// @MemberOrder(name = "Friends and Relatives", sequence = "10")
 	@Column(allowsNull = "true")
 	public String getProximityOfRelatives() {
 		return proximityOfRelatives;
@@ -425,8 +395,8 @@ public class Participant extends AbstractChatsDomainEntity
 	}
 
 	@Property()
-	@PropertyLayout(labelPosition = LabelPosition.TOP)
-	@MemberOrder(name = "Friends and Relatives", sequence = "11")
+	// @PropertyLayout(labelPosition = LabelPosition.TOP)
+	// @MemberOrder(name = "Friends and Relatives", sequence = "11")
 	@Column(allowsNull = "true")
 	public String getProximityOfFriends() {
 		return proximityOfFriends;
@@ -437,8 +407,8 @@ public class Participant extends AbstractChatsDomainEntity
 	}
 
 	@Property()
-	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
-	@MemberOrder(name = "Involvement", sequence = "12")
+	// @PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	// @MemberOrder(name = "Involvement", sequence = "12")
 	@Column(allowsNull = "true")
 	public String getInvolvementInGroupsClubs() {
 		return involvementGC;
@@ -449,8 +419,8 @@ public class Participant extends AbstractChatsDomainEntity
 	}
 
 	@Property()
-	@PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
-	@MemberOrder(name = "Involvement", sequence = "13")
+	// @PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
+	// @MemberOrder(name = "Involvement", sequence = "13")
 	@Column(allowsNull = "true")
 	public String getInvolvementInInterestsHobbies() {
 		return involvementIH;
@@ -458,6 +428,14 @@ public class Participant extends AbstractChatsDomainEntity
 
 	public void setInvolvementInInterestsHobbies(final String involvmentInInterestsHobbies) {
 		this.involvementIH = involvmentInInterestsHobbies;
+	}
+
+	public String getLoneliness() {
+		return loneliness;
+	}
+
+	public void setLoneliness(String loneliness) {
+		this.loneliness = loneliness;
 	}
 
 	@Inject

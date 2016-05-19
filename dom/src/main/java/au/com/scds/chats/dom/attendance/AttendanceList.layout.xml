@@ -6,7 +6,6 @@
 	<row>
 		<col span="12" unreferencedActions="true">
 			<ns2:domainObject />
-			<ns2:action id="clearHints" position="RIGHT" />
 		</col>
 	</row>
 	<row>
@@ -38,6 +37,10 @@
 					<row>
 						<col span="4">
 							<ns2:fieldSet name="Admin" id="admin">
+								<ns2:action id="clearHints" position="PANEL_DROPDOWN" />
+								<ns2:action id="downloadLayoutXml" position="PANEL_DROPDOWN" />
+								<ns2:action id="downloadJdoMetadata" position="PANEL_DROPDOWN" />
+								<ns2:action id="rebuildMetamodel" position="PANEL_DROPDOWN" />
 								<ns2:property id="datanucleusIdLong" hidden="ALL_TABLES" />
 								<ns2:property id="datanucleusVersionTimestamp"
 									hidden="ALL_TABLES" />
@@ -46,6 +49,7 @@
 								<ns2:property id="createdOn" hidden="ALL_TABLES" />
 								<ns2:property id="lastModifiedBy" hidden="ALL_TABLES" />
 								<ns2:property id="lastModifiedOn" hidden="ALL_TABLES" />
+								<ns2:property id="region" hidden="EVERYWHERE" />
 								<ns2:property id="regionName" />
 							</ns2:fieldSet>
 						</col>

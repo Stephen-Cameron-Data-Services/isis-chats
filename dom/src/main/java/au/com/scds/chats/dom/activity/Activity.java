@@ -89,11 +89,10 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	}
 
 	public Activity(DomainObjectContainer container, Participants participants, Volunteers volunteers,
-			Providers activityProviders, ActivityTypes activityTypes, Locations locations) {
+			 ActivityTypes activityTypes, Locations locations) {
 		this.container = container;
 		this.participantsRepo = participants;
 		this.volunteersRepo = volunteers;
-		this.activityProvidersRepo = activityProviders;
 		this.activityTypesRepo = activityTypes;
 		this.locationsRepo = locations;
 	}
@@ -477,9 +476,6 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Inject
 	protected Locations locationsRepo;
-
-	@Inject
-	protected Providers activityProvidersRepo;
 
 	@Inject
 	protected ActivityTypes activityTypesRepo;

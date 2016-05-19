@@ -66,8 +66,8 @@ public class Participants {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "1")
-	@SuppressWarnings("all")
+	//@MemberOrder(sequence = "1")
+	//@SuppressWarnings("all")
 	public List<Participant> listActive(@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageClass) {
 		switch (ageClass) {
 		case All:
@@ -100,7 +100,7 @@ public class Participants {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "2")
+	//@MemberOrder(sequence = "2")
 	public List<Participant> listInactive() {
 		return container.allMatches(
 				new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.INACTIVE));
@@ -108,7 +108,7 @@ public class Participants {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "3")
+	//@MemberOrder(sequence = "3")
 	public List<Participant> listToExit() {
 		return container.allMatches(
 				new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.TO_EXIT));
@@ -116,7 +116,7 @@ public class Participants {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "3")
+	//@MemberOrder(sequence = "3")
 	public List<Participant> listExited() {
 		return container
 				.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.EXITED));
@@ -124,13 +124,13 @@ public class Participants {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "4")
+	//@MemberOrder(sequence = "4")
 	public List<Participant> findBySurname(@ParameterLayout(named = "Surname") final String surname) {
 		return container
 				.allMatches(new QueryDefault<>(Participant.class, "findParticipantsBySurname", "surname", surname));
 	}
 
-	@MemberOrder(sequence = "5")
+	//@MemberOrder(sequence = "5")
 	public Participant create(final @Parameter(maxLength = 100) @ParameterLayout(named = "First name") String firstname,
 			final @Parameter(maxLength = 100) @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob,
@@ -231,54 +231,6 @@ public class Participants {
 		container.flush();
 	}
 
-	@Programmatic
-	public void createLifeHistory(Participant participant) {
-		if (participant == null || participant.getLifeHistory() != null)
-			return;
-		LifeHistory lifeHistory = container.newTransientInstance(LifeHistory.class);
-		lifeHistory.setParticipant(participant);
-		participant.setLifeHistory(lifeHistory);
-		container.persistIfNotAlready(lifeHistory);
-		container.flush();
-		return;
-	}
-
-	@Programmatic
-	public void createSocialFactors(Participant participant) {
-		if (participant == null || participant.getSocialFactors() != null)
-			return;
-		SocialFactors socialFactors = container.newTransientInstance(SocialFactors.class);
-		socialFactors.setParticipant(participant);
-		participant.setSocialFactors(socialFactors);
-		container.persistIfNotAlready(socialFactors);
-		container.flush();
-		return;
-	}
-
-	@Programmatic
-	public void createLoneliness(Participant participant) {
-		if (participant == null || participant.getLoneliness() != null)
-			return;
-		Loneliness loneliness = container.newTransientInstance(Loneliness.class);
-		loneliness.setParticipant(participant);
-		participant.setLoneliness(loneliness);
-		container.persistIfNotAlready(loneliness);
-		container.flush();
-		return;
-	}
-
-	@Programmatic
-	public void createParticipantNotes(Participant participant) {
-		if (participant == null || participant.getNotes() != null)
-			return;
-		ParticipantNotes notes = container.newTransientInstance(ParticipantNotes.class);
-		notes.setParticipant(participant);
-		participant.setNotes(notes);
-		container.persistIfNotAlready(notes);
-		container.flush();
-		return;
-	}
-	
 	@Inject
 	Persons persons;
 

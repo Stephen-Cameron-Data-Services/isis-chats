@@ -88,7 +88,7 @@ public class RecurringActivityTest {
 			});
 
 			// when
-			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo,null,null,null,null);
+			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
 			obj.setName("Foobar");
 			obj.setPeriodicity(Periodicity.WEEKLY);
 			obj.setStartDateTime(dateTime);
@@ -156,7 +156,7 @@ public class RecurringActivityTest {
 			});
 
 			// when
-			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo,null,null,null,null);
+			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
 			obj.setName("Foobar");
 			obj.setStartDateTime(dateTime);
 			obj.addNextScheduledActivity();
@@ -186,7 +186,7 @@ public class RecurringActivityTest {
 		public void addParticipantToParent() throws Exception {
 
 			// given
-			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo,null,null,null,null);
+			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
 			final ActivityEvent event1 = new ActivityEvent(mockContainer,participantsRepo);
 			final ActivityEvent event2 = new ActivityEvent(mockContainer,participantsRepo);
 			// create Participant to register for parent RecurringActivity
@@ -256,7 +256,7 @@ public class RecurringActivityTest {
 		public void allCascadedProperties() throws Exception {
 
 			// given
-			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo,null,null,null,null);
+			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
 			final ActivityEvent event1 = new ActivityEvent();
 			final ActivityEvent event2 = new ActivityEvent();
 

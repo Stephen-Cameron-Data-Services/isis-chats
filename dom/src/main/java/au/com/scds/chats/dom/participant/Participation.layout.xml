@@ -6,7 +6,6 @@
 	<row>
 		<col span="12" unreferencedActions="true">
 			<ns2:domainObject />
-			<ns2:action id="clearHints" position="RIGHT"/>
 		</col>
 	</row>
 	<row>
@@ -18,13 +17,13 @@
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
 								<ns2:property id="activity" />
-								<ns2:property id="participant" />								
-								<ns2:property id="roleId" hidden="EVERYWHERE"/>
-								<ns2:property id="oldId" hidden="EVERYWHERE"/>
-								<ns2:property id="arrivingTransportType" hidden="EVERYWHERE"/>
+								<ns2:property id="participant" />
+								<ns2:property id="roleId" hidden="EVERYWHERE" />
+								<ns2:property id="oldId" hidden="EVERYWHERE" />
+								<ns2:property id="arrivingTransportType" hidden="EVERYWHERE" />
 								<ns2:property id="arrivingTransportTypeName" />
 								<ns2:property id="pickupTime" />
-								<ns2:property id="departingTransportType" hidden="EVERYWHERE"/>
+								<ns2:property id="departingTransportType" hidden="EVERYWHERE" />
 								<ns2:property id="departingTransportTypeName" />
 								<ns2:property id="dropoffTime" />
 								<ns2:property id="transportTime" />
@@ -38,14 +37,19 @@
 					<row>
 						<col span="4">
 							<ns2:fieldSet name="Admin" id="other">
-								<ns2:property id="datanucleusIdLong" />
-								<ns2:property id="datanucleusVersionLong" />
-								<ns2:property id="datanucleusVersionTimestamp" />
-								<ns2:property id="createdBy" />
-								<ns2:property id="createdOn" />
-								<ns2:property id="lastModifiedBy" />
-								<ns2:property id="lastModifiedOn" />
-								<ns2:property id="region" hidden="EVERYWHERE" />
+								<ns2:action id="clearHints" position="PANEL_DROPDOWN" />
+								<ns2:action id="downloadLayoutXml" position="PANEL_DROPDOWN" />
+								<ns2:action id="downloadJdoMetadata" position="PANEL_DROPDOWN" />
+								<ns2:action id="rebuildMetamodel" position="PANEL_DROPDOWN" />
+								<ns2:property id="datanucleusIdLong" hidden="ALL_TABLES" />
+								<ns2:property id="datanucleusVersionTimestamp"
+									hidden="ALL_TABLES" />
+								<ns2:property id="datanucleusVersionLong" hidden="ALL_TABLES" />
+								<ns2:property id="createdBy" hidden="ALL_TABLES" />
+								<ns2:property id="createdOn" hidden="ALL_TABLES" />
+								<ns2:property id="lastModifiedBy" hidden="ALL_TABLES" />
+								<ns2:property id="lastModifiedOn" hidden="ALL_TABLES" />
+								<ns2:property id="region" hidden="EVERYWHERE"/>
 								<ns2:property id="regionName" />
 							</ns2:fieldSet>
 						</col>

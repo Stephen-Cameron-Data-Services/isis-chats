@@ -52,13 +52,11 @@ import au.com.scds.chats.dom.volunteer.Volunteer;
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Discriminator(value = "SCHEDULED")
 @Queries({
-		@Query(name = "find", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.call.ScheduledCall "),
-		@Query(name = "findScheduledCallsByVolunteer", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.call.ScheduledCall WHERE volunteer == :volunteer "),
-		@Query(name = "findScheduledCallsByParticipant", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.call.ScheduledCall WHERE participant == :participant "),
-		@Query(name = "findScheduledCallsByParticipantAndVolunteer", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.call.ScheduledCall WHERE participant == :participant AND volunteer == :volunteer "), 
-		@Query(name = "findCompletedScheduledCallsInPeriodAndRegion", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.call.ScheduledCall WHERE isCompleted == true && startDateTime >= :startDateTime && startDateTime <= :endDateTime && region == :region ORDER BY startDateTime ASC"), })
+		@Query(name = "findScheduledCalls", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.ScheduledCall "),
+		@Query(name = "findScheduledCallsByVolunteer", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.ScheduledCall WHERE allocatedVolunteer == :volunteer "),
+		@Query(name = "findScheduledCallsByParticipant", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.ScheduledCall WHERE participant == :participant "),
+		@Query(name = "findScheduledCallsByParticipantAndVolunteer", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.ScheduledCall WHERE participant == :participant && allocatedVolunteer == :volunteer "), 
+		@Query(name = "findCompletedScheduledCallsInPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.ScheduledCall WHERE isCompleted == true && startDateTime >= :startDateTime && startDateTime <= :endDateTime && region == :region ORDER BY startDateTime ASC"), })
 @DomainObject(objectType = "SCHEDULED_CALL")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })

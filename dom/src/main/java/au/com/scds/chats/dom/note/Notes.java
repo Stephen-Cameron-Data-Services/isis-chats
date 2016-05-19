@@ -30,7 +30,17 @@ import org.incode.module.note.dom.impl.note.NoteRepository;
 @DomainService()
 @DomainServiceLayout(named = "Notes", menuOrder = "80")
 public class Notes {
-
+	
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "1")
+	public NotesFinder findNotes(){
+		return new NotesFinder();
+	}
+	
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "2")
 	public List<Note> allNotes(){
 		return notesRepo.allNotes();
 	}

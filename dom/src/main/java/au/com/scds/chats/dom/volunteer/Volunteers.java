@@ -66,7 +66,7 @@ public class Volunteers {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-	@MemberOrder(sequence = "1")
+	@MemberOrder(sequence = "3")
 	@SuppressWarnings("all")
 	public List<Volunteer> listActive() {
 		return container.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.ACTIVE));
@@ -74,7 +74,7 @@ public class Volunteers {
 	
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-	@MemberOrder(sequence = "2")
+	@MemberOrder(sequence = "4")
 	@SuppressWarnings("all")
 	public List<Volunteer> listInactive() {
 		return container.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.INACTIVE));
@@ -82,21 +82,21 @@ public class Volunteers {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-	@MemberOrder(sequence = "3")
+	@MemberOrder(sequence = "5")
 	public List<Volunteer> listToExit() {
 		return container.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.TO_EXIT));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-	@MemberOrder(sequence = "4")
+	@MemberOrder(sequence = "2")
 	public List<Volunteer> findBySurname(@ParameterLayout(named = "Surname") final String surname) {
 		return container.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersBySurname", "surname", surname));
 	}
 
 	@Action()
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "5")
+	@MemberOrder(sequence = "1")
 	public Volunteer create(final @Parameter(maxLength = 100) @ParameterLayout(named = "First name") String firstname,
 			final @Parameter(maxLength = 100) @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob, 

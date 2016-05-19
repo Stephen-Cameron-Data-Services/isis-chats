@@ -76,7 +76,7 @@ public class Activities {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "2")
+	@MemberOrder(sequence = "5")
 	public List<RecurringActivity> listAllRecurringActivities() {
 		return container.allInstances(RecurringActivity.class);
 	}
@@ -91,7 +91,7 @@ public class Activities {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "5")
+	@MemberOrder(sequence = "2")
 	public ActivityEvent createOneOffActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start date time") final DateTime startDateTime) {
@@ -117,14 +117,14 @@ public class Activities {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "6")
+	@MemberOrder(sequence = "4")
 	public List<ActivityEvent> findActivityByName(@ParameterLayout(named = "Name") final String name) {
 		return container.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivityByName", "name", name));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "10")
+	@MemberOrder(sequence = "6")
 	public List<ActivityEvent> listAllFutureActivities() {
 		return container.allMatches(
 				new QueryDefault<>(ActivityEvent.class, "findAllFutureActivities", "currentDateTime", new DateTime()));
@@ -132,7 +132,7 @@ public class Activities {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "11")
+	@MemberOrder(sequence = "7")
 	public List<ActivityEvent> listAllPastActivities() {
 		return container.allMatches(
 				new QueryDefault<>(ActivityEvent.class, "findAllPastActivities", "currentDateTime", new DateTime()));

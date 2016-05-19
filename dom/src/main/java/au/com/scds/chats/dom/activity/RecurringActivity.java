@@ -67,8 +67,9 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 	}
 
 	// used for testing only
-	public RecurringActivity(DomainObjectContainer container, Participants participantsRepo, Volunteers volunteersRepo, Providers activityProviders, ActivityTypes activityTypes, Locations locations) {
-		super(container, participantsRepo, volunteersRepo, activityProviders, activityTypes, locations);
+	public RecurringActivity(DomainObjectContainer container, Participants participantsRepo, Volunteers volunteersRepo, 
+			ActivityTypes activityTypes, Locations locations) {
+		super(container, participantsRepo, volunteersRepo, activityTypes, locations);
 	}
 
 	@Override

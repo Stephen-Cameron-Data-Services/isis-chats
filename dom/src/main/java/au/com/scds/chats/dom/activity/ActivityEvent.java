@@ -93,12 +93,12 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	// for mock testing
 	public ActivityEvent(DomainObjectContainer container, Participants participants) {
-		super(container, participants, null, null, null, null);
+		super(container, participants, null, null, null);
 	}
 
 	// for mock testing
 	public ActivityEvent(DomainObjectContainer container, Volunteers volunteers) {
-		super(container, null, volunteers, null, null, null);
+		super(container, null, volunteers, null, null);
 	}
 
 	@Property(hidden = Where.ALL_TABLES, editing=Editing.DISABLED, editingDisabledReason="This Activity belongs to its parent Recurring Activity")

@@ -18,6 +18,7 @@
  */
 package au.com.scds.chats.dom.call;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -63,7 +64,7 @@ public class Calls {
 	}
 	
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	public CareCall createCareCall(){
 		CareCall call = container.newTransientInstance(CareCall.class);
@@ -73,7 +74,7 @@ public class Calls {
 	}
 	
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
 	public ReconnectCall createReconnectCall(){
 		ReconnectCall call = container.newTransientInstance(ReconnectCall.class);
@@ -83,7 +84,7 @@ public class Calls {
 	}
 	
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "3")
 	public SurveyCall createSurveyCall(){
 		SurveyCall call = container.newTransientInstance(SurveyCall.class);
@@ -91,75 +92,48 @@ public class Calls {
 		container.flush();
 		return call;
 	}
-
+	
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-	@MemberOrder(sequence = "2")
-	public List<CalendarDayCallSchedule> listDailyCallSchedulesForVolunteer(final Volunteer volunteer) {
-		return container.allMatches(new QueryDefault<>(CalendarDayCallSchedule.class, "findCallScheduleByVolunteer", "volunteer", volunteer));
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "4")
+	public List<ScheduledCall> createScheduledCalls(){
+		ArrayList<ScheduledCall> calls = new ArrayList<ScheduledCall>();
+		return calls;
 	}
 	
-	public List<Volunteer> choices0ListDailyCallSchedulesForVolunteer(){
-		return volunteers.listAll();
-	}
-
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-	@MemberOrder(sequence = "1")
-	public List<CalendarDayCallSchedule> listDailyCallSchedulesForActiveVolunteer(@Parameter(optionality = Optionality.MANDATORY) final Volunteer volunteer) {
-		return container.allMatches(new QueryDefault<>(CalendarDayCallSchedule.class, "findCallScheduleByVolunteer", "volunteer", volunteer));
-	}
-	
-	public List<Volunteer> choices0ListDailyCallSchedulesForActiveVolunteer(){
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "10")
+	public List<ScheduledCall> listScheduledCalls(@Parameter(optionality=Optionality.OPTIONAL) final Volunteer activeVolunteer,
+			@Parameter(optionality=Optionality.OPTIONAL) final Participant activeParticipant){
+		if(activeVolunteer != null && activeParticipant != null ){
+			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipantAndVolunteer", "participant", activeParticipant, "volunteer", activeVolunteer));			
+		} else if(activeVolunteer != null){
+			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByVolunteer", "volunteer", activeVolunteer));	
+		}else if(activeParticipant != null){
+			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipant", "participant", activeParticipant));			
+		}else{
+			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCalls"));	
+		}
+	}	
+
+	public List<Volunteer> choices0ListScheduledCalls(){
 		return volunteers.listActive();
 	}
-
-	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-	@MemberOrder(sequence = "3")
-	public List<ScheduledCall> listCallsToActiveParticipant(final Participant participant) {
-		return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipant", "participant", participant));
-	}
-
-	public List<Participant> choices0ListCallsToActiveParticipant(){
+	
+	public List<Participant> choices1ListScheduledCalls(){
 		return participants.listActive(AgeGroup.All);
 	}
 	
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-	@MemberOrder(sequence = "4")
-	public List<ScheduledCall> listCallsToParticipant(final Participant participant) {
-		return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipant", "participant", participant));
-	}
-
-	public List<Participant> choices0ListCallsToParticipant(){
-		return participants.listAll();
+	@MemberOrder(sequence = "11")
+	public List<CalendarDayCallSchedule> listDailyCallSchedulesForVolunteer(@Parameter(optionality = Optionality.MANDATORY) final Volunteer volunteer) {
+		return container.allMatches(new QueryDefault<>(CalendarDayCallSchedule.class, "findCallScheduleByVolunteer", "volunteer", volunteer));
 	}
 	
-	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-	@MemberOrder(sequence = "5")
-	public List<ScheduledCall> listCallsByVolunteer(final Volunteer volunteer) {
-		return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByVolunteer", "volunteer", volunteer));
-	}
-	
-	public List<Volunteer> choices0ListCallsByVolunteer(){
-		return volunteers.listAll();
-	}
-
-	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-	@MemberOrder(sequence = "6")
-	public List<ScheduledCall> listCallsToParticipantByVolunteer(final Participant participant, final Volunteer volunteer) {
-		return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipantAndVolunteer", "participant", participant, "volunteer", volunteer));
-	}
-	
-	public List<Participant> choices0ListCallsToParticipantByVolunteer(){
-		return participants.listAll();
-	}
-	
-	public List<Volunteer> choices1ListCallsToParticipantByVolunteer(){
-		return volunteers.listAll();
+	public List<Volunteer> choices0ListDailyCallSchedulesForVolunteer(){
+		return volunteers.listActive();
 	}
 
 	@Programmatic

@@ -21,7 +21,7 @@ SELECT
   person.birthdate AS birthDate, 
   activity.name AS activityName, 
   activity.region_name AS regionName, 
-  datediff(now(),attend.startdatetime) AS daysSinceLastattend 
+  datediff(now(),attend.startdatetime) AS daysSinceLastattended 
 FROM 
   attend, 
   participant, 
@@ -36,7 +36,7 @@ GROUP BY
   participant.participant_id, 
   activity.activity_id 
 ORDER BY 
- daysSinceLastattend DESC;
+ daysSinceLastattended DESC;
 
 #DROP VIEW MailMergeData;
 CREATE VIEW MailMergeData AS
@@ -83,7 +83,7 @@ SELECT
   activity.name AS activityName,
   participant.status AS participantStatus,
   EXTRACT(YEAR_MONTH FROM attend.startdatetime) as yearMonth,
-  ROUND(SUM(TIMESTAMPDIFF(MINUTE,attend.startdatetime,attend.enddatetime))/60,1) as hoursattend
+  ROUND(SUM(TIMESTAMPDIFF(MINUTE,attend.startdatetime,attend.enddatetime))/60,1) as hoursattended
 FROM
   activity,
   attend,
@@ -325,7 +325,7 @@ SELECT
   activity.region_name AS regionName, 
   activity.startdatetime AS startDateTime, 						
   participant.status AS participantStatus, 
-  TIMESTAMPDIFF(MINUTE,attend.startdatetime,attend.enddatetime) as minutesattend 
+  TIMESTAMPDIFF(MINUTE,attend.startdatetime,attend.enddatetime) as minutesattended 
 FROM 
   activity, 
   attend, 						
