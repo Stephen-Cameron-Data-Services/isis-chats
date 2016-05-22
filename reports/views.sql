@@ -140,7 +140,7 @@ SELECT
   person.surname,
   person.firstname AS firstName,  
   person.birthdate AS birthDate,  
-  person.region_name AS regionName,  
+  volunteer.region_name AS regionName,  
   volunteer.status AS volunteerStatus, 
   CASE volunteeredtime.role  
     WHEN 'VTACTIVITY' THEN 'ACTIVITIES' 
@@ -165,7 +165,7 @@ GROUP BY
 CREATE VIEW VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth AS 
 SELECT  
   activity.name as activityName, 
-  activity.region_name as activityRegion,  	
+  activity.region_name as regionName,  	
   EXTRACT(YEAR_MONTH FROM activity.startdatetime) as activityYearMonth,  
   person.surname,  
   person.firstname AS firstName,  
@@ -228,7 +228,8 @@ CREATE VIEW VolunteeredTimeForCallsByYearMonth AS
 SELECT  
   EXTRACT(YEAR_MONTH FROM calendardaycallschedule.calendardate) AS callScheduleYearMonth,  
   ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime))/60,1) AS hoursVolunteered,  
-  ROUND(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime))/60,1) AS hoursOnCalls  
+  ROUND(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime))/60,1) AS hoursOnCalls,
+  calendardaycallschedule.region_name AS regionName
 FROM  
   calendardaycallschedule, 
   volunteeredtime, 
@@ -237,7 +238,9 @@ WHERE
   volunteeredtime.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id AND 
   telephonecall.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id 
 GROUP BY  
-  EXTRACT(YEAR_MONTH FROM calendardaycallschedule.calendardate);
+  EXTRACT(YEAR_MONTH FROM calendardaycallschedule.calendardate),
+  calendardaycallschedule.region_name;
+ 
 
 #DROP VIEW CallScheduleSummary;
 CREATE VIEW CallScheduleSummary AS 
@@ -269,7 +272,7 @@ SELECT
   person.firstname AS firstName,
   person.birthdate AS birthDate,
   volunteer.status AS volunteerStatus, 
-  volunteer.region_name AS volunteerRegion, 
+  volunteer.region_name AS regionName, 
   EXTRACT(YEAR_MONTH FROM callschedulesummary.calendardate) as callScheduleYearMonth,
   SUM(callschedulesummary.totalcalls) AS totalCalls, 
   SUM(callschedulesummary.completedcalls) AS totalCompletedCalls,
@@ -298,7 +301,7 @@ SELECT
   person.surname,
   person.firstname AS firstName,
   person.birthdate AS birthDate,
-  person.region_name AS regionName,
+  participant.region_name AS regionName,
   participant.status AS participantStatus,
 	EXTRACT(YEAR_MONTH FROM telephonecall.startdatetime) as yearMonth,
 	ROUND(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime))/60,1) as callHoursTotal

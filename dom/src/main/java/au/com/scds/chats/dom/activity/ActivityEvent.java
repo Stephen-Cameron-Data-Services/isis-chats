@@ -72,7 +72,7 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "ACTIVITY")
-@Queries({ @Query(name = "find", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent "),
+@Queries({ @Query(name = "findActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent "),
 		@Query(name = "findActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent WHERE name.indexOf(:name) >= 0 "),
 		@Query(name = "findActivitiesWithoutAttendanceList", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent WHERE attendances == null "),
 		@Query(name = "findAllFutureActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent WHERE startDateTime > :currentDateTime "),

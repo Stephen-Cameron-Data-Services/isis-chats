@@ -31,6 +31,7 @@ import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
 import org.apache.isis.applib.annotation.Where;
@@ -82,7 +83,7 @@ import org.joda.time.LocalDate;
 		@Query(name = "findInactiveParticipants", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.InactiveParticipant "),
 		@Query(name = "getParticipantActivity", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.InactiveParticipant WHERE firstName == :firstname && surname == :surname && birthDate == :birthdate") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class InactiveParticipant /* implements WithApplicationTenancy */{
+public class InactiveParticipant implements WithApplicationTenancy {
 
 	private String surname;
 	private String firstName;
@@ -147,18 +148,22 @@ public class InactiveParticipant /* implements WithApplicationTenancy */{
 
 	@Property()
 	@MemberOrder(sequence = "6")
-	public String getRegion() {
+	public String getRegionName() {
 		return regionName;
 	}
 
-	public void setRegion(String region) {
+	public void setRegionName(String region) {
 		this.regionName = region;
 	}
 
-	/*
-	 * @Override public ApplicationTenancy getApplicationTenancy() {
-	 * ApplicationTenancy tenancy = new ApplicationTenancy(); if(getRegion() !=
-	 * null) tenancy.setPath("/"+getRegion()); else tenancy.setPath("/"); return
-	 * tenancy; }
-	 */
+	@Programmatic
+	public ApplicationTenancy getApplicationTenancy() {
+		ApplicationTenancy tenancy = new ApplicationTenancy();
+		if (getRegionName().equals("STATEWIDE") || getRegionName().equals("TEST"))
+			tenancy.setPath("/");
+		else {
+			tenancy.setPath("/" + getRegionName() + "_");
+		}
+		return tenancy;
+	}
 }

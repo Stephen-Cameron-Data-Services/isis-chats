@@ -29,8 +29,11 @@ import javax.jdo.annotations.Query;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
+import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
+import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -57,7 +60,7 @@ import org.joda.time.LocalDate;
 						+ "  person.surname,  "
 						+ "  person.firstname AS firstName,  "
 						+ "  person.birthdate AS birthDate,  "
-						+ "  person.region_name AS regionName,  "
+						+ "  volunteer.region_name AS regionName,  "
 						+ "  volunteer.status as volunteerStatus, "
 						+ "  CASE volunteeredtime.role  "
 						+ "    WHEN 'VTACTIVITY' THEN 'ACTIVITIES' "
@@ -82,7 +85,7 @@ import org.joda.time.LocalDate;
 				language = "JDOQL",
 				value = "SELECT FROM au.com.scds.chats.dom.report.view.VolunteeredTimeByVolunteerAndRoleAndYearMonth") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class VolunteeredTimeByVolunteerAndRoleAndYearMonth {
+public class VolunteeredTimeByVolunteerAndRoleAndYearMonth implements WithApplicationTenancy{
 
 	public String surname;
 	public String firstName;
@@ -171,5 +174,16 @@ public class VolunteeredTimeByVolunteerAndRoleAndYearMonth {
 
 	public void setHoursVolunteered(Float hoursVolunteered) {
 		this.hoursVolunteered = hoursVolunteered;
+	}
+
+	@Programmatic
+	public ApplicationTenancy getApplicationTenancy() {
+		ApplicationTenancy tenancy = new ApplicationTenancy();
+		if (getRegionName().equals("STATEWIDE") || getRegionName().equals("TEST"))
+			tenancy.setPath("/");
+		else {
+			tenancy.setPath("/" + getRegionName() + "_");
+		}
+		return tenancy;
 	}
 }

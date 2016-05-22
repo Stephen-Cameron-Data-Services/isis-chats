@@ -29,70 +29,45 @@ import javax.jdo.annotations.Query;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
+import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
+import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 @ViewModel
 @DomainObject(editing = Editing.DISABLED)
-@PersistenceCapable(
-		identityType = IdentityType.NONDURABLE,
-		table = "VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth",
-		extensions = { @Extension(
-				vendorName = "datanucleus",
-				key = "view-definition",
-				value = "CREATE VIEW VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth "
-						+ "( "
-						+ "  {this.activityName}, "
-						+ "  {this.activityRegion}, "
-						+ "  {this.activityYearMonth}, "						
-						+ "  {this.surname}, "
-						+ "  {this.firstName}, "
-						+ "  {this.birthDate}, "
-						+ "  {this.volunteerStatus}, "
-						+ "  {this.hoursVolunteered} "
-						+ ") AS "
-						+ "SELECT  "
-						+ "  activity.name as activityName, "						
-						+ "  activity.region_name as activityRegion,  "	
-						+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime) as activityYearMonth,  "
-						+ "  person.surname,  "
-						+ "  person.firstname AS firstName,  "
-						+ "  person.birthdate AS birthDate,  "
-						+ "  volunteer.status AS volunteerStatus, "
-						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime))/60,1) as hoursVolunteered  "
-						+ "FROM  "
-						+ "  activity, "	
-						+ "  volunteeredtime,  "
-						+ "  volunteer,  "
-						+ "  person  "
-						+ "WHERE  "
-						+ "  volunteeredtime.activity_activity_id = activity.activity_id AND "						
-						+ "  volunteer.volunteer_id  = volunteeredtime.volunteer_volunteer_id AND  "
-						+ "  person.person_id = volunteer.person_person_id "
-						+ "GROUP BY  "
-						+ "  activity.name,  "
-						+ "  activity.region_name, "
-						+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime), "						
-						+ "  volunteeredtime.volunteer_volunteer_id;") })
+@PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth", extensions = {
+		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth "
+				+ "( " + "  {this.activityName}, " + "  {this.regionName}, " + "  {this.activityYearMonth}, "
+				+ "  {this.surname}, " + "  {this.firstName}, " + "  {this.birthDate}, " + "  {this.volunteerStatus}, "
+				+ "  {this.hoursVolunteered} " + ") AS " + "SELECT  " + "  activity.name as activityName, "
+				+ "  activity.region_name as regionName,  "
+				+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime) as activityYearMonth,  " + "  person.surname,  "
+				+ "  person.firstname AS firstName,  " + "  person.birthdate AS birthDate,  "
+				+ "  volunteer.status AS volunteerStatus, "
+				+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime))/60,1) as hoursVolunteered  "
+				+ "FROM  " + "  activity, " + "  volunteeredtime,  " + "  volunteer,  " + "  person  " + "WHERE  "
+				+ "  volunteeredtime.activity_activity_id = activity.activity_id AND "
+				+ "  volunteer.volunteer_id  = volunteeredtime.volunteer_volunteer_id AND  "
+				+ "  person.person_id = volunteer.person_person_id " + "GROUP BY  " + "  activity.name,  "
+				+ "  activity.region_name, " + "  EXTRACT(YEAR_MONTH FROM activity.startdatetime), "
+				+ "  volunteeredtime.volunteer_volunteer_id;") })
 @Queries({
-		@Query(name = "allVolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth",
-				language = "JDOQL",
-				value = "SELECT FROM au.com.scds.chats.dom.report.view.VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth") })
+		@Query(name = "allVolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth {
+public class VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth implements WithApplicationTenancy {
 
 	public String activityName;
-	public String activityRegion;
+	public String regionName;
 	public Integer activityYearMonth;
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
 	public String volunteerStatus;
 	public Float hoursVolunteered;
-
-
 
 	@Property()
 	@MemberOrder(sequence = "1")
@@ -102,16 +77,16 @@ public class VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth {
 
 	public void setActivityName(String activityName) {
 		this.activityName = activityName;
-	}	
-	
-	@Property()
-	@MemberOrder(sequence = "2")
-	public String getActivityRegion() {
-		return activityRegion;
 	}
 
-	public void setActivityRegion(String region) {
-		this.activityRegion = region;
+	@Property()
+	@MemberOrder(sequence = "2")
+	public String getRegionName() {
+		return regionName;
+	}
+
+	public void setRegionName(String region) {
+		this.regionName = region;
 	}
 
 	@Property()
@@ -172,5 +147,16 @@ public class VolunteeredTimeForActivityByVolunteerAndRoleAndYearMonth {
 
 	public void setHoursVolunteered(Float hoursVolunteered) {
 		this.hoursVolunteered = hoursVolunteered;
+	}
+
+	@Programmatic
+	public ApplicationTenancy getApplicationTenancy() {
+		ApplicationTenancy tenancy = new ApplicationTenancy();
+		if (getRegionName().equals("STATEWIDE") || getRegionName().equals("TEST"))
+			tenancy.setPath("/");
+		else {
+			tenancy.setPath("/" + getRegionName() + "_");
+		}
+		return tenancy;
 	}
 }

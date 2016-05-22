@@ -29,8 +29,11 @@ import javax.jdo.annotations.Query;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
+import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
+import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -48,7 +51,7 @@ import org.joda.time.LocalDate;
 						+ "  {this.firstName}, "
 						+ "  {this.birthDate}, "
 						+ "  {this.volunteerStatus}, "						
-						+ "  {this.volunteerRegion}, "
+						+ "  {this.regionName}, "
 						+ "  {this.callScheduleYearMonth}, "
 						+ "  {this.totalCalls}, "
 						+ "  {this.totalCompletedCalls}, "
@@ -60,7 +63,7 @@ import org.joda.time.LocalDate;
 						+ "  person.firstname AS firstName, "
 						+ "  person.birthdate AS birthDate, "
 						+ "  volunteer.status AS volunteerStatus, "
-						+ "  volunteer.region_name AS volunteerRegion, "
+						+ "  volunteer.region_name AS regionName, "
 						+ "  EXTRACT(YEAR_MONTH FROM callschedulesummary.calendardate) AS callScheduleYearMonth, "
 						+ "  SUM(callschedulesummary.totalcalls) AS totalCalls, "
 						+ "  SUM(callschedulesummary.completedcalls) AS totalCompletedCalls, "
@@ -87,13 +90,13 @@ import org.joda.time.LocalDate;
 				language = "JDOQL",
 				value = "SELECT FROM au.com.scds.chats.dom.report.view.VolunteeredTimeForCallsByVolunteerAndYearMonth") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class VolunteeredTimeForCallsByVolunteerAndYearMonth {
+public class VolunteeredTimeForCallsByVolunteerAndYearMonth implements WithApplicationTenancy{
 
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
 	public String volunteerStatus;
-	public String volunteerRegion;	
+	public String regionName;	
 	public Integer callScheduleYearMonth;
 	public Integer totalCalls;
 	public Integer totalCompletedCalls;
@@ -132,12 +135,12 @@ public class VolunteeredTimeForCallsByVolunteerAndYearMonth {
 
 	@Property()
 	@MemberOrder(sequence = "4")
-	public String getVolunteerRegion() {
-		return volunteerRegion;
+	public String getRegionName() {
+		return regionName;
 	}
 
-	public void setVolunteerRegion(String region) {
-		this.volunteerRegion = region;
+	public void setRegionName(String region) {
+		this.regionName = region;
 	}
 
 	@Property()
@@ -194,6 +197,17 @@ public class VolunteeredTimeForCallsByVolunteerAndYearMonth {
 
 	public void setTotalCompletedCalls(Integer totalCompletedCalls) {
 		this.totalCompletedCalls = totalCompletedCalls;
+	}
+
+	@Programmatic
+	public ApplicationTenancy getApplicationTenancy() {
+		ApplicationTenancy tenancy = new ApplicationTenancy();
+		if (getRegionName().equals("STATEWIDE") || getRegionName().equals("TEST"))
+			tenancy.setPath("/");
+		else {
+			tenancy.setPath("/" + getRegionName() + "_");
+		}
+		return tenancy;
 	}
 
 }

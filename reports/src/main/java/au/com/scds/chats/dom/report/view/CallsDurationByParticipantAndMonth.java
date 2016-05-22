@@ -29,8 +29,11 @@ import javax.jdo.annotations.Query;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
+import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
+import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -56,7 +59,7 @@ import org.joda.time.LocalDate;
 						+ "  person.surname, "
 						+ "  person.firstname AS firstName, "
 						+ "  person.birthdate AS birthDate, "
-						+ "  person.region_name AS regionName, "
+						+ "  participant.region_name AS regionName, "
 						+ "  participant.status AS participantStatus, "
 						+ "	EXTRACT(YEAR_MONTH FROM telephonecall.startdatetime) as yearMonth, "
 						+ "	ROUND(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime))/60,1) as callHoursTotal "
@@ -81,7 +84,7 @@ import org.joda.time.LocalDate;
 			value = "SELECT FROM au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth cd "
 			+ "WHERE cd.yearMonth == :yearMonth && cd.regionName == :region"),})
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class CallsDurationByParticipantAndMonth {
+public class CallsDurationByParticipantAndMonth implements WithApplicationTenancy{
 	
 	public String surname;
 	public String firstName;
@@ -159,5 +162,16 @@ public class CallsDurationByParticipantAndMonth {
 
 	public void setCallHoursTotal(Float callHoursTotal) {
 		this.callHoursTotal = callHoursTotal;
+	}
+
+	@Programmatic
+	public ApplicationTenancy getApplicationTenancy() {
+		ApplicationTenancy tenancy = new ApplicationTenancy();
+		if (getRegionName().equals("STATEWIDE") || getRegionName().equals("TEST"))
+			tenancy.setPath("/");
+		else {
+			tenancy.setPath("/" + getRegionName() + "_");
+		}
+		return tenancy;
 	}
 }

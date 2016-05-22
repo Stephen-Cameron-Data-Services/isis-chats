@@ -74,11 +74,11 @@ public class DomainApplication extends IsisWicketApplication {
         final Module overrides = new AbstractModule() {
             @Override
             protected void configure() {
-                bind(String.class).annotatedWith(Names.named("applicationName")).toInstance("Simple App");
+                bind(String.class).annotatedWith(Names.named("applicationName")).toInstance("Chats App");
                 bind(String.class).annotatedWith(Names.named("applicationCss")).toInstance("css/application.css");
                 bind(String.class).annotatedWith(Names.named("applicationJs")).toInstance("scripts/application.js");
                 bind(String.class).annotatedWith(Names.named("welcomeMessage")).toInstance(readLines(getClass(), "welcome.html"));
-                bind(String.class).annotatedWith(Names.named("aboutMessage")).toInstance("Simple App");
+                bind(String.class).annotatedWith(Names.named("aboutMessage")).toInstance("Chats Program Data Management App");
                 bind(InputStream.class).annotatedWith(Names.named("metaInfManifest")).toProvider(
                         Providers.of(getServletContext().getResourceAsStream("/META-INF/MANIFEST.MF")));
                 // if uncommented, then overrides isis.appManifest in config file.

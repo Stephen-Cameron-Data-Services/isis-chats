@@ -11,8 +11,11 @@ import javax.jdo.annotations.Query;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
+import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
+import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 
 @ViewModel
 @DomainObject(editing = Editing.DISABLED)
@@ -44,7 +47,7 @@ import org.apache.isis.applib.annotation.ViewModel;
 @Queries({
 	@Query(name = "allVolunteeredTimeForActivityByYearMonth", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.VolunteeredTimeForActivityByYearMonth") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class VolunteeredTimeForActivityByYearMonth {
+public class VolunteeredTimeForActivityByYearMonth implements WithApplicationTenancy {
 
 	public String activityName;	
 	public String regionName;
@@ -89,5 +92,16 @@ public class VolunteeredTimeForActivityByYearMonth {
 
 	public void setHoursVolunteered(Float hoursVolunteered) {
 		this.hoursVolunteered = hoursVolunteered;
+	}
+
+	@Programmatic
+	public ApplicationTenancy getApplicationTenancy() {
+		ApplicationTenancy tenancy = new ApplicationTenancy();
+		if (getRegionName().equals("STATEWIDE") || getRegionName().equals("TEST"))
+			tenancy.setPath("/");
+		else {
+			tenancy.setPath("/" + getRegionName() + "_");
+		}
+		return tenancy;
 	}
 }

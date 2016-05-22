@@ -22,6 +22,7 @@ import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
@@ -31,8 +32,12 @@ import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
+import org.apache.isis.applib.annotation.Where;
+import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
+import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 import org.joda.time.LocalDate;
 
 @ViewModel
@@ -61,7 +66,7 @@ import org.joda.time.LocalDate;
 						+ "  {this.street1}, "
 						+ "  {this.street2}, "
 						+ "  {this.suburb}, "
-						+ "  {this.postcode} "
+						+ "  {this.postcode} "						
 						+ ") AS "
 						+ "SELECT "
 						+ "  person.salutation_name AS salutation, "
@@ -100,7 +105,7 @@ import org.joda.time.LocalDate;
 		@Query(name = "listActiveParticipantMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.MailMergeData WHERE participantStatus == 'ACTIVE'"),
 		@Query(name = "listActiveVolunteerMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.MailMergeData WHERE volunteerStatus == 'ACTIVE'") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class MailMergeData {
+public class MailMergeData implements WithApplicationTenancy{
 
 	public String salutation;
 	public String surname;
@@ -119,6 +124,7 @@ public class MailMergeData {
 	public String street2;
 	public String suburb;
 	public String postcode;
+	//private String tenancyPath;
 
 	public String title() {
 		return getFirstName() + " " + getSurname();
@@ -292,5 +298,17 @@ public class MailMergeData {
 
 	public void setPostcode(String postcode) {
 		this.postcode = postcode;
+	}
+
+
+	@Programmatic
+	public ApplicationTenancy getApplicationTenancy() {
+		ApplicationTenancy tenancy = new ApplicationTenancy();
+		if (getRegionOfPerson().equals("STATEWIDE") || getRegionOfPerson().equals("TEST"))
+			tenancy.setPath("/");
+		else {
+			tenancy.setPath("/" + getRegionOfPerson() + "_");
+		}
+		return tenancy;
 	}
 }

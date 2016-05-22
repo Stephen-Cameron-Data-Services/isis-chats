@@ -24,6 +24,7 @@ import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
@@ -31,8 +32,11 @@ import javax.jdo.annotations.Query;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
+import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
+import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -82,7 +86,7 @@ import org.joda.time.LocalDate;
 			value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityParticipantAttendance pa "
 					+ "WHERE pa.startDateTime >= :periodStartDateTime && pa.startDateTime <= :periodEndDateTime && pa.regionName == :region"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class ActivityParticipantAttendance {
+public class ActivityParticipantAttendance implements WithApplicationTenancy {
 
 	public String surname;
 	public String firstName;
@@ -92,6 +96,7 @@ public class ActivityParticipantAttendance {
 	public DateTime startDateTime;
 	public String participantStatus;
 	public Integer minutesAttended;
+	//public ApplicationTenancy tenancy;
 
 	@Property()
 	@MemberOrder(sequence = "1")
@@ -171,5 +176,16 @@ public class ActivityParticipantAttendance {
 
 	public void setMinutesAttended(Integer minutesAttended) {
 		this.minutesAttended = minutesAttended;
+	}
+
+	@Programmatic
+	public ApplicationTenancy getApplicationTenancy() {
+		ApplicationTenancy tenancy = new ApplicationTenancy();
+		if (getRegionName().equals("STATEWIDE") || getRegionName().equals("TEST"))
+			tenancy.setPath("/");
+		else {
+			tenancy.setPath("/" + getRegionName() + "_");
+		}
+		return tenancy;
 	}
 }

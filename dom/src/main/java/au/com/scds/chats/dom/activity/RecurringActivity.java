@@ -54,7 +54,7 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "RECURRING_ACTIVITY")
-@Queries({ @Query(name = "find", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.RecurringActivity "),
+@Queries({ @Query(name = "findRecurringActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.RecurringActivity "),
 		@Query(name = "findRecurringActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.RecurringActivity WHERE name.indexOf(:name) >= 0 ") })
 public class RecurringActivity extends Activity /*implements Notable*/ {
 

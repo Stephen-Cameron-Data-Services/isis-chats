@@ -10,7 +10,10 @@ import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.ViewModel;
+import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
+import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 
 /**
  * 
@@ -49,7 +52,7 @@ import org.apache.isis.applib.annotation.ViewModel;
 @Queries({
 		@Query(name = "findActivityYearMonth", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityYearMonth ") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class ActivityYearMonth {
+public class ActivityYearMonth  implements WithApplicationTenancy {
 	private String activityName;
 	private String regionName;
 	private Integer yearMonth;
@@ -76,5 +79,16 @@ public class ActivityYearMonth {
 
 	public void setYearMonth(Integer yearMonth) {
 		this.yearMonth = yearMonth;
+	}
+
+	@Programmatic
+	public ApplicationTenancy getApplicationTenancy() {
+		ApplicationTenancy tenancy = new ApplicationTenancy();
+		if (getRegionName().equals("STATEWIDE") || getRegionName().equals("TEST"))
+			tenancy.setPath("/");
+		else {
+			tenancy.setPath("/" + getRegionName() + "_");
+		}
+		return tenancy;
 	}
 }

@@ -29,8 +29,11 @@ import javax.jdo.annotations.Query;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
+import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
+import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -85,7 +88,7 @@ import org.joda.time.LocalDate;
 			value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantActivityByMonth pa "
 					+ "WHERE pa.yearMonth == :yearMonth && pa.regionName == :region"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class ParticipantActivityByMonth {
+public class ParticipantActivityByMonth implements WithApplicationTenancy{
 	
 	public String surname;
 	public String firstName;
@@ -174,5 +177,16 @@ public class ParticipantActivityByMonth {
 
 	public void setHoursAttended(Float hoursAttended) {
 		this.hoursAttended = hoursAttended;
+	}
+
+	@Programmatic
+	public ApplicationTenancy getApplicationTenancy() {
+		ApplicationTenancy tenancy = new ApplicationTenancy();
+		if (getRegionName().equals("STATEWIDE") || getRegionName().equals("TEST"))
+			tenancy.setPath("/");
+		else {
+			tenancy.setPath("/" + getRegionName() + "_");
+		}
+		return tenancy;
 	}
 }

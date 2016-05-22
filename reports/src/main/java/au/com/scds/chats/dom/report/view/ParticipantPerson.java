@@ -29,8 +29,11 @@ import javax.jdo.annotations.Query;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
+import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
+import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 import org.joda.time.DateTime;
 
 @ViewModel
@@ -90,7 +93,7 @@ import org.joda.time.DateTime;
 @Queries({
 		@Query(name = "getParticipantPerson", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantPerson WHERE activityName == :activity && startDateTime == :datetime && region == :region") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class ParticipantPerson {
+public class ParticipantPerson implements WithApplicationTenancy{
 
 	private String activityName;
 	private DateTime startDateTime;
@@ -126,7 +129,7 @@ public class ParticipantPerson {
 
 	@Property()
 	@MemberOrder(sequence = "3")
-	public String getRegion() {
+	public String getRegionName() {
 		return regionName;
 	}
 
@@ -212,6 +215,17 @@ public class ParticipantPerson {
 
 	public void setOtherLimitingFactors(String otherLimitingFactors) {
 		this.otherLimitingFactors = otherLimitingFactors;
+	}
+
+	@Programmatic
+	public ApplicationTenancy getApplicationTenancy() {
+		ApplicationTenancy tenancy = new ApplicationTenancy();
+		if (getRegionName().equals("STATEWIDE") || getRegionName().equals("TEST"))
+			tenancy.setPath("/");
+		else {
+			tenancy.setPath("/" + getRegionName() + "_");
+		}
+		return tenancy;
 	}
 
 }

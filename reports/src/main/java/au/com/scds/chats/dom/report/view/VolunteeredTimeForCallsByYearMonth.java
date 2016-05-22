@@ -29,8 +29,11 @@ import javax.jdo.annotations.Query;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
+import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
+import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -46,12 +49,14 @@ import org.joda.time.LocalDate;
 						+ "( "
 						+ " {this.callScheduleYearMonth}, "
 						+ " {this.hoursVolunteered}, "
-						+ " {this.hoursOnCalls} "
+						+ " {this.hoursOnCalls}, "
+						+ " {this.regionName} "
 						+ ") AS "
 						+ "SELECT  "
 						+ "  EXTRACT(YEAR_MONTH FROM calendardaycallschedule.calendardate) AS callScheduleYearMonth,  "
 						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime))/60,1) AS hoursVolunteered,  "
-						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime))/60,1) AS hoursOnCalls  "
+						+ "  ROUND(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime))/60,1) AS hoursOnCalls,"
+						+ "  calendardaycallschedule.region_name  "
 						+ "FROM  "
 						+ "  calendardaycallschedule, "
 						+ "  volunteeredtime, "
@@ -60,17 +65,19 @@ import org.joda.time.LocalDate;
 						+ "  volunteeredtime.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id AND "
 						+ "  telephonecall.callschedule_calendardaycallschedule_id = calendardaycallschedule.calendardaycallschedule_id "
 						+ "GROUP BY  "
-						+ "  EXTRACT(YEAR_MONTH FROM calendardaycallschedule.calendardate);") })
+						+ "  EXTRACT(YEAR_MONTH FROM calendardaycallschedule.calendardate), "
+						+ "  calendardaycallschedule.region_name;") })
 @Queries({
 		@Query(name = "allVolunteeredTimeForCallsByYearMonth",
 				language = "JDOQL",
 				value = "SELECT FROM au.com.scds.chats.dom.report.view.VolunteeredTimeForCallsByYearMonth") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class VolunteeredTimeForCallsByYearMonth {
+public class VolunteeredTimeForCallsByYearMonth implements WithApplicationTenancy{
 
 	private Integer callScheduleYearMonth;
 	private Float hoursVolunteered;
 	private Float hoursOnCalls;
+	private String regionName;
 
 	@Property()
 	@MemberOrder(sequence = "1")
@@ -100,6 +107,27 @@ public class VolunteeredTimeForCallsByYearMonth {
 
 	public void setHoursOnCalls(Float hoursOnCalls) {
 		this.hoursOnCalls = hoursOnCalls;
+	}
+	
+	@Property()
+	@MemberOrder(sequence = "4")
+	public String getRegionName() {
+		return regionName;
+	}
+
+	public void setRegionName(String region) {
+		this.regionName = region;
+	}
+
+	@Programmatic
+	public ApplicationTenancy getApplicationTenancy() {
+		ApplicationTenancy tenancy = new ApplicationTenancy();
+		if (getRegionName().equals("STATEWIDE") || getRegionName().equals("TEST"))
+			tenancy.setPath("/");
+		else {
+			tenancy.setPath("/" + getRegionName() + "_");
+		}
+		return tenancy;
 	}
 
 }
