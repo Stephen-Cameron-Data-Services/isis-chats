@@ -75,29 +75,62 @@ ON
 
 #DROP VIEW ParticipantActivityByMonth;
 CREATE VIEW ParticipantActivityByMonth AS
-SELECT
+SELECT 
+  person.person_id AS personId,						
   person.surname,
   person.firstname AS firstName,
   person.birthdate AS birthDate,
+  activity.activity_id AS activityId,
   activity.region_name AS regionName,
   activity.name AS activityName,
+  participant.participant_id AS participantId,
   participant.status AS participantStatus,
-  EXTRACT(YEAR_MONTH FROM attend.startdatetime) as yearMonth,
-  ROUND(SUM(TIMESTAMPDIFF(MINUTE,attend.startdatetime,attend.enddatetime))/60,1) as hoursattended
-FROM
+  EXTRACT(YEAR_MONTH FROM activity.startdatetime) as yearMonth,
+  ROUND(SUM(TIMESTAMPDIFF(MINUTE,attend.startdatetime,attend.enddatetime))/60,1) as hoursAttended 
+FROM 
   activity,
-  attend,
+  attend,						
   participant,
-  person
-WHERE
-  attend.activity_activity_id = activity.activity_id AND
-  participant.participant_id = attend.participant_participant_id AND
-  person.person_id = participant.person_person_id AND	
-  participant.status <> 'EXITED'
-GROUP BY
+  person 
+WHERE 
+  attend.activity_activity_id = activity.activity_id AND 
+  participant.participant_id = attend.participant_participant_id AND 
+  person.person_id = participant.person_person_id AND 							
+  attend.attended = true 						
+GROUP BY 
   participant.participant_id,
   activity.activity_id,
   EXTRACT(YEAR_MONTH FROM activity.startdatetime);
+  
+#DROP VIEW ParticipantActivityByMonthForDEX;
+CREATE VIEW ParticipantActivityByMonthForDEX  AS 
+SELECT 
+  person.person_id AS personId, 						
+  person.surname, 
+  person.firstname AS firstName, 
+  person.birthdate AS birthDate, 
+  timestampdiff(year,person.birthdate,curdate()) AS age,
+  activity.abbreviatedName AS activityAbbreviatedName, 
+  activity.region_name AS regionName, 						
+  participant.participant_id AS participantId, 
+  participant.status AS participantStatus, 
+  EXTRACT(YEAR_MONTH FROM activity.startdatetime) as yearMonth, 
+  ROUND(SUM(TIMESTAMPDIFF(MINUTE,attend.startdatetime,attend.enddatetime))/60,1) as hoursAttended 
+FROM 
+  activity, 
+  attend, 						
+  participant, 
+  person 
+WHERE 
+  attend.activity_activity_id = activity.activity_id AND 
+  participant.participant_id = attend.participant_participant_id AND 
+  person.person_id = participant.person_person_id AND 							
+  attend.attended = true 						
+GROUP BY 
+  participant.participant_id, 
+  activity.abbreviatedName, 
+  activity.region_name, 						
+  EXTRACT(YEAR_MONTH FROM activity.startdatetime);  
 
 #DROP VIEW ParticipantPerson;
 CREATE VIEW ParticipantPerson AS
@@ -154,8 +187,7 @@ FROM
   person  
 WHERE  
   volunteer.volunteer_id = volunteeredtime.volunteer_volunteer_id AND  
-  volunteer.person_person_id = person.person_id AND   
-  volunteer.status <> 'EXITED'  
+  volunteer.person_person_id = person.person_id  
 GROUP BY  
   volunteer.volunteer_id,  
   volunteeredtime.role,  
@@ -298,9 +330,12 @@ GROUP BY
 #DROP VIEW CallsDurationByParticipantAndMonth;
 CREATE VIEW CallsDurationByParticipantAndMonth AS
 SELECT
+  person.person_id,
   person.surname,
   person.firstname AS firstName,
   person.birthdate AS birthDate,
+  timestampdiff(year,person.birthdate,curdate()) AS age,
+  participant.participant_id AS participantId,
   participant.region_name AS regionName,
   participant.status AS participantStatus,
 	EXTRACT(YEAR_MONTH FROM telephonecall.startdatetime) as yearMonth,
@@ -311,8 +346,7 @@ FROM
   person
 WHERE
   participant.participant_id = telephonecall.participant_participant_id AND
-  person.person_id = participant.person_person_id AND	
-  participant.status <> 'EXITED' AND
+  person.person_id = participant.person_person_id AND
   telephonecall.iscompleted = true
 GROUP BY
   participant.participant_id,

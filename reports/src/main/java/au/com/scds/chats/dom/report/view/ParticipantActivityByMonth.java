@@ -32,6 +32,7 @@ import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
+import org.apache.isis.applib.annotation.Where;
 import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
 import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 import org.joda.time.DateTime;
@@ -47,34 +48,40 @@ import org.joda.time.LocalDate;
 				key = "view-definition",
 				value = "CREATE VIEW ParticipantActivityByMonth "
 						+ "( "
+						+ "  {this.personId}, "						
 						+ "  {this.surname}, "
 						+ "  {this.firstName}, "
 						+ "  {this.birthDate}, "
+						+ "  {this.activityId}, "						
 						+ "  {this.regionName}, "
 						+ "  {this.activityName}, "
+						+ "  {this.participantId}, "
 						+ "  {this.participantStatus}, "						
 						+ "  {this.yearMonth}, "
 						+ "  {this.hoursAttended} "
 						+ ") AS "
 						+ "SELECT "
+						+ "  person.person_id AS personId, "						
 						+ "  person.surname, "
 						+ "  person.firstname AS firstName, "
 						+ "  person.birthdate AS birthDate, "
+						+ "  activity.activity_id AS activityId, "
 						+ "  activity.region_name AS regionName, "
 						+ "  activity.name AS activityName, "
+						+ "  participant.participant_id AS participantId, "
 						+ "  participant.status AS participantStatus, "
 						+ "	 EXTRACT(YEAR_MONTH FROM activity.startdatetime) as yearMonth, "
-						+ "	 ROUND(SUM(TIMESTAMPDIFF(MINUTE,attended.startdatetime,attended.enddatetime))/60,1) as hoursAttended "
+						+ "	 ROUND(SUM(TIMESTAMPDIFF(MINUTE,attend.startdatetime,attend.enddatetime))/60,1) as hoursAttended "
 						+ "FROM "
 						+ "  activity, "
-						+ "  attended, "						
+						+ "  attend, "						
 						+ "  participant, "
 						+ "  person "
 						+ "WHERE "
-						+ "  attended.activity_activity_id = activity.activity_id AND "
-						+ "  participant.participant_id = attended.participant_participant_id AND "
+						+ "  attend.activity_activity_id = activity.activity_id AND "
+						+ "  participant.participant_id = attend.participant_participant_id AND "
 						+ "  person.person_id = participant.person_person_id AND "							
-						+ "  participant.status <> 'EXITED' "
+						+ "  attend.attended = 1 "						
 						+ "GROUP BY "
 						+ "  participant.participant_id, "
 						+ "  activity.activity_id, "
@@ -90,6 +97,9 @@ import org.joda.time.LocalDate;
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ParticipantActivityByMonth implements WithApplicationTenancy{
 	
+	public Integer personId;
+	public Integer activityId;
+	public Integer participantId;
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
@@ -98,6 +108,36 @@ public class ParticipantActivityByMonth implements WithApplicationTenancy{
 	public String participantStatus;
 	public Integer yearMonth;
 	public Float hoursAttended;
+
+	@Property(hidden=Where.EVERYWHERE)
+	//@MemberOrder(sequence = "1")
+	public Integer getPersonId() {
+		return personId;
+	}
+
+	public void setPersonId(Integer personId) {
+		this.personId = personId;
+	}
+
+	@Property(hidden=Where.EVERYWHERE)
+	//@MemberOrder(sequence = "1")
+	public Integer getActivityId() {
+		return activityId;
+	}
+
+	public void setActivityId(Integer activityId) {
+		this.activityId = activityId;
+	}
+
+	@Property(hidden=Where.EVERYWHERE)
+	//@MemberOrder(sequence = "1")
+	public Integer getParticipantId() {
+		return participantId;
+	}
+
+	public void setParticipantId(Integer participantId) {
+		this.participantId = participantId;
+	}
 
 	@Property()
 	@MemberOrder(sequence = "1")
@@ -178,6 +218,8 @@ public class ParticipantActivityByMonth implements WithApplicationTenancy{
 	public void setHoursAttended(Float hoursAttended) {
 		this.hoursAttended = hoursAttended;
 	}
+
+
 
 	@Programmatic
 	public ApplicationTenancy getApplicationTenancy() {

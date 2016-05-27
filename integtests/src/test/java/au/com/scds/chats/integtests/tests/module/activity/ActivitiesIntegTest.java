@@ -50,12 +50,12 @@ public class ActivitiesIntegTest extends DomainAppIntegTest {
 
         @Test
         public void happyCase() throws Exception {
-System.out.println("happyCase");
+//System.out.println("happyCase");
             // given
         	DateTime startDateTime = new DateTime();
 
             // when
-            ActivityEvent obj = wrap(activities).createOneOffActivity("Foobar", startDateTime);
+            ActivityEvent obj = wrap(activities).createOneOffActivity("Foobar","Foobar", startDateTime);
 
             // then
             assertThat(obj.getName()).isEqualTo("Foobar");

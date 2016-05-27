@@ -183,7 +183,7 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	//@MemberOrder(sequence = "20.1")
 	public AttendanceList Delete() {
 		AttendanceList attendances = getActivity().getAttendances();
-		attendances.removeAttended(this);
+		attendances.removeAttend(this);
 		return attendances;
 	}
 

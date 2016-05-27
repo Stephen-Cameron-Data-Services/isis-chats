@@ -56,7 +56,7 @@ public class ActivitiesTest {
             });
 
             // when
-            final ActivityEvent obj = activities.createOneOffActivity("Foobar",dateTime);
+            final ActivityEvent obj = activities.createOneOffActivity("Foobar","Foobar", dateTime);
 
             // then
             assertThat(obj).isEqualTo(activity);
@@ -97,7 +97,7 @@ public class ActivitiesTest {
             });
 
             // when
-            final RecurringActivity obj = activities.createRecurringActivity("Foobar",dateTime);
+            final RecurringActivity obj = activities.createRecurringActivity("Foobar","Foobar",dateTime);
 
             // then
             assertThat(obj).isEqualTo(activity);

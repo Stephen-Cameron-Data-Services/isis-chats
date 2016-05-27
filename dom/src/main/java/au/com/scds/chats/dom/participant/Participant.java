@@ -35,7 +35,16 @@ import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.activity.Activity;
+import au.com.scds.chats.dom.dex.DexReferenceData;
+import au.com.scds.chats.dom.dex.reference.AboriginalOrTorresStraitIslanderOrigin;
+import au.com.scds.chats.dom.dex.reference.AccommodationType;
+import au.com.scds.chats.dom.dex.reference.Country;
+import au.com.scds.chats.dom.dex.reference.DVACardStatus;
+import au.com.scds.chats.dom.dex.reference.HouseholdComposition;
+import au.com.scds.chats.dom.dex.reference.Language;
+import au.com.scds.chats.dom.general.Address;
 import au.com.scds.chats.dom.general.Person;
+import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.general.Status;
 
 @DomainObject(objectType = "PARTICIPANT")
@@ -86,6 +95,20 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	private String hobbies;
 	private String interests;
 	private String loneliness;
+	
+	//DEX reporting related
+	private Boolean consentToProvideDetails;
+	private Boolean consentedForFutureContacts;
+	private Boolean isUsingPsuedonym;
+	private Boolean isBirthDateAnEstimate;
+	private Boolean hasDisabilities;
+	private Boolean hasCarer;
+	private Country countryOfBirth;
+	private Language languageSpokenAtHomeCode;
+	private AboriginalOrTorresStraitIslanderOrigin aboriginalOrTorresStraitIslanderOrigin;
+	private AccommodationType accommodationTypeCode;
+	private DVACardStatus dvaCardStatusCode;
+	private HouseholdComposition householdCompositionCode;
 
 	@Property()
 	// @PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP)
@@ -430,6 +453,8 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 		this.involvementIH = involvmentInInterestsHobbies;
 	}
 
+	@Property()
+	@Column(allowsNull = "true")
 	public String getLoneliness() {
 		return loneliness;
 	}
@@ -438,7 +463,155 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 		this.loneliness = loneliness;
 	}
 
+	@Property()
+	@Column(allowsNull = "true")
+	public Boolean getConsentToProvideDetails() {
+		return consentToProvideDetails;
+	}
+
+	public void setConsentToProvideDetails(Boolean consentToProvideDetails) {
+		this.consentToProvideDetails = consentToProvideDetails;
+	}
+
+	@Property()
+	@Column(allowsNull = "true")
+	public Boolean getConsentedForFutureContacts() {
+		return consentedForFutureContacts;
+	}
+
+	public void setConsentedForFutureContacts(Boolean consentedForFutureContacts) {
+		this.consentedForFutureContacts = consentedForFutureContacts;
+	}
+
+	@Property()
+	@Column(allowsNull = "true")
+	public Boolean getIsUsingPsuedonym() {
+		return isUsingPsuedonym;
+	}
+
+	public void setIsUsingPsuedonym(Boolean isUsingPsuedonym) {
+		this.isUsingPsuedonym = isUsingPsuedonym;
+	}
+
+	@Property()
+	@Column(allowsNull = "true")
+	public Boolean getIsBirthDateAnEstimate() {
+		return isBirthDateAnEstimate;
+	}
+
+	public void setIsBirthDateAnEstimate(Boolean isBirthDateAnEstimate) {
+		this.isBirthDateAnEstimate = isBirthDateAnEstimate;
+	}
+
+	@Property()
+	@Column(allowsNull = "true")
+	public Boolean getHasDisabilities() {
+		return hasDisabilities;
+	}
+
+	public void setHasDisabilities(Boolean hasDisabilities) {
+		this.hasDisabilities = hasDisabilities;
+	}
+
+	@Property()
+	@Column(allowsNull = "true")
+	public Boolean getHasCarer() {
+		return hasCarer;
+	}
+
+	public void setHasCarer(Boolean hasCarer) {
+		this.hasCarer = hasCarer;
+	}
+
+	@Property()
+	@Column(allowsNull = "true")
+	public Country getCountryOfBirth() {
+		return countryOfBirth;
+	}
+
+	public void setCountryOfBirth(Country countryOfBirth) {
+		this.countryOfBirth = countryOfBirth;
+	}
+	
+	public List<Country> choicesCountryOfBirth(){
+		return dexRefData.allCountry();
+	}
+	
+	@Property()
+	@Column(allowsNull = "true")
+	public Language getLanguageSpokenAtHomeCode() {
+		return languageSpokenAtHomeCode;
+	}
+
+	public void setLanguageSpokenAtHomeCode(Language languageSpokenAtHomeCode) {
+		this.languageSpokenAtHomeCode = languageSpokenAtHomeCode;
+	}
+	
+	public List<Language> choicesLanguageSpokenAtHomeCode(){
+		return dexRefData.allLanguage();
+	}
+	
+	@Property()
+	@Column(allowsNull = "true")
+	public AboriginalOrTorresStraitIslanderOrigin getAboriginalOrTorresStraitIslanderOrigin() {
+		return aboriginalOrTorresStraitIslanderOrigin;
+	}
+
+	public void setAboriginalOrTorresStraitIslanderOrigin(
+			AboriginalOrTorresStraitIslanderOrigin aboriginalOrTorresStraitIslanderOrigin) {
+		this.aboriginalOrTorresStraitIslanderOrigin = aboriginalOrTorresStraitIslanderOrigin;
+	}
+	
+	public List<AboriginalOrTorresStraitIslanderOrigin> choicesAboriginalOrTorresStraitIslanderOrigin(){
+		return dexRefData.allAboriginalOrTorresStraitIslanderOrigin();
+	}
+
+	@Property()
+	@Column(allowsNull = "true")
+	public AccommodationType getAccommodationTypeCode() {
+		return accommodationTypeCode;
+	}
+
+	public void setAccommodationTypeCode(AccommodationType accommodationTypeCode) {
+		this.accommodationTypeCode = accommodationTypeCode;
+	}
+	
+	public List<AccommodationType> choicesAccommodationTypeCode(){
+		return dexRefData.allAccommodationType();
+	}
+
+	@Property()
+	@Column(allowsNull = "true")
+	public DVACardStatus getDvaCardStatusCode() {
+		return dvaCardStatusCode;
+	}
+
+	public void setDvaCardStatusCode(DVACardStatus dvaCardStatusCode) {
+		this.dvaCardStatusCode = dvaCardStatusCode;
+	}
+	
+	public List<DVACardStatus> choicesDvaCardStatusCode(){
+		return dexRefData.allDVACardStatus();
+	}
+
+	@Property()
+	@Column(allowsNull = "true")
+	public HouseholdComposition getHouseholdCompositionCode() {
+		return householdCompositionCode;
+	}
+
+	public void setHouseholdCompositionCode(HouseholdComposition householdCompositionCode) {
+		this.householdCompositionCode = householdCompositionCode;
+	}
+	
+	public List<HouseholdComposition> choicesHouseholdCompositionCode(){
+		return dexRefData.allHouseholdComposition();
+	}
+	
 	@Inject
 	Participants participantsRepo;
+	
+	@Inject
+	DexReferenceData dexRefData;
 
 }

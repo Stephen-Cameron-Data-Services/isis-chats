@@ -150,6 +150,7 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 				ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 				obj.setParentActivity(this);
 				obj.setName(getName());
+				obj.setAbbreviatedName(getAbbreviatedName());
 				//set time one second ahead for comparison inequality
 				obj.setStartDateTime(getStartDateTime().plusSeconds(1));
 				getChildActivities().add(obj);
@@ -163,6 +164,7 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 			ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 			obj.setParentActivity(this);
 			obj.setName(getName());
+			obj.setAbbreviatedName(getAbbreviatedName());
 			switch (getPeriodicity()) {
 			case DAILY:
 				obj.setStartDateTime(origin.plusDays(1));
@@ -192,6 +194,7 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 		ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 		obj.setParentActivity(this);
 		obj.setName(name);
+		obj.setAbbreviatedName("TO-DO");
 		obj.setStartDateTime(startDateTime);
 		obj.setRegion(region);
 		getChildActivities().add(obj);

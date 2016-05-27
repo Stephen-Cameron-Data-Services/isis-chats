@@ -30,11 +30,7 @@ import org.apache.isis.applib.util.ObjectContracts;
 import org.incode.module.note.dom.api.notable.Notable;
 //import org.incode.module.note.dom.api.notable.Notable;
 import org.joda.time.DateTime;
-import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
 import org.joda.time.Period;
-
-import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 

@@ -81,6 +81,7 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 // @Unique(name = "Activity_name_UNQ", members = { "name"
 // })
 
+
 public class ActivityEvent extends Activity implements Notable, CalendarEventable {
 
 	protected RecurringActivity parentActivity;
@@ -137,7 +138,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	@NotPersistent
 	public List<Attend> getAttendance() {
 		if(getAttendances() != null)
-			return getAttendances().getAttendeds();
+			return getAttendances().getAttends();
 		else
 			return null;
 	}

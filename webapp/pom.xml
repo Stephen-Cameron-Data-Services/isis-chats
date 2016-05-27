@@ -56,6 +56,10 @@
 			<artifactId>chats-app</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>chats-reports</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.isis.viewer</groupId>
 			<artifactId>isis-viewer-wicket-impl</artifactId>
 		</dependency>
@@ -84,11 +88,6 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.17</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>chats-reports</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 
 	</dependencies>

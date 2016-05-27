@@ -27,10 +27,10 @@ import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.general.names.Region;
 
-
 /**
  * <user>
- * <p> Container for <link>Activity<link> domain entities.
+ * <p>
+ * Container for <link>Activity<link> domain entities.
  * </p>
  * </user>
  * 
@@ -54,9 +54,11 @@ public class Activities {
 	@MemberOrder(sequence = "1")
 	public RecurringActivity createRecurringActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
+			@Parameter(optionality = Optionality.MANDATORY, maxLength = 25) @ParameterLayout(named = "Abbreviated name") final String abbreviatedName,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start date time") final DateTime startDateTime) {
 		final RecurringActivity obj = container.newTransientInstance(RecurringActivity.class);
 		obj.setName(name);
+		obj.setAbbreviatedName(abbreviatedName);
 		obj.setStartDateTime(startDateTime);
 		container.persistIfNotAlready(obj);
 		container.flush();
@@ -64,7 +66,8 @@ public class Activities {
 	}
 
 	@Programmatic
-	public RecurringActivity createRecurringActivity(final String name, final DateTime startDateTime, final Region region) {
+	public RecurringActivity createRecurringActivity(final String name, final DateTime startDateTime,
+			final Region region) {
 		final RecurringActivity obj = container.newTransientInstance(RecurringActivity.class);
 		obj.setName(name);
 		obj.setStartDateTime(startDateTime);
@@ -94,20 +97,23 @@ public class Activities {
 	@MemberOrder(sequence = "2")
 	public ActivityEvent createOneOffActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
+			@Parameter(optionality = Optionality.MANDATORY, maxLength = 25) @ParameterLayout(named = "Abbreviated name") final String abbreviatedName,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start date time") final DateTime startDateTime) {
 		final ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 		obj.setName(name);
+		obj.setAbbreviatedName(abbreviatedName);
 		obj.setStartDateTime(startDateTime);
 		container.persistIfNotAlready(obj);
 		container.flush();
 		return obj;
 	}
 
-	//used for data-migration
+	// used for data-migration
 	@Programmatic
 	public ActivityEvent createOneOffActivity(String name, DateTime startDateTime, Region region) {
 		final ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 		obj.setName(name);
+		obj.setAbbreviatedName("TO-DO");
 		obj.setStartDateTime(startDateTime);
 		obj.setRegion(region);
 		container.persistIfNotAlready(obj);

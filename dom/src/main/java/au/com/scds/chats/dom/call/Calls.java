@@ -48,96 +48,97 @@ import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.Volunteers;
 
 @DomainService(nature = NatureOfService.VIEW_MENU_ONLY, repositoryFor = CalendarDayCallSchedule.class)
-@DomainServiceLayout(named="Calls", menuOrder = "50") 
+@DomainServiceLayout(named = "Calls", menuOrder = "50")
 public class Calls {
-	
-	//work around for data-migration
-	//TODO
-	//public Region region;
 
-	public Calls( ) {}
+	// work around for data-migration
+	// TODO
+	// public Region region;
 
-	public Calls(DomainObjectContainer container, Volunteers volunteers, Participants participants ) {
-		this.container = container;
-		this.volunteers  = volunteers;
-		this.participants = participants;
+	public Calls() {
 	}
-	
+
+	public Calls(DomainObjectContainer container, Volunteers volunteers, Participants participants) {
+		this.container = container;
+		this.volunteersRepo = volunteers;
+		this.participantsRepo = participants;
+	}
+
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
-	public CareCall createCareCall(){
+	public CareCall createCareCall() {
 		CareCall call = container.newTransientInstance(CareCall.class);
 		container.persistIfNotAlready(call);
 		container.flush();
 		return call;
 	}
-	
+
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
-	public ReconnectCall createReconnectCall(){
+	public ReconnectCall createReconnectCall() {
 		ReconnectCall call = container.newTransientInstance(ReconnectCall.class);
 		container.persistIfNotAlready(call);
 		container.flush();
 		return call;
 	}
-	
+
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "3")
-	public SurveyCall createSurveyCall(){
+	public SurveyCall createSurveyCall() {
 		SurveyCall call = container.newTransientInstance(SurveyCall.class);
 		container.persistIfNotAlready(call);
 		container.flush();
 		return call;
 	}
-	
-	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "4")
-	public List<ScheduledCall> createScheduledCalls(){
-		ArrayList<ScheduledCall> calls = new ArrayList<ScheduledCall>();
-		return calls;
-	}
-	
+
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10")
-	public List<ScheduledCall> listScheduledCalls(@Parameter(optionality=Optionality.OPTIONAL) final Volunteer activeVolunteer,
-			@Parameter(optionality=Optionality.OPTIONAL) final Participant activeParticipant){
-		if(activeVolunteer != null && activeParticipant != null ){
-			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipantAndVolunteer", "participant", activeParticipant, "volunteer", activeVolunteer));			
-		} else if(activeVolunteer != null){
-			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByVolunteer", "volunteer", activeVolunteer));	
-		}else if(activeParticipant != null){
-			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipant", "participant", activeParticipant));			
-		}else{
-			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCalls"));	
+	public List<ScheduledCall> listScheduledCalls(
+			@Parameter(optionality = Optionality.OPTIONAL) final Participant activeVolunteer,
+			@Parameter(optionality = Optionality.OPTIONAL) final Participant activeParticipant) {
+		if (activeVolunteer != null && activeParticipant != null) {
+			return container
+					.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipantAndVolunteer",
+							"participant", activeParticipant, "volunteer", activeVolunteer));
+		} else if (activeVolunteer != null) {
+			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByVolunteer",
+					"volunteer", activeVolunteer));
+		} else if (activeParticipant != null) {
+			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipant",
+					"participant", activeParticipant));
+		} else {
+			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCalls"));
 		}
-	}	
+	}
 
-	public List<Volunteer> choices0ListScheduledCalls(){
-		return volunteers.listActive();
+	public List<Volunteer> choices0ListScheduledCalls() {
+		return volunteersRepo.listActive();
 	}
-	
-	public List<Participant> choices1ListScheduledCalls(){
-		return participants.listActive(AgeGroup.All);
+
+	public List<Participant> choices1ListScheduledCalls() {
+		return participantsRepo.listActive(AgeGroup.All);
 	}
-	
+
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "11")
-	public List<CalendarDayCallSchedule> listDailyCallSchedulesForVolunteer(@Parameter(optionality = Optionality.MANDATORY) final Volunteer volunteer) {
-		return container.allMatches(new QueryDefault<>(CalendarDayCallSchedule.class, "findCallScheduleByVolunteer", "volunteer", volunteer));
+	public List<CalendarDayCallSchedule> listDailyCallSchedulesForVolunteer(
+			@Parameter(optionality = Optionality.MANDATORY) final Volunteer volunteer) {
+		return container.allMatches(new QueryDefault<>(CalendarDayCallSchedule.class, "findCallScheduleByVolunteer",
+				"volunteer", volunteer));
 	}
-	
-	public List<Volunteer> choices0ListDailyCallSchedulesForVolunteer(){
-		return volunteers.listActive();
+
+	public List<Volunteer> choices0ListDailyCallSchedulesForVolunteer() {
+		return volunteersRepo.listActive();
 	}
 
 	@Programmatic
-	public CalendarDayCallSchedule createCalendarDayCallSchedule(final @Parameter(optionality = Optionality.MANDATORY) LocalDate date, final Volunteer volunteer) {
+	public CalendarDayCallSchedule createCalendarDayCallSchedule(
+			final @Parameter(optionality = Optionality.MANDATORY) LocalDate date, final Volunteer volunteer) {
 		CalendarDayCallSchedule schedule = container.newTransientInstance(CalendarDayCallSchedule.class);
 		schedule.setCalendarDate(date);
 		schedule.setAllocatedVolunteer(volunteer);
@@ -147,8 +148,12 @@ public class Calls {
 		return schedule;
 	}
 
-	@Programmatic
-	public ScheduledCall createScheduledCall(final Volunteer volunteer, final Participant participant, final DateTime dateTime) throws Exception {
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "4")
+	public ScheduledCall createScheduledCall(@Parameter(optionality = Optionality.MANDATORY) final Volunteer volunteer,
+			@Parameter(optionality = Optionality.MANDATORY) final Participant participant,
+			@Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) throws Exception {
 		// see if there is a Schedule for this Volunteer on this day
 		if (dateTime == null) {
 			throw new IllegalArgumentException("dateTime is a mandatory argument");
@@ -162,7 +167,7 @@ public class Calls {
 					break;
 				}
 			}
-		}else{
+		} else {
 			throw new IllegalArgumentException("volunteer is a mandatory argument");
 		}
 		if (sched == null) {
@@ -176,17 +181,26 @@ public class Calls {
 		call.setIsCompleted(false);
 		return call;
 	}
+	
+	public List<Volunteer> choices0CreateScheduledCall(){
+		return volunteersRepo.listActive();
+	}
+	
+	public List<Participant> choices1CreateScheduledCall(){
+		return participantsRepo.listActive(AgeGroup.All);
+	}
 
 	@Programmatic
-	//Probably should have made callSchedule responsible for creating calls
-	//as its now a divided operation (if we make use of DN to maintain bidirectional)
+	// Probably should have made callSchedule responsible for creating calls
+	// as its now a divided operation (if we make use of DN to maintain
+	// bidirectional)
 	ScheduledCall createScheduledCall(CalendarDayCallSchedule callSchedule, LocalTime time) throws Exception {
 		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
-		//TODO
-		//call.setRegion(region);
-		//set the scheduled date-time for comparable to work in the call-back
+		// TODO
+		// call.setRegion(region);
+		// set the scheduled date-time for comparable to work in the call-back
 		call.setScheduledDateTime(callSchedule.getCalendarDate().toDateTime(time));
-		//call back to the schedule to increment total calls
+		// call back to the schedule to increment total calls
 		callSchedule.addCall(call);
 		container.persistIfNotAlready(call);
 		container.flush();
@@ -195,10 +209,10 @@ public class Calls {
 
 	@Inject
 	public DomainObjectContainer container;
-	
+
 	@Inject
-	public Volunteers volunteers;
-	
+	public Volunteers volunteersRepo;
+
 	@Inject
-	public Participants participants;
+	public Participants participantsRepo;
 }

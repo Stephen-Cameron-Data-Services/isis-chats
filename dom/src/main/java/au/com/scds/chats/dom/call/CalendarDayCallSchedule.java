@@ -125,8 +125,8 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 		return allocatedVolunteer;
 	}
 
-	void setAllocatedVolunteer(final Volunteer allocatedVolunteer) {
-		this.allocatedVolunteer = allocatedVolunteer;
+	void setAllocatedVolunteer(final Volunteer volunteer) {
+		this.allocatedVolunteer = volunteer;
 	}
 
 	@Property()

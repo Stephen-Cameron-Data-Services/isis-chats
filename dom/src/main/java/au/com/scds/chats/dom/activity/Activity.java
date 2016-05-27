@@ -124,7 +124,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Property(maxLength = 25)
 	// @MemberOrder(sequence = "1")
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "false")
 	public String getAbbreviatedName() {
 		return abbreviatedName;
 	}

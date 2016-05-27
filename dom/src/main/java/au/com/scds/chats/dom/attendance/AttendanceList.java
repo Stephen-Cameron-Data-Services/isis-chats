@@ -59,7 +59,7 @@ import au.com.scds.chats.dom.participant.Participation;
 public class AttendanceList {
 
 	private ActivityEvent parentActivity;
-	private List<Attend> attendeds = new ArrayList<>();
+	private List<Attend> attends = new ArrayList<>();
 
 	public AttendanceList() {
 	}
@@ -89,24 +89,24 @@ public class AttendanceList {
 	@Property()
 	//@CollectionLayout(render = RenderType.EAGERLY, named = "Attendance")
 	//@MemberOrder(sequence = "101")
-	public final List<Attend> getAttendeds() {
-		return attendeds;
+	public final List<Attend> getAttends() {
+		return attends;
 	}
 
 	@SuppressWarnings("unused")
-	private void setAttendeds(final List<Attend> attendees) {
-		this.attendeds = attendees;
+	private void setAttends(final List<Attend> attends) {
+		this.attends = attends;
 	}
 
 	@Action
 	@ActionLayout(named = "Add All Participants")
 	//@MemberOrder(name = "attendeds", sequence = "1")
-	public AttendanceList addAllAttendeds() {
+	public AttendanceList addAllAttends() {
 		for (Participation participation : getParentActivity().getParticipations()) {
 			Participant participant = participation.getParticipant();
 			if (!hasParticipant(participant)) {
 				Attend attended = attendanceListsRepo.createAttended(parentActivity, participant, true);
-				getAttendeds().add(attended);
+				getAttends().add(attended);
 			}
 		}
 		return this;
@@ -114,7 +114,7 @@ public class AttendanceList {
 
 	@Programmatic
 	private boolean hasParticipant(Participant p) {
-		for (Attend a : getAttendeds()) {
+		for (Attend a : getAttends()) {
 			if (a.getParticipant().equals(p))
 				return true;
 		}
@@ -124,18 +124,18 @@ public class AttendanceList {
 	@Action
 	@ActionLayout(named = "Add")
 	//@MemberOrder(name = "attendeds", sequence = "2")
-	public AttendanceList addAttended(@Parameter(optionality = Optionality.MANDATORY) Participant participant) {
+	public AttendanceList addAttend(@Parameter(optionality = Optionality.MANDATORY) Participant participant) {
 		Attend attended = attendanceListsRepo.createAttended(parentActivity, participant, true);
-		getAttendeds().add(attended);
+		getAttends().add(attended);
 		return this;
 	}
 
-	public List<Participant> choices0AddAttended() {
+	public List<Participant> choices0AddAttend() {
 		List<Participant> list = participantsRepo.listActive(AgeGroup.All);
 		List<Participant> temp = new ArrayList<>(list);
 		for (Participant participant : list) {
-			for (Attend attendee : getAttendeds()) {
-				if (attendee.getParticipant().equals(participant))
+			for (Attend attend : getAttends()) {
+				if (attend.getParticipant().equals(participant))
 					temp.remove(participant);
 			}
 		}
@@ -145,12 +145,12 @@ public class AttendanceList {
 	@Action
 	@ActionLayout(named = "Add New")
 	//@MemberOrder(name = "attendeds", sequence = "3")
-	public AttendanceList addNewParticipantAndAttended(final @ParameterLayout(named = "First name") String firstname,
+	public AttendanceList addNewParticipantAndAttend(final @ParameterLayout(named = "First name") String firstname,
 			final @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob,
 			final @ParameterLayout(named = "Sex") Sex sex) {
 		Participant p = participantsRepo.newParticipant(firstname, surname, dob, sex);
-		addAttended(p);
+		addAttend(p);
 		return this;
 	}
 
@@ -158,14 +158,14 @@ public class AttendanceList {
 	@ActionLayout(named = "Do Bulk Updates")
 	//@MemberOrder(name = "attendeds", sequence = "4")
 	public List<Attend> bulkAction() {
-		return getAttendeds();
+		return getAttends();
 	}
 
 	@Programmatic
-	public void removeAttended(Attend attended) {
-		if (attended != null && getAttendeds().contains(attended)) {
+	public void removeAttend(Attend attended) {
+		if (attended != null && getAttends().contains(attended)) {
 			System.out.println("Removing Attended");
-			getAttendeds().remove(attended);
+			getAttends().remove(attended);
 			attendanceListsRepo.deleteAttended(attended);
 		}
 

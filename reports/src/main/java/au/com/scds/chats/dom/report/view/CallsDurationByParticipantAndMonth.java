@@ -32,6 +32,7 @@ import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
+import org.apache.isis.applib.annotation.Where;
 import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
 import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 import org.joda.time.DateTime;
@@ -47,18 +48,24 @@ import org.joda.time.LocalDate;
 				key = "view-definition",
 				value = "CREATE VIEW CallsDurationByParticipantAndMonth "
 						+ "( "
+						+ "  {this.personId}, "						
 						+ "  {this.surname}, "
 						+ "  {this.firstName}, "
 						+ "  {this.birthDate}, "
+						+ "  {this.age}, "						
+						+ "  {this.participantId}, "						
 						+ "  {this.regionName}, "
 						+ "  {this.participantStatus}, "						
 						+ "  {this.yearMonth}, "
 						+ "  {this.callHoursTotal} "
 						+ ") AS "
 						+ "SELECT "
+						+ "  person.person_id AS personId, "						
 						+ "  person.surname, "
 						+ "  person.firstname AS firstName, "
 						+ "  person.birthdate AS birthDate, "
+						+ "  timestampdiff(year,person.birthdate,curdate()) AS age, "						
+						+ "  participant.particpant_id AS participantId, "						
 						+ "  participant.region_name AS regionName, "
 						+ "  participant.status AS participantStatus, "
 						+ "	EXTRACT(YEAR_MONTH FROM telephonecall.startdatetime) as yearMonth, "
@@ -86,13 +93,40 @@ import org.joda.time.LocalDate;
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class CallsDurationByParticipantAndMonth implements WithApplicationTenancy{
 	
+	public Integer personId;
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
+	public Integer age;
+	public Integer participantId;
 	public String regionName;
 	public String participantStatus;
 	public Integer yearMonth;
 	public Float callHoursTotal;
+	
+	public String title(){
+		return "Calls: " + getFirstName() + " " + getSurname() + " " + getYearMonth();
+	}
+
+	@Property(hidden=Where.EVERYWHERE)
+	//@MemberOrder(sequence = "1")	
+	public Integer getPersonId() {
+		return personId;
+	}
+
+	public void setPersonId(Integer personId) {
+		this.personId = personId;
+	}
+
+	@Property(hidden=Where.EVERYWHERE)
+	//@MemberOrder(sequence = "1")
+	public Integer getParticipantId() {
+		return participantId;
+	}
+
+	public void setParticipantId(Integer participantId) {
+		this.participantId = participantId;
+	}
 
 	@Property()
 	@MemberOrder(sequence = "1")
@@ -115,13 +149,23 @@ public class CallsDurationByParticipantAndMonth implements WithApplicationTenanc
 	}
 
 	@Property()
-	@MemberOrder(sequence = "3")
+	@MemberOrder(sequence = "3.1")
 	public LocalDate getBirthDate() {
 		return birthDate;
 	}
 
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "3.2")
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
 	}
 
 	@Property()

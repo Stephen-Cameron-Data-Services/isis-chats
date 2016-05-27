@@ -21,17 +21,14 @@ package au.com.scds.chats.dom;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.incode.module.note.dom.api.notable.Notable;
 import org.incode.module.note.dom.spi.calendarname.CalendarNameRepository;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEventable;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import au.com.scds.chats.dom.activity.ActivityEvent;
 import au.com.scds.chats.dom.activity.RecurringActivity;
 import au.com.scds.chats.dom.call.ScheduledCall;

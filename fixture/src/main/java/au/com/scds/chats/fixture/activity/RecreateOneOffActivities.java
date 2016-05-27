@@ -43,7 +43,7 @@ public class RecreateOneOffActivities extends FixtureScript {
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			ActivityEventFixture fixture = ((JAXBElement<ActivityEventFixture>) jaxbUnmarshaller.unmarshal(is))
 					.getValue();
-			ActivityEvent activity = wrap(activities).createOneOffActivity(fixture.getName(),
+			ActivityEvent activity = wrap(activities).createOneOffActivity(fixture.getName(), "TO-DO",
 					new DateTime(fixture.getStartDateTime().toGregorianCalendar().getTime()));
 			wrap(activity).setActivityTypeName(fixture.getActivityType());
 			wrap(activity).setDescription(fixture.getDescription());

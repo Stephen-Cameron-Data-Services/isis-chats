@@ -83,7 +83,7 @@ public class AttendanceListTest {
 			final AttendanceList obj = attendanceListsRepo.createActivityAttendanceList(activity);
 			// then
 			assertThat(obj).isEqualTo(list);
-			assertThat(obj.getAttendeds().size()).isEqualTo(0);
+			assertThat(obj.getAttends().size()).isEqualTo(0);
 
 		}
 
@@ -104,9 +104,9 @@ public class AttendanceListTest {
 
 			// when
 			attendanceList.setParentActivity(activity);
-			attendanceList.addAttended(participant);
+			attendanceList.addAttend(participant);
 			// then
-			assertThat(attendanceList.getAttendeds().size()).isEqualTo(1);
+			assertThat(attendanceList.getAttends().size()).isEqualTo(1);
 		}
 
 		@Test
@@ -143,12 +143,12 @@ public class AttendanceListTest {
 
 			// when
 			attendanceList.setParentActivity(activity);
-			attendanceList.addNewParticipantAndAttended("Mary", "Rose", new LocalDate(1950, 11, 15), Sex.FEMALE);
+			attendanceList.addNewParticipantAndAttend("Mary", "Rose", new LocalDate(1950, 11, 15), Sex.FEMALE);
 			// then
-			assertThat(attendanceList.getAttendeds().size()).isEqualTo(1);
-			assertThat(attendanceList.getAttendeds().get(0)).isEqualTo(attended);
-			assertThat(attendanceList.getAttendeds().get(0).getActivity()).isEqualTo(activity);
-			assertThat(attendanceList.getAttendeds().get(0).getParticipant()).isEqualTo(participant);
+			assertThat(attendanceList.getAttends().size()).isEqualTo(1);
+			assertThat(attendanceList.getAttends().get(0)).isEqualTo(attended);
+			assertThat(attendanceList.getAttends().get(0).getActivity()).isEqualTo(activity);
+			assertThat(attendanceList.getAttends().get(0).getParticipant()).isEqualTo(participant);
 		}
 
 		@Test
@@ -188,15 +188,15 @@ public class AttendanceListTest {
 			activity.addParticipant(participant1);
 			activity.addParticipant(participant2);
 			attendanceList.setParentActivity(activity);
-			attendanceList.addAllAttendeds();
+			attendanceList.addAllAttends();
 			// then
-			assertThat(attendanceList.getAttendeds().size()).isEqualTo(2);
-			assertThat(attendanceList.getAttendeds().get(0)).isEqualTo(a1);
-			assertThat(attendanceList.getAttendeds().get(0).getActivity()).isEqualTo(activity);
-			assertThat(attendanceList.getAttendeds().get(0).getParticipant()).isEqualTo(participant1);
-			assertThat(attendanceList.getAttendeds().get(1)).isEqualTo(a2);
-			assertThat(attendanceList.getAttendeds().get(1).getActivity()).isEqualTo(activity);
-			assertThat(attendanceList.getAttendeds().get(1).getParticipant()).isEqualTo(participant2);
+			assertThat(attendanceList.getAttends().size()).isEqualTo(2);
+			assertThat(attendanceList.getAttends().get(0)).isEqualTo(a1);
+			assertThat(attendanceList.getAttends().get(0).getActivity()).isEqualTo(activity);
+			assertThat(attendanceList.getAttends().get(0).getParticipant()).isEqualTo(participant1);
+			assertThat(attendanceList.getAttends().get(1)).isEqualTo(a2);
+			assertThat(attendanceList.getAttends().get(1).getActivity()).isEqualTo(activity);
+			assertThat(attendanceList.getAttends().get(1).getParticipant()).isEqualTo(participant2);
 		}
 
 		@Factory

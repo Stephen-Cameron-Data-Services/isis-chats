@@ -51,6 +51,10 @@
             <artifactId>chats-fixture</artifactId>
         </dependency>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>chats-reports</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.isis.core</groupId>
             <artifactId>isis-core-wrapper</artifactId>
         </dependency>
