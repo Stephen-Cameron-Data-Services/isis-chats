@@ -61,8 +61,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	private String oldId;
 	private TransportType arrivingTransportType;
 	private TransportType departingTransportType;
-	private DateTime dropoffTime;
-	private DateTime pickupTime;
+	private String dropoffTime;
+	private String pickupTime;
 	private AdditionalTransportTime transportTime = AdditionalTransportTime.ZERO;
 	private Long roleId;
 	private String transportNotes;
@@ -179,11 +179,11 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	@PropertyLayout(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "6")
 	@Column(allowsNull = "true")
-	public DateTime getDropoffTime() {
+	public String getDropoffTime() {
 		return this.dropoffTime;
 	}
 
-	public void setDropoffTime(DateTime dropoffTime) {
+	public void setDropoffTime(String dropoffTime) {
 		this.dropoffTime = dropoffTime;
 	}
 
@@ -191,11 +191,11 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	@PropertyLayout(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "7")
 	@Column(allowsNull = "true")
-	public DateTime getPickupTime() {
+	public String getPickupTime() {
 		return this.pickupTime;
 	}
 
-	public void setPickupTime(DateTime pickupTime) {
+	public void setPickupTime(String pickupTime) {
 		this.pickupTime = pickupTime;
 	}
 

@@ -91,24 +91,24 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	private String involvementGC;
 	private String involvementIH;
 	private String lifeStory;
-	private String experiences;
+	private String lifeExperiences;
 	private String hobbies;
 	private String interests;
 	private String loneliness;
-	
-	//DEX reporting related
-	private Boolean consentToProvideDetails;
-	private Boolean consentedForFutureContacts;
-	private Boolean isUsingPsuedonym;
-	private Boolean isBirthDateAnEstimate;
-	private Boolean hasDisabilities;
-	private Boolean hasCarer;
+
+	// DEX reporting related
+	private Boolean consentToProvideDetails = true;
+	private Boolean consentedForFutureContacts = true;
+	private Boolean usingPsuedonym = true;
+	private Boolean birthDateAnEstimate = false;
+	private Boolean hasDisabilities = false;
+	private Boolean hasCarer = false;
 	private Country countryOfBirth;
-	private Language languageSpokenAtHomeCode;
+	private Language languageSpokenAtHome;
 	private AboriginalOrTorresStraitIslanderOrigin aboriginalOrTorresStraitIslanderOrigin;
-	private AccommodationType accommodationTypeCode;
-	private DVACardStatus dvaCardStatusCode;
-	private HouseholdComposition householdCompositionCode;
+	private AccommodationType accommodationType;
+	private DVACardStatus dvaCardStatus;
+	private HouseholdComposition householdComposition;
 
 	@Property()
 	// @PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP)
@@ -127,11 +127,11 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	// @MemberOrder(sequence = "2")
 	@Column(allowsNull = "true", length = 1000)
 	public String getLifeExperiences() {
-		return experiences;
+		return lifeExperiences;
 	}
 
 	public void setLifeExperiences(final String experiences) {
-		this.experiences = experiences;
+		this.lifeExperiences = experiences;
 	}
 
 	@Property()
@@ -194,6 +194,12 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public Integer getAge() {
 		return getPerson().getAge(null);
 	}
+	
+	@Property(hidden = Where.NOWHERE, editing = Editing.DISABLED, editingDisabledReason = "Calculated from Person record")
+	// @MemberOrder(sequence = "1.2")
+	public String getSex() {
+		return getPerson().getSex().name();
+	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
 	// @MemberOrder(sequence = "2")
@@ -243,10 +249,6 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 		statuses.add(Status.TO_EXIT);
 		return statuses;
 	}
-	
-	
-	
-	
 
 	@Property()
 	// @MemberOrder(sequence = "100")
@@ -256,7 +258,7 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	}
 
 	@Programmatic
-	public boolean hasParticipation(Activity activity) {
+	public Boolean hasParticipation(Activity activity) {
 		for (Participation p : participations) {
 			if (p.getActivity().equals(activity)) {
 				return true;
@@ -464,8 +466,8 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	}
 
 	@Property()
-	@Column(allowsNull = "true")
-	public Boolean getConsentToProvideDetails() {
+	@Column(allowsNull = "false")
+	public Boolean isConsentToProvideDetails() {
 		return consentToProvideDetails;
 	}
 
@@ -474,8 +476,8 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	}
 
 	@Property()
-	@Column(allowsNull = "true")
-	public Boolean getConsentedForFutureContacts() {
+	@Column(allowsNull = "false")
+	public Boolean isConsentedForFutureContacts() {
 		return consentedForFutureContacts;
 	}
 
@@ -484,28 +486,28 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	}
 
 	@Property()
-	@Column(allowsNull = "true")
-	public Boolean getIsUsingPsuedonym() {
-		return isUsingPsuedonym;
+	@Column(allowsNull = "false")
+	public Boolean isUsingPsuedonym() {
+		return usingPsuedonym;
 	}
 
-	public void setIsUsingPsuedonym(Boolean isUsingPsuedonym) {
-		this.isUsingPsuedonym = isUsingPsuedonym;
-	}
-
-	@Property()
-	@Column(allowsNull = "true")
-	public Boolean getIsBirthDateAnEstimate() {
-		return isBirthDateAnEstimate;
-	}
-
-	public void setIsBirthDateAnEstimate(Boolean isBirthDateAnEstimate) {
-		this.isBirthDateAnEstimate = isBirthDateAnEstimate;
+	public void setUsingPsuedonym(Boolean isUsingPsuedonym) {
+		this.usingPsuedonym = isUsingPsuedonym;
 	}
 
 	@Property()
-	@Column(allowsNull = "true")
-	public Boolean getHasDisabilities() {
+	@Column(allowsNull = "false")
+	public Boolean isBirthDateAnEstimate() {
+		return birthDateAnEstimate;
+	}
+
+	public void setBirthDateAnEstimate(Boolean birthDateAnEstimate) {
+		this.birthDateAnEstimate = birthDateAnEstimate;
+	}
+
+	@Property()
+	@Column(allowsNull = "false")
+	public Boolean isHasDisabilities() {
 		return hasDisabilities;
 	}
 
@@ -514,8 +516,8 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	}
 
 	@Property()
-	@Column(allowsNull = "true")
-	public Boolean getHasCarer() {
+	@Column(allowsNull = "false")
+	public Boolean isHasCarer() {
 		return hasCarer;
 	}
 
@@ -523,7 +525,7 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 		this.hasCarer = hasCarer;
 	}
 
-	@Property()
+	@Property(hidden=Where.EVERYWHERE)
 	@Column(allowsNull = "true")
 	public Country getCountryOfBirth() {
 		return countryOfBirth;
@@ -532,25 +534,24 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public void setCountryOfBirth(Country countryOfBirth) {
 		this.countryOfBirth = countryOfBirth;
 	}
-	
-	public List<Country> choicesCountryOfBirth(){
+
+	public List<Country> choicesCountryOfBirth() {
 		return dexRefData.allCountry();
 	}
-	
-	@Property()
+
 	@Column(allowsNull = "true")
-	public Language getLanguageSpokenAtHomeCode() {
-		return languageSpokenAtHomeCode;
+	public Language getLanguageSpokenAtHome() {
+		return languageSpokenAtHome;
 	}
 
-	public void setLanguageSpokenAtHomeCode(Language languageSpokenAtHomeCode) {
-		this.languageSpokenAtHomeCode = languageSpokenAtHomeCode;
+	public void setLanguageSpokenAtHome(Language languageSpokenAtHome) {
+		this.languageSpokenAtHome = languageSpokenAtHome;
 	}
-	
-	public List<Language> choicesLanguageSpokenAtHomeCode(){
+
+	public List<Language> choicesLanguageSpokenAtHome() {
 		return dexRefData.allLanguage();
 	}
-	
+
 	@Property()
 	@Column(allowsNull = "true")
 	public AboriginalOrTorresStraitIslanderOrigin getAboriginalOrTorresStraitIslanderOrigin() {
@@ -561,56 +562,159 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 			AboriginalOrTorresStraitIslanderOrigin aboriginalOrTorresStraitIslanderOrigin) {
 		this.aboriginalOrTorresStraitIslanderOrigin = aboriginalOrTorresStraitIslanderOrigin;
 	}
-	
-	public List<AboriginalOrTorresStraitIslanderOrigin> choicesAboriginalOrTorresStraitIslanderOrigin(){
+
+	public List<AboriginalOrTorresStraitIslanderOrigin> choicesAboriginalOrTorresStraitIslanderOrigin() {
 		return dexRefData.allAboriginalOrTorresStraitIslanderOrigin();
 	}
 
 	@Property()
 	@Column(allowsNull = "true")
-	public AccommodationType getAccommodationTypeCode() {
-		return accommodationTypeCode;
+	public AccommodationType getAccommodationType() {
+		return accommodationType;
 	}
 
-	public void setAccommodationTypeCode(AccommodationType accommodationTypeCode) {
-		this.accommodationTypeCode = accommodationTypeCode;
+	public void setAccommodationType(AccommodationType accommodationType) {
+		this.accommodationType = accommodationType;
 	}
-	
-	public List<AccommodationType> choicesAccommodationTypeCode(){
+
+	public List<AccommodationType> choicesAccommodationType() {
 		return dexRefData.allAccommodationType();
 	}
 
 	@Property()
 	@Column(allowsNull = "true")
-	public DVACardStatus getDvaCardStatusCode() {
-		return dvaCardStatusCode;
+	public DVACardStatus getDvaCardStatus() {
+		return dvaCardStatus;
 	}
 
-	public void setDvaCardStatusCode(DVACardStatus dvaCardStatusCode) {
-		this.dvaCardStatusCode = dvaCardStatusCode;
+	public void setDvaCardStatus(DVACardStatus dvaCardStatus) {
+		this.dvaCardStatus = dvaCardStatus;
 	}
-	
-	public List<DVACardStatus> choicesDvaCardStatusCode(){
+
+	public List<DVACardStatus> choicesDvaCardStatus() {
 		return dexRefData.allDVACardStatus();
 	}
 
 	@Property()
 	@Column(allowsNull = "true")
-	public HouseholdComposition getHouseholdCompositionCode() {
-		return householdCompositionCode;
+	public HouseholdComposition getHouseholdComposition() {
+		return householdComposition;
 	}
 
-	public void setHouseholdCompositionCode(HouseholdComposition householdCompositionCode) {
-		this.householdCompositionCode = householdCompositionCode;
+	public void setHouseholdComposition(HouseholdComposition householdComposition) {
+		this.householdComposition = householdComposition;
 	}
-	
-	public List<HouseholdComposition> choicesHouseholdCompositionCode(){
+
+	public List<HouseholdComposition> choicesHouseholdComposition() {
 		return dexRefData.allHouseholdComposition();
 	}
-	
+
+	@Action()
+	@ActionLayout(named = "Change")
+	public Participant updateDexData(
+			@ParameterLayout(named="Consent To Provide Details") final Boolean consentToProvideDetails,
+			@ParameterLayout(named="Consented For Future Contacts") final Boolean consentedForFutureContacts,
+			@ParameterLayout(named="Is Using Psuedonym") final Boolean isUsingPsuedonym, 
+			@ParameterLayout(named="Is Birth Date An Estimate") final Boolean isBirthDateAnEstimate, 
+			@ParameterLayout(named="Has Disabilities") final Boolean hasDisabilities,
+			@ParameterLayout(named="Has Carer") final Boolean hasCarer, 
+			final Country countryOfBirth, 
+			final Language languageSpokenAtHome,
+			final AboriginalOrTorresStraitIslanderOrigin aboriginalOrTorresStraitIslanderOrigin,
+			final AccommodationType accommodationType, final DVACardStatus dvaCardStatus,
+			final HouseholdComposition householdComposition) {
+
+		setConsentToProvideDetails(consentToProvideDetails);
+		setConsentedForFutureContacts(consentedForFutureContacts);
+		setUsingPsuedonym(isUsingPsuedonym);
+		setBirthDateAnEstimate(isBirthDateAnEstimate);
+		setHasDisabilities(hasDisabilities);
+		setHasCarer(hasCarer);
+		setCountryOfBirth(countryOfBirth);
+		setLanguageSpokenAtHome(languageSpokenAtHome);
+		setAboriginalOrTorresStraitIslanderOrigin(aboriginalOrTorresStraitIslanderOrigin);
+		setAccommodationType(accommodationType);
+		setDvaCardStatus(dvaCardStatus);
+		setHouseholdComposition(householdComposition);
+
+		return this;
+	}
+
+	public Boolean default0UpdateDexData() {
+		return isConsentToProvideDetails();
+	}
+
+	public Boolean default1UpdateDexData() {
+		return isConsentedForFutureContacts();
+	}
+
+	public Boolean default2UpdateDexData() {
+		return isUsingPsuedonym();
+	}
+
+	public Boolean default3UpdateDexData() {
+		return isBirthDateAnEstimate();
+	}
+
+	public Boolean default4UpdateDexData() {
+		return isHasDisabilities();
+	}
+
+	public Boolean default5UpdateDexData() {
+		return isHasCarer();
+	}
+
+	public Country default6UpdateDexData() {
+		return getCountryOfBirth();
+	}
+
+	public List<Country> choices6UpdateDexData() {
+		return dexRefData.allCountry();
+	}
+
+	public Language default7UpdateDexData() {
+		return getLanguageSpokenAtHome();
+	}
+
+	public List<Language> choices7UpdateDexData() {
+		return dexRefData.allLanguage();
+	}
+
+	public AboriginalOrTorresStraitIslanderOrigin default8UpdateDexData() {
+		return getAboriginalOrTorresStraitIslanderOrigin();
+	}
+
+	public List<AboriginalOrTorresStraitIslanderOrigin> choices8UpdateDexData() {
+		return dexRefData.allAboriginalOrTorresStraitIslanderOrigin();
+	}
+
+	public AccommodationType default9UpdateDexData() {
+		return getAccommodationType();
+	}
+
+	public List<AccommodationType> choices9UpdateDexData() {
+		return dexRefData.allAccommodationType();
+	}
+
+	public DVACardStatus default10UpdateDexData() {
+		return getDvaCardStatus();
+	}
+
+	public List<DVACardStatus> choices10UpdateDexData() {
+		return dexRefData.allDVACardStatus();
+	}
+
+	public HouseholdComposition default11UpdateDexData() {
+		return getHouseholdComposition();
+	}
+
+	public List<HouseholdComposition> choices11UpdateDexData() {
+		return dexRefData.allHouseholdComposition();
+	}
+
 	@Inject
 	Participants participantsRepo;
-	
+
 	@Inject
 	DexReferenceData dexRefData;
 

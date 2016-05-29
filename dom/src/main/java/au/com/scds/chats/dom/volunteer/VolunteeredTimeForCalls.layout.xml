@@ -9,38 +9,34 @@
 		</col>
 	</row>
 	<row>
-		<col span="12" unreferencedCollections="true">
+		<col span="12">
 			<tabGroup>
 				<tab name="General">
 					<row>
-						<col span="6">
+						<col span="8">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
-								<ns2:property id="activity" />
-								<ns2:property id="participant" />
-								<ns2:property id="roleId" hidden="EVERYWHERE" />
-								<ns2:property id="oldId" hidden="EVERYWHERE" />
-								<ns2:property id="arrivingTransportType" hidden="EVERYWHERE" />
-								<ns2:property id="arrivingTransportTypeName" />
-								<ns2:property id="pickupTime" />
-								<ns2:property id="departingTransportType" hidden="EVERYWHERE" />
-								<ns2:property id="departingTransportTypeName" />
-								<ns2:property id="dropoffTime" />
-								<ns2:property id="transportTime" />
+								<ns2:property id="effortLength" />
+								<ns2:property id="callSchedule" />
+								<ns2:property id="volunteer" />
+								<ns2:property id="volunteerRole" hidden="EVERYWHERE" />
+								<ns2:property id="volunteerRoleName" />
+								<ns2:property id="description" />
+								<ns2:property id="startDateTime" />
+								<ns2:property id="endDateTime">
+									<ns2:action id="updateDatesAndTimes" />
+								</ns2:property>
+								<ns2:property id="includeAsParticipation" />
 							</ns2:fieldSet>
 						</col>
-						<col span="6" unreferencedCollections="true">
-							<ns2:fieldSet name="Transport Notes" id="notes">
-								<ns2:property id="transportNotes" multiLine="10"
-									labelPosition="NONE"/>
-							</ns2:fieldSet>
-						</col>
+
 					</row>
 				</tab>
+
 				<tab name="Other">
 					<row>
 						<col span="4">
-							<ns2:fieldSet name="Admin" id="other">
+							<ns2:fieldSet name="Admin" id="admin">
 								<ns2:action id="clearHints" position="PANEL_DROPDOWN" />
 								<ns2:action id="downloadLayoutXml" position="PANEL_DROPDOWN" />
 								<ns2:action id="downloadJdoMetadata" position="PANEL_DROPDOWN" />
@@ -56,6 +52,8 @@
 								<ns2:property id="region" hidden="EVERYWHERE" />
 								<ns2:property id="regionName" />
 							</ns2:fieldSet>
+						</col>
+						<col span="8" unreferencedCollections="true">
 						</col>
 					</row>
 				</tab>

@@ -26,6 +26,7 @@
 								<ns2:property id="mailAddress" hidden="ALL_TABLES" />
 								<ns2:property id="location" hidden="ALL_TABLES" />
 								<ns2:property id="age" typicalLength="2" />
+								<ns2:property id="sex" typicalLength="5" />
 								<ns2:property id="status" typicalLength="5" />
 							</ns2:fieldSet>
 						</col>
@@ -110,19 +111,21 @@
 					<row>
 						<col span="8">
 							<ns2:fieldSet id="DSS" name="DSS (DEX) Data">
+								<ns2:action id="updateDexData" />
 								<ns2:property id="consentToProvideDetails" hidden="ALL_TABLES" />
 								<ns2:property id="consentedForFutureContacts"
 									hidden="ALL_TABLES" />
-								<ns2:property id="isBirthDateAnEstimate" hidden="ALL_TABLES" />
-								<ns2:property id="isUsingPsuedonym" hidden="ALL_TABLES" />
-								<ns2:property id="countryOfBirth" hidden="ALL_TABLES" />
-								<ns2:property id="languageSpokenAtHomeCode" hidden="ALL_TABLES" />
-								<ns2:property id="hasCarer" hidden="ALL_TABLES" />
+								<ns2:property id="usingPsuedonym" hidden="ALL_TABLES" />
+								<ns2:property id="birthDateAnEstimate" hidden="ALL_TABLES" />
 								<ns2:property id="hasDisabilities" hidden="ALL_TABLES" />
-								<ns2:property id="householdCompositionCode" hidden="ALL_TABLES" />
-								<ns2:property id="accommodationTypeCode" hidden="ALL_TABLES" />
-								<ns2:property id="aboriginalOrTorresStraitIslanderOrigin" hidden="ALL_TABLES" />
-								<ns2:property id="dvaCardStatusCode" hidden="ALL_TABLES" />
+								<ns2:property id="hasCarer" hidden="ALL_TABLES" />
+								<ns2:property id="countryOfBirth" hidden="ALL_TABLES" />
+								<ns2:property id="languageSpokenAtHome" hidden="ALL_TABLES" />
+								<ns2:property id="householdComposition" hidden="ALL_TABLES" />
+								<ns2:property id="accommodationType" hidden="ALL_TABLES" />
+								<ns2:property id="aboriginalOrTorresStraitIslanderOrigin"
+									hidden="ALL_TABLES" />
+								<ns2:property id="dvaCardStatus" hidden="ALL_TABLES" />
 							</ns2:fieldSet>
 						</col>
 					</row>

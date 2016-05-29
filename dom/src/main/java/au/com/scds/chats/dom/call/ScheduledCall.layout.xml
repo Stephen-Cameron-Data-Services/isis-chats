@@ -19,7 +19,6 @@
 								<ns2:property id="allocatedVolunteer" />
 								<ns2:property id="participant" />
 								<ns2:property id="callSchedule" hidden="ALL_TABLES"/>
-								<ns2:property id="region" hidden="EVERYWHERE" />
 							</ns2:fieldSet>
 						</col>
 						<col span="6">

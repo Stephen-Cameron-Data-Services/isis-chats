@@ -33,6 +33,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
+import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
@@ -52,7 +53,7 @@ public class VolunteeredTimeForActivity extends VolunteeredTime {
 	private Activity activity;
 	private VolunteerRole volunteerRole;
 
-	@Property()
+	@Property(editing=Editing.DISABLED)
 	@PropertyLayout(hidden=Where.ALL_TABLES)
 	@MemberOrder(sequence = "2")
 	@Column(allowsNull="false")

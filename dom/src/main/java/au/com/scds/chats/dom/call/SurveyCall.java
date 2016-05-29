@@ -14,8 +14,12 @@ import org.incode.module.note.dom.api.notable.Notable;
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "SURVEY")
+@Queries({
+	@Query(name = "findSurveyCalls", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.SurveyCall "),
+	@Query(name = "findSurveyCallsByParticipant", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.SurveyCall WHERE participant == :participant "), 
+	@Query(name = "findSurveyCallsInPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.SurveyCall WHERE startDateTime >= :startDateTime && startDateTime <= :endDateTime && region == :region ORDER BY startDateTime ASC"), })
 @DomainObject()
-public class SurveyCall extends Call implements Notable {
+public class SurveyCall extends Call  {
 
 	public String title(){
 		return "Survey Call";

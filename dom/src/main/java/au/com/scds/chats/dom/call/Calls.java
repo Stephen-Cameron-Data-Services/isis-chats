@@ -67,38 +67,92 @@ public class Calls {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
-	public CareCall createCareCall() {
+	public CareCall createCareCall(@Parameter(optionality=Optionality.MANDATORY) Participant participant) {
 		CareCall call = container.newTransientInstance(CareCall.class);
+		call.setParticipant(participant);
 		container.persistIfNotAlready(call);
 		container.flush();
 		return call;
+	}
+	
+	public List<Participant> choices0CreateCareCall(){
+		return participantsRepo.listActive(AgeGroup.All);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
-	public ReconnectCall createReconnectCall() {
+	public ReconnectCall createReconnectCall(@Parameter(optionality=Optionality.MANDATORY) Participant participant) {
 		ReconnectCall call = container.newTransientInstance(ReconnectCall.class);
+		call.setParticipant(participant);	
 		container.persistIfNotAlready(call);
 		container.flush();
 		return call;
+	}
+	
+	public List<Participant> choices0CreateReconnectCall(){
+		return participantsRepo.listActive(AgeGroup.All);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "3")
-	public SurveyCall createSurveyCall() {
+	public SurveyCall createSurveyCall(@Parameter(optionality=Optionality.MANDATORY) Participant participant) {
 		SurveyCall call = container.newTransientInstance(SurveyCall.class);
+		call.setParticipant(participant);	
 		container.persistIfNotAlready(call);
 		container.flush();
 		return call;
 	}
+	
+	public List<Participant> choices0CreateSurveyCall(){
+		return participantsRepo.listActive(AgeGroup.All);
+	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "10")
+	@MemberOrder(sequence = "10.1")
+	public List<CareCall> listCareCalls(
+			@Parameter(optionality = Optionality.OPTIONAL) final Participant activeParticipant) {
+		if (activeParticipant != null) {
+			return container.allMatches(
+					new QueryDefault<>(CareCall.class, "findCareCallsByParticipant", "participant", activeParticipant));
+		} else {
+			return container.allMatches(new QueryDefault<>(CareCall.class, "findCareCalls"));
+		}
+	}
+
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "10.2")
+	public List<ReconnectCall> listReconnectCalls(
+			@Parameter(optionality = Optionality.OPTIONAL) final Participant activeParticipant) {
+		if (activeParticipant != null) {
+			return container.allMatches(new QueryDefault<>(ReconnectCall.class, "findReconnectCallsByParticipant",
+					"participant", activeParticipant));
+		} else {
+			return container.allMatches(new QueryDefault<>(ReconnectCall.class, "findReconnectCalls"));
+		}
+	}
+
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "10.3")
+	public List<SurveyCall> listSurveyCalls(
+			@Parameter(optionality = Optionality.OPTIONAL) final Participant activeParticipant) {
+		if (activeParticipant != null) {
+			return container.allMatches(new QueryDefault<>(SurveyCall.class, "findSurveyCallsByParticipant",
+					"participant", activeParticipant));
+		} else {
+			return container.allMatches(new QueryDefault<>(SurveyCall.class, "findSurveyCalls"));
+		}
+	}
+
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "10.4")
 	public List<ScheduledCall> listScheduledCalls(
-			@Parameter(optionality = Optionality.OPTIONAL) final Participant activeVolunteer,
+			@Parameter(optionality = Optionality.OPTIONAL) final Volunteer activeVolunteer,
 			@Parameter(optionality = Optionality.OPTIONAL) final Participant activeParticipant) {
 		if (activeVolunteer != null && activeParticipant != null) {
 			return container
@@ -181,12 +235,12 @@ public class Calls {
 		call.setIsCompleted(false);
 		return call;
 	}
-	
-	public List<Volunteer> choices0CreateScheduledCall(){
+
+	public List<Volunteer> choices0CreateScheduledCall() {
 		return volunteersRepo.listActive();
 	}
-	
-	public List<Participant> choices1CreateScheduledCall(){
+
+	public List<Participant> choices1CreateScheduledCall() {
 		return participantsRepo.listActive(AgeGroup.All);
 	}
 

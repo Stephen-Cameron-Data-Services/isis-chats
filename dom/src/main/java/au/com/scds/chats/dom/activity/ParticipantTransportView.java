@@ -41,8 +41,8 @@ public class ParticipantTransportView {
 	private String address;
 	private Location location;
 	private String notes;
-	private DateTime pickupTime;
-	private DateTime dropoffTime;
+	private String pickupTime;
+	private String dropoffTime;
 	private TransportType arrivingTransportType;
 	private TransportType departingTransportType;
 
@@ -119,20 +119,20 @@ public class ParticipantTransportView {
 	}
 
 	@MemberOrder(sequence = "7")
-	public DateTime getPickupTime() {
+	public String getPickupTime() {
 		return pickupTime;
 	}
 
-	public void setPickupTime(DateTime pickupTime) {
+	public void setPickupTime(String pickupTime) {
 		this.pickupTime = pickupTime;
 	}
 
 	@MemberOrder(sequence = "8")
-	public DateTime getDropoffTime() {
+	public String getDropoffTime() {
 		return dropoffTime;
 	}
 
-	public void setDropoffTime(DateTime dropoffTime) {
+	public void setDropoffTime(String dropoffTime) {
 		this.dropoffTime = dropoffTime;
 	}
 
@@ -144,7 +144,6 @@ public class ParticipantTransportView {
 	public void setArrivingTransportType(TransportType arrivingTransportType) {
 		this.arrivingTransportType = arrivingTransportType;
 	}
-
 
 	@PropertyLayout(named = "Arriving Transport")
 	@MemberOrder(sequence = "20")

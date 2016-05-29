@@ -82,7 +82,7 @@ public class VolunteeredTime extends AbstractChatsDomainEntity implements Compar
 		}
 	}
 
-	@Property()
+	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(hidden = Where.REFERENCES_PARENT)
 	@MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
@@ -94,7 +94,7 @@ public class VolunteeredTime extends AbstractChatsDomainEntity implements Compar
 		this.volunteer = volunteer;
 	}
 
-	@Property(editing=Editing.DISABLED)
+	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "10")
 	@Column(allowsNull = "false")
@@ -106,7 +106,7 @@ public class VolunteeredTime extends AbstractChatsDomainEntity implements Compar
 		this.startDateTime = startDateTime;
 	}
 
-	@Property(editing=Editing.DISABLED)
+	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "11")
 	@Column(allowsNull = "false")
@@ -117,10 +117,11 @@ public class VolunteeredTime extends AbstractChatsDomainEntity implements Compar
 	public void setEndDateTime(DateTime endDateTime) {
 		this.endDateTime = endDateTime;
 	}
-	
+
 	@Action()
-	@MemberOrder(name="enddatetime",sequence="1")
-	public VolunteeredTime updateDatesAndTimes(@ParameterLayout(named="Start Date Time") DateTime start, @ParameterLayout(named="End Date Time") DateTime end){
+	@MemberOrder(name = "enddatetime", sequence = "1")
+	public VolunteeredTime updateDatesAndTimes(@ParameterLayout(named = "Start Date Time") DateTime start,
+			@ParameterLayout(named = "End Date Time") DateTime end) {
 		if (start != null && end != null) {
 			if (end.isBefore(start)) {
 				container.warnUser("end date & time is earlier than start date & time");
@@ -141,12 +142,12 @@ public class VolunteeredTime extends AbstractChatsDomainEntity implements Compar
 		}
 		return this;
 	}
-	
-	public DateTime default0UpdateDatesAndTimes(){
+
+	public DateTime default0UpdateDatesAndTimes() {
 		return getStartDateTime();
 	}
-	
-	public DateTime default1UpdateDatesAndTimes(){
+
+	public DateTime default1UpdateDatesAndTimes() {
 		return getEndDateTime();
 	}
 
@@ -178,7 +179,7 @@ public class VolunteeredTime extends AbstractChatsDomainEntity implements Compar
 	@Property()
 	@PropertyLayout(named = "Include As Participation")
 	@MemberOrder(sequence = "14")
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "false", defaultValue = "b'1'")
 	public Boolean getIncludeAsParticipation() {
 		return includeAsParticipation;
 	}

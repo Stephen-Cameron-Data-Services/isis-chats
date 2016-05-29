@@ -40,7 +40,7 @@ import au.com.scds.chats.dom.participant.Participant;
 @PersistenceCapable(table = "telephonecall", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "classifier", value = "_CALL")
-public abstract class Call extends AbstractChatsDomainEntity  {
+public abstract class Call extends AbstractChatsDomainEntity {
 
 	private Participant participant;
 	private DateTime startDateTime;
@@ -110,10 +110,34 @@ public abstract class Call extends AbstractChatsDomainEntity  {
 	}
 
 	@Property()
-	@MemberOrder(sequence = "7")
+	@MemberOrder(sequence = "7.1")
 	@Column(allowsNull = "true", length = 1000)
 	public String getSummaryNotes() {
 		return summaryNotes;
+	}
+
+	@Property()
+	@PropertyLayout(named="Notes")
+	@MemberOrder(sequence = "7.2")
+	@NotPersistent
+	public String getTrimmedSummaryNotes() {
+		if (getSummaryNotes() != null) {
+			return (getSummaryNotes().length() > 50) ? getSummaryNotes().substring(0, 49).concat("...") : getSummaryNotes();
+		} else {
+			return null;
+		}
+	}
+
+	@Action()
+	public Call startCall() {
+		setStartDateTime(clockService.nowAsDateTime());
+		return this;
+	}
+
+	@Action()
+	public Call endCall() {
+		setEndDateTime(clockService.nowAsDateTime());
+		return this;
 	}
 
 	public void setSummaryNotes(String notes) {
