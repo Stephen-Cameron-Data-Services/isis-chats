@@ -179,7 +179,7 @@ public class VolunteeredTime extends AbstractChatsDomainEntity implements Compar
 	@Property()
 	@PropertyLayout(named = "Include As Participation")
 	@MemberOrder(sequence = "14")
-	@Column(allowsNull = "false", defaultValue = "b'1'")
+	@Column(allowsNull = "false")
 	public Boolean getIncludeAsParticipation() {
 		return includeAsParticipation;
 	}

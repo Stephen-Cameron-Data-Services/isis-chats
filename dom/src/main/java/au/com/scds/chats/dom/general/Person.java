@@ -352,7 +352,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	public Person updateStreetAddress(@ParameterLayout(named = "Street 1") String street1,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Suburb") Suburb suburb,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Is Mail Address Too?") Boolean isMailAddress) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Is Mail Address Too?") boolean isMailAddress) {
 		Address newAddress = container.newTransientInstance(Address.class);
 		newAddress.setStreet1(street1);
 		newAddress.setStreet2(street2);
@@ -363,13 +363,16 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 		Address oldAddress = getStreetAddress();
 		container.persistIfNotAlready(newAddress);
 		setStreetAddress(newAddress);
-		// remove old address if replacing
-		if (isMailAddress != null && isMailAddress == true) {
+		// remove old address(es) if replacing both
+		// TODO this is maybe too complex? prevent orphan addresses
+		if (isMailAddress == true) {
+			if(getMailAddress() != null && !getMailAddress().equals(oldAddress)){
+					container.removeIfNotAlready(getMailAddress());
+			}
 			setMailAddress(newAddress);
-			container.removeIfNotAlready(oldAddress);
-			// if current mail address not same as old address then remove old
-		} else if (getMailAddress() != null && !oldAddress.equals(getMailAddress())) {
-			container.removeIfNotAlready(oldAddress);
+			if(oldAddress != null){
+				container.removeIfNotAlready(oldAddress);
+			}
 		}
 		return this;
 	}
@@ -395,7 +398,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	// null;
 	// }
 
-	public Boolean default3UpdateStreetAddress() {
+	public boolean default3UpdateStreetAddress() {
 		return false;
 	}
 

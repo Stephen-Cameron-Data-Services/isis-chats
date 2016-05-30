@@ -16,6 +16,7 @@
 						<col span="6">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
+								<ns2:property id="salutation" hidden="EVERYWHERE"/>
 								<ns2:property id="salutationName" />
 								<ns2:property id="firstname" />
 								<ns2:property id="preferredname" />
@@ -24,9 +25,10 @@
 								<ns2:property id="birthdate" />
 								<ns2:property id="sex" />
 								<ns2:property id="slk" />								
-								<ns2:property id="englishSkill" />
+								<ns2:property id="englishSkill" hidden="EVERYWHERE"/>
+								<ns2:property id="contactType" hidden="EVERYWHERE"/>
 								<ns2:property id="contactTypeName" />
-
+								<ns2:property id="oldId" hidden="EVERYWHERE"/>
 							</ns2:fieldSet>
 						</col>
 						<col span="12" unreferencedCollections="true" />

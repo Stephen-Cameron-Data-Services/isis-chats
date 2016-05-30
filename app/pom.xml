@@ -50,10 +50,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>chats-fixture</artifactId>
         </dependency>
-        <dependency>
+        <!-- dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>chats-reports</artifactId>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.apache.isis.core</groupId>
             <artifactId>isis-core-wrapper</artifactId>

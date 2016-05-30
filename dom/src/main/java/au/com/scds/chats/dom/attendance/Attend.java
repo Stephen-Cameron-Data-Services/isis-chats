@@ -64,7 +64,7 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	private Participant participant;
 	protected DateTime endDateTime;
 	protected DateTime startDateTime;
-	protected Boolean attended = false;
+	protected Boolean attended;
 
 	public Attend() {
 		super();
