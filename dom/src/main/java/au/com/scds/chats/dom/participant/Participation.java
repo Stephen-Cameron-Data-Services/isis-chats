@@ -20,6 +20,7 @@ package au.com.scds.chats.dom.participant;
 
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.jdo.annotations.Column;
@@ -38,6 +39,9 @@ import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.LabelPosition;
 import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Optionality;
+import org.apache.isis.applib.annotation.Parameter;
+import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
@@ -123,6 +127,42 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 			this.activity = parent;
 	}
 
+	public Participation updateGeneral(
+			@ParameterLayout(named = "Arriving Transport Type") @Parameter(optionality = Optionality.MANDATORY) String arrivingTransportType,
+			@ParameterLayout(named = "Departing Transport Type") @Parameter(optionality = Optionality.MANDATORY) String departingTransportType,
+			@ParameterLayout(named = "Pickup Time") @Parameter(optionality = Optionality.MANDATORY, regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM") String pickupTime,
+			@ParameterLayout(named = "Dropoff Time") @Parameter(optionality = Optionality.MANDATORY, regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM") String dropoffTime) {
+		setArrivingTransportTypeName(arrivingTransportType);
+		setDepartingTransportTypeName(departingTransportType);
+		setPickupTime(pickupTime);
+		setDropoffTime(dropoffTime);
+		return this;
+	}
+
+	public String default0UpdateGeneral() {
+		return getArrivingTransportTypeName();
+	}
+
+	public String default1UpdateGeneral() {
+		return getDepartingTransportTypeName();
+	}
+
+	public String default2UpdateGeneral() {
+		return getPickupTime();
+	}
+
+	public String default3UpdateGeneral() {
+		return getDropoffTime();
+	}
+
+	public List<String> choices0UpdateGeneral() {
+		return transportTypes.allNames();
+	}
+
+	public List<String> choices1UpdateGeneral() {
+		return transportTypes.allNames();
+	}
+
 	@Property(hidden = Where.EVERYWHERE)
 	@Column(allowsNull = "true")
 	public TransportType getArrivingTransportType() {
@@ -175,7 +215,7 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 		return transportTypes.allNames();
 	}
 
-	@Property()
+	@Property(regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM")
 	@PropertyLayout(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "6")
 	@Column(allowsNull = "true")
@@ -187,7 +227,7 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 		this.dropoffTime = dropoffTime;
 	}
 
-	@Property()
+	@Property(regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM")
 	@PropertyLayout(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "7")
 	@Column(allowsNull = "true")

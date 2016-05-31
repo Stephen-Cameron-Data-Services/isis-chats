@@ -16,14 +16,15 @@
 						<col span="6">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
+								<ns2:action id="updateGeneral"/>
 								<ns2:property id="activity" />
 								<ns2:property id="participant" />
 								<ns2:property id="roleId" hidden="EVERYWHERE" />
 								<ns2:property id="oldId" hidden="EVERYWHERE" />
-								<ns2:property id="arrivingTransportType" hidden="EVERYWHERE" />
+								<ns2:property id="arrivingTransportType"  />
 								<ns2:property id="arrivingTransportTypeName" />
 								<ns2:property id="pickupTime" />
-								<ns2:property id="departingTransportType" hidden="EVERYWHERE" />
+								<ns2:property id="departingTransportType"  />
 								<ns2:property id="departingTransportTypeName" />
 								<ns2:property id="dropoffTime" />
 								<ns2:property id="transportTime" />

@@ -125,11 +125,8 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		return attendances;
 	}
 
-	// used by AttendanceLists.createAttendanceList(activity)
+	//TODO needed? used by AttendanceLists.createAttendanceList(activity)
 	public void setAttendances(final AttendanceList attendances) {
-		// can only be set once
-		if (getAttendances() != null || attendances == null)
-			return;
 		this.attendances = attendances;
 	}
 	
@@ -139,8 +136,8 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	public List<Attend> getAttendance() {
 		if(getAttendances() != null)
 			return getAttendances().getAttends();
-		else
-			return null;
+		else //return a dummy empty list
+			return new ArrayList<Attend>();
 	}
 
 	@Property()
