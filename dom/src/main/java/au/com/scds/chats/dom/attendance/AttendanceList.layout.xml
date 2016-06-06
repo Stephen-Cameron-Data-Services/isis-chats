@@ -24,7 +24,7 @@
 				<tab name="Attendances">
 					<row>
 						<col span="12">
-							<ns2:collection id="attends" name="Attendances">
+							<ns2:collection id="attends" name="Attendances" >
 								<ns2:action id="addAllAttends" />
 								<ns2:action id="addNewParticipantAndAttend" />
 								<ns2:action id="addAttend" />

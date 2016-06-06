@@ -20,7 +20,7 @@ import org.apache.isis.applib.annotation.RenderType;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-@Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.dss.dex.model.reference.AssessmentScoreType")
+@Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.chats.dom.dex.reference.AssessmentScoreType")
 public class AssessmentScoreType {
 
 	private String scoreType;

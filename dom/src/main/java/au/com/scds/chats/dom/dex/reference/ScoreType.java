@@ -9,7 +9,7 @@ import javax.jdo.annotations.Query;
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "ScoreType")
-@Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.dss.dex.model.reference.ScoreType ORDER BY orderNumber ASC;")
+@Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.chats.dom.dex.reference.ScoreType ORDER BY orderNumber ASC;")
 public class ScoreType extends AbstractDexReferenceItem {
 
 }

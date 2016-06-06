@@ -9,6 +9,6 @@ import javax.jdo.annotations.Query;
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "Country")
-@Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.dss.dex.model.reference.Country ORDER BY orderNumber ASC;")
+@Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.chats.dom.dex.reference.Country ORDER BY orderNumber ASC;")
 public class Country extends AbstractDexReferenceItem {
 }

@@ -42,8 +42,10 @@ public class Suburbs {
 	
 	@Action(semantics = SemanticsOf.SAFE)
 	public Suburb findSuburb(String name, Integer postcode) {
-		if (name == null || postcode == null)
+		if (name == null && postcode == null)
 			return null;
+		else if (postcode == null)
+			return container.firstMatch(new QueryDefault<>(Suburb.class, "findSuburbsWithNamesLike", "name", name));
 		else
 			return container.firstMatch(new QueryDefault<>(Suburb.class, "findSuburbByNameAndPostcode", "name", name, "postcode", postcode));
 	}

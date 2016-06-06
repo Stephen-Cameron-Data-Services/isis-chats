@@ -9,7 +9,7 @@ import javax.jdo.annotations.Query;
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "ExtraItem")
-@Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.dss.dex.model.reference.ExtraItem ORDER BY orderNumber ASC;")
+@Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.chats.dom.dex.reference.ExtraItem ORDER BY orderNumber ASC;")
 public class ExtraItem extends AbstractDexReferenceItem {
 
 }

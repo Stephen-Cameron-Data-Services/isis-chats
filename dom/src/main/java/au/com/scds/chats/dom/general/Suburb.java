@@ -30,8 +30,10 @@ import au.com.scds.chats.dom.general.names.ClassificationValue;
 @Queries({
 		@Query(name = "findSuburbByNameAndPostcode", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.general.Suburb WHERE name == :name && postcode == :postcode"),
+		@Query(name = "findSuburbsWithNamesLike", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.general.Suburb " + "WHERE name.startsWith(:name) ORDER BY postcode ASC"),
 		@Query(name = "findSuburbNamesLike", language = "JDOQL", value = "SELECT name "
-				+ "FROM au.com.scds.chats.dom.general.Suburb " + "WHERE name.startsWith(:name)"),
+				+ "FROM au.com.scds.chats.dom.general.Suburb " + "WHERE name.startsWith(:name) ORDER BY postcode ASC"),
 		@Query(name = "findAllSuburbs", language = "JDOQL", value = "SELECT "
 				+ "FROM  au.com.scds.chats.dom.general.Suburb " + "ORDER BY name") })
 

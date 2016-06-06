@@ -12,6 +12,7 @@ import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Persons;
+import au.com.scds.chats.dom.general.Sex;
 
 public class PersonMap extends BaseMap {
 
@@ -37,23 +38,31 @@ public class PersonMap extends BaseMap {
 		for (au.com.scds.chats.datamigration.model.Person o : persons) {
 			n = persons2.findPerson(o.getFirstname(), o.getSurname(), new LocalDate(o.getBirthdate()));
 			if (n == null) {
-				n = persons2.createPerson(o.getFirstname(), o.getSurname(), new LocalDate(o.getBirthdate()),
-						regions.map(o.getRegion()));
-				n.setOldId(BigInt2Long(o.getId()));
-				n.setCreatedBy(BigInt2String(o.getCreatedbyUserId()));
-				n.setCreatedOn(new org.joda.time.DateTime(o.getCreatedDTTM()));
-				// n.setDeletedDTTM(o.getDeletedDTTM());
-				// ALLNULL n.setEnglishSkill(o.getEnglishSkill() );
-				// n.setLastModifiedByUserId(BigInt2Long(o.getLastmodifiedbyUserId()));
-				// n.setLastModifiedDateTime(new
-				// org.joda.time.DateTime(o.getLastmodifiedDTTM()));
-				n.setMiddlename(o.getMiddlename());
-				n.setPreferredname(o.getPreferredname());
-				n.setRegion(regions.map(o.getRegion()));
-				n.setSalutation(salutations.map(o.getSalutationId()));
+				try {
+					String firstname = (o.getFirstname().trim() != "") ? o.getFirstname() : o.getId().toString();
+					String surname = (o.getSurname().trim() != "") ? o.getSurname() : o.getId().toString();
+					LocalDate dob = (o.getBirthdate()!= null) ? new LocalDate(o.getBirthdate()) : LocalDate.now();
+					n = persons2.createPerson(firstname, surname, dob,
+							regions.map(o.getRegion()));
+					n.setOldId(BigInt2Long(o.getId()));
+					n.setCreatedBy(BigInt2String(o.getCreatedbyUserId()));
+					n.setCreatedOn(new org.joda.time.DateTime(o.getCreatedDTTM()));
+					n.setMiddlename(o.getMiddlename());
+					n.setPreferredname(o.getPreferredname());
+					n.setRegion(regions.map(o.getRegion()));
+					n.setSalutation(salutations.map(o.getSalutationId()));
+					if(n.getSalutation()!= null && n.getSalutation().getName().equals("Mr")){
+						n.setSex(Sex.MALE);
+					}else{
+						n.setSex(Sex.FEMALE);
+					}
+					n.buildSlk();
+					map.put(o.getId(), n);
+					System.out.println("Person(" + n.getFullname() + ")");
+				} catch (Exception e) {
+					System.out.println("ERROR: (" + o.getId() + ") " + e.getMessage());
+				}
 			}
-			map.put(o.getId(), n);
-			System.out.println("Person(" + n.getFullname() + ")");
 		}
 	}
 

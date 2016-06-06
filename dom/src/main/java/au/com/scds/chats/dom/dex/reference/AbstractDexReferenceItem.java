@@ -15,7 +15,7 @@ import org.apache.isis.applib.annotation.Where;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, table = "DEXReferenceItem")
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-@Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "type", value = "AbstractItem")
+@Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "class", value = "AbstractItem")
 public abstract class AbstractDexReferenceItem {
 
 	protected String name;

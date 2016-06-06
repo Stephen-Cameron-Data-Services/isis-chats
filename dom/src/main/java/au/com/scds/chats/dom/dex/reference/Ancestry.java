@@ -9,7 +9,7 @@ import javax.jdo.annotations.Query;
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "Ancestry")
-@Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.dss.dex.model.reference.Ancestry ORDER BY orderNumber ASC;")
+@Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.chats.dom.dex.reference.Ancestry ORDER BY orderNumber ASC;")
 public class Ancestry extends AbstractDexReferenceItem {
 
 }

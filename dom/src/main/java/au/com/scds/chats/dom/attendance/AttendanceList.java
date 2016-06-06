@@ -87,14 +87,14 @@ public class AttendanceList {
 	}
 
 	@Property()
-	//@CollectionLayout(render = RenderType.EAGERLY, named = "Attendance")
+	@CollectionLayout(render = RenderType.EAGERLY, named = "Attendance")
 	//@MemberOrder(sequence = "101")
 	public final List<Attend> getAttends() {
 		return attends;
 	}
 
-	@SuppressWarnings("unused")
-	private void setAttends(final List<Attend> attends) {
+	//@SuppressWarnings("unused")
+	public void setAttends(final List<Attend> attends) {
 		this.attends = attends;
 	}
 

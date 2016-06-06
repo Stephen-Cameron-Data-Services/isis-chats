@@ -330,7 +330,7 @@ GROUP BY
 #DROP VIEW CallsDurationByParticipantAndMonth;
 CREATE VIEW CallsDurationByParticipantAndMonth AS
 SELECT
-  person.person_id,
+  person.person_id AS personId,
   person.surname,
   person.firstname AS firstName,
   person.birthdate AS birthDate,

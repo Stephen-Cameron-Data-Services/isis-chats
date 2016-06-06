@@ -57,8 +57,8 @@ public class TransportTypes {
 	}
 
 	@Programmatic
-	public String nameForTransportType(TransportType activityType) {
-		return (activityType != null) ? activityType.getName() : null;
+	public String nameForTransportType(TransportType transportType) {
+		return (transportType != null) ? transportType.getName() : null;
 	}
 
 	@Programmatic

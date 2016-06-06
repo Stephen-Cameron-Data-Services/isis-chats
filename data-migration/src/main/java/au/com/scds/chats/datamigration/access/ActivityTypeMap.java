@@ -48,10 +48,14 @@ public class ActivityTypeMap {
 				map.put(type.getId(), temp.get(type.getTitle()));
 				System.out.println("ActivityType(duplicate=" + type.getTitle() + ")");
 			} else {
-				ActivityType activityType = activityTypes2.create(type.getTitle());
-				map.put(type.getId(), activityType);
-				temp.put(type.getTitle(), activityType);
-				System.out.println("ActivityType(" + activityType.getName() + ")");
+				ActivityType activityType = activityTypes2.activityTypeForName(type.getTitle());
+				if (activityType != null) {
+					map.put(type.getId(), activityType);
+					temp.put(type.getTitle(), activityType);
+					System.out.println("ActivityType(" + activityType.getName() + ")");
+				} else {
+					System.out.println("UNKNOWN ActivityType(" + type.getTitle() + ")");
+				}
 			}
 		}
 	}

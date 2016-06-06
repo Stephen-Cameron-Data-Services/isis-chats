@@ -87,12 +87,40 @@ public class Persons {
 		return person;
 	}
 	
+	//used for data migration
+	@Programmatic
+	public Person createPerson(String firstname, String surname, LocalDate dob, Region region) throws Exception{
+
+		if (firstname == null || firstname.trim().equals(""))
+			throw new Exception("firstname is not set!");
+		if (surname == null || surname.trim().equals(""))
+			throw new Exception("surname is not set!");
+		if (dob == null)
+			throw new Exception("birthdate is not set!");
+		if (region == null)
+			throw new Exception("region is not set!");
+		
+		Person person = container.newTransientInstance(Person.class);
+		person.setFirstname(firstname);
+		person.setSurname(surname);
+		person.setBirthdate(dob);
+		person.setRegion(region);
+		container.persistIfNotAlready(person);
+		container.flush();
+		return person;
+	}
+	
 	@Programmatic
 	public Person findPerson(String firstname, String surname, LocalDate dob) {
 		return container.firstMatch(new QueryDefault<>(Person.class,
 				"findPerson", "firstname", firstname, "surname", surname, "birthdate", dob));
 	}
-
+	
+	@Programmatic
+	public Person findPerson(Integer integer) {
+		return container.firstMatch(new QueryDefault<>(Person.class,
+				"findPersonByOldId", "oldid", integer));
+	}
 
 	@javax.inject.Inject
 	DomainObjectContainer container;

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.jdo.JDODataStoreException;
 import javax.persistence.EntityManager;
 
 import org.apache.isis.applib.DomainObjectContainer;
@@ -41,7 +42,7 @@ public class ActivityMap extends BaseMap {
 		this.activityTypes = activityTypes;
 		this.regions = regions;
 	}
-	
+
 	public ActivityEvent map(BigInteger id) {
 		if (id == null)
 			return null;
@@ -57,6 +58,42 @@ public class ActivityMap extends BaseMap {
 
 	public void init(Activities activities2) {
 
+		List<au.com.scds.chats.datamigration.model.Activity> all = this.em
+				.createQuery("select activity from Activity activity",
+						au.com.scds.chats.datamigration.model.Activity.class)
+				.getResultList();
+		ActivityEvent n;
+		for (au.com.scds.chats.datamigration.model.Activity a : all) {
+
+			try {
+				n = activities2.createOneOffActivity(a.getTitle(), new DateTime(a.getStartDTTM()),
+						regions.map(a.getRegion()));
+				n.setOldId(a.getId().longValue());
+				n.setApproximateEndDateTime(new org.joda.time.DateTime(a.getApprximateEndDTTM()));
+				// n.setCopiedFromActivityId(BigInt2Long(a.getCopiedFrom__activity_id()));
+				n.setCostForParticipant(a.getCostForParticipant());
+				n.setCreatedBy(BigInt2String(a.getCreatedbyUserId()));
+				n.setCreatedOn(new org.joda.time.DateTime(a.getCreatedDTTM()));
+				n.setAddress((locationsMap).map(a.getLocation()));
+				// n.setDeletedDateTime(new
+				// org.joda.time.DateTime(a.getDeletedDTTM()));
+				n.setDescription(a.getDescription());
+				n.setLastModifiedBy(BigInt2String(a.getLastmodifiedbyUserId()));
+				n.setLastModifiedOn(new org.joda.time.DateTime(a.getLastmodifiedDTTM()));
+				n.setActivityType(activityTypes.map(a.getActivitytypeId()));
+				// n.setIsRestricted(a.getRestricted() != 0);
+				// n.setScheduleId(BigInt2Long(a.getScheduleId()));
+				map.put(a.getId(), n);
+				System.out.println("Activity(" + n.getName() + ")");
+			} catch (JDODataStoreException e) {
+				System.out.println("ERROR: " + e.getMessage());
+			}
+		}
+	}
+
+	// this was the old version that created recurring activities
+	public void initOld(Activities activities2) {
+
 		// get a list of copied activities
 		// these will become recurring activities
 		Map<Long, RecurringActivity> recurring = new HashMap<>();
@@ -71,8 +108,8 @@ public class ActivityMap extends BaseMap {
 		for (au.com.scds.chats.datamigration.model.Activity a : copied) {
 			System.out.println(a.getTitle());
 			Region region = regions.map(a.getRegion());
-			RecurringActivity n = activities2.createRecurringActivity(a.getTitle(),
-					new DateTime(a.getStartDTTM()), region);
+			RecurringActivity n = activities2.createRecurringActivity(a.getTitle(), new DateTime(a.getStartDTTM()),
+					region);
 			n.setOldId(a.getId().longValue());
 			n.setActivityType(activityTypes.map(a.getActivitytypeId()));
 			n.setApproximateEndDateTime(new org.joda.time.DateTime(a.getApprximateEndDTTM()));
@@ -87,8 +124,8 @@ public class ActivityMap extends BaseMap {
 			n.setLastModifiedBy(BigInt2String(a.getLastmodifiedbyUserId()));
 			n.setLastModifiedOn(new org.joda.time.DateTime(a.getLastmodifiedDTTM()));
 			n.setActivityType(activityTypes.map(a.getActivitytypeId()));
-			n.setIsRestricted(a.getRestricted() != 0);
-			n.setScheduleId(BigInt2Long(a.getScheduleId()));
+			// n.setIsRestricted(a.getRestricted() != 0);
+			// n.setScheduleId(BigInt2Long(a.getScheduleId()));
 			recurring.put(a.getId().longValue(), n);
 		}
 
@@ -109,13 +146,13 @@ public class ActivityMap extends BaseMap {
 				n = recurring.get(a.getCopiedFrom__activity_id().longValue()).createActivity(a.getTitle(),
 						new DateTime(a.getStartDTTM()), regions.map(a.getRegion()));
 			} else {
-				n = activities2.createOneOffActivity(a.getTitle(),
-						new DateTime(a.getStartDTTM()), regions.map(a.getRegion()));
+				n = activities2.createOneOffActivity(a.getTitle(), new DateTime(a.getStartDTTM()),
+						regions.map(a.getRegion()));
 			}
 
 			n.setOldId(a.getId().longValue());
 			n.setApproximateEndDateTime(new org.joda.time.DateTime(a.getApprximateEndDTTM()));
-			n.setCopiedFromActivityId(BigInt2Long(a.getCopiedFrom__activity_id()));
+			// n.setCopiedFromActivityId(BigInt2Long(a.getCopiedFrom__activity_id()));
 			n.setCostForParticipant(a.getCostForParticipant());
 			n.setCreatedBy(BigInt2String(a.getCreatedbyUserId()));
 			n.setCreatedOn(new org.joda.time.DateTime(a.getCreatedDTTM()));
@@ -126,8 +163,8 @@ public class ActivityMap extends BaseMap {
 			n.setLastModifiedBy(BigInt2String(a.getLastmodifiedbyUserId()));
 			n.setLastModifiedOn(new org.joda.time.DateTime(a.getLastmodifiedDTTM()));
 			n.setActivityType(activityTypes.map(a.getActivitytypeId()));
-			n.setIsRestricted(a.getRestricted() != 0);
-			n.setScheduleId(BigInt2Long(a.getScheduleId()));
+			// n.setIsRestricted(a.getRestricted() != 0);
+			// n.setScheduleId(BigInt2Long(a.getScheduleId()));
 			map.put(a.getId(), n);
 			System.out.println("Activity(" + n.getName() + ")");
 		}

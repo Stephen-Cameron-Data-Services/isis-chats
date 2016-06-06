@@ -58,6 +58,8 @@ import au.com.scds.chats.dom.general.names.Salutations;
 @Queries({
 		@Query(name = "findPersonsBySurname", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.general.Person " + "WHERE surname == :surname"),
+		@Query(name = "findPersonByOldId", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.general.Person " + "WHERE oldId == :oldid"),
 		@Query(name = "findPerson", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.general.Person "
 				+ "WHERE firstname == :firstname && surname == :surname && birthdate == :birthdate"), })
 @DomainObject(objectType = "PERSON")
@@ -73,7 +75,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	private String middlename;
 	private String surname;
 	private String preferredname;
-	private String statisticalLinkageKey;
+	private String slk;
 	private LocalDate birthdate;
 	private Address streetAddress;
 	private Address mailAddress;
@@ -225,13 +227,13 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	// @MemberOrder(sequence = "7")
 	@Column(allowsNull = "false")
 	public String getSlk() {
-		return statisticalLinkageKey;
+		return slk;
 	}
 
 	private void setSlk(String slk) {
 		// set once only
 		if (getSlk() == null)
-			this.statisticalLinkageKey = slk;
+			this.slk = slk;
 	}
 
 	@Programmatic
