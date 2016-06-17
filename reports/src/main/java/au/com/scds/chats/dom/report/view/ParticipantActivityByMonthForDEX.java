@@ -65,8 +65,8 @@ import org.joda.time.LocalDate;
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ParticipantActivityByMonthForDEX implements WithApplicationTenancy {
 
-	public Integer personId;
-	public Integer participantId;
+	public Long personId;
+	public Long participantId;
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
@@ -83,21 +83,21 @@ public class ParticipantActivityByMonthForDEX implements WithApplicationTenancy 
 
 	@Property(hidden = Where.EVERYWHERE)
 	// @MemberOrder(sequence = "1")
-	public Integer getPersonId() {
+	public Long getPersonId() {
 		return personId;
 	}
 
-	public void setPersonId(Integer personId) {
+	public void setPersonId(Long personId) {
 		this.personId = personId;
 	}
 
 	@Property(hidden = Where.EVERYWHERE)
 	// @MemberOrder(sequence = "1")
-	public Integer getParticipantId() {
+	public Long getParticipantId() {
 		return participantId;
 	}
 
-	public void setParticipantId(Integer participantId) {
+	public void setParticipantId(Long participantId) {
 		this.participantId = participantId;
 	}
 

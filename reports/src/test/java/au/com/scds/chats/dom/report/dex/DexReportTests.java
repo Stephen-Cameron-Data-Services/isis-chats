@@ -76,7 +76,7 @@ public class DexReportTests extends IntegrationTestAbstract {
 		config.put("isis.persistor.datanucleus.install-fixtures", "false");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionDriverName", "com.mysql.jdbc.Driver");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionURL",
-				"jdbc:mysql://localhost:3306/chats?zeroDateTimeBehavior=convertToNull");
+				"jdbc:mysql://localhost:3306/chats2?zeroDateTimeBehavior=convertToNull");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionUserName", "chats");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionPassword", "password");
 
@@ -94,9 +94,9 @@ public class DexReportTests extends IntegrationTestAbstract {
 	@Test
 	public void DEXReport() throws Exception {
 		
-		String DIR = new String("C:/Users/stevec/Desktop/LIFELINE CHATS/dex/reports/");
+		String DIR = new String("C:/Users/stevec/Desktop/dex/");
 		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadSOUTH.xml"));
-		DEXBulkUploadReport report1 = new DEXBulkUploadReport(participants, container, refData, 2015, 11, regions.regionForName("SOUTH"));
+		DEXBulkUploadReport report1 = new DEXBulkUploadReport( container, isisJdoSupport, refData, participants, 2016, 1, regions.regionForName("SOUTH"));
 		file1.write(jaxbService.toXml(report1.build()).getBytes());
 		
 

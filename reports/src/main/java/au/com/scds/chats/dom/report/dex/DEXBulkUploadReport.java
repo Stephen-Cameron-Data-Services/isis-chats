@@ -26,6 +26,7 @@ import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Persons;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.general.names.Region;
+import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.report.dex.model.generated.Case;
@@ -44,7 +45,6 @@ import au.com.scds.chats.dom.report.dex.model.generated.Sessions;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonth;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
-
 
 public class DEXBulkUploadReport {
 
@@ -67,8 +67,8 @@ public class DEXBulkUploadReport {
 	private DEXBulkUploadReport() {
 	}
 
-	public DEXBulkUploadReport(Participants participants, DomainObjectContainer container, DexReferenceData refData, Integer year,
-			Integer month, Region region) {
+	public DEXBulkUploadReport(DomainObjectContainer container, IsisJdoSupport isisJdoSupport, DexReferenceData refData,
+			Participants participants, Integer year, Integer month, Region region) {
 
 		this.fileUpload = new DEXFileUpload();
 		this.clients = new Clients();
@@ -77,6 +77,7 @@ public class DEXBulkUploadReport {
 
 		this.participations = new HashMap<String, Map<String, ParticipantActivityByMonthForDEX>>();
 		this.container = container;
+		this.isisJdoSupport = isisJdoSupport;
 		this.participants = participants;
 		this.refData = refData;
 		this.year = year;
@@ -92,11 +93,11 @@ public class DEXBulkUploadReport {
 	public DEXFileUpload build() {
 		getCases();
 		getClients();
-		getSessions();
+		//getSessions();
 		if (cases.getCase().size() > 0) {
 			fileUpload.getClientsOrCasesOrSessions().add(clients);
 			fileUpload.getClientsOrCasesOrSessions().add(cases);
-			fileUpload.getClientsOrCasesOrSessions().add(sessions);
+			//fileUpload.getClientsOrCasesOrSessions().add(sessions);
 		}
 		return fileUpload;
 	}
@@ -108,8 +109,8 @@ public class DEXBulkUploadReport {
 	private void getCases() {
 		// activities
 		List<ParticipantActivityByMonthForDEX> monthlyActivity = container.allMatches(new QueryDefault(
-				ParticipantActivityByMonthForDEX.class, "allParticipantActivityForMonthAndRegion", "yearMonth",
-				Integer.valueOf(this.year.toString() + this.month.toString()), "region", this.region.getName()));
+				ParticipantActivityByMonthForDEX.class, "allParticipantActivityByMonthForDEXForMonthAndRegion",
+				"yearMonth", ((this.year * 100) + this.month), "region", this.region.getName()));
 		// sort by Activity and Participants (for CaseClients within Cases)
 		for (ParticipantActivityByMonthForDEX p : monthlyActivity) {
 			if (p.getBirthDate().isBefore(this.bornBeforeDate)) {
@@ -171,14 +172,19 @@ public class DEXBulkUploadReport {
 	 * Find an new or modified Chats Participants in the period and region
 	 */
 	private void getClients() {
+
 		PersistenceManager manager = isisJdoSupport.getJdoPersistenceManager();
+		System.out.println(manager.getObjectIdClass(Participant.class).getName());
+		Participant tmp = participants.listActive(AgeGroup.Under_Sixty_Five).get(0);
+		Object id = manager.getObjectId(tmp);
+		System.out.println(id.toString());
 		// process the participations to produce a unique list of participants
 		Map<String, Participant> temp = new HashMap<>();
 		for (Map<String, ParticipantActivityByMonthForDEX> list : participations.values()) {
 			for (Entry<String, ParticipantActivityByMonthForDEX> entry : list.entrySet()) {
 				if (!temp.containsKey(entry.getKey())) {
 					ParticipantActivityByMonthForDEX pa = entry.getValue();
-					Participant p = manager.getObjectById(Participant.class, entry.getValue().participantId);
+					Participant p = manager.getObjectById(Participant.class, pa.participantId + "[OID]au.com.scds.chats.dom.participant.Participant");
 					temp.put(entry.getKey(), p);
 				}
 			}
@@ -186,33 +192,6 @@ public class DEXBulkUploadReport {
 		// create the DEX 'Clients' listing
 		for (String key : temp.keySet()) {
 			Participant participant = temp.get(key);
-			/*Client c = new Client();
-			c.setClientId(key);
-			c.setSlk(makeSLK(p));
-			c.setConsentToProvideDetails(true);
-			c.setConsentedForFutureContacts(true);
-			c.setGivenName(p.getFirstname());
-			c.setFamilyName(p.getSurname());
-			c.setIsUsingPsuedonym(false);
-			c.setBirthDate(p.getBirthdate());
-			c.setIsBirthDateAnEstimate(false);
-			c.setGenderCode(p.getSex() == Sex.MALE ? "MALE" : "FEMALE");
-			c.setCountryOfBirthCode("Australia");
-			c.setLanguageSpokenAtHomeCode("English");
-			c.setAboriginalOrTorresStraitIslanderOriginCode("NO");
-			c.setHasDisabilities(false);
-			ResidentialAddress a = new ResidentialAddress();
-			Address s = p.getStreetAddress();
-			if (s != null) {
-				//a.setAddressLine1(s.getStreet1());
-				//a.setAddressLine2(s.getStreet2());
-				a.setSuburb(s.getSuburb());
-				a.setPostcode(s.getPostcode());
-				a.setStateCode("TAS");
-				c.setResidentialAddress(a);
-			}
-			clients.getClient().add(c);*/
-			//from v3
 			Client c = new Client();
 			c.setClientId(key);
 			c.setSlk(participant.getPerson().getSlk());
@@ -224,23 +203,18 @@ public class DEXBulkUploadReport {
 			c.setBirthDate(participant.getPerson().getBirthdate());
 			c.setIsBirthDateAnEstimate(false);
 			c.setGenderCode(participant.getPerson().getSex() == Sex.MALE ? "MALE" : "FEMALE");
-			c.setCountryOfBirthCode(participant.getCountryOfBirth().getName());
-			c.setLanguageSpokenAtHomeCode(participant.getLanguageSpokenAtHome().getName());
-			c.setAboriginalOrTorresStraitIslanderOriginCode(participant.getAboriginalOrTorresStraitIslanderOrigin().getName());
+			c.setCountryOfBirthCode(participant.getCountryOfBirth().getName().substring(9));
+			c.setLanguageSpokenAtHomeCode(participant.getLanguageSpokenAtHome().getName().substring(10));
+			c.setAboriginalOrTorresStraitIslanderOriginCode(
+					participant.getAboriginalOrTorresStraitIslanderOrigin().getName().substring(40));
 			c.setHasDisabilities(participant.isHasDisabilities());
-			c.setAccommodationTypeCode(participant.getAccommodationType().getName());
-			c.setDvaCardStatusCode(participant.getDvaCardStatus().getName());
+			c.setAccommodationTypeCode(participant.getAccommodationType().getName().substring(19));
+			c.setDvaCardStatusCode(participant.getDvaCardStatus().getName().substring(15));
 			c.setHasCarer(participant.isHasCarer());
-			c.setHouseholdCompositionCode(participant.getHouseholdComposition().getName());
+			c.setHouseholdCompositionCode(participant.getHouseholdComposition().getName().substring(22));
 			Address s = participant.getPerson().getStreetAddress();
 			if (s != null) {
 				ResidentialAddress a = new ResidentialAddress();
-				/*
-				 * a.setAddressLine1(s.getStreet1()); if (s.getStreet2() == null
-				 * || s.getStreet2().trim().length() == 0) {
-				 * a.setAddressLine2(null); } else {
-				 * a.setAddressLine2(s.getStreet2()); }
-				 */
 				a.setSuburb(s.getSuburb());
 				a.setPostcode(s.getPostcode());
 				a.setStateCode("TAS");
