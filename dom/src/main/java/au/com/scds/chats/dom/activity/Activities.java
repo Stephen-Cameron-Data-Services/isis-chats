@@ -24,6 +24,8 @@ import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 import au.com.scds.chats.dom.general.names.Region;
 
@@ -40,7 +42,7 @@ import au.com.scds.chats.dom.general.names.Region;
 @DomainService(repositoryFor = ActivityEvent.class)
 @DomainServiceLayout(named = "Activities", menuOrder = "10")
 public class Activities {
-
+	
 	public Activities() {
 	}
 
@@ -136,12 +138,23 @@ public class Activities {
 				new QueryDefault<>(ActivityEvent.class, "findAllFutureActivities", "currentDateTime", new DateTime()));
 	}
 
-	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "7")
+	//@Action(semantics = SemanticsOf.SAFE)
+	//@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	//@MemberOrder(sequence = "7")
+	@Programmatic
 	public List<ActivityEvent> listAllPastActivities() {
 		return container.allMatches(
 				new QueryDefault<>(ActivityEvent.class, "findAllPastActivities", "currentDateTime", new DateTime()));
+	}
+	
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "7")
+	public List<ActivityEvent> listActivitiesInPeriod(
+			@Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Start Period") LocalDate start, 
+			@Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="End Period")  LocalDate end) {
+		return container.allMatches(
+				new QueryDefault<>(ActivityEvent.class, "findActivitiesInPeriod", "startDateTime", start.toDateTimeAtStartOfDay(), "endDateTime", end.toDateTime(new LocalTime(23,59))));
 	}
 
 	@javax.inject.Inject

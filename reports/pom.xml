@@ -9,6 +9,30 @@
 	</parent>
 	<dependencies>
 		<dependency>
+			<groupId>org.apache.isis.core</groupId>
+			<artifactId>isis-core-unittestsupport</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.isis.core</groupId>
+			<artifactId>isis-core-integtestsupport</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.isis.core</groupId>
+			<artifactId>isis-core-specsupport</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.isis.core</groupId>
+			<artifactId>isis-core-wrapper</artifactId>
+		</dependency>
+			<dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>chats-app</artifactId>
+        </dependency>
+		<dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>chats-dom</artifactId>
             <exclusions>

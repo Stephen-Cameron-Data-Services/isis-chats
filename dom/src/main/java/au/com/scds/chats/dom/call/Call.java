@@ -63,7 +63,7 @@ public abstract class Call extends AbstractChatsDomainEntity {
 	@Property(hidden = Where.REFERENCES_PARENT)
 	@PropertyLayout()
 	@MemberOrder(sequence = "1")
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "false")
 	public Participant getParticipant() {
 		return participant;
 	}
@@ -111,7 +111,7 @@ public abstract class Call extends AbstractChatsDomainEntity {
 
 	@Property()
 	@MemberOrder(sequence = "7.1")
-	@Column(allowsNull = "true", length = 1000)
+	@Column(allowsNull = "true", jdbcType="CLOB")
 	public String getSummaryNotes() {
 		return summaryNotes;
 	}

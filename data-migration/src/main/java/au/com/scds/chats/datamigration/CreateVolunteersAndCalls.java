@@ -7,11 +7,27 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import au.com.scds.chats.datamigration.access.ActivityMap;
+import au.com.scds.chats.datamigration.access.ActivityTypeMap;
+import au.com.scds.chats.datamigration.access.AddressMap;
+import au.com.scds.chats.datamigration.access.ParticipationMap;
+import au.com.scds.chats.datamigration.access.PersonMap;
+import au.com.scds.chats.datamigration.access.RegionMap;
+import au.com.scds.chats.datamigration.access.SalutationMap;
+import au.com.scds.chats.datamigration.access.TransportTypeMap;
+import au.com.scds.chats.datamigration.access.VolunteerMap;
 import au.com.scds.chats.dom.activity.Activities;
 import au.com.scds.chats.dom.activity.ActivityEvent;
-import au.com.scds.chats.dom.attendance.AttendanceList;
-import au.com.scds.chats.dom.attendance.AttendanceLists;
-import au.com.scds.chats.dom.attendance.Attend;
+import au.com.scds.chats.dom.call.Calls;
+import au.com.scds.chats.dom.general.Locations;
+import au.com.scds.chats.dom.general.Persons;
+import au.com.scds.chats.dom.general.names.ActivityTypes;
+import au.com.scds.chats.dom.general.names.Regions;
+import au.com.scds.chats.dom.general.names.Salutations;
+import au.com.scds.chats.dom.general.names.TransportTypes;
+import au.com.scds.chats.dom.participant.Participants;
+import au.com.scds.chats.dom.volunteer.Volunteers;
+import au.com.scds.chats.fixture.jaxb.generated.ActivityFixture.Participations;
 
 import com.google.common.collect.Lists;
 
@@ -33,17 +49,23 @@ import org.apache.isis.core.integtestsupport.IsisSystemForTest;
 import org.apache.isis.core.integtestsupport.scenarios.ScenarioExecutionForIntegration;
 import org.apache.isis.objectstore.jdo.datanucleus.IsisConfigurationForJdoIntegTests;
 
-public class CreateAttendedance extends IntegrationTestAbstract {
+public class CreateVolunteersAndCalls extends IntegrationTestAbstract {
 
 	@Inject
 	DomainObjectContainer container;
 
 	@Inject
-	AttendanceLists attendances;
+	Persons persons;
+	
+	@Inject
+	Participants participants;
+	
+	@Inject
+	Calls calls;
 
 	@Inject
-	Activities activities;
-	
+	Volunteers volunteers;
+
 	@BeforeClass
 	public static void initClass() {
 		org.apache.log4j.PropertyConfigurator.configure("logging.properties");
@@ -53,8 +75,8 @@ public class CreateAttendedance extends IntegrationTestAbstract {
 		config.put("isis.persistor.datanucleus.impl.datanucleus.identifier.case", "LowerCase");
 		config.put("isis.persistor.datanucleus.impl.datanucleus.identifierFactory", "jpa");
 		config.put("isis.persistor.datanucleus.impl.datanucleus.schema.autoCreateAll", "false");
-		config.put("isis.persistor.datanucleus.impl.datanucleus.schema.validateTables", "false");
-		config.put("isis.persistor.datanucleus.impl.datanucleus.schema.validateConstraints", "false");
+		config.put("isis.persistor.datanucleus.impl.datanucleus.schema.validateTables", "true");
+		config.put("isis.persistor.datanucleus.impl.datanucleus.schema.validateConstraints", "true");
 		config.put("isis.persistor.datanucleus.install-fixtures", "false");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionDriverName", "com.mysql.jdbc.Driver");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionURL",
@@ -79,16 +101,12 @@ public class CreateAttendedance extends IntegrationTestAbstract {
 		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("isis-chats-old");
 		final EntityManager em = emf.createEntityManager();
 
-		List<ActivityEvent> events = activities.listAllPastActivities();
-		int i = 1;
-		for(ActivityEvent event : events){
-			System.out.println(i++ + ": "  + event.getName());
-			AttendanceList list = attendances.createActivityAttendanceList(event);
-			list.addAllAttends();
-			for(Attend attended: list.getAttends()){
-				attended.setDatesAndTimes(event.getStartDateTime(), event.getApproximateEndDateTime());
-			}
-		}
+		final VolunteerMap volunteerMap = new VolunteerMap(em);
+
+		//volunteerMap.volunteers(volunteers,  persons);
+		volunteerMap.scheduledCalls(volunteers, participants, calls);
+		em.close();
+
 		System.out.println("Finished");
 	}
 

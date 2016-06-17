@@ -138,7 +138,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	 */
 	public int compareTo(final Activity other) {
 		// return ObjectContracts.compare(other, this, "startDateTime");
-		return ObjectContracts.compare(other, this, "name", "startDateTime");
+		return ObjectContracts.compare(other, this,  "name", "startDateTime");
 
 		// return ComparisonChain.start().compare(getName(),
 		// other.getName()).compare(getStartDateTime(),other.getStartDateTime()).compare(getRegion(),other.getRegion()).result();

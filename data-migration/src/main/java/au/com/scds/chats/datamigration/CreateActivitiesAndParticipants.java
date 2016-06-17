@@ -123,7 +123,6 @@ public class CreateActivitiesAndParticipants extends IntegrationTestAbstract {
 		final PersonMap personsMap = new PersonMap(em, locationsMap, salutationsMap, regionsMap);
 		final ParticipationMap participationMap = new ParticipationMap(em, personsMap, activitiesMap, transportTypesMap,
 				regionsMap);
-		final VolunteerMap volunteerMap = new VolunteerMap(em);
 
 		// load all the codes Mappers
 		locationsMap.init(locations);
@@ -134,7 +133,6 @@ public class CreateActivitiesAndParticipants extends IntegrationTestAbstract {
 		activitiesMap.init(activities);
 		personsMap.init(persons);
 		participationMap.init(participations);
-		//volunteerMap.init(volunteers, persons);
 		em.close();
 
 		System.out.println("Finished");

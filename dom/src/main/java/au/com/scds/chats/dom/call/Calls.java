@@ -260,6 +260,17 @@ public class Calls {
 		container.flush();
 		return call;
 	}
+	
+	@Programmatic
+	public ScheduledCall createScheduledCallWithoutSchedule(Participant participant, Volunteer volunteer) {
+		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
+		call.setParticipant(participant);
+		call.setAllocatedVolunteer(volunteer);
+		call.setRegion(participant.getRegion());
+		container.persistIfNotAlready(call);
+		container.flush();
+		return call;
+	}
 
 	@Inject
 	public DomainObjectContainer container;
@@ -269,4 +280,12 @@ public class Calls {
 
 	@Inject
 	public Participants participantsRepo;
+
+	public ScheduledCall createScheduledCall(Volunteer volunteer, Participant participant, DateTime start,
+			Region region) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 }
