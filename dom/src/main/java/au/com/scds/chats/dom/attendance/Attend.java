@@ -19,6 +19,7 @@
 package au.com.scds.chats.dom.attendance;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.jdo.annotations.Column;
@@ -51,6 +52,8 @@ import org.joda.time.Period;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.activity.ActivityEvent;
+import au.com.scds.chats.dom.general.names.TransportType;
+import au.com.scds.chats.dom.general.names.TransportTypes;
 import au.com.scds.chats.dom.participant.Participant;
 
 @DomainObject()
@@ -65,6 +68,8 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	protected DateTime endDateTime;
 	protected DateTime startDateTime;
 	protected Boolean attended;
+	private TransportType arrivingTransportType;
+	private TransportType departingTransportType;
 
 	public Attend() {
 		super();
@@ -171,6 +176,58 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 		this.attended = attended;
 	}
 
+	@Property(hidden = Where.EVERYWHERE)
+	@Column(allowsNull = "true")
+	public TransportType getArrivingTransportType() {
+		return arrivingTransportType;
+	}
+
+	public void setArrivingTransportType(final TransportType transportType) {
+		this.arrivingTransportType = transportType;
+	}
+
+	@Property(hidden = Where.ALL_TABLES)
+	@PropertyLayout(named = "Arriving Transport Type")
+	@MemberOrder(sequence = "4")
+	@NotPersistent
+	public String getArrivingTransportTypeName() {
+		return getArrivingTransportType() != null ? this.getArrivingTransportType().getName() : null;
+	}
+
+	public void setArrivingTransportTypeName(String name) {
+		this.setArrivingTransportType(transportTypes.transportTypeForName(name));
+	}
+
+	public List<String> choicesArrivingTransportTypeName() {
+		return transportTypes.allNames();
+	}
+
+	@Property(hidden = Where.EVERYWHERE)
+	@Column(allowsNull = "true")
+	public TransportType getDepartingTransportType() {
+		return arrivingTransportType;
+	}
+
+	public void setDepartingTransportType(final TransportType transportType) {
+		this.arrivingTransportType = transportType;
+	}
+
+	@Property(hidden = Where.ALL_TABLES)
+	@PropertyLayout(named = "Departing Transport Type")
+	@MemberOrder(sequence = "5")
+	@NotPersistent
+	public String getDepartingTransportTypeName() {
+		return getDepartingTransportType() != null ? this.getDepartingTransportType().getName() : null;
+	}
+
+	public void setDepartingTransportTypeName(String name) {
+		this.setDepartingTransportType(transportTypes.transportTypeForName(name));
+	}
+
+	public List<String> choicesDepartingTransportTypeName() {
+		return transportTypes.allNames();
+	}
+
 	@Property(editing = Editing.DISABLED)
 	//@PropertyLayout(describedAs = "If the Participant attended the Activity", hidden = Where.NOWHERE)
 	//@MemberOrder(sequence = "6.2")
@@ -254,5 +311,7 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	@Inject
 	ActionInvocationContext actionInvocationContext;
 
+	@Inject
+	TransportTypes transportTypes;
 
 }

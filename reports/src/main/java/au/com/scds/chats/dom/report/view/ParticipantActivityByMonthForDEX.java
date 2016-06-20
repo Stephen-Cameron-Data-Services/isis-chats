@@ -42,21 +42,46 @@ import org.joda.time.LocalDate;
 @DomainObject(editing = Editing.DISABLED)
 @PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "ParticipantActivityByMonthForDEX", extensions = {
 		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW ParticipantActivityByMonthForDEX "
-				+ "( " + "  {this.personId}, " + "  {this.surname}, " + "  {this.firstName}, " + "  {this.birthDate}, "
-				+ "  {this.age}, " + "  {this.activityAbbreviatedName}, " + "  {this.regionName}, "
-				+ "  {this.participantId}, " + "  {this.participantStatus}, " + "  {this.yearMonth}, "
-				+ "  {this.hoursAttended} " + ") AS " + "SELECT " + "  person.person_id AS personId, "
-				+ "  person.surname, " + "  person.firstname AS firstName, " + "  person.birthdate AS birthDate, "
+				+ "( " + "  {this.personId}, " 
+				+ "  {this.surname}, " 
+				+ "  {this.firstName}, " 
+				+ "  {this.birthDate}, "
+				+ "  {this.slk}, "				
+				+ "  {this.age}, " 
+				+ "  {this.activityAbbreviatedName}, " 
+				+ "  {this.regionName}, "
+				+ "  {this.participantId}, " 
+				+ "  {this.participantStatus}, " 
+				+ "  {this.yearMonth}, "
+				+ "  {this.hoursAttended} " 
+				+ ") AS " 
+				+ "SELECT " 
+				+ "  person.person_id AS personId, "
+				+ "  person.surname, " 
+				+ "  person.firstname AS firstName, " 
+				+ "  person.birthdate AS birthDate, "
+				+ "  person.slk, "
 				+ "  timestampdiff(year,person.birthdate,curdate()) AS age, "
-				+ "  activity.abbreviatedName AS activityAbbreviatedName, " + "  activity.region_name AS regionName, "
-				+ "  participant.participant_id AS participantId, " + "  participant.status AS participantStatus, "
+				+ "  activity.abbreviatedName AS activityAbbreviatedName, " 
+				+ "  activity.region_name AS regionName, "
+				+ "  participant.participant_id AS participantId, " 
+				+ "  participant.status AS participantStatus, "
 				+ "	 EXTRACT(YEAR_MONTH FROM activity.startdatetime) as yearMonth, "
 				+ "	 ROUND(SUM(TIMESTAMPDIFF(MINUTE,attend.startdatetime,attend.enddatetime))/60,1) as hoursAttended "
-				+ "FROM " + "  activity, " + "  attend, " + "  participant, " + "  person " + "WHERE "
+				+ "FROM " 
+				+ "  activity, " 
+				+ "  attend, " 
+				+ "  participant, " 
+				+ "  person " 
+				+ "WHERE "
 				+ "  attend.activity_activity_id = activity.activity_id AND "
 				+ "  participant.participant_id = attend.participant_participant_id AND "
-				+ "  person.person_id = participant.person_person_id AND " + "  attend.attended = true " + "GROUP BY "
-				+ "  participant.participant_id, " + "  activity.abbreviatedName, " + "  activity.region_name, "
+				+ "  person.person_id = participant.person_person_id AND " 
+				+ "  attend.attended = true " 
+				+ "GROUP BY "
+				+ "  participant.participant_id, " 
+				+ "  activity.abbreviatedName, " 
+				+ "  activity.region_name, "
 				+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime);") })
 @Queries({
 		@Query(name = "allParticipantActivityByMonthForDEX", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX"),
@@ -70,6 +95,7 @@ public class ParticipantActivityByMonthForDEX implements WithApplicationTenancy 
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
+	public String slk;
 	public Integer age;
 	public String regionName;
 	public String activityAbbreviatedName;
@@ -133,6 +159,16 @@ public class ParticipantActivityByMonthForDEX implements WithApplicationTenancy 
 
 	@Property()
 	@MemberOrder(sequence = "3.2")
+	public String getSlk() {
+		return slk;
+	}
+
+	public void setSlk(String slk) {
+		this.slk = slk;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "3.3")
 	public Integer getAge() {
 		return age;
 	}

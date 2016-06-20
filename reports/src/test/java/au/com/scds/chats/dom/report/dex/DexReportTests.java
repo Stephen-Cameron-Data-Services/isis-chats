@@ -50,8 +50,8 @@ public class DexReportTests extends IntegrationTestAbstract {
 	@Inject
 	Participants participants;
 
-	@Inject
-	DexReferenceData refData;
+	//@Inject
+	//DexReferenceData refData;
 
 	@Inject
 	JaxbService jaxbService;
@@ -96,10 +96,7 @@ public class DexReportTests extends IntegrationTestAbstract {
 		
 		String DIR = new String("C:/Users/stevec/Desktop/dex/");
 		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadSOUTH.xml"));
-		DEXBulkUploadReport report1 = new DEXBulkUploadReport( container, isisJdoSupport, refData, participants, 2016, 1, regions.regionForName("SOUTH"));
+		DEXBulkUploadReport report1 = new DEXBulkUploadReport( container, isisJdoSupport,  participants, 2016, 1, regions.regionForName("SOUTH"));
 		file1.write(jaxbService.toXml(report1.build()).getBytes());
-		
-
 	}
-
 }

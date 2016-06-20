@@ -53,29 +53,39 @@ import org.joda.time.LocalDate;
 						+ "  {this.surname}, "
 						+ "  {this.firstName}, "
 						+ "  {this.birthDate}, "
+						+ "  {this.slk}, "
 						+ "  {this.activityName}, "
+						+ "  {this.activityAbbreviatedName}, "						
 						+ "  {this.regionName}, "
 						+ "  {this.startDateTime}, "						
 						+ "  {this.participantStatus}, "
+						+ "  {this.attended}, "						
+						+ "  {this.arrivingTransportType}, "
+						+ "  {this.departingTransportType}, "
 						+ "  {this.minutesAttended} "
 						+ ") AS "
 						+ "SELECT "
 						+ "  person.surname, "
 						+ "  person.firstname AS firstName, "
 						+ "  person.birthdate AS birthDate, "
+						+ "  person.slk, "
 						+ "  activity.name AS activityName, "
+						+ "  activity.abbreviatedName AS activityAbbreviatedName, "
 						+ "  activity.region_name AS regionName, "
 						+ "  activity.startdatetime AS startDateTime, "						
 						+ "  participant.status AS participantStatus, "
-						+ "	ROUND(TIMESTAMPDIFF(MINUTE,attended.startdatetime,attended.enddatetime),1) as minutesAttended "
+						+ "  attend.attended, "				
+						+ "  attend.arrivingtransporttype_name AS arrivingTransportType, "
+						+ "  attend.departingtransporttype_name AS departingTransporttype, "			
+						+ "	ROUND(TIMESTAMPDIFF(MINUTE,attend.startdatetime,attend.enddatetime),1) as minutesAttended "
 						+ "FROM "
 						+ "  activity, "
-						+ "  attended, "						
+						+ "  attend, "						
 						+ "  participant, "
 						+ "  person "
 						+ "WHERE "
 						+ "  attended.activity_activity_id = activity.activity_id AND "
-						+ "  participant.participant_id = attended.participant_participant_id AND "
+						+ "  participant.participant_id = attend.participant_participant_id AND "
 						+ "  person.person_id = participant.person_person_id") })
 @Queries({
 	@Query(name = "allActivityParticipantAttendance",
@@ -84,18 +94,23 @@ import org.joda.time.LocalDate;
 	@Query(name = "allParticipantActivityForPeriodAndRegion",
 			language = "JDOQL",
 			value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityParticipantAttendance pa "
-					+ "WHERE pa.startDateTime >= :periodStartDateTime && pa.startDateTime <= :periodEndDateTime && pa.regionName == :region"), })
+					+ "WHERE pa.startDateTime >= :startDateTime && pa.startDateTime <= :endDateTime && pa.attended == :attended && pa.regionName == :region"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ActivityParticipantAttendance implements WithApplicationTenancy {
 
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
+	public String slk;
 	public String activityName;
+	public String activityAbbreviatedName;
 	public String regionName;
 	public DateTime startDateTime;
 	public String participantStatus;
 	public Integer minutesAttended;
+	public Boolean attended;
+	public String arrivingTransportType;
+	public String departingTransportType;
 	//public ApplicationTenancy tenancy;
 
 	@Property()
@@ -119,13 +134,23 @@ public class ActivityParticipantAttendance implements WithApplicationTenancy {
 	}
 
 	@Property()
-	@MemberOrder(sequence = "3")
+	@MemberOrder(sequence = "3.1")
 	public LocalDate getBirthDate() {
 		return birthDate;
 	}
 
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
+	}
+	
+	@Property()
+	@MemberOrder(sequence = "3.2")
+	public String getSlk() {
+		return slk;
+	}
+
+	public void setSlk(String slk) {
+		this.slk = slk;
 	}
 
 	@Property()
@@ -148,6 +173,14 @@ public class ActivityParticipantAttendance implements WithApplicationTenancy {
 		this.activityName = activityName;
 	}
 	
+	public String getActivityAbbreviatedName() {
+		return activityAbbreviatedName;
+	}
+
+	public void setActivityAbbreviatedName(String activityAbbreviatedName) {
+		this.activityAbbreviatedName = activityAbbreviatedName;
+	}
+
 	@Property()
 	@MemberOrder(sequence = "6")
 	public DateTime getStartDateTime() {
@@ -170,6 +203,36 @@ public class ActivityParticipantAttendance implements WithApplicationTenancy {
 
 	@Property()
 	@MemberOrder(sequence = "8")
+	public Boolean getAttended() {
+		return attended;
+	}
+
+	public void setAttended(Boolean attended) {
+		this.attended = attended;
+	}
+	
+	@Property()
+	@MemberOrder(sequence = "9")
+	public String getArrivingTransportType() {
+		return arrivingTransportType;
+	}
+
+	public void setArrivingTransportType(String arrivingTransportType) {
+		this.arrivingTransportType = arrivingTransportType;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "10")
+	public String getDepartingTransportType() {
+		return departingTransportType;
+	}
+
+	public void setDepartingTransportType(String departingTransportType) {
+		this.departingTransportType = departingTransportType;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "11")
 	public Integer getMinutesAttended() {
 		return minutesAttended;
 	}
@@ -177,6 +240,8 @@ public class ActivityParticipantAttendance implements WithApplicationTenancy {
 	public void setMinutesAttended(Integer minutesAttended) {
 		this.minutesAttended = minutesAttended;
 	}
+
+
 
 	@Programmatic
 	public ApplicationTenancy getApplicationTenancy() {

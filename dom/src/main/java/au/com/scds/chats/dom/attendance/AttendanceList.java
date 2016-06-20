@@ -105,8 +105,10 @@ public class AttendanceList {
 		for (Participation participation : getParentActivity().getParticipations()) {
 			Participant participant = participation.getParticipant();
 			if (!hasParticipant(participant)) {
-				Attend attended = attendanceListsRepo.createAttended(parentActivity, participant, true);
-				getAttends().add(attended);
+				Attend attend = attendanceListsRepo.createAttended(parentActivity, participant, true);
+				attend.setArrivingTransportType(participation.getArrivingTransportType());
+				attend.setDepartingTransportType(participation.getDepartingTransportType());
+				getAttends().add(attend);
 			}
 		}
 		return this;

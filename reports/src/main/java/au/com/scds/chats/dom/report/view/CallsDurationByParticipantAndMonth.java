@@ -52,6 +52,7 @@ import org.joda.time.LocalDate;
 						+ "  {this.surname}, "
 						+ "  {this.firstName}, "
 						+ "  {this.birthDate}, "
+						+ "  {this.slk}, "
 						+ "  {this.age}, "						
 						+ "  {this.participantId}, "						
 						+ "  {this.regionName}, "
@@ -64,6 +65,7 @@ import org.joda.time.LocalDate;
 						+ "  person.surname, "
 						+ "  person.firstname AS firstName, "
 						+ "  person.birthdate AS birthDate, "
+						+ "  person.slk, "
 						+ "  timestampdiff(year,person.birthdate,curdate()) AS age, "						
 						+ "  participant.particpant_id AS participantId, "						
 						+ "  participant.region_name AS regionName, "
@@ -97,6 +99,7 @@ public class CallsDurationByParticipantAndMonth implements WithApplicationTenanc
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
+	public String slk;
 	public Integer age;
 	public Integer participantId;
 	public String regionName;
@@ -157,9 +160,19 @@ public class CallsDurationByParticipantAndMonth implements WithApplicationTenanc
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
-
+	
 	@Property()
 	@MemberOrder(sequence = "3.2")
+	public String getSlk() {
+		return slk;
+	}
+
+	public void setSlk(String slk) {
+		this.slk = slk;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "3.3")
 	public Integer getAge() {
 		return age;
 	}
@@ -167,6 +180,7 @@ public class CallsDurationByParticipantAndMonth implements WithApplicationTenanc
 	public void setAge(Integer age) {
 		this.age = age;
 	}
+
 
 	@Property()
 	@MemberOrder(sequence = "4")

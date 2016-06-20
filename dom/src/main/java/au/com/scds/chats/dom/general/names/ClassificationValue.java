@@ -44,21 +44,22 @@ import au.com.scds.chats.dom.activity.Activity;
  * @author stevec
  * 
  */
-//TODO maybe this could be a map to prevent unnecessary database queries
+// TODO maybe this could be a map to prevent unnecessary database queries
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public abstract class ClassificationValue  {
-	
-	public ClassificationValue(){}
-	
-	public ClassificationValue(String name){
+public abstract class ClassificationValue {
+
+	public ClassificationValue() {
+	}
+
+	public ClassificationValue(String name) {
 		this.name = name;
 	}
 
 	private String name;
 
 	@PrimaryKey
-	@Column(allowsNull="false")
+	@Column(allowsNull = "false", length = 50)
 	public String getName() {
 		return name;
 	}
