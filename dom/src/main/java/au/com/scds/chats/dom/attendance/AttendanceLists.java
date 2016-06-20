@@ -86,6 +86,7 @@ public class AttendanceLists {
 		attendance.setActivity(activity);
 		attendance.setParticipant(participant);
 		attendance.setAttended(attended);
+		//set region for data-migration
 		attendance.setRegion(activity.getRegion());
 		container.persistIfNotAlready(attendance);
 		container.flush();

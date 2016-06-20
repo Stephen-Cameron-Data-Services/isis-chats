@@ -60,7 +60,7 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 
 @PersistenceCapable(table = "activity", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-@Unique(name = "Activity_UNQ", members = { "name", "startDateTime", "region" })
+//@Unique(name = "Activity_UNQ", members = { "name", "startDateTime", "region" })
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "classifier", value = "_ACTIVITY")
 public abstract class Activity extends AbstractChatsDomainEntity implements Locatable, Comparable<Activity> {
 

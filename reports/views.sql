@@ -359,9 +359,12 @@ SELECT
   person.firstname AS firstName, 
   person.birthdate AS birthDate, 
   activity.name AS activityName, 
+  activity.abbreviatedName AS activityAbbreviatedName,  
   activity.region_name AS regionName, 
   activity.startdatetime AS startDateTime, 						
-  participant.status AS participantStatus, 
+  participant.status AS participantStatus,
+  attend.arrivingtransporttype AS arrivingTransportType, 
+  attend.departingtransporttype AS departingTransporttype,	  
   TIMESTAMPDIFF(MINUTE,attend.startdatetime,attend.enddatetime) as minutesattended 
 FROM 
   activity, 

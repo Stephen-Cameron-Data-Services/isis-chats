@@ -67,7 +67,7 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	private TransportType departingTransportType;
 	private String dropoffTime;
 	private String pickupTime;
-	private AdditionalTransportTime transportTime = AdditionalTransportTime.ZERO;
+	//private AdditionalTransportTime transportTime = AdditionalTransportTime.ZERO;
 	private Long roleId;
 	private String transportNotes;
 
@@ -251,7 +251,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 		this.roleId = roleId;
 	}
 
-	@Property()
+	//replaced with arriving and departing transportType
+	/*@Property()
 	@PropertyLayout(hidden = Where.ALL_TABLES)
 	@MemberOrder(sequence = "10")
 	public AdditionalTransportTime getTransportTime() {
@@ -260,7 +261,7 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 
 	public void setTransportTime(AdditionalTransportTime transportTime) {
 		this.transportTime = transportTime;
-	}
+	}*/
 
 	public enum AdditionalTransportTime {
 		ZERO, HALF_HOUR, ONE_HOUR
