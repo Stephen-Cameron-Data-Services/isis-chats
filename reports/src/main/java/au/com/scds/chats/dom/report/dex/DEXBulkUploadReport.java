@@ -204,6 +204,7 @@ public class DEXBulkUploadReport {
 
 			}
 		}
+
 		participationByMonth.put("ChatsCalls", chatsCalls);
 		// create output
 		if (validationMode) {

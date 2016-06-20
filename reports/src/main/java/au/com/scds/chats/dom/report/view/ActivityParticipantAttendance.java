@@ -59,7 +59,7 @@ import org.joda.time.LocalDate;
 						+ "  {this.regionName}, "
 						+ "  {this.startDateTime}, "						
 						+ "  {this.participantStatus}, "
-						+ "  {this.attended}, "						
+						+ "  {this.attended}, "	
 						+ "  {this.arrivingTransportType}, "
 						+ "  {this.departingTransportType}, "
 						+ "  {this.minutesAttended} "
