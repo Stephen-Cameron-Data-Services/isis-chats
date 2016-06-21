@@ -43,6 +43,7 @@ import au.com.scds.chats.dom.report.dex.model.generated.SessionClient;
 import au.com.scds.chats.dom.report.dex.model.generated.SessionClients;
 import au.com.scds.chats.dom.report.dex.model.generated.Sessions;
 import au.com.scds.chats.dom.report.view.ActivityParticipantAttendance;
+import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonth;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
@@ -85,7 +86,7 @@ public class DEXBulkUploadReport {
 	// data variables etc.
 	private int outletActivityId;
 	private ClientIdGenerationMode mode;
-	private Boolean validationMode = true;
+	private Boolean validationMode;
 	private Map<String, Map<String, ParticipantActivityByMonthForDEX>> participationByMonth;
 
 	private DEXBulkUploadReport() {
@@ -130,7 +131,7 @@ public class DEXBulkUploadReport {
 		this.validationMode = false;
 	}
 
-	public DEXFileUpload build() {
+	public DEXFileUpload build() throws Exception{
 		try {
 			getCases();
 			getClients();
@@ -142,8 +143,8 @@ public class DEXBulkUploadReport {
 			}
 			return fileUpload;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return null;
+			e.printStackTrace();
+			throw e;
 		}
 	}
 
@@ -180,15 +181,17 @@ public class DEXBulkUploadReport {
 		// calls
 		List<CallsDurationByParticipantAndMonth> monthlyCalls = container.allMatches(new QueryDefault(
 				CallsDurationByParticipantAndMonth.class, "allCallsDurationByParticipantForMonthAndRegion", "yearMonth",
-				Integer.valueOf(this.year.toString() + this.month.toString()), "region", this.region.getName()));
+				((this.year * 100) + this.month), "region", this.region.getName()));
 		// add these calls to the list as fake activities
 		Map<String, ParticipantActivityByMonthForDEX> chatsCalls = new TreeMap<>();
 		for (CallsDurationByParticipantAndMonth c : monthlyCalls) {
 			if (c.getBirthDate().isBefore(this.bornBeforeDate)) {
 				ParticipantActivityByMonthForDEX t = new ParticipantActivityByMonthForDEX();
-				t.setActivityAbbreviatedName("ChatsCalls");
-				t.setFirstName(c.getFirstName().trim());
-				t.setSurname(c.getSurname().trim());
+				t.setActivityAbbreviatedName("ChatsSocialCalls");
+				t.setPersonId(c.getPersonId());
+				t.setParticipantId(c.getParticipantId());
+				t.setFirstName(c.getFirstName());
+				t.setSurname(c.getSurname());
 				t.setBirthDate(c.getBirthDate());
 				t.setHoursAttended(c.getCallHoursTotal());
 				t.setRegionName(c.getRegionName());
@@ -201,11 +204,10 @@ public class DEXBulkUploadReport {
 				case SLK_KEY:
 					chatsCalls.put(c.getSlk(), t);
 				}
-
 			}
 		}
+		participationByMonth.put("ChatsSocialCalls", chatsCalls);
 
-		participationByMonth.put("ChatsCalls", chatsCalls);
 		// create output
 		if (validationMode) {
 			System.out.println("Case:");
@@ -221,7 +223,7 @@ public class DEXBulkUploadReport {
 					System.out.println(" Case Clients :");
 					int i = 1;
 					for (Entry<String, ParticipantActivityByMonthForDEX> p : activityParticipants.entrySet()) {
-						System.out.println("  (" + i++ + ") Id: " + p.getKey());
+						System.out.println("  (" + i++ + ") Id: " + p.getKey() + " Hrs: " + p.getValue().getHoursAttended());
 					}
 				} else {
 					System.out.println("No Clients for: " + activityName);
@@ -251,7 +253,7 @@ public class DEXBulkUploadReport {
 			}
 		}
 	}
-
+	
 	/*
 	 * Find an new or modified Chats Participants in the period and region
 	 */
@@ -363,8 +365,9 @@ public class DEXBulkUploadReport {
 			Integer totalMinutes = 0;
 			boolean first = true;
 			for (Entry<String, ActivityParticipantAttendance> attendance : entry.getValue().entrySet()) {
-				// create the session case id from the first attendance in the list
-				if(first){
+				// create the session case id from the first attendance in the
+				// list
+				if (first) {
 					session.setCaseId(createCaseId(attendance.getValue().getActivityAbbreviatedName()));
 					first = false;
 				}
@@ -376,50 +379,38 @@ public class DEXBulkUploadReport {
 			session.setTimeMinutes(totalMinutes);
 			session.setSessionClients(clients);
 		}
-		// Calls
-		// Loop through an ordered list of ScheduledCalls making a DEX Session
-		// for each day with a completed call
-		List<ScheduledCall> calls = container
-				.allMatches(new QueryDefault(ScheduledCall.class, "findCompletedScheduledCallsInPeriodAndRegion",
-						"startDateTime", this.startDateTime, "endDateTime", this.endDateTime, "region", this.region));
+		// Calls - each participant-day combination is a session, so get summed
+		// by day totals
+		List<CallsDurationByParticipantAndDayForDEX> callDurations = container
+				.allMatches(new QueryDefault(CallsDurationByParticipantAndDayForDEX.class,
+						"allCallsDurationByParticipantAndDayAndRegion", "startDate", this.startDateTime.toLocalDate(),
+						"endDate", this.endDateTime.toLocalDate(), "region", this.region.getName()));
 		int currentDay = 0;
 		Integer totalMinutes = 0;
 		Session session = null;
 		SessionClients clients = null;
-		for (ScheduledCall call : calls) {
-			Person p = call.getParticipant().getPerson();
+		for (CallsDurationByParticipantAndDayForDEX c : callDurations) {
 			switch (this.mode) {
 			case NAME_KEY:
-				personKey = p.getFirstname().trim() + "_" + p.getSurname().trim() + "_"
-						+ p.getBirthdate().toString("dd-MM-YYYY");
+				personKey = c.getFirstName() + "_" + c.getSurname() + "_" + c.getBirthDate().toString("dd-MM-YYYY");
 			case SLK_KEY:
-				personKey = p.getSlk();
+				personKey = c.getSlk();
 			}
-			if (p.getBirthdate().isBefore(this.bornBeforeDate)) {
-				if (currentDay == 0 || call.getStartDateTime().dayOfMonth().get() > currentDay) {
-					if (currentDay > 0)
-						session.setTimeMinutes(totalMinutes);
-					// start new session
-					session = new Session();
-					this.sessions.getSession().add(session);
-					session.setSessionId(createCaseId("ChatsCalls"));
-					session.setCaseId(createCaseId("ChatsCalls"));
-					session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
-					clients = new SessionClients();
-					session.setSessionClients(clients);
-					// reset
-					currentDay = call.getStartDateTime().dayOfMonth().get();
-					totalMinutes = 0;
-				}
+			// create a session and session client for the call
+			if (c.getBirthDate().isBefore(this.bornBeforeDate)) {
+				session = new Session();
+				this.sessions.getSession().add(session);
+				session.setCaseId(createCaseId("ChatsSocialCalls"));
+				session.setSessionId("To_" + personKey + "_on_" + c.getDate().toString("dd-MM-YYYY"));
+				session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
+				session.setTimeMinutes(Integer.valueOf(c.getCallMinutesTotal()));
+				clients = new SessionClients();
+				session.setSessionClients(clients);
 				SessionClient client = new SessionClient();
 				clients.getSessionClient().add(client);
 				client.setClientId(personKey);
-				totalMinutes = totalMinutes + call.getCallIntervalInMinutes();
 			}
 		}
-		// set the time on the last session created
-		if (session != null)
-			session.setTimeMinutes(totalMinutes);
 	}
 
 	/*

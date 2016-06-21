@@ -42,11 +42,11 @@ import org.joda.time.LocalDate;
 @DomainObject(editing = Editing.DISABLED)
 @PersistenceCapable(
 		identityType = IdentityType.NONDURABLE,
-		table = "CallsDurationByParticipantAndMonth",
+		table = "CallsDurationByParticipantAndDayForDEX",
 		extensions = { @Extension(
 				vendorName = "datanucleus",
 				key = "view-definition",
-				value = "CREATE VIEW CallsDurationByParticipantAndMonth "
+				value = "CREATE VIEW CallsDurationByParticipantAndDayForDEX "
 						+ "( "
 						+ "  {this.personId}, "						
 						+ "  {this.surname}, "
@@ -57,8 +57,8 @@ import org.joda.time.LocalDate;
 						+ "  {this.participantId}, "						
 						+ "  {this.regionName}, "
 						+ "  {this.participantStatus}, "						
-						+ "  {this.yearMonth}, "
-						+ "  {this.callHoursTotal} "
+						+ "  {this.date}, "
+						+ "  {this.callMinutesTotal} "
 						+ ") AS "
 						+ "SELECT "
 						+ "  person.person_id AS personId, "						
@@ -70,8 +70,8 @@ import org.joda.time.LocalDate;
 						+ "  participant.particpant_id AS participantId, "						
 						+ "  participant.region_name AS regionName, "
 						+ "  participant.status AS participantStatus, "
-						+ "	EXTRACT(YEAR_MONTH FROM telephonecall.startdatetime) as yearMonth, "
-						+ "	ROUND(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime))/60,1) as callHoursTotal "
+						+ "	 DATE(telephonecall.startdatetime) as date, "
+						+ "	 CAST(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime)) AS UNSIGNED) as callMinutesTotal "
 						+ "FROM "
 						+ "  telephonecall, "						
 						+ "  participant, "
@@ -83,51 +83,51 @@ import org.joda.time.LocalDate;
 						+ "  telephonecall.iscompleted = true "						
 						+ "GROUP BY "
 						+ "  participant.participant_id, "
-						+ "  EXTRACT(YEAR_MONTH FROM telephonecall.startdatetime);") })
+						+ "  DATE(telephonecall.startdatetime);") })
 @Queries({
-	@Query(name = "allCallsDurationByParticipantAndMonth",
+	@Query(name = "allCallsDurationByParticipantAndDay",
 			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth"),
-	@Query(name = "allCallsDurationByParticipantForMonthAndRegion",
+			value = "SELECT FROM au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX"),
+	@Query(name = "allCallsDurationByParticipantAndDayAndRegion",
 			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth cd "
-			+ "WHERE cd.yearMonth == :yearMonth && cd.regionName == :region"),})
+			value = "SELECT FROM au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX "
+			+ "WHERE date >= :startDate && date <= :endDate && regionName == :region"),})
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class CallsDurationByParticipantAndMonth implements WithApplicationTenancy{
+public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTenancy{
 	
-	public Long personId;
+	public Integer personId;
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
 	public String slk;
 	public Integer age;
-	public Long participantId;
+	public Integer participantId;
 	public String regionName;
 	public String participantStatus;
-	public Integer yearMonth;
-	public Float callHoursTotal;
+	public LocalDate date;
+	public Integer callMinutesTotal;
 	
 	public String title(){
-		return "Calls: " + getFirstName() + " " + getSurname() + " " + getYearMonth();
+		return "Calls: " + getFirstName() + " " + getSurname() + " " + getDate();
 	}
 
 	@Property(hidden=Where.EVERYWHERE)
 	//@MemberOrder(sequence = "1")	
-	public Long getPersonId() {
+	public Integer getPersonId() {
 		return personId;
 	}
 
-	public void setPersonId(Long personId) {
+	public void setPersonId(Integer personId) {
 		this.personId = personId;
 	}
 
 	@Property(hidden=Where.EVERYWHERE)
 	//@MemberOrder(sequence = "1")
-	public Long getParticipantId() {
+	public Integer getParticipantId() {
 		return participantId;
 	}
 
-	public void setParticipantId(Long participantId) {
+	public void setParticipantId(Integer participantId) {
 		this.participantId = participantId;
 	}
 
@@ -181,7 +181,6 @@ public class CallsDurationByParticipantAndMonth implements WithApplicationTenanc
 		this.age = age;
 	}
 
-
 	@Property()
 	@MemberOrder(sequence = "4")
 	public String getRegionName() {
@@ -204,22 +203,22 @@ public class CallsDurationByParticipantAndMonth implements WithApplicationTenanc
 
 	@Property()
 	@MemberOrder(sequence = "7")
-	public Integer getYearMonth() {
-		return yearMonth;
+	public LocalDate getDate() {
+		return date;
 	}
 
-	public void setYearMonth(Integer yearMonth) {
-		this.yearMonth = yearMonth;
+	public void setDate(LocalDate date) {
+		this.date = date;
 	}
 
 	@Property()
 	@MemberOrder(sequence = "8")
-	public Float getCallHoursTotal() {
-		return callHoursTotal;
+	public Integer getCallMinutesTotal() {
+		return callMinutesTotal;
 	}
 
-	public void setCallHoursTotal(Float callHoursTotal) {
-		this.callHoursTotal = callHoursTotal;
+	public void setCallMinutesTotal(Integer total) {
+		this.callMinutesTotal = callMinutesTotal;
 	}
 
 	@Programmatic
