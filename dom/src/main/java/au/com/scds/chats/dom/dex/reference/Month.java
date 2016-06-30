@@ -11,5 +11,12 @@ import javax.jdo.annotations.Query;
 @Discriminator(value = "Month")
 @Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.chats.dom.dex.reference.Month ORDER BY orderNumber ASC;")
 public class Month extends AbstractDexReferenceItem {
+	
+	/*TODO public Integer asInteger(){
+		switch(this.name){
+		case "Month__"
+		
+		}
+	}*/
 
 }

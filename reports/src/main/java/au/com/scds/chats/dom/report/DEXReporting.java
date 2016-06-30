@@ -1,5 +1,8 @@
 package au.com.scds.chats.dom.report;
 
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -13,24 +16,30 @@ import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
+import org.apache.isis.applib.services.jaxb.JaxbService;
+import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
+import org.apache.isis.applib.value.Clob;
 
+//import au.com.scds.chats.dom.dex.reference.Month;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
+import au.com.scds.chats.dom.participant.Participants;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
 
 @DomainService(nature = NatureOfService.VIEW_MENU_ONLY)
-@DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "80")
+@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "200")
 public class DEXReporting {
-
-	public List<ParticipantActivityByMonthForDEX> listAttendanceByYearMonthAndRegion(
-			@Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Year-Month (YYYYMM)") Integer yearMonth, 
-			@Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Region") String region) {
-		return container.allMatches(
-				new QueryDefault<>(ParticipantActivityByMonthForDEX.class, "allParticipantActivityByMonthForDEXForMonthAndRegion", "yearMonth", yearMonth, "region", region));
-	}
 	
-	public List<String> choices1ListAttendanceByYearMonthAndRegion(){
+	public List<ParticipantActivityByMonthForDEX> listAttendanceByYearMonthAndRegion(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Year-Month (YYYYMM)") Integer yearMonth,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Region") String region) {
+		return container.allMatches(new QueryDefault<>(ParticipantActivityByMonthForDEX.class,
+				"allParticipantActivityByMonthForDEXForMonthAndRegion", "yearMonth", yearMonth, "region", region));
+	}
+
+	public List<String> choices1ListAttendanceByYearMonthAndRegion() {
 		return regions.allNames();
 	}
 
@@ -39,9 +48,33 @@ public class DEXReporting {
 				new QueryDefault<>(CallsDurationByParticipantAndMonth.class, "allCallsDurationByParticipantAndMonth"));
 	}
 
+	public Clob createDexReportForMonth(@ParameterLayout(named = "Year") Integer year,
+			@ParameterLayout(named = "Month") Month month, @ParameterLayout(named = "Region") String regionName)
+					throws Exception {
+		DEXBulkUploadReport report1 = new DEXBulkUploadReport(container, isisJdoSupport, participants, year, month.getValue(),
+				regionName);
+		String report = jaxbService.toXml(report1.build());
+		Clob clob = new Clob("DexReportFor" + regionName + (month.getValue() < 10 ? "0" : "") + month + year + ".xml", "text/xml",
+				report);
+		return clob;
+	}
+
+	public List<String> choices2CreateDexReportForMonth() {
+		return Arrays.asList("SOUTH", "NORTH", "NORTH-WEST");
+	}
+
 	@Inject
 	DomainObjectContainer container;
-	
+
+	@Inject
+	JaxbService jaxbService;
+
+	@Inject
+	IsisJdoSupport isisJdoSupport;
+
+	@Inject
+	Participants participants;
+
 	@Inject
 	Regions regions;
 }

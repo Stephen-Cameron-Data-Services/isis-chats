@@ -147,6 +147,12 @@ public class Activities {
 				new QueryDefault<>(ActivityEvent.class, "findAllPastActivities", "currentDateTime", new DateTime()));
 	}
 	
+	@Programmatic
+	public List<ActivityEvent> allActivities() {
+		return container.allMatches(
+				new QueryDefault<>(ActivityEvent.class, "findActivities"));
+	}
+	
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "7")

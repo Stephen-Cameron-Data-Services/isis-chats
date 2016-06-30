@@ -73,4 +73,9 @@ public class PersonMap extends BaseMap {
 	public Person getEntry(BigInteger key) {
 		return this.map.get(key);
 	}
+
+	public void put(BigInteger key, Person person) {
+		this.map.put(key, person);
+		
+	}
 }

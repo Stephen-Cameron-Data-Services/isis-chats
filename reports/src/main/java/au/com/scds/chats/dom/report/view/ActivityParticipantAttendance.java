@@ -50,6 +50,7 @@ import org.joda.time.LocalDate;
 				key = "view-definition",
 				value = "CREATE VIEW ActivityParticipantAttendance "
 						+ "( "
+						+ "  {this.personId}, "						
 						+ "  {this.surname}, "
 						+ "  {this.firstName}, "
 						+ "  {this.birthDate}, "
@@ -57,7 +58,8 @@ import org.joda.time.LocalDate;
 						+ "  {this.activityName}, "
 						+ "  {this.activityAbbreviatedName}, "						
 						+ "  {this.regionName}, "
-						+ "  {this.startDateTime}, "						
+						+ "  {this.startDateTime}, "
+						+ "  {this.participantId}, "
 						+ "  {this.participantStatus}, "
 						+ "  {this.attended}, "	
 						+ "  {this.arrivingTransportType}, "
@@ -65,6 +67,7 @@ import org.joda.time.LocalDate;
 						+ "  {this.minutesAttended} "
 						+ ") AS "
 						+ "SELECT "
+						+ "  person.person_id as personId, "						
 						+ "  person.surname, "
 						+ "  person.firstname AS firstName, "
 						+ "  person.birthdate AS birthDate, "
@@ -72,7 +75,8 @@ import org.joda.time.LocalDate;
 						+ "  activity.name AS activityName, "
 						+ "  activity.abbreviatedName AS activityAbbreviatedName, "
 						+ "  activity.region_name AS regionName, "
-						+ "  activity.startdatetime AS startDateTime, "						
+						+ "  activity.startdatetime AS startDateTime, "
+						+ "  participant.participant_id AS participantId, "						
 						+ "  participant.status AS participantStatus, "
 						+ "  attend.attended, "				
 						+ "  attend.arrivingtransporttype_name AS arrivingTransportType, "
@@ -98,6 +102,8 @@ import org.joda.time.LocalDate;
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ActivityParticipantAttendance implements WithApplicationTenancy {
 
+	public Long personId;
+	public Long participantId;
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
@@ -241,7 +247,26 @@ public class ActivityParticipantAttendance implements WithApplicationTenancy {
 		this.minutesAttended = minutesAttended;
 	}
 
+	@Property()
+	@MemberOrder(sequence = "12")
+	public Long getPersonId() {
+		return personId;
+	}
 
+	public void setPersonId(Long personId) {
+		this.personId = personId;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "13")
+	public Long getParticipantId() {
+		return participantId;
+	}
+	
+	public void setParticipantId(Long participantId) {
+		this.participantId = participantId;
+	}	
+	
 
 	@Programmatic
 	public ApplicationTenancy getApplicationTenancy() {
@@ -253,4 +278,6 @@ public class ActivityParticipantAttendance implements WithApplicationTenancy {
 		}
 		return tenancy;
 	}
+
+
 }

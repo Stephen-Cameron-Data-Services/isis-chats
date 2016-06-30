@@ -78,8 +78,7 @@ import org.joda.time.LocalDate;
 						+ "  person "
 						+ "WHERE "
 						+ "  participant.participant_id = telephonecall.participant_participant_id AND "
-						+ "  person.person_id = participant.person_person_id AND "							
-						+ "  participant.status <> 'EXITED' AND "
+						+ "  person.person_id = participant.person_person_id AND "	
 						+ "  telephonecall.iscompleted = true "						
 						+ "GROUP BY "
 						+ "  participant.participant_id, "
@@ -95,13 +94,13 @@ import org.joda.time.LocalDate;
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTenancy{
 	
-	public Integer personId;
+	public Long personId;
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
 	public String slk;
 	public Integer age;
-	public Integer participantId;
+	public Long participantId;
 	public String regionName;
 	public String participantStatus;
 	public LocalDate date;
@@ -113,21 +112,21 @@ public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTe
 
 	@Property(hidden=Where.EVERYWHERE)
 	//@MemberOrder(sequence = "1")	
-	public Integer getPersonId() {
+	public Long getPersonId() {
 		return personId;
 	}
 
-	public void setPersonId(Integer personId) {
+	public void setPersonId(Long personId) {
 		this.personId = personId;
 	}
 
 	@Property(hidden=Where.EVERYWHERE)
 	//@MemberOrder(sequence = "1")
-	public Integer getParticipantId() {
+	public Long getParticipantId() {
 		return participantId;
 	}
 
-	public void setParticipantId(Integer participantId) {
+	public void setParticipantId(Long participantId) {
 		this.participantId = participantId;
 	}
 

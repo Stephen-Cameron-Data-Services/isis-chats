@@ -76,7 +76,7 @@ public class DexReportTests extends IntegrationTestAbstract {
 		config.put("isis.persistor.datanucleus.install-fixtures", "false");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionDriverName", "com.mysql.jdbc.Driver");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionURL",
-				"jdbc:mysql://localhost:3306/chats2?zeroDateTimeBehavior=convertToNull");
+				"jdbc:mysql://localhost:3306/chats?zeroDateTimeBehavior=convertToNull");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionUserName", "chats");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionPassword", "password");
 
@@ -95,8 +95,17 @@ public class DexReportTests extends IntegrationTestAbstract {
 	public void DEXReport() throws Exception {
 		
 		String DIR = new String("C:/Users/stevec/Desktop/dex/");
-		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadSOUTH.xml"));
-		DEXBulkUploadReport report1 = new DEXBulkUploadReport( container, isisJdoSupport,  participants, 2016, 1, regions.regionForName("SOUTH"));
+		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadNW-JAN.xml"));
+		DEXBulkUploadReport report1 = new DEXBulkUploadReport( container, isisJdoSupport,  participants, 2016, 1, "NORTH-WEST");
+		file1.write(jaxbService.toXml(report1.build()).getBytes());
+	}
+	
+	@Test
+	public void DEXReportSinglePass() throws Exception {
+		
+		String DIR = new String("C:/Users/stevec/Desktop/dex/");
+		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadNW-JAN.xml"));
+		DEXBulkUploadReportSinglePass report1 = new DEXBulkUploadReportSinglePass( container, isisJdoSupport,  participants, 2016, 1, "NORTH-WEST");
 		file1.write(jaxbService.toXml(report1.build()).getBytes());
 	}
 }

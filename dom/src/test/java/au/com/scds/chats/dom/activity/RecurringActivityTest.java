@@ -321,8 +321,8 @@ public class RecurringActivityTest {
 			address.updateGeocodedLocation();
 			parent.setAddress(address);
 			assertThat(parent.getLocation()).isNotNull();
-			assertThat(parent.getLocation().getLatitude()).isEqualTo(-42.886763);
-			assertThat(parent.getLocation().getLongitude()).isEqualTo(147.408854);
+			assertThat(parent.getLocation().getLatitude()).isEqualTo(-42.8867495);
+			assertThat(parent.getLocation().getLongitude()).isEqualTo(147.4088664);
 			assertThat(parent.getLocation().getLatitude()).isEqualTo(event1.getLocation().getLatitude());
 			assertThat(parent.getLocation().getLongitude()).isEqualTo(event1.getLocation().getLongitude());
 			assertThat(parent.getLocation().getLatitude()).isEqualTo(event2.getLocation().getLatitude());
@@ -366,7 +366,7 @@ public class RecurringActivityTest {
 			
 			//then
 			assertThat(activity.getLocation()).isNotNull();
-			assertThat(activity.getLocation().getLatitude()).isEqualTo(-42.886763);
+			assertThat(activity.getLocation().getLatitude()).isEqualTo(-42.8867495);
 			assertThat(activity.getLocation().getLongitude()).isEqualTo(147.408854);
 		}*/
 	}

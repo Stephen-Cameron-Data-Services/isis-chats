@@ -83,7 +83,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	private String mobilePhoneNumber;
 	private String fixedPhoneNumber;
 	private String faxNumber;
-	private String email;
+	private String emailAddress;
 	private Sex sex;
 
 	public Person() {
@@ -521,11 +521,11 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	// @MemberOrder(name = "Contact Details", sequence = "5")
 	@Column(allowsNull = "true")
 	public String getEmailAddress() {
-		return email;
+		return emailAddress;
 	}
 
-	public void setEmailAddress(final String email) {
-		this.email = email;
+	public void setEmailAddress(final String emailAddress) {
+		this.emailAddress = emailAddress;
 	}
 
 	@Property(editing = Editing.DISABLED)

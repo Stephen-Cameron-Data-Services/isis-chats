@@ -18,6 +18,7 @@
  */
 package au.com.scds.chats.dom.general;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.apache.isis.applib.DomainObjectContainer;
@@ -116,10 +117,11 @@ public class Persons {
 				"findPerson", "firstname", firstname, "surname", surname, "birthdate", dob));
 	}
 	
+	//data migration
 	@Programmatic
-	public Person findPerson(Integer integer) {
+	public Person findPersonByOldId(BigInteger personId) {
 		return container.firstMatch(new QueryDefault<>(Person.class,
-				"findPersonByOldId", "oldid", integer));
+				"findPersonByOldId", "oldid", personId));
 	}
 
 	@javax.inject.Inject

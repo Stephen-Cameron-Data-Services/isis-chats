@@ -357,6 +357,7 @@ GROUP BY
 #DROP VIEW ActivityParticipantAttendance
 CREATE VIEW ActivityParticipantAttendance AS 
 SELECT 
+  person.person_id as personId,
   person.surname, 
   person.firstname AS firstName, 
   person.birthdate AS birthDate,
@@ -364,7 +365,8 @@ SELECT
   activity.name AS activityName, 
   activity.abbreviatedName AS activityAbbreviatedName,  
   activity.region_name AS regionName, 
-  activity.startdatetime AS startDateTime, 						
+  activity.startdatetime AS startDateTime,
+  participant.participant_id AS participantId,
   participant.status AS participantStatus,
   attend.attended,
   attend.arrivingtransporttype_name AS arrivingTransportType, 
@@ -379,3 +381,30 @@ WHERE
   attend.activity_activity_id = activity.activity_id AND 
   participant.participant_id = attend.participant_participant_id AND 
   person.person_id = participant.person_person_id;
+ 
+#DROP VIEW CallsDurationByParticipantAndDayForDEX; 
+CREATE VIEW CallsDurationByParticipantAndDayForDEX 
+AS 
+SELECT 
+  person.person_id AS personId, 						
+  person.surname, 
+  person.firstname AS firstName, 
+  person.birthdate AS birthDate, 
+  person.slk, 
+  timestampdiff(year,person.birthdate,curdate()) AS age, 						
+  participant.participant_id AS participantId, 						
+  participant.region_name AS regionName, 
+  participant.status AS participantStatus, 
+  DATE(telephonecall.startdatetime) as date, 
+  CAST(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime)) AS UNSIGNED) as callMinutesTotal 
+FROM 
+  telephonecall, 						
+  participant, 
+  person 
+WHERE 
+  participant.participant_id = telephonecall.participant_participant_id AND 
+  person.person_id = participant.person_person_id AND 	
+  telephonecall.iscompleted = true 						
+GROUP BY 
+  participant.participant_id, 
+  DATE(telephonecall.startdatetime);

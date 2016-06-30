@@ -80,7 +80,7 @@ public class CreateVolunteersAndCalls extends IntegrationTestAbstract {
 		config.put("isis.persistor.datanucleus.install-fixtures", "false");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionDriverName", "com.mysql.jdbc.Driver");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionURL",
-				"jdbc:mysql://localhost:3306/chats2?zeroDateTimeBehavior=convertToNull");
+				"jdbc:mysql://localhost:3306/chats?zeroDateTimeBehavior=convertToNull");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionUserName", "chats");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionPassword", "password");
 
@@ -103,7 +103,7 @@ public class CreateVolunteersAndCalls extends IntegrationTestAbstract {
 
 		final VolunteerMap volunteerMap = new VolunteerMap(em);
 
-		//volunteerMap.volunteers(volunteers,  persons);
+		volunteerMap.volunteers(volunteers,  persons);
 		volunteerMap.scheduledCalls(volunteers, participants, calls);
 		em.close();
 

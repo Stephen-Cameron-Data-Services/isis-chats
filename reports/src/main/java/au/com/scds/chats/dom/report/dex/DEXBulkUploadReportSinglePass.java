@@ -2,6 +2,7 @@ package au.com.scds.chats.dom.report.dex;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +49,7 @@ import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonth;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
 
-public class DEXBulkUploadReport {
+public class DEXBulkUploadReportSinglePass {
 
 	// constants
 	private final int TELEPHONE_WEB_CONTACT = 65;
@@ -82,6 +83,7 @@ public class DEXBulkUploadReport {
 	private DomainObjectContainer container;
 	private Participants participants;
 	private IsisJdoSupport isisJdoSupport;
+	private PersistenceManager persistenceManager;
 
 	// data variables etc.
 	private int outletActivityId;
@@ -89,16 +91,20 @@ public class DEXBulkUploadReport {
 	private Boolean validationMode;
 	private Map<String, Map<String, ParticipantActivityByMonthForDEX>> participationByMonth;
 
-	private DEXBulkUploadReport() {
+	private DEXBulkUploadReportSinglePass() {
 	}
 
-	public DEXBulkUploadReport(DomainObjectContainer container, IsisJdoSupport isisJdoSupport,
+	public DEXBulkUploadReportSinglePass(DomainObjectContainer container, IsisJdoSupport isisJdoSupport,
 			Participants participants, Integer year, Integer month, String regionName) {
 
 		this.fileUpload = new DEXFileUpload();
 		this.clients = new Clients();
 		this.cases = new Cases();
 		this.sessions = new Sessions();
+		// add children of root node
+		fileUpload.getClientsOrCasesOrSessions().add(clients);
+		fileUpload.getClientsOrCasesOrSessions().add(cases);
+		fileUpload.getClientsOrCasesOrSessions().add(sessions);
 		this.participationByMonth = new TreeMap<String, Map<String, ParticipantActivityByMonthForDEX>>();
 		this.container = container;
 		this.isisJdoSupport = isisJdoSupport;
@@ -111,6 +117,9 @@ public class DEXBulkUploadReport {
 		// set of the bounds for finding ActivityEvents
 		this.startDateTime = new DateTime(year, month, 1, 0, 0, 0);
 		this.endDateTime = startDateTime.dayOfMonth().withMaximumValue();
+
+		// get persistence manager to find Participants from person
+		persistenceManager = isisJdoSupport.getJdoPersistenceManager();
 
 		// what region code?
 		switch (this.regionName) {
@@ -129,22 +138,287 @@ public class DEXBulkUploadReport {
 		this.mode = ClientIdGenerationMode.NAME_KEY;
 		// see if data is valid and report results
 		this.validationMode = false;
+
 	}
 
-	public DEXFileUpload build() throws Exception{
-		try {
-			getCases();
-			getClients();
-			getSessions();
-			if (cases.getCase().size() > 0) {
-				fileUpload.getClientsOrCasesOrSessions().add(clients);
-				fileUpload.getClientsOrCasesOrSessions().add(cases);
-				fileUpload.getClientsOrCasesOrSessions().add(sessions);
+	public DEXFileUpload build() throws Exception {
+
+		String clientKey = null, caseKey = null, sessionKey = null;
+		Map<String, Client> clientsMap = new TreeMap<>();
+		Map<String, Case> casesMap = new TreeMap<>();
+		Map<String, SessionWrapper> sessionsMap = new TreeMap<>();
+		// Activities: find all case-session-clients via view
+		// ActivityParticipantAttendance
+		List<ActivityParticipantAttendance> attendances = container.allMatches(new QueryDefault(
+				ActivityParticipantAttendance.class, "allParticipantActivityForPeriodAndRegion", "startDateTime",
+				this.startDateTime, "endDateTime", this.endDateTime, "attended", true, "region", this.regionName));
+		for (ActivityParticipantAttendance a : attendances) {
+			switch (this.mode) {
+			case NAME_KEY:
+				clientKey = a.getFirstName().trim() + "_" + a.getSurname().trim() + "_"
+						+ a.getBirthDate().toString("dd-MM-YYYY");
+				break;
+			case SLK_KEY:
+				clientKey = a.getSlk();
 			}
-			return fileUpload;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
+			caseKey = a.getActivityAbbreviatedName();
+			sessionKey = a.getActivityAbbreviatedName().trim() + "_" + a.getStartDateTime().toString("dd-MM-YYYY");
+			// find or make a client
+			if (!clientsMap.containsKey(clientKey)) {
+				clientsMap.put(clientKey, buildNewClient(clientKey,  a.getParticipantId()));
+			}
+			// find or make a case
+			Case case_ = null;
+			if (!casesMap.containsKey(caseKey)) {
+				case_ = buildNewCase(a);
+				casesMap.put(caseKey, case_);
+			} else {
+				case_ = casesMap.get(caseKey);
+			}
+			// add client to case
+			CaseClient cc = new CaseClient();
+			cc.setClientId(clientKey);
+			case_.getCaseClients().getCaseClient().add(cc);
+			// find or make a session
+			SessionWrapper sessionWrapper = null;
+			if (!sessionsMap.containsKey(sessionKey)) {
+				Session session = buildNewSession(a);
+				sessionWrapper = new SessionWrapper(session);
+				sessionsMap.put(sessionKey, sessionWrapper);
+			} else {
+				sessionWrapper = sessionsMap.get(sessionKey);
+			}
+			SessionClient client = new SessionClient();
+			client.setClientId(clientKey);
+			sessionWrapper.addClient(client);
+			sessionWrapper.addMinutes(a.getMinutesAttended());
+		}
+		// set the times on all the Sessions
+		for (SessionWrapper wrapper : sessionsMap.values()) {
+			wrapper.getSession().setTimeMinutes(wrapper.getMinutes());
+		}
+
+		// Calls: - each participant-day combination is a session, so get summed
+		// by day totals
+
+		// make a single case for calls
+		Case callsCase = new Case();
+		this.cases.getCase().add(callsCase);
+		callsCase.setCaseClients(new CaseClients());
+		callsCase.setCaseId(createCaseId("ChatsSocialCalls"));
+		callsCase.setOutletActivityId(this.outletActivityId);
+		callsCase.setTotalNumberOfUnidentifiedClients(0);
+		// get calls data
+		List<CallsDurationByParticipantAndDayForDEX> callDurations = container
+				.allMatches(new QueryDefault(CallsDurationByParticipantAndDayForDEX.class,
+						"allCallsDurationByParticipantAndDayAndRegion", "startDate", this.startDateTime.toLocalDate(),
+						"endDate", this.endDateTime.toLocalDate(), "region", this.regionName));
+		Map<String, CaseClient> caseClientsMap = new HashMap<>();
+		for (CallsDurationByParticipantAndDayForDEX c : callDurations) {
+			switch (this.mode) {
+			case NAME_KEY:
+				clientKey = c.getFirstName().trim() + "_" + c.getSurname().trim() + "_"
+						+ c.getBirthDate().toString("dd-MM-YYYY");
+				break;
+			case SLK_KEY:
+				clientKey = c.getSlk();
+			}
+			sessionKey = "To_" + clientKey + "_on_" + c.getDate().toString("dd-MM-YYYY");
+			// find or make a client
+			if (!clientsMap.containsKey(clientKey)) {
+				clientsMap.put(clientKey, buildNewClient(clientKey, c.getParticipantId()));
+			}
+			// add client to calls case if not already present
+			if(!caseClientsMap.containsKey(clientKey)){
+				CaseClient cc = new CaseClient();
+				cc.setClientId(clientKey);
+				callsCase.getCaseClients().getCaseClient().add(cc);
+				caseClientsMap.put(clientKey, cc);
+			}
+			//  make a session with one session client
+			Session session = new Session();
+			this.sessions.getSession().add(session);
+			session.setCaseId(createCaseId("ChatsSocialCalls"));
+			session.setSessionId(sessionKey);
+			session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
+			session.setTimeMinutes(Integer.valueOf(c.getCallMinutesTotal()));
+			SessionClients clients = new SessionClients();
+			session.setSessionClients(clients);
+			SessionClient client = new SessionClient();
+			clients.getSessionClient().add(client);
+			client.setClientId(clientKey);
+			session.setTimeMinutes(c.getCallMinutesTotal());
+		}
+
+		return fileUpload;
+
+	}
+
+
+
+	private Session buildNewSession(ActivityParticipantAttendance a) {
+		Session session = new Session();
+		this.sessions.getSession().add(session);
+		session.setSessionId(a.getActivityAbbreviatedName().trim() + "_" + a.getRegionName() + " "
+				+ a.getStartDateTime().toString("dd-MM-YYYY"));
+		session.setServiceTypeId(this.SOCIAL_SUPPORT_GROUP);
+		SessionClients clients = new SessionClients();
+		session.setCaseId(createCaseId(a.getActivityAbbreviatedName()));
+		session.setSessionClients(clients);
+		return session;
+	}
+
+	private Case buildNewCase(ActivityParticipantAttendance a) {
+		Case case_ = new Case();
+		this.cases.getCase().add(case_);
+		case_.setCaseClients(new CaseClients());
+		case_.setCaseId(createCaseId(a.getActivityName()));
+		case_.setOutletActivityId(this.outletActivityId);
+		case_.setTotalNumberOfUnidentifiedClients(0);
+		this.cases.getCase().add(case_);
+		return case_;
+	}
+
+	private Client buildNewClient(String clientKey, Long participantId) {
+		
+		Participant participant = persistenceManager.getObjectById(Participant.class,
+				participantId + "[OID]au.com.scds.chats.dom.participant.Participant");
+		Client client = new Client();
+		client.setClientId(clientKey);
+		client.setSlk(participant.getPerson().getSlk());
+		client.setConsentToProvideDetails(participant.isConsentToProvideDetails());
+		client.setConsentedForFutureContacts(participant.isConsentedForFutureContacts());
+		switch (this.mode) {
+		case NAME_KEY:
+			client.setGivenName(participant.getPerson().getFirstname());
+			client.setFamilyName(participant.getPerson().getSurname());
+			break;
+		case SLK_KEY:
+			client.setGivenName(null);
+			client.setFamilyName(null);
+		}
+		client.setGivenName(participant.getPerson().getFirstname());
+		client.setFamilyName(participant.getPerson().getSurname());
+		client.setIsUsingPsuedonym(false);
+		client.setBirthDate(participant.getPerson().getBirthdate());
+		client.setIsBirthDateAnEstimate(false);
+		client.setGenderCode(participant.getPerson().getSex() == Sex.MALE ? "MALE" : "FEMALE");
+		client.setCountryOfBirthCode(participant.getCountryOfBirth().getName().substring(9));
+		client.setLanguageSpokenAtHomeCode(participant.getLanguageSpokenAtHome().getName().substring(10));
+		client.setAboriginalOrTorresStraitIslanderOriginCode(
+				participant.getAboriginalOrTorresStraitIslanderOrigin().getName().substring(40));
+		client.setHasDisabilities(participant.isHasDisabilities());
+		client.setAccommodationTypeCode(participant.getAccommodationType().getName().substring(19));
+		client.setDvaCardStatusCode(participant.getDvaCardStatus().getName().substring(15));
+		client.setHasCarer(participant.isHasCarer());
+		client.setHouseholdCompositionCode(participant.getHouseholdComposition().getName().substring(22));
+		Address s = participant.getPerson().getStreetAddress();
+		if (s != null) {
+			ResidentialAddress address = new ResidentialAddress();
+			address.setSuburb(s.getSuburb());
+			address.setPostcode(s.getPostcode());
+			address.setStateCode("TAS");
+			client.setResidentialAddress(address);
+		}
+		clients.getClient().add(client);
+		return client;
+	}
+
+	/*
+	 * Find Attendances at ActivityEvents Add any Calls in the period and region
+	 */
+	private void getSessionsXXX() throws Exception {
+		// Activities
+		List<ActivityParticipantAttendance> attendances = container.allMatches(new QueryDefault(
+				ActivityParticipantAttendance.class, "allParticipantActivityForPeriodAndRegion", "startDateTime",
+				this.startDateTime, "endDateTime", this.endDateTime, "attended", true, "region", this.regionName));
+		// Process the list of activity attendances into a list of sessions
+		// by creating a map of activities each with a list of attendances
+		String activityKey = null, personKey = null, sessionKey = null;
+		Map<String, Map<String, ActivityParticipantAttendance>> tmp = new TreeMap<String, Map<String, ActivityParticipantAttendance>>();
+		for (ActivityParticipantAttendance a : attendances) {
+			activityKey = a.getActivityAbbreviatedName();
+			// missing key?, shouldn't happen but..
+			if (!participationByMonth.containsKey(activityKey)) {
+				System.out.println("missing activity key (no >65yrs participants): " + activityKey);
+				// throw new Exception("missing activity key: " + activityKey);
+				// Is this a relevant activity/case having people over 64?
+			} else if (participationByMonth.get(activityKey).values().size() > 0) {
+				// Is this attendee specifically over 65
+				switch (this.mode) {
+				case NAME_KEY:
+					personKey = a.getFirstName().trim() + "_" + a.getSurname().trim() + "_"
+							+ a.getBirthDate().toString("dd-MM-YYYY");
+					break;
+				case SLK_KEY:
+					personKey = a.getSlk();
+				}
+				if (participationByMonth.get(activityKey).containsKey(personKey)) {
+					// create a new activity group?
+					sessionKey = a.getActivityAbbreviatedName().trim() + "_" + a.getRegionName() + " "
+							+ a.getStartDateTime().toString("dd-MM-YYYY");
+					if (!tmp.containsKey(sessionKey)) {
+						tmp.put(sessionKey, new TreeMap<String, ActivityParticipantAttendance>());
+					}
+					tmp.get(sessionKey).put(personKey, a);
+				}
+			}
+		}
+		// Create activity sessions
+		for (Entry<String, Map<String, ActivityParticipantAttendance>> entry : tmp.entrySet()) {
+			Session session = new Session();
+			this.sessions.getSession().add(session);
+			session.setSessionId(entry.getKey().toString());
+			session.setServiceTypeId(this.SOCIAL_SUPPORT_GROUP);
+			SessionClients clients = new SessionClients();
+			Integer totalMinutes = 0;
+			boolean first = true;
+			for (Entry<String, ActivityParticipantAttendance> attendance : entry.getValue().entrySet()) {
+				// create the session case id from the first attendance in the
+				// list
+				if (first) {
+					session.setCaseId(createCaseId(attendance.getValue().getActivityAbbreviatedName()));
+					first = false;
+				}
+				SessionClient client = new SessionClient();
+				clients.getSessionClient().add(client);
+				client.setClientId(attendance.getKey());
+				totalMinutes = totalMinutes + attendance.getValue().getMinutesAttended();
+			}
+			session.setTimeMinutes(totalMinutes);
+			session.setSessionClients(clients);
+		}
+		// Calls - each participant-day combination is a session, so get summed
+		// by day totals
+		List<CallsDurationByParticipantAndDayForDEX> callDurations = container
+				.allMatches(new QueryDefault(CallsDurationByParticipantAndDayForDEX.class,
+						"allCallsDurationByParticipantAndDayAndRegion", "startDate", this.startDateTime.toLocalDate(),
+						"endDate", this.endDateTime.toLocalDate(), "region", this.regionName));
+		int currentDay = 0;
+		Integer totalMinutes = 0;
+		Session session = null;
+		SessionClients clients = null;
+		for (CallsDurationByParticipantAndDayForDEX c : callDurations) {
+			switch (this.mode) {
+			case NAME_KEY:
+				personKey = c.getFirstName() + "_" + c.getSurname() + "_" + c.getBirthDate().toString("dd-MM-YYYY");
+			case SLK_KEY:
+				personKey = c.getSlk();
+			}
+			// create a session and session client for the call
+			if (c.getBirthDate().isBefore(this.bornBeforeDate)) {
+				session = new Session();
+				this.sessions.getSession().add(session);
+				session.setCaseId(createCaseId("ChatsSocialCalls"));
+				session.setSessionId("To_" + personKey + "_on_" + c.getDate().toString("dd-MM-YYYY"));
+				session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
+				session.setTimeMinutes(Integer.valueOf(c.getCallMinutesTotal()));
+				clients = new SessionClients();
+				session.setSessionClients(clients);
+				SessionClient client = new SessionClient();
+				clients.getSessionClient().add(client);
+				client.setClientId(personKey);
+			}
 		}
 	}
 
@@ -160,7 +434,8 @@ public class DEXBulkUploadReport {
 		// sort by Activity and Participants (for CaseClients within Cases)
 		String personKey = null;
 		for (ParticipantActivityByMonthForDEX p : monthlyActivity) {
-			if (!p.getSurname().contains("STAFF") && !p.getFirstName().equals("UNKNOWN") && p.getBirthDate().isBefore(this.bornBeforeDate)) {
+			if (!p.getSurname().contains("STAFF") && !p.getFirstName().equals("UNKNOWN")
+					&& p.getBirthDate().isBefore(this.bornBeforeDate)) {
 				switch (this.mode) {
 				case NAME_KEY:
 					personKey = p.getFirstName().trim() + "_" + p.getSurname().trim() + "_"
@@ -223,7 +498,8 @@ public class DEXBulkUploadReport {
 					System.out.println(" Case Clients :");
 					int i = 1;
 					for (Entry<String, ParticipantActivityByMonthForDEX> p : activityParticipants.entrySet()) {
-						System.out.println("  (" + i++ + ") Id: " + p.getKey() + " Hrs: " + p.getValue().getHoursAttended());
+						System.out.println(
+								"  (" + i++ + ") Id: " + p.getKey() + " Hrs: " + p.getValue().getHoursAttended());
 					}
 				} else {
 					System.out.println("No Clients for: " + activityName);
@@ -253,7 +529,7 @@ public class DEXBulkUploadReport {
 			}
 		}
 	}
-	
+
 	/*
 	 * Find an new or modified Chats Participants in the period and region
 	 */
@@ -320,10 +596,9 @@ public class DEXBulkUploadReport {
 	 */
 	private void getSessions() throws Exception {
 		// Activities
-		List<ActivityParticipantAttendance> attendances = container
-				.allMatches(new QueryDefault(ActivityParticipantAttendance.class,
-						"allParticipantActivityForPeriodAndRegion", "startDateTime", this.startDateTime, "endDateTime",
-						this.endDateTime, "attended", true, "region", this.regionName));
+		List<ActivityParticipantAttendance> attendances = container.allMatches(new QueryDefault(
+				ActivityParticipantAttendance.class, "allParticipantActivityForPeriodAndRegion", "startDateTime",
+				this.startDateTime, "endDateTime", this.endDateTime, "attended", true, "region", this.regionName));
 		// Process the list of activity attendances into a list of sessions
 		// by creating a map of activities each with a list of attendances
 		String activityKey = null, personKey = null, sessionKey = null;
@@ -333,7 +608,7 @@ public class DEXBulkUploadReport {
 			// missing key?, shouldn't happen but..
 			if (!participationByMonth.containsKey(activityKey)) {
 				System.out.println("missing activity key (no >65yrs participants): " + activityKey);
-				//throw new Exception("missing activity key: " + activityKey);
+				// throw new Exception("missing activity key: " + activityKey);
 				// Is this a relevant activity/case having people over 64?
 			} else if (participationByMonth.get(activityKey).values().size() > 0) {
 				// Is this attendee specifically over 65
@@ -433,5 +708,31 @@ public class DEXBulkUploadReport {
 			break;
 		}
 		return id + ((this.month < 10) ? "0" : "") + this.month.toString() + this.year.toString().substring(2);
+	}
+
+	private class SessionWrapper {
+
+		private int totalMinutes = 0;
+		private Session session = null;
+
+		public SessionWrapper(Session session) {
+			this.session = session;
+		}
+
+		public Session getSession() {
+			return session;
+		}
+
+		public void addMinutes(Integer minutes) {
+			totalMinutes = totalMinutes = minutes;
+		}
+
+		public Integer getMinutes() {
+			return totalMinutes;
+		}
+
+		public void addClient(SessionClient client) {
+			session.getSessionClients().getSessionClient().add(client);
+		}
 	}
 }

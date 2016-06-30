@@ -18,10 +18,12 @@ import javax.persistence.TemporalType;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import au.com.scds.chats.datamigration.model.ActivitiesPerson;
 import au.com.scds.chats.dom.activity.Activity;
 import au.com.scds.chats.dom.general.Person;
+import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.participant.Participation;
@@ -46,11 +48,13 @@ public class ParticipationMap extends BaseMap {
 	}
 
 	public void init(Participants participants) {
+		//create a dummy participant (&person) to use for unknown persons
 		// create the Participants
 		Participant participant;
 		List<BigInteger> personIds = this.em
 				.createQuery("select distinct(ap.personId) from ActivitiesPerson ap", BigInteger.class).getResultList();
 		int i = 1;
+		int unknowns = 1;
 		for (BigInteger key : personIds) {
 			if (persons.containsKey(key)) {
 				Person person = persons.getEntry(key);
@@ -58,7 +62,11 @@ public class ParticipationMap extends BaseMap {
 				map.put(key, participant);
 				System.out.println(i++ + " Participant(" + person.getFullname() + ")");
 			} else {
-				System.out.println(i++ + " Unknown Participant Person:" + key);
+				participant = participants.create("UNKNOWN", "UNKNOWN" + unknowns++, LocalDate.now(), Sex.UNKNOWN);
+				participant.getPerson().setOldId(key.longValue());
+				persons.put(key,participant.getPerson());
+				map.put(key, participant);
+				System.out.println(i++ + " Participant(" + participant.getPerson().getFullname() + ")");
 			}
 		}
 		// add their Participations

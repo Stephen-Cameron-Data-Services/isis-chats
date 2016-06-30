@@ -77,7 +77,7 @@ public class CreateContactDetailsAndAddresses extends IntegrationTestAbstract {
 		config.put("isis.persistor.datanucleus.install-fixtures", "false");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionDriverName", "com.mysql.jdbc.Driver");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionURL",
-				"jdbc:mysql://localhost:3306/chats2?zeroDateTimeBehavior=convertToNull");
+				"jdbc:mysql://localhost:3306/chats?zeroDateTimeBehavior=convertToNull");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionUserName", "chats");
 		config.put("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionPassword", "password");
 
@@ -102,7 +102,7 @@ public class CreateContactDetailsAndAddresses extends IntegrationTestAbstract {
 				.getResultList();
 
 		for (Contactdetail c : contactdetails) {
-			Person p = persons.findPerson(Integer.valueOf(c.getId()));
+			Person p = persons.findPersonByOldId(c.getPersonId());
 			if (p != null) {
 				p.setEmailAddress(c.getEmail());
 				p.setFaxNumber(c.getFax());

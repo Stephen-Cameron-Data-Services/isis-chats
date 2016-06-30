@@ -43,8 +43,8 @@ public class LocationTest {
 			address.setSuburb("Howrah");
 			address.setPostcode("7018");
 			address.updateGeocodedLocation();
-			assertThat(address.getLatitude()).isEqualTo(-42.886763);
-			assertThat(address.getLongitude()).isEqualTo(147.408854);
+			assertThat(address.getLatitude()).isEqualTo(-42.8867495);
+			assertThat(address.getLongitude()).isEqualTo(147.4088664);
 			//is Location being return for display in Gmap.
 			assertThat(address.getLocation()).isNotEqualTo(null);
 			assertThat(address.getLocation().getLatitude()).isEqualTo(address.getLatitude());
