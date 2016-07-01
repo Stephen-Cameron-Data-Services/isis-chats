@@ -88,9 +88,10 @@ import org.joda.time.LocalDate;
 						+ "  participant, "
 						+ "  person "
 						+ "WHERE "
-						+ "  attended.activity_activity_id = activity.activity_id AND "
+						+ "  attend.activity_activity_id = activity.activity_id AND "
 						+ "  participant.participant_id = attend.participant_participant_id AND "
-						+ "  person.person_id = participant.person_person_id") })
+						+ "ORDER BY"
+						+ "  activity.startdatetime, activity.abbreviatedname") })
 @Queries({
 	@Query(name = "allActivityParticipantAttendance",
 			language = "JDOQL",
@@ -102,21 +103,21 @@ import org.joda.time.LocalDate;
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ActivityParticipantAttendance implements WithApplicationTenancy {
 
-	public Long personId;
-	public Long participantId;
-	public String surname;
-	public String firstName;
-	public LocalDate birthDate;
-	public String slk;
-	public String activityName;
-	public String activityAbbreviatedName;
-	public String regionName;
-	public DateTime startDateTime;
-	public String participantStatus;
-	public Integer minutesAttended;
-	public Boolean attended;
-	public String arrivingTransportType;
-	public String departingTransportType;
+	private Long personId;
+	private Long participantId;
+	private String surname;
+	private String firstName;
+	private LocalDate birthDate;
+	private String slk;
+	private String activityName;
+	private String activityAbbreviatedName;
+	private String regionName;
+	private DateTime startDateTime;
+	private String participantStatus;
+	private Integer minutesAttended;
+	private Boolean attended;
+	private String arrivingTransportType;
+	private String departingTransportType;
 	//public ApplicationTenancy tenancy;
 
 	@Property()

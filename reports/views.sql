@@ -380,7 +380,9 @@ FROM
 WHERE 
   attend.activity_activity_id = activity.activity_id AND 
   participant.participant_id = attend.participant_participant_id AND 
-  person.person_id = participant.person_person_id;
+  person.person_id = participant.person_person_id
+ORDER BY
+  activity.startdatetime, activity.abbreviatedname, activity.region_name;
  
 #DROP VIEW CallsDurationByParticipantAndDayForDEX; 
 CREATE VIEW CallsDurationByParticipantAndDayForDEX 

@@ -36,6 +36,7 @@ import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.fixturescripts.FixtureScripts;
 import org.apache.isis.applib.services.jaxb.JaxbService;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
+import org.apache.isis.applib.services.repository.RepositoryService;
 import org.apache.isis.applib.value.Clob;
 import org.apache.isis.core.integtestsupport.IntegrationTestAbstract;
 import org.apache.isis.core.integtestsupport.IsisSystemForTest;
@@ -46,6 +47,9 @@ public class DexReportTests extends IntegrationTestAbstract {
 
 	@Inject
 	DomainObjectContainer container;
+	
+	@Inject
+	RepositoryService repository;
 
 	@Inject
 	Participants participants;
@@ -64,7 +68,11 @@ public class DexReportTests extends IntegrationTestAbstract {
 
 	@BeforeClass
 	public static void initClass() {
-		org.apache.log4j.PropertyConfigurator.configure("logging.properties");
+		
+
+		
+		//logging
+		org.apache.log4j.PropertyConfigurator.configure("D:/temp/isis-chats/reports/src/test/resources/logging.properties");
 
 		IsisConfigurationForJdoIntegTests config = new IsisConfigurationForJdoIntegTests();
 
@@ -94,6 +102,8 @@ public class DexReportTests extends IntegrationTestAbstract {
 	@Test
 	public void DEXReport() throws Exception {
 		
+		repository.
+		
 		String DIR = new String("C:/Users/stevec/Desktop/dex/");
 		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadNW-JAN.xml"));
 		DEXBulkUploadReport report1 = new DEXBulkUploadReport( container, isisJdoSupport,  participants, 2016, 1, "NORTH-WEST");
@@ -104,8 +114,8 @@ public class DexReportTests extends IntegrationTestAbstract {
 	public void DEXReportSinglePass() throws Exception {
 		
 		String DIR = new String("C:/Users/stevec/Desktop/dex/");
-		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadNW-JAN.xml"));
-		DEXBulkUploadReportSinglePass report1 = new DEXBulkUploadReportSinglePass( container, isisJdoSupport,  participants, 2016, 1, "NORTH-WEST");
+		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadSOUTH-JAN2016.xml"));
+		DEXBulkUploadReportSinglePass report1 = new DEXBulkUploadReportSinglePass( repository, isisJdoSupport,  participants, 2016, 1, "SOUTH");
 		file1.write(jaxbService.toXml(report1.build()).getBytes());
 	}
 }
