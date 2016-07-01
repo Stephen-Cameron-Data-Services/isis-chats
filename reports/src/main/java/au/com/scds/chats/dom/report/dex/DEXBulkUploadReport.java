@@ -348,7 +348,7 @@ public class DEXBulkUploadReport {
 				if (participationByMonth.get(activityKey).containsKey(personKey)) {
 					// create a new activity group?
 					sessionKey = a.getActivityAbbreviatedName().trim() + "_" + a.getRegionName() + " "
-							+ a.getStartDateTime().toString("dd-MM-YYYY");
+							+ a.getStartDateTime()/*.toString("dd-MM-YYYY")*/;
 					if (!tmp.containsKey(sessionKey)) {
 						tmp.put(sessionKey, new TreeMap<String, ActivityParticipantAttendance>());
 					}

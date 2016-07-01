@@ -19,6 +19,7 @@
 package au.com.scds.chats.dom.report.view;
 
 import java.math.BigInteger;
+import java.util.Date;
 
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdentityType;
@@ -49,7 +50,7 @@ import org.joda.time.LocalDate;
 				vendorName = "datanucleus",
 				key = "view-definition",
 				value = "CREATE VIEW ActivityParticipantAttendance "
-						+ "( "
+						+ "( "						
 						+ "  {this.personId}, "						
 						+ "  {this.surname}, "
 						+ "  {this.firstName}, "
@@ -61,6 +62,7 @@ import org.joda.time.LocalDate;
 						+ "  {this.startDateTime}, "
 						+ "  {this.participantId}, "
 						+ "  {this.participantStatus}, "
+						+ "  {this.attendId}, "							
 						+ "  {this.attended}, "	
 						+ "  {this.arrivingTransportType}, "
 						+ "  {this.departingTransportType}, "
@@ -78,6 +80,7 @@ import org.joda.time.LocalDate;
 						+ "  activity.startdatetime AS startDateTime, "
 						+ "  participant.participant_id AS participantId, "						
 						+ "  participant.status AS participantStatus, "
+						+ "  attend.attend_id as attendId, "	
 						+ "  attend.attended, "				
 						+ "  attend.arrivingtransporttype_name AS arrivingTransportType, "
 						+ "  attend.departingtransporttype_name AS departingTransporttype, "			
@@ -101,10 +104,11 @@ import org.joda.time.LocalDate;
 			value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityParticipantAttendance pa "
 					+ "WHERE pa.startDateTime >= :startDateTime && pa.startDateTime <= :endDateTime && pa.attended == :attended && pa.regionName == :region"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class ActivityParticipantAttendance implements WithApplicationTenancy {
+public class ActivityParticipantAttendance /*implements WithApplicationTenancy*/ implements Comparable<ActivityParticipantAttendance>{
 
 	private Long personId;
 	private Long participantId;
+	private Long attendId;
 	private String surname;
 	private String firstName;
 	private LocalDate birthDate;
@@ -112,7 +116,7 @@ public class ActivityParticipantAttendance implements WithApplicationTenancy {
 	private String activityName;
 	private String activityAbbreviatedName;
 	private String regionName;
-	private DateTime startDateTime;
+	private Date startDateTime;
 	private String participantStatus;
 	private Integer minutesAttended;
 	private Boolean attended;
@@ -190,11 +194,11 @@ public class ActivityParticipantAttendance implements WithApplicationTenancy {
 
 	@Property()
 	@MemberOrder(sequence = "6")
-	public DateTime getStartDateTime() {
+	public Date getStartDateTime() {
 		return startDateTime;
 	}
 
-	public void setStartDateTime(DateTime startDateTime) {
+	public void setStartDateTime(Date startDateTime) {
 		this.startDateTime = startDateTime;
 	}	
 	
@@ -266,10 +270,24 @@ public class ActivityParticipantAttendance implements WithApplicationTenancy {
 	
 	public void setParticipantId(Long participantId) {
 		this.participantId = participantId;
+	}
+	
+	public Long getAttendId() {
+		return attendId;
+	}
+
+	public void setAttendId(Long attendId) {
+		this.attendId = attendId;
+	}
+
+	@Override
+	public int compareTo(ActivityParticipantAttendance o) {
+		return (int)(this.getAttendId() - o.getAttendId());
 	}	
 	
 
-	@Programmatic
+
+	/*@Programmatic
 	public ApplicationTenancy getApplicationTenancy() {
 		ApplicationTenancy tenancy = new ApplicationTenancy();
 		if (getRegionName().equals("STATEWIDE") || getRegionName().equals("TEST"))
@@ -278,7 +296,7 @@ public class ActivityParticipantAttendance implements WithApplicationTenancy {
 			tenancy.setPath("/" + getRegionName() + "_");
 		}
 		return tenancy;
-	}
+	}*/
 
 
 }

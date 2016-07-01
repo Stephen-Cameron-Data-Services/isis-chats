@@ -102,8 +102,6 @@ public class DexReportTests extends IntegrationTestAbstract {
 	@Test
 	public void DEXReport() throws Exception {
 		
-		repository.
-		
 		String DIR = new String("C:/Users/stevec/Desktop/dex/");
 		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadNW-JAN.xml"));
 		DEXBulkUploadReport report1 = new DEXBulkUploadReport( container, isisJdoSupport,  participants, 2016, 1, "NORTH-WEST");

@@ -154,7 +154,7 @@ public class DEXBulkUploadReportSinglePass {
 		// ActivityParticipantAttendance
 		List<ActivityParticipantAttendance> attendances = repository.allMatches(new QueryDefault(
 				ActivityParticipantAttendance.class, "allParticipantActivityForPeriodAndRegion", "startDateTime",
-				this.startDateTime, "endDateTime", this.endDateTime, "attended", true, "region", this.regionName));
+				this.startDateTime.toDate() /*new DateTime("2016-01-13")*/, "endDateTime", this.endDateTime.toDate() /*new DateTime("2016-01-14")*/, "attended", true, "region", this.regionName));
 		for (ActivityParticipantAttendance attend : attendances) {
 			if (true /* && attend.getBirthDate().isBefore(this.bornBeforeDate) && !attend.getSurname().contains("STAFF")
 					&& !attend.getFirstName().equals("UNKNOWN")*/) {
@@ -170,7 +170,7 @@ System.out.println(attend.getMinutesAttended());
 					clientKey = attend.getSlk();
 				}
 				caseKey = attend.getActivityAbbreviatedName().trim();
-				sessionKey = attend.getActivityAbbreviatedName().trim() + attend.getStartDateTime().toString("YYYYMMDD");
+				sessionKey = attend.getActivityAbbreviatedName().trim() + attend.getStartDateTime()/*toString("YYYYMMDD")*/;
 //System.out.println(clientKey);
 //System.out.println(caseKey);
 //System.out.println(sessionKey);
@@ -333,7 +333,7 @@ System.out.println(attend.getMinutesAttended());
 		Session session = new Session();
 		this.sessions.getSession().add(session);
 		session.setSessionId(a.getActivityAbbreviatedName().trim() + "_" + a.getRegionName() + "_"
-				+ a.getStartDateTime().toString("dd-MM-YYYY"));
+				+ a.getStartDateTime()/*.toString("dd-MM-YYYY")*/);
 		session.setServiceTypeId(this.SOCIAL_SUPPORT_GROUP);
 		SessionClients clients = new SessionClients();
 		session.setCaseId(createCaseId(a.getActivityAbbreviatedName()));
