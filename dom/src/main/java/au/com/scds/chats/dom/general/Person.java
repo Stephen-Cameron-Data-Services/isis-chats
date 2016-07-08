@@ -231,20 +231,25 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	}
 
 	private void setSlk(String slk) {
-		// set once only
-		if (getSlk() == null)
-			this.slk = slk;
+		this.slk = slk;
 	}
 
 	@Programmatic
 	// Creates a Statistical Linkage Key (SLK) for DEX reporting
 	public void buildSlk() throws Exception {
+		
+		String firstname = getFirstname();
+		String surname = getSurname();
 
 		// validate inputs
-		if (getFirstname() == null || getFirstname().trim().equals(""))
+		if (firstname == null || firstname.trim().equals(""))
 			throw new Exception("Person's first name is not set!");
-		if (getSurname() == null || getSurname().trim().equals(""))
+		else
+			firstname = firstname.trim();
+		if (surname == null || surname.trim().equals(""))
 			throw new Exception("Person's surname is not set!");
+		else
+			surname = surname.trim();			
 		if (getBirthdate() == null)
 			throw new Exception("Person's birthdate is not set!");
 		if (getSex() == null)
@@ -253,19 +258,19 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 		// build the key
 		StringBuffer buffer = new StringBuffer();
 		// surname
-		buffer.append(getSurname().substring(1, 2).toUpperCase());
-		if (getSurname().length() > 2)
-			buffer.append(getSurname().substring(2, 3).toUpperCase());
+		buffer.append(surname.substring(1, 2).toUpperCase());
+		if (surname.length() > 2)
+			buffer.append(surname.substring(2, 3).toUpperCase());
 		else
 			buffer.append("2");
-		if (getSurname().length() > 4)
-			buffer.append(getSurname().substring(4, 5).toUpperCase());
+		if (surname.length() > 4)
+			buffer.append(surname.substring(4, 5).toUpperCase());
 		else
 			buffer.append("2");
 		// firstname
-		buffer.append(getFirstname().substring(1, 2).toUpperCase());
-		if (getFirstname().length() > 2)
-			buffer.append(getFirstname().substring(2, 3).toUpperCase());
+		buffer.append(firstname.substring(1, 2).toUpperCase());
+		if (firstname.length() > 2)
+			buffer.append(firstname.substring(2, 3).toUpperCase());
 		else
 			buffer.append("2");
 		buffer.append(getBirthdate().toString("ddMMYYYY"));

@@ -354,7 +354,7 @@ GROUP BY
   participant.participant_id,
   EXTRACT(YEAR_MONTH FROM telephonecall.startdatetime);
 
-#DROP VIEW ActivityParticipantAttendance
+#DROP VIEW ActivityParticipantAttendance;
 CREATE VIEW ActivityParticipantAttendance AS 
 SELECT 
   person.person_id as personId,
@@ -362,12 +362,14 @@ SELECT
   person.firstname AS firstName, 
   person.birthdate AS birthDate,
   person.slk,
+  activity.activity_id AS activityId,
   activity.name AS activityName, 
   activity.abbreviatedName AS activityAbbreviatedName,  
   activity.region_name AS regionName, 
   activity.startdatetime AS startDateTime,
   participant.participant_id AS participantId,
   participant.status AS participantStatus,
+  attend.attend_id AS attendId,
   attend.attended,
   attend.arrivingtransporttype_name AS arrivingTransportType, 
   attend.departingtransporttype_name AS departingTransporttype,	  

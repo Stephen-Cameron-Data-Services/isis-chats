@@ -10,7 +10,6 @@ import au.com.scds.chats.dom.activity.Activities;
 import au.com.scds.chats.dom.activity.ActivityEvent;
 import au.com.scds.chats.dom.dex.DexReferenceData;
 import au.com.scds.chats.dom.general.Locations;
-import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Persons;
 import au.com.scds.chats.dom.general.names.ActivityTypes;
 import au.com.scds.chats.dom.general.names.Regions;
@@ -44,7 +43,7 @@ import org.apache.isis.core.integtestsupport.IsisSystemForTest;
 import org.apache.isis.core.integtestsupport.scenarios.ScenarioExecutionForIntegration;
 import org.apache.isis.objectstore.jdo.datanucleus.IsisConfigurationForJdoIntegTests;
 
-public class DexReportTests extends IntegrationTestAbstract {
+public class DexSouth extends IntegrationTestAbstract {
 
 	@Inject
 	DomainObjectContainer container;
@@ -54,9 +53,6 @@ public class DexReportTests extends IntegrationTestAbstract {
 
 	@Inject
 	Participants participants;
-	
-	@Inject
-	Persons persons;
 
 	//@Inject
 	//DexReferenceData refData;
@@ -103,30 +99,50 @@ public class DexReportTests extends IntegrationTestAbstract {
 		new ScenarioExecutionForIntegration();
 	}
 	
-	@Test
-	public void DEXReport() throws Exception {
-		
-		String DIR = new String("C:/Users/stevec/Desktop/dex/");
-		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadNW-JAN.xml"));
-		DEXBulkUploadReport report1 = new DEXBulkUploadReport( container, isisJdoSupport,  participants, 2016, 1, "NORTH-WEST");
-		file1.write(jaxbService.toXml(report1.build()).getBytes());
-	}
+
 	
 	@Test
-	public void DEXReportSinglePass() throws Exception {
+	public void DEXSouthJan() throws Exception {
 		
 		String DIR = new String("C:/Users/stevec/Desktop/dex/");
 		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadSOUTH-JAN2016.xml"));
-		DEXBulkUploadReportSinglePass report1 = new DEXBulkUploadReportSinglePass( repository, isisJdoSupport,  participants, 2016, 1, "SOUTH");
+		DEXSouthReport report1 = new DEXSouthReport( repository, isisJdoSupport,  participants, 2016, 1, "SOUTH");
 		file1.write(jaxbService.toXml(report1.build()).getBytes());
 	}
 	
 	@Test
-	public void FixSLK() throws Exception {
+	public void DEXSouthFeb() throws Exception {
 		
-		List<Person> p = persons.listAllPersons();
-		for(Person person: p){
-			person.buildSlk();
-		}
+		String DIR = new String("C:/Users/stevec/Desktop/dex/");
+		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadSOUTH-FEB2016.xml"));
+		DEXSouthReport report1 = new DEXSouthReport( repository, isisJdoSupport,  participants, 2016, 2, "SOUTH");
+		file1.write(jaxbService.toXml(report1.build()).getBytes());
+	}
+	
+	@Test
+	public void DEXSouthMar() throws Exception {
+		
+		String DIR = new String("C:/Users/stevec/Desktop/dex/");
+		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadSOUTH-MAR2016.xml"));
+		DEXSouthReport report1 = new DEXSouthReport( repository, isisJdoSupport,  participants, 2016, 3, "SOUTH");
+		file1.write(jaxbService.toXml(report1.build()).getBytes());
+	}
+	
+	@Test
+	public void DEXSouthApr() throws Exception {
+		
+		String DIR = new String("C:/Users/stevec/Desktop/dex/");
+		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadSOUTH-APR2016.xml"));
+		DEXSouthReport report1 = new DEXSouthReport( repository, isisJdoSupport,  participants, 2016, 4, "SOUTH");
+		file1.write(jaxbService.toXml(report1.build()).getBytes());
+	}
+	
+	@Test
+	public void DEXSouthMay() throws Exception {
+		
+		String DIR = new String("C:/Users/stevec/Desktop/dex/");
+		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadSOUTH-MAY2016.xml"));
+		DEXSouthReport report1 = new DEXSouthReport( repository, isisJdoSupport,  participants, 2016, 5, "SOUTH");
+		file1.write(jaxbService.toXml(report1.build()).getBytes());
 	}
 }

@@ -56,6 +56,7 @@ import org.joda.time.LocalDate;
 						+ "  {this.firstName}, "
 						+ "  {this.birthDate}, "
 						+ "  {this.slk}, "
+						+ "  {this.activityId}, "						
 						+ "  {this.activityName}, "
 						+ "  {this.activityAbbreviatedName}, "						
 						+ "  {this.regionName}, "
@@ -74,6 +75,7 @@ import org.joda.time.LocalDate;
 						+ "  person.firstname AS firstName, "
 						+ "  person.birthdate AS birthDate, "
 						+ "  person.slk, "
+						+ "  activity.activity_id as activityId, "						
 						+ "  activity.name AS activityName, "
 						+ "  activity.abbreviatedName AS activityAbbreviatedName, "
 						+ "  activity.region_name AS regionName, "
@@ -108,6 +110,7 @@ public class ActivityParticipantAttendance /*implements WithApplicationTenancy*/
 
 	private Long personId;
 	private Long participantId;
+	private Long activityId;
 	private Long attendId;
 	private String surname;
 	private String firstName;
@@ -271,7 +274,19 @@ public class ActivityParticipantAttendance /*implements WithApplicationTenancy*/
 	public void setParticipantId(Long participantId) {
 		this.participantId = participantId;
 	}
-	
+
+	@Property()
+	@MemberOrder(sequence = "14")
+	public Long getActivityId() {
+		return activityId;
+	}
+
+	public void setActivityId(Long activityId) {
+		this.activityId = activityId;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "15")	
 	public Long getAttendId() {
 		return attendId;
 	}
