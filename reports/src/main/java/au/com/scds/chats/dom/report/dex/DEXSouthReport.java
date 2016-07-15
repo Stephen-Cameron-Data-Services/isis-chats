@@ -138,7 +138,7 @@ public class DEXSouthReport {
 		}
 
 		// what clientId generation mode, production is SLK_KEY?
-		this.mode = ClientIdGenerationMode.SLK_KEY;
+		this.mode = ClientIdGenerationMode.NAME_KEY;
 		// see if data is valid and report results
 		this.validationMode = false;
 
@@ -219,6 +219,7 @@ public class DEXSouthReport {
 				}
 				SessionClient client = new SessionClient();
 				client.setClientId(clientKey);
+				client.setParticipationCode("CLIENT");
 				sessionWrapper.addClient(client);
 				sessionWrapper.addMinutes(attend.getMinutes());
 			}
@@ -244,8 +245,9 @@ public class DEXSouthReport {
 		} else {
 			session.setServiceTypeId(this.SOCIAL_SUPPORT_GROUP);
 		}
-		SessionClients clients = new SessionClients();
 		session.setCaseId(createCaseId(attend.getAbbreviatedname()));
+		session.setSessionDate(attend.getInteractiondate());
+		SessionClients clients = new SessionClients();
 		session.setSessionClients(clients);
 		return session;
 	}
@@ -330,8 +332,8 @@ public class DEXSouthReport {
 			this.session = session;
 		}
 
-		public Integer getAverageTimeInMinutes() {
-			return new Integer(totalMinutes / count);
+		public int getAverageTimeInMinutes() {
+			return  Math.round(((float)totalMinutes)/count);
 		}
 
 		public Session getSession() {

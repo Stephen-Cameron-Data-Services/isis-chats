@@ -2,9 +2,12 @@ package au.com.scds.chats.dom.report.dex;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 import au.com.scds.chats.dom.activity.Activities;
 import au.com.scds.chats.dom.activity.ActivityEvent;
@@ -17,6 +20,7 @@ import au.com.scds.chats.dom.general.names.Salutations;
 import au.com.scds.chats.dom.general.names.TransportTypes;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport;
+import au.com.scds.chats.dom.report.dex.model.generated.DEXFileUpload;
 import au.com.scds.chats.dom.volunteer.Volunteers;
 
 import com.google.common.collect.Lists;
@@ -104,45 +108,80 @@ public class DexNorthWest extends IntegrationTestAbstract {
 	@Test
 	public void DEXNorthWestJan() throws Exception {
 		
-		String DIR = new String("C:/Users/stevec/Desktop/dex/");
-		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadNORTH-WEST-JAN2016.xml"));
+		String DIR = new String("C:/Users/stevec/Desktop/dex/reports/");
+		FileWriter writer = new FileWriter(new File(DIR + "DEXBulkUploadNORTH-WEST-JAN2016.xml"));
 		DEXNorthWestReport report1 = new DEXNorthWestReport( repository, isisJdoSupport,  participants, 2016, 1, "NORTH-WEST");
-		file1.write(jaxbService.toXml(report1.build()).getBytes());
+		JAXBContext context = JAXBContext.newInstance(DEXFileUpload.class);
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//suppress the xml header so can add own
+		marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+		writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+		writer.write("<?xml-stylesheet type=\"text/xsl\" href=\"dex.xsl\" ?>\n");
+		marshaller.marshal(report1.build(), writer);
 	}
 	
 	@Test
 	public void DEXNorthWestFeb() throws Exception {
 		
-		String DIR = new String("C:/Users/stevec/Desktop/dex/");
-		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadNORTH-WEST-FEB2016.xml"));
+		String DIR = new String("C:/Users/stevec/Desktop/dex/reports/");
+		FileWriter writer = new FileWriter(new File(DIR + "DEXBulkUploadNORTH-WEST-FEB2016.xml"));
 		DEXNorthWestReport report1 = new DEXNorthWestReport( repository, isisJdoSupport,  participants, 2016, 2, "NORTH-WEST");
-		file1.write(jaxbService.toXml(report1.build()).getBytes());
+		JAXBContext context = JAXBContext.newInstance(DEXFileUpload.class);
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//suppress the xml header so can add own
+		marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+		writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+		writer.write("<?xml-stylesheet type=\"text/xsl\" href=\"dex.xsl\" ?>\n");
+		marshaller.marshal(report1.build(), writer);
 	}
 	
 	@Test
 	public void DEXNorthWestMar() throws Exception {
 		
-		String DIR = new String("C:/Users/stevec/Desktop/dex/");
-		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadNORTH-WEST-MAR2016.xml"));
+		String DIR = new String("C:/Users/stevec/Desktop/dex/reports/");
+		FileWriter writer = new FileWriter(new File(DIR + "DEXBulkUploadNORTH-WEST-MAR2016.xml"));
 		DEXNorthWestReport report1 = new DEXNorthWestReport( repository, isisJdoSupport,  participants, 2016, 3, "NORTH-WEST");
-		file1.write(jaxbService.toXml(report1.build()).getBytes());
+		JAXBContext context = JAXBContext.newInstance(DEXFileUpload.class);
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//suppress the xml header so can add own
+		marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+		writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+		writer.write("<?xml-stylesheet type=\"text/xsl\" href=\"dex.xsl\" ?>\n");
+		marshaller.marshal(report1.build(), writer);
 	}
 	
 	@Test
 	public void DEXNorthWestApr() throws Exception {
 		
-		String DIR = new String("C:/Users/stevec/Desktop/dex/");
-		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadNORTH-WEST-APR2016.xml"));
+		String DIR = new String("C:/Users/stevec/Desktop/dex/reports/");
+		FileWriter writer = new FileWriter(new File(DIR + "DEXBulkUploadNORTH-WEST-APR2016.xml"));
 		DEXNorthWestReport report1 = new DEXNorthWestReport( repository, isisJdoSupport,  participants, 2016, 4, "NORTH-WEST");
-		file1.write(jaxbService.toXml(report1.build()).getBytes());
+		JAXBContext context = JAXBContext.newInstance(DEXFileUpload.class);
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//suppress the xml header so can add own
+		marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+		writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+		writer.write("<?xml-stylesheet type=\"text/xsl\" href=\"dex.xsl\" ?>\n");
+		marshaller.marshal(report1.build(), writer);
 	}
 	
 	@Test
 	public void DEXNorthWestMay() throws Exception {
 		
-		String DIR = new String("C:/Users/stevec/Desktop/dex/");
-		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadNORTH-WEST-MAY2016.xml"));
+		String DIR = new String("C:/Users/stevec/Desktop/dex/reports/");
+		FileWriter writer = new FileWriter(new File(DIR + "DEXBulkUploadNORTH-WEST-MAY2016.xml"));
 		DEXNorthWestReport report1 = new DEXNorthWestReport( repository, isisJdoSupport,  participants, 2016, 5, "NORTH-WEST");
-		file1.write(jaxbService.toXml(report1.build()).getBytes());
+		JAXBContext context = JAXBContext.newInstance(DEXFileUpload.class);
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//suppress the xml header so can add own
+		marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+		writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+		writer.write("<?xml-stylesheet type=\"text/xsl\" href=\"dex.xsl\" ?>\n");
+		marshaller.marshal(report1.build(), writer);
 	}
 }

@@ -208,6 +208,7 @@ public class DEXBulkUploadReportSinglePass {
 				}
 				SessionClient client = new SessionClient();
 				client.setClientId(clientKey);
+				client.setParticipationCode("CLIENT");
 				sessionWrapper.addClient(client);
 				sessionWrapper.addMinutes(adjustTimeForTransport(attend.getMinutesAttended(),
 						attend.getArrivingTransportType(), attend.getDepartingTransportType()));
@@ -268,6 +269,7 @@ public class DEXBulkUploadReportSinglePass {
 				SessionClient client = new SessionClient();
 				clients.getSessionClient().add(client);
 				client.setClientId(clientKey);
+				client.setParticipationCode("CLIENT");
 				session.setTimeMinutes(c.getCallMinutesTotal());
 			}
 		}
@@ -348,6 +350,7 @@ public class DEXBulkUploadReportSinglePass {
 		}
 		SessionClients clients = new SessionClients();
 		session.setCaseId(createCaseId(a.getActivityAbbreviatedName()));
+		session.setSessionDate(new LocalDate(a.getStartDateTime()));
 		session.setSessionClients(clients);
 		return session;
 	}
@@ -432,8 +435,8 @@ public class DEXBulkUploadReportSinglePass {
 			this.session = session;
 		}
 
-		public Integer getAverageTimeInMinutes() {
-			return new Integer(totalMinutes/count);
+		public int getAverageTimeInMinutes() {
+			return  Math.round(((float)totalMinutes)/count);
 		}
 
 		public Session getSession() {

@@ -215,6 +215,7 @@ public class DEXNorthReport {
 				}
 				SessionClient client = new SessionClient();
 				client.setClientId(clientKey);
+				client.setParticipationCode("CLIENT");
 				sessionWrapper.addClient(client);
 				sessionWrapper.addMinutes(attend.getMinutes());
 			}
@@ -240,8 +241,10 @@ public class DEXNorthReport {
 		}else{
 			session.setServiceTypeId(this.SOCIAL_SUPPORT_GROUP);			
 		}
-		SessionClients clients = new SessionClients();
+
 		session.setCaseId(createCaseId(attend.getAbbreviatedname()));
+		session.setSessionDate(attend.getInteractiondate());
+		SessionClients clients = new SessionClients();
 		session.setSessionClients(clients);
 		return session;
 	}
@@ -326,8 +329,8 @@ public class DEXNorthReport {
 			this.session = session;
 		}
 
-		public Integer getAverageTimeInMinutes() {
-			return new Integer(totalMinutes/count);
+		public int getAverageTimeInMinutes() {
+			return  Math.round(((float)totalMinutes)/count);
 		}
 
 		public Session getSession() {
