@@ -54,6 +54,7 @@ public class CalendarDayCallScheduleTest {
             // given
             final LocalDate date = new LocalDate();
 			final Volunteer volunteer = new Volunteer();
+			final Participant participant = new Participant();
             final ScheduledCall call = new ScheduledCall(mockContainer);
 
             context.checking(new Expectations() {
@@ -80,7 +81,7 @@ public class CalendarDayCallScheduleTest {
             assertThat(_schedule.getTotalCalls()).isEqualTo(0);
             assertThat(_schedule.getCalendarDate()).isEqualTo(date);
             
-            ScheduledCall _call = _schedule.scheduleCall(new LocalTime());
+            ScheduledCall _call = _schedule.scheduleCall(participant, new LocalTime());
             assertThat(_call).isEqualTo(call);
             assertThat(_schedule.getCompletedCalls()).isEqualTo(0);
             assertThat(_schedule.getTotalCalls()).isEqualTo(1);

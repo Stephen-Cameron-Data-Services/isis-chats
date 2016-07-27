@@ -57,9 +57,11 @@ import au.com.scds.chats.dom.general.names.Salutations;
 @Unique(name = "Person_UNQ", members = { "firstname", "surname", "birthdate" })
 @Queries({
 		@Query(name = "findPersonsBySurname", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.general.Person " + "WHERE surname == :surname"),
+				+ "FROM au.com.scds.chats.dom.general.Person WHERE surname == :surname"),
+		@Query(name = "findPersonBySLK", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.general.Person WHERE slk == :slk"),
 		@Query(name = "findPersonByOldId", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.general.Person " + "WHERE oldId == :oldid"),
+				+ "FROM au.com.scds.chats.dom.general.Person WHERE oldId == :oldid"),
 		@Query(name = "findPerson", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.general.Person "
 				+ "WHERE firstname == :firstname && surname == :surname && birthdate == :birthdate"), })
 @DomainObject(objectType = "PERSON")

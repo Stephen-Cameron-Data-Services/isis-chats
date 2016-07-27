@@ -163,6 +163,7 @@ public class Participants {
 		}
 		final Participant participant = container.newTransientInstance(Participant.class);
 		participant.setPerson(person);
+		participant.setRegion(person.getRegion());
 		container.persistIfNotAlready(participant);
 		container.flush();
 		return participant;

@@ -47,13 +47,13 @@ import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.Volunteers;
 
-@DomainService(nature = NatureOfService.VIEW_MENU_ONLY, repositoryFor = CalendarDayCallSchedule.class)
+@DomainService(nature = NatureOfService.VIEW_MENU_ONLY, repositoryFor = Call.class)
 @DomainServiceLayout(named = "Calls", menuOrder = "50")
 public class Calls {
 
-	// work around for data-migration
-	// TODO
-	// public Region region;
+	public enum CallType {
+		Care, Reconnect, Survey, Scheduled
+	}
 
 	public Calls() {
 	}
@@ -66,47 +66,61 @@ public class Calls {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "1")
-	public CareCall createCareCall(@Parameter(optionality=Optionality.MANDATORY) Participant participant) {
-		CareCall call = container.newTransientInstance(CareCall.class);
-		call.setParticipant(participant);
-		container.persistIfNotAlready(call);
-		container.flush();
+	@MemberOrder(sequence = "1.0")
+	public Call create(@Parameter(optionality = Optionality.MANDATORY) final CallType type,
+			@Parameter(optionality = Optionality.MANDATORY) final Participant participant,
+			@Parameter(optionality = Optionality.OPTIONAL) final Volunteer volunteer,
+			@Parameter(optionality = Optionality.OPTIONAL) final DateTime dateTime) throws Exception {
+		Call call = null;
+		switch (type) {
+		case Care:
+			call = container.newTransientInstance(CareCall.class);
+			call.setParticipant(participant);
+			container.persistIfNotAlready(call);
+			container.flush();
+			break;
+		case Reconnect:
+			call = container.newTransientInstance(ReconnectCall.class);
+			call.setParticipant(participant);
+			container.persistIfNotAlready(call);
+			container.flush();
+			break;
+		case Survey:
+			call = container.newTransientInstance(SurveyCall.class);
+			call.setParticipant(participant);
+			container.persistIfNotAlready(call);
+			container.flush();
+			break;
+		case Scheduled:
+			if (volunteer == null || dateTime == null) {
+				container.informUser("Volunteer and Date-time are both needed to create a Scheduled Call");
+			} else {
+				call = createScheduledCall(volunteer, participant, dateTime);
+			}
+			break;
+		}
 		return call;
 	}
-	
-	public List<Participant> choices0CreateCareCall(){
+
+	public CallType default0Create() {
+		return CallType.Scheduled;
+	}
+
+	public List<Participant> choices1Create() {
 		return participantsRepo.listActive(AgeGroup.All);
 	}
 
-	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "2")
-	public ReconnectCall createReconnectCall(@Parameter(optionality=Optionality.MANDATORY) Participant participant) {
-		ReconnectCall call = container.newTransientInstance(ReconnectCall.class);
-		call.setParticipant(participant);	
-		container.persistIfNotAlready(call);
-		container.flush();
-		return call;
-	}
-	
-	public List<Participant> choices0CreateReconnectCall(){
-		return participantsRepo.listActive(AgeGroup.All);
+	public List<Volunteer> choices2Create() {
+		return volunteersRepo.listActive();
 	}
 
-	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "3")
-	public SurveyCall createSurveyCall(@Parameter(optionality=Optionality.MANDATORY) Participant participant) {
-		SurveyCall call = container.newTransientInstance(SurveyCall.class);
-		call.setParticipant(participant);	
-		container.persistIfNotAlready(call);
-		container.flush();
-		return call;
-	}
-	
-	public List<Participant> choices0CreateSurveyCall(){
-		return participantsRepo.listActive(AgeGroup.All);
+	public String validateCreate(final CallType type, final Participant participant, final Volunteer volunteer,
+			final DateTime dateTime) {
+		if (type == CallType.Scheduled && (volunteer == null || dateTime == null)) {
+			return "For a Scheduled Call, both Volunteer and DateTime are required too.";
+		} else {
+			return null;
+		}
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
@@ -122,6 +136,10 @@ public class Calls {
 		}
 	}
 
+	public List<Participant> choices0ListCareCalls() {
+		return participantsRepo.listActive(AgeGroup.All);
+	}
+
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.2")
@@ -135,6 +153,10 @@ public class Calls {
 		}
 	}
 
+	public List<Participant> choices0ListReconnectCalls() {
+		return participantsRepo.listActive(AgeGroup.All);
+	}
+
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.3")
@@ -146,6 +168,10 @@ public class Calls {
 		} else {
 			return container.allMatches(new QueryDefault<>(SurveyCall.class, "findSurveyCalls"));
 		}
+	}
+
+	public List<Participant> choices0ListSurveyCalls() {
+		return participantsRepo.listActive(AgeGroup.All);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
@@ -202,12 +228,9 @@ public class Calls {
 		return schedule;
 	}
 
-	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "4")
-	public ScheduledCall createScheduledCall(@Parameter(optionality = Optionality.MANDATORY) final Volunteer volunteer,
-			@Parameter(optionality = Optionality.MANDATORY) final Participant participant,
-			@Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) throws Exception {
+	@Programmatic
+	public ScheduledCall createScheduledCall(final Volunteer volunteer, final Participant participant,
+			final DateTime dateTime) throws Exception {
 		// see if there is a Schedule for this Volunteer on this day
 		if (dateTime == null) {
 			throw new IllegalArgumentException("dateTime is a mandatory argument");
@@ -229,27 +252,21 @@ public class Calls {
 		}
 		// add a new call
 		// TODO should an exception be trapped here?
-		ScheduledCall call = sched.scheduleCall(dateTime.toLocalTime());
-		call.setParticipant(participant);
+		ScheduledCall call = sched.scheduleCall(participant, dateTime.toLocalTime());
+		// call.setParticipant(participant);
 		call.setRegion(participant.getRegion());
 		call.setIsCompleted(false);
 		return call;
-	}
-
-	public List<Volunteer> choices0CreateScheduledCall() {
-		return volunteersRepo.listActive();
-	}
-
-	public List<Participant> choices1CreateScheduledCall() {
-		return participantsRepo.listActive(AgeGroup.All);
 	}
 
 	@Programmatic
 	// Probably should have made callSchedule responsible for creating calls
 	// as its now a divided operation (if we make use of DN to maintain
 	// bidirectional)
-	ScheduledCall createScheduledCall(CalendarDayCallSchedule callSchedule, LocalTime time) throws Exception {
+	ScheduledCall createScheduledCall(CalendarDayCallSchedule callSchedule, Participant participant, LocalTime time)
+			throws Exception {
 		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
+		call.setParticipant(participant);
 		// TODO
 		// call.setRegion(region);
 		// set the scheduled date-time for comparable to work in the call-back
@@ -260,7 +277,7 @@ public class Calls {
 		container.flush();
 		return call;
 	}
-	
+
 	@Programmatic
 	public ScheduledCall createScheduledCallWithoutSchedule(Participant participant, Volunteer volunteer) {
 		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
@@ -280,12 +297,4 @@ public class Calls {
 
 	@Inject
 	public Participants participantsRepo;
-
-	public ScheduledCall createScheduledCall(Volunteer volunteer, Participant participant, DateTime start,
-			Region region) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 }

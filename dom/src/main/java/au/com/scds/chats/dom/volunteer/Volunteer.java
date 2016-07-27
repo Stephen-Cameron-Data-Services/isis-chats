@@ -199,7 +199,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 	}
 
 	@Action()
-	// @ActionLayout(named="Add")
+	@ActionLayout(named="Add")
 	// @MemberOrder(name = "VolunteerRoles", sequence = "1")
 	public Volunteer addVolunteerRole(VolunteerRole role) {
 		if (role != null)
@@ -212,7 +212,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 	}
 
 	@Action()
-	// @ActionLayout(named="Remove")
+	@ActionLayout(named="Remove")
 	// @MemberOrder(name = "VolunteerRoles", sequence = "2")
 	public Volunteer removeVolunteerRole(VolunteerRole role) {
 		if (role != null)

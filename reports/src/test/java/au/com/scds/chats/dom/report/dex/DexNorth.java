@@ -184,4 +184,20 @@ public class DexNorth extends IntegrationTestAbstract {
 		writer.write("<?xml-stylesheet type=\"text/xsl\" href=\"dex.xsl\" ?>\n");
 		marshaller.marshal(report1.build(), writer);
 	}
+	
+	@Test
+	public void DEXNorthJune() throws Exception {
+		
+		String DIR = new String("C:/Users/stevec/Desktop/dex/reports/");
+		FileWriter writer = new FileWriter(new File(DIR + "DEXBulkUploadNORTH-JUNE2016.xml"));
+		DEXNorthReport report1 = new DEXNorthReport( repository, isisJdoSupport,  participants, 2016, 6, "NORTH");
+		JAXBContext context = JAXBContext.newInstance(DEXFileUpload.class);
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		//suppress the xml header so can add own
+		marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+		writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+		writer.write("<?xml-stylesheet type=\"text/xsl\" href=\"dex.xsl\" ?>\n");
+		marshaller.marshal(report1.build(), writer);
+	}
 }

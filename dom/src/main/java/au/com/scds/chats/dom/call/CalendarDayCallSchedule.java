@@ -96,7 +96,7 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	// for mock testing
 	public CalendarDayCallSchedule(DomainObjectContainer container, Calls schedules, Participants participants, Volunteers volunteers) {
 		this.container = container;
-		this.callScheduler = schedules;
+		this.callsRepo = schedules;
 		this.participantsRepo = participants;
 		this.volunteersRepo = volunteers;
 	}
@@ -198,8 +198,8 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	@ActionLayout()
 	@MemberOrder(name = "scheduledCalls", sequence = "1")
 	public CalendarDayCallSchedule addNewCall(@Parameter(optionality = Optionality.MANDATORY) final Participant participant, @Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) throws Exception {
-		ScheduledCall call = scheduleCall(dateTime.toLocalTime());
-		call.setParticipant(participant);
+		ScheduledCall call = scheduleCall(participant, dateTime.toLocalTime());
+		//call.setParticipant(participant);
 		return this;
 	}
 	
@@ -212,11 +212,11 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	}
 
 	@Programmatic
-	public synchronized ScheduledCall scheduleCall(final LocalTime time) throws Exception {
+	public synchronized ScheduledCall scheduleCall(final Participant participant, final LocalTime time) throws Exception {
 		if (time == null) {
 			return null;
 		}
-		ScheduledCall call = callScheduler.createScheduledCall(this, time);
+		ScheduledCall call = callsRepo.createScheduledCall(this, participant, time);
 		call.setAllocatedVolunteer(getAllocatedVolunteer());
 		return call;
 	}
@@ -279,7 +279,7 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	}
 
 	@Inject()
-	Calls callScheduler;
+	Calls callsRepo;
 
 	@Inject()
 	DomainObjectContainer container;

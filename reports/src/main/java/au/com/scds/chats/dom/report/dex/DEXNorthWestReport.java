@@ -139,7 +139,7 @@ public class DEXNorthWestReport {
 		}
 
 		// what clientId generation mode, production is SLK_KEY?
-		this.mode = ClientIdGenerationMode.NAME_KEY;
+		this.mode = ClientIdGenerationMode.SLK_KEY;
 		// see if data is valid and report results
 		this.validationMode = false;
 
@@ -233,7 +233,7 @@ public class DEXNorthWestReport {
 		Session session = new Session();
 		this.sessions.getSession().add(session);
 		if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
-			session.setSessionId(String.valueOf(Math.abs(sessionKey.hashCode()))+attend.getInteractiondate().toString("ddMMYYYY"));
+			session.setSessionId((String.format("%1$-12s",Math.abs(sessionKey.hashCode()))+attend.getInteractiondate().toString("ddMMYYYY")).replace(" ", "0"));
 		}else{
 			session.setSessionId(sessionKey);
 		}

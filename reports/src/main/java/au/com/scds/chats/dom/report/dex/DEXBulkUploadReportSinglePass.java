@@ -31,6 +31,7 @@ import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
+import au.com.scds.chats.dom.report.dex.DEXNorthWestReport.ClientIdGenerationMode;
 import au.com.scds.chats.dom.report.dex.model.generated.Case;
 import au.com.scds.chats.dom.report.dex.model.generated.CaseClient;
 import au.com.scds.chats.dom.report.dex.model.generated.CaseClients;
@@ -200,7 +201,7 @@ public class DEXBulkUploadReportSinglePass {
 				// find or make a session
 				SessionWrapper sessionWrapper = null;
 				if (!sessionsMap.containsKey(sessionKey)) {
-					Session session = buildNewSession(attend);
+					Session session = buildNewSession(sessionKey,attend);
 					sessionWrapper = new SessionWrapper(session);
 					sessionsMap.put(sessionKey, sessionWrapper);
 				} else {
@@ -338,11 +339,14 @@ public class DEXBulkUploadReportSinglePass {
 		return minutesAttended + arrive + depart;
 	}
 
-	private Session buildNewSession(ActivityParticipantAttendance a) {
+	private Session buildNewSession(String sessionKey, ActivityParticipantAttendance a) {
 		Session session = new Session();
 		this.sessions.getSession().add(session);
-		session.setSessionId(a.getActivityAbbreviatedName().trim() + "_" + a.getRegionName() + "_"
-				+ a.getStartDateTime()/* .toString("dd-MM-YYYY") */);
+		if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
+			session.setSessionId((String.format("%1$-12s",Math.abs(sessionKey.hashCode()))+a.getStartDateTime().toString("ddMMYYYY")).replace(" ", "0"));
+		}else{
+			session.setSessionId(sessionKey);
+		}
 		if(a.getActivityAbbreviatedName().equals("ChatsSocialCall")){
 			session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);			
 		}else{

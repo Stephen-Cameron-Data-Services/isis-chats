@@ -65,6 +65,15 @@ public class Persons {
 				"findPersonsBySurname", "surname", surname));
 	}
 	
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "3")
+	public List<Person> findPersonBySLK(
+			@ParameterLayout(named = "SLK") final String slk) {
+		return container.allMatches(new QueryDefault<>(Person.class,
+				"findPersonBySLK", "slk", slk));
+	}
+	
 	@Programmatic
 	public Person createPerson(String firstname, String surname, LocalDate dob, Sex sex) throws Exception{
 
