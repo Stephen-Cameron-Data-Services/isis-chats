@@ -18,6 +18,7 @@
 								unreferencedProperties="true">
 								<ns2:action id="Delete" />
 								<ns2:property id="activity" hidden="ALL_TABLES" />
+								<ns2:property id="parentList" hidden="EVERYWHERE" />
 								<ns2:property id="participant" hidden="ALL_TABLES" />
 								<ns2:property id="participantName" hidden="OBJECT_FORMS" />
 							</ns2:fieldSet>

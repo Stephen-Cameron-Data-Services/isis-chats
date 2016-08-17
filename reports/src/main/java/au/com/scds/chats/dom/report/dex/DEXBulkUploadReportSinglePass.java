@@ -1,37 +1,21 @@
 package au.com.scds.chats.dom.report.dex;
 
-import java.io.FileOutputStream;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.jdo.PersistenceManager;
-
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.query.QueryDefault;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
 import org.apache.isis.applib.services.repository.RepositoryService;
-import org.datanucleus.api.jdo.JDOPersistenceManager;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-
-import au.com.scds.chats.dom.activity.ActivityEvent;
-import au.com.scds.chats.dom.attendance.AttendanceList;
-import au.com.scds.chats.dom.attendance.Attend;
-import au.com.scds.chats.dom.call.ScheduledCall;
-import au.com.scds.chats.dom.dex.DexReferenceData;
 import au.com.scds.chats.dom.general.Address;
-import au.com.scds.chats.dom.general.Person;
-import au.com.scds.chats.dom.general.Persons;
 import au.com.scds.chats.dom.general.Sex;
-import au.com.scds.chats.dom.general.names.Region;
-import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
-import au.com.scds.chats.dom.report.dex.DEXNorthWestReport.ClientIdGenerationMode;
 import au.com.scds.chats.dom.report.dex.model.generated.Case;
 import au.com.scds.chats.dom.report.dex.model.generated.CaseClient;
 import au.com.scds.chats.dom.report.dex.model.generated.CaseClients;
@@ -39,7 +23,6 @@ import au.com.scds.chats.dom.report.dex.model.generated.Cases;
 import au.com.scds.chats.dom.report.dex.model.generated.Client;
 import au.com.scds.chats.dom.report.dex.model.generated.Clients;
 import au.com.scds.chats.dom.report.dex.model.generated.DEXFileUpload;
-import au.com.scds.chats.dom.report.dex.model.generated.ObjectFactory;
 import au.com.scds.chats.dom.report.dex.model.generated.ResidentialAddress;
 import au.com.scds.chats.dom.report.dex.model.generated.Session;
 import au.com.scds.chats.dom.report.dex.model.generated.SessionClient;
@@ -47,8 +30,6 @@ import au.com.scds.chats.dom.report.dex.model.generated.SessionClients;
 import au.com.scds.chats.dom.report.dex.model.generated.Sessions;
 import au.com.scds.chats.dom.report.view.ActivityParticipantAttendance;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX;
-import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth;
-import au.com.scds.chats.dom.report.view.ParticipantActivityByMonth;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
 
 public class DEXBulkUploadReportSinglePass {
@@ -94,6 +75,9 @@ public class DEXBulkUploadReportSinglePass {
 	private Boolean validationMode;
 	private Map<String, Map<String, ParticipantActivityByMonthForDEX>> participationByMonth;
 
+	//utility
+	private SimpleDateFormat formatter;
+	
 	private DEXBulkUploadReportSinglePass() {
 	}
 
@@ -142,6 +126,8 @@ public class DEXBulkUploadReportSinglePass {
 		this.mode = ClientIdGenerationMode.NAME_KEY;
 		// see if data is valid and report results
 		this.validationMode = false;
+		
+		formatter = new SimpleDateFormat("ddMMYYYY");
 
 	}
 
@@ -343,7 +329,7 @@ public class DEXBulkUploadReportSinglePass {
 		Session session = new Session();
 		this.sessions.getSession().add(session);
 		if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
-			session.setSessionId((String.format("%1$-12s",Math.abs(sessionKey.hashCode()))+a.getStartDateTime().toString("ddMMYYYY")).replace(" ", "0"));
+			session.setSessionId((String.format("%1$-12s",Math.abs(sessionKey.hashCode()))+formatter.format(a.getStartDateTime())).replace(" ", "0"));
 		}else{
 			session.setSessionId(sessionKey);
 		}

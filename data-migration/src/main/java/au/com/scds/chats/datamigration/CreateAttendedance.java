@@ -132,7 +132,7 @@ public class CreateAttendedance extends IntegrationTestAbstract {
 				// ap.getPersonId());
 			}
 			if(a != null && p != null){
-				Attend attend = attendances.createAttended(a, p, true);
+				Attend attend = attendances.createAttend(null, a, p, true);
 				attend.setDatesAndTimes(new DateTime(ap.getPickupTime()), new DateTime(ap.getDropoffTime()));
 				if(transportTypesMap.map(ap.getArrivingTransporttypeId()) != null){
 					attend.setArrivingTransportType(transportTypesMap.map(ap.getArrivingTransporttypeId()));

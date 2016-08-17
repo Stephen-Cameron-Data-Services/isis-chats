@@ -18,13 +18,14 @@ import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
 import org.apache.isis.applib.services.jaxb.JaxbService;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
+import org.apache.isis.applib.services.repository.RepositoryService;
 import org.apache.isis.applib.value.Clob;
 
 //import au.com.scds.chats.dom.dex.reference.Month;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.participant.Participants;
-import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportSinglePass;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
 
@@ -51,8 +52,8 @@ public class DEXReporting {
 	public Clob createDexReportForMonth(@ParameterLayout(named = "Year") Integer year,
 			@ParameterLayout(named = "Month") Month month, @ParameterLayout(named = "Region") String regionName)
 					throws Exception {
-		DEXBulkUploadReport report1 = new DEXBulkUploadReport(container, isisJdoSupport, participants, year, month.getValue(),
-				regionName);
+		DEXBulkUploadReportSinglePass report1 = new DEXBulkUploadReportSinglePass( repository, isisJdoSupport,  participants, 2016, 1, "SOUTH");
+
 		String report = jaxbService.toXml(report1.build());
 		Clob clob = new Clob("DexReportFor" + regionName + (month.getValue() < 10 ? "0" : "") + month + year + ".xml", "text/xml",
 				report);
@@ -65,6 +66,9 @@ public class DEXReporting {
 
 	@Inject
 	DomainObjectContainer container;
+	
+	@Inject
+	RepositoryService repository;
 
 	@Inject
 	JaxbService jaxbService;

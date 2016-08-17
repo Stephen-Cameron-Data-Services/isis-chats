@@ -33,30 +33,36 @@ import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.NatureOfService;
+import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
+import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 import au.com.scds.chats.dom.activity.Activities;
 import au.com.scds.chats.dom.activity.ActivityEvent;
+import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
+import au.com.scds.chats.dom.participant.Participants;
 
 @DomainService(repositoryFor = AttendanceList.class, nature = NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(named = "Attendances", menuOrder = "40")
 public class AttendanceLists {
 
-	public AttendanceLists() {}
+	public AttendanceLists() {
+	}
 
 	// used for testing only
 	public AttendanceLists(DomainObjectContainer container) {
 		this.container = container;
 	}
 
-	@Action()
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named = "Create Attendance List")
-	@MemberOrder(sequence = "10")
-	public AttendanceList createActivityAttendanceList(@ParameterLayout(named = "Activity") final ActivityEvent activityEvent) {
+	@Programmatic
+	public AttendanceList createActivityAttendanceList(
+			@ParameterLayout(named = "Activity") final ActivityEvent activityEvent) {
 		if (activityEvent == null)
 			return null;
 		AttendanceList attendanceList = container.newTransientInstance(AttendanceList.class);
@@ -67,45 +73,99 @@ public class AttendanceLists {
 		return attendanceList;
 	}
 
-	public List<ActivityEvent> choices0CreateActivityAttendanceList() {
-		// TODO why not working, null pointer exception?
-		return container.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivitiesWithoutAttendanceList"));
-		/*
-		 * List<ActivityEvent> activities =
-		 * container.allInstances(ActivityEvent.class); List<ActivityEvent> temp
-		 * = new ArrayList<ActivityEvent>(); for (ActivityEvent e : activities)
-		 * { if (e.getAttendances() == null) { temp.add(e); } } return temp;
-		 */
-	}
-
 	@Programmatic
-	public Attend createAttended(final ActivityEvent activity, final Participant participant, final Boolean attended) {
+	public Attend createAttend(AttendanceList attendanceList, final ActivityEvent activity,
+			final Participant participant, final Boolean attended) {
 		if (activity == null || participant == null)
 			return null;
-		Attend attendance = container.newTransientInstance(Attend.class);
-		attendance.setActivity(activity);
-		attendance.setParticipant(participant);
-		attendance.setAttended(attended);
-		//set region for data-migration
-		attendance.setRegion(activity.getRegion());
-		container.persistIfNotAlready(attendance);
+		Attend attend = container.newTransientInstance(Attend.class);
+		if (attendanceList != null)
+			attend.setParentList(attendanceList);
+		attend.setActivity(activity);
+		attend.setAttended(attended);
+		attend.setParticipant(participant);
+		// set region for data-migration
+		attend.setRegion(activity.getRegion());
+		container.persistIfNotAlready(attend);
 		container.flush();
-		return attendance;
+		// needed?
+		if (attendanceList != null)
+			attendanceList.getAttends().add(attend);
+		activity.getAttends().add(attend);
+		return attend;
 	}
 
 	@Programmatic
-	public void deleteAttended(Attend attended) {
+	public void deleteAttend(Attend attended) {
 		if (attended != null)
 			container.removeIfNotAlready(attended);
 	}
 
-	@Action()
+	/*
+	 * @Action()
+	 * 
+	 * @ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	 * 
+	 * @MemberOrder(sequence = "20")
+	 * 
+	 * @CollectionLayout(paged = 20) public List<AttendanceList>
+	 * listAttendanceLists() { return
+	 * container.allInstances(AttendanceList.class); }
+	 */
+
+	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "20")
-	@CollectionLayout(paged = 20)
-	public List<AttendanceList> listAttendanceLists() {
-		return container.allInstances(AttendanceList.class);
+	@MemberOrder(sequence = "1.0")
+	public List<AttendanceList> listAttendanceListsInPeriod(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Period") LocalDate start,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "End Period") LocalDate end) {
+		return container.allMatches(new QueryDefault<>(AttendanceList.class, "findAttendanceListsInPeriod",
+				"startDateTime", start.toDateTimeAtStartOfDay(), "endDateTime", end.toDateTime(new LocalTime(23, 59))));
 	}
+
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "2.0")
+	public List<AttendanceList> findAttendanceListsByActivity(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity Name") String name) {
+		return container.allMatches(
+				new QueryDefault<>(AttendanceList.class, "findAttendanceListsByActivityName", "name", name));
+	}
+	
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "3.0")
+	public List<Attend> listAttendsInPeriod(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Period") LocalDate start,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "End Period") LocalDate end) {
+		return container.allMatches(new QueryDefault<>(Attend.class, "findAttendsInPeriod",
+				"startDateTime", start.toDateTimeAtStartOfDay(), "endDateTime", end.toDateTime(new LocalTime(23, 59))));
+	}
+
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "4.0")
+	public List<Attend> findAttendsByActivity(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity Name") String name) {
+		return container.allMatches(
+				new QueryDefault<>(Attend.class, "findAttendsByActivityName", "name", name));
+	}
+	
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "5.0")
+	public List<Attend> findAttendsByParticipant(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") Participant participant) {
+		return container.allMatches(
+				new QueryDefault<>(Attend.class, "findAttendsByParticipant", "participant", participant));
+	}
+	
+	public List<Participant> choices0FindAttendsByParticipant(){
+		return participants.listActive(AgeGroup.All);
+	}
+	
+	@Inject
+	Participants participants;
 
 	@Inject
 	DomainObjectContainer container;

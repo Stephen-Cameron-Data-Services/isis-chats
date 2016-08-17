@@ -61,7 +61,7 @@ public class AttendanceListTest {
 		activity = new ActivityEvent(mockContainer, participantsRepo);
 	}
 
-	public static class AttendanceListTest_Tests extends AttendanceListTest {
+	/*public static class AttendanceListTest_Tests extends AttendanceListTest {
 
 		@Test
 		public void createAttendanceList() throws Exception {
@@ -203,5 +203,5 @@ public class AttendanceListTest {
 		public Matcher<QueryDefault> aQueryDefault(Class typeClass, String queryName) {
 			return new QueryDefaultMatcher(typeClass, queryName);
 		}
-	}
+	}*/
 }

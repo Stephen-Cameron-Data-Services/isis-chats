@@ -291,8 +291,11 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		address.updateGeocodedLocation();
 		Address oldAddress = getAddress();
 		setAddress(address);
-		if (oldAddress != null)
-			container.removeIfNotAlready(oldAddress);
+		if (oldAddress != null){
+			//TODO does not work
+			//container.flush();
+			container.remove(oldAddress);
+		}
 		return this;
 	}
 

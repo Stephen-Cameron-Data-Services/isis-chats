@@ -25,8 +25,11 @@ import javax.inject.Inject;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.DatastoreIdentity;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.Order;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.Queries;
+import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
@@ -56,6 +59,9 @@ import au.com.scds.chats.dom.participant.Participation;
  * 
  */
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
+@Queries({
+	@Query(name = "findAttendanceListsByActivityName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.AttendanceList WHERE parentActivity.name.indexOf(:name) >= 0 ORDER BY parentActivity.startDateTime DESC"),
+	@Query(name = "findAttendanceListsInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.AttendanceList WHERE parentActivity.startDateTime >= :startDateTime && parentActivity.startDateTime <= :endDateTime ORDER BY parentActivity.startDateTime DESC")})
 public class AttendanceList {
 
 	private ActivityEvent parentActivity;
@@ -89,6 +95,8 @@ public class AttendanceList {
 	@Property()
 	@CollectionLayout(render = RenderType.EAGERLY, named = "Attendance")
 	//@MemberOrder(sequence = "101")
+	@Persistent(mappedBy="parentList")
+	@Order(column="list_order_idx")
 	public final List<Attend> getAttends() {
 		return attends;
 	}
@@ -105,7 +113,7 @@ public class AttendanceList {
 		for (Participation participation : getParentActivity().getParticipations()) {
 			Participant participant = participation.getParticipant();
 			if (!hasParticipant(participant)) {
-				Attend attend = attendanceListsRepo.createAttended(parentActivity, participant, true);
+				Attend attend = attendanceListsRepo.createAttend(this, parentActivity, participant, true);
 				attend.setArrivingTransportType(participation.getArrivingTransportType());
 				attend.setDepartingTransportType(participation.getDepartingTransportType());
 				getAttends().add(attend);
@@ -127,7 +135,7 @@ public class AttendanceList {
 	@ActionLayout(named = "Add")
 	//@MemberOrder(name = "attendeds", sequence = "2")
 	public AttendanceList addAttend(@Parameter(optionality = Optionality.MANDATORY) Participant participant) {
-		Attend attended = attendanceListsRepo.createAttended(parentActivity, participant, true);
+		Attend attended = attendanceListsRepo.createAttend(this, parentActivity, participant, true);
 		getAttends().add(attended);
 		return this;
 	}
@@ -168,7 +176,7 @@ public class AttendanceList {
 		if (attended != null && getAttends().contains(attended)) {
 			System.out.println("Removing Attended");
 			getAttends().remove(attended);
-			attendanceListsRepo.deleteAttended(attended);
+			attendanceListsRepo.deleteAttend(attended);
 		}
 
 	}

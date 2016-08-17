@@ -17,7 +17,6 @@ import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.general.names.Salutations;
 import au.com.scds.chats.dom.general.names.TransportTypes;
 import au.com.scds.chats.dom.participant.Participants;
-import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport;
 import au.com.scds.chats.dom.volunteer.Volunteers;
 
 import com.google.common.collect.Lists;
@@ -101,15 +100,6 @@ public class DexReportTests extends IntegrationTestAbstract {
 
 		// instantiating will install onto ThreadLocal
 		new ScenarioExecutionForIntegration();
-	}
-	
-	@Test
-	public void DEXReport() throws Exception {
-		
-		String DIR = new String("C:/Users/stevec/Desktop/dex/");
-		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadNW-JAN.xml"));
-		DEXBulkUploadReport report1 = new DEXBulkUploadReport( container, isisJdoSupport,  participants, 2016, 1, "NORTH-WEST");
-		file1.write(jaxbService.toXml(report1.build()).getBytes());
 	}
 	
 	@Test

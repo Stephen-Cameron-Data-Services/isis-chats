@@ -52,7 +52,10 @@
 				<tab name="Attendance">
 					<row>
 						<col span="12">
-							<ns2:collection id="attendance" />
+							<ns2:collection id="attends" >
+								<ns2:action id="createAttendanceList" />
+								<ns2:action id="showAttendanceList" />
+							</ns2:collection>
 						</col>
 					</row>
 				</tab>

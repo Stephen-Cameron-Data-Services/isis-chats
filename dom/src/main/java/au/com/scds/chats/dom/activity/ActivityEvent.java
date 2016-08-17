@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.inject.Inject;
 import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.DomainObjectContainer;
@@ -34,6 +35,7 @@ import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEventable;
 import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.attendance.AttendanceList;
+import au.com.scds.chats.dom.attendance.AttendanceLists;
 import au.com.scds.chats.dom.attendance.Attend;
 import au.com.scds.chats.dom.general.Address;
 import au.com.scds.chats.dom.general.Suburb;
@@ -72,21 +74,21 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "ACTIVITY")
-@Queries({ @Query(name = "findActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent "),
+@Queries({
+		@Query(name = "findActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent "),
 		@Query(name = "findActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent WHERE name.indexOf(:name) >= 0 "),
 		@Query(name = "findActivitiesWithoutAttendanceList", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent WHERE attendances == null "),
 		@Query(name = "findAllFutureActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent WHERE startDateTime > :currentDateTime "),
 		@Query(name = "findAllPastActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent WHERE startDateTime <= :currentDateTime "),
-		@Query(name = "findActivitiesInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent WHERE startDateTime >= :startDateTime && startDateTime <= :endDateTime ORDER BY startDateTime DESC"),})
+		@Query(name = "findActivitiesInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent WHERE startDateTime >= :startDateTime && startDateTime <= :endDateTime ORDER BY startDateTime DESC"), })
 // @Unique(name = "Activity_name_UNQ", members = { "name"
 // })
-
 
 public class ActivityEvent extends Activity implements Notable, CalendarEventable {
 
 	protected RecurringActivity parentActivity;
-	@Persistent(mappedBy = "parentActivity")
 	protected AttendanceList attendances;
+	protected List<Attend> attends;
 
 	public ActivityEvent() {
 		super();
@@ -102,8 +104,8 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		super(container, null, volunteers, null, null);
 	}
 
-	@Property(hidden = Where.ALL_TABLES, editing=Editing.DISABLED, editingDisabledReason="This Activity belongs to its parent Recurring Activity")
-	//@MemberOrder(sequence = "1.1")
+	@Property(hidden = Where.ALL_TABLES, editing = Editing.DISABLED, editingDisabledReason = "This Activity belongs to its parent Recurring Activity")
+	// @MemberOrder(sequence = "1.1")
 	@Column(allowsNull = "true")
 	public final RecurringActivity getParentActivity() {
 		return parentActivity;
@@ -118,52 +120,91 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	}
 
 	@Property(hidden = Where.EVERYWHERE)
-	@PropertyLayout(named = "Attendance List")
-	//@MemberOrder(sequence = "2.1")
 	@Column(allowsNull = "true")
 	public AttendanceList getAttendances() {
 		return attendances;
 	}
 
-	//TODO needed? used by AttendanceLists.createAttendanceList(activity)
 	public void setAttendances(final AttendanceList attendances) {
 		this.attendances = attendances;
 	}
+
+	@Action()
+	public AttendanceList createAttendanceList() {
+		attendanceListsRepo.createActivityAttendanceList(this);
+		return getAttendances();
+	}
+
+	public String disableCreateAttendanceList() {
+		if (getAttendances() == null) {
+			return null;
+		} else {
+			return "Attendance-List already created for this Activity";
+		}
+	}
 	
-	@Property(hidden = Where.ALL_TABLES)
-	@PropertyLayout(named = "Attendance List")
-	@NotPersistent
-	public List<Attend> getAttendance() {
-		if(getAttendances() != null)
-			return getAttendances().getAttends();
-		else //return a dummy empty list
-			return new ArrayList<Attend>();
+	@Action()
+	public AttendanceList showAttendanceList() {
+		return getAttendances();
+	}
+
+	public String disableShowAttendanceList() {
+		if (getAttendances() != null) {
+			return null;
+		} else {
+			return "Attendance-List not created yet for this Activity";
+		}
+	}
+
+	/*
+	 * @Property(hidden = Where.ALL_TABLES)
+	 * 
+	 * @PropertyLayout(named = "Attendance List")
+	 * 
+	 * @NotPersistent public List<Attend> getAttendance() { if(getAttendances()
+	 * != null) return getAttendances().getAttends(); else //return a dummy
+	 * empty list return new ArrayList<Attend>(); }
+	 */
+
+	@Property
+	@CollectionLayout(render = RenderType.EAGERLY)
+	@Persistent(mappedBy = "activity")
+	@Order(column="activity_order_idx")
+	public List<Attend> getAttends() {
+		return this.attends;
+	}
+
+	public void setAttends(List<Attend> attends) {
+		this.attends = attends;
 	}
 
 	@Property()
-	//@MemberOrder(sequence = "200")
-	@CollectionLayout( render = RenderType.EAGERLY)
+	// @MemberOrder(sequence = "200")
+	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<VolunteeredTimeForActivity> getVolunteeredTimes() {
 		return super.getVolunteeredTimes();
 	}
 
 	@Action()
 	@ActionLayout()
-	//@MemberOrder(name = "volunteeredTimes", sequence = "1")
-	public ActivityEvent addVolunteeredTime(Volunteer volunteer, @ParameterLayout(named = "Started At") DateTime startDateTime, @ParameterLayout(named = "Finished At") DateTime endDateTime) {
-		VolunteeredTimeForActivity time = volunteersRepo.createVolunteeredTimeForActivity(volunteer, this, startDateTime, endDateTime);
+	// @MemberOrder(name = "volunteeredTimes", sequence = "1")
+	public ActivityEvent addVolunteeredTime(Volunteer volunteer,
+			@ParameterLayout(named = "Started At") DateTime startDateTime,
+			@ParameterLayout(named = "Finished At") DateTime endDateTime) {
+		VolunteeredTimeForActivity time = volunteersRepo.createVolunteeredTimeForActivity(volunteer, this,
+				startDateTime, endDateTime);
 		return this;
 	}
 
 	public List<Volunteer> choices0AddVolunteeredTime() {
 		return volunteersRepo.listActive();
 	}
-	
+
 	@Action()
-	//@MemberOrder(name = "participations", sequence = "4")
-	public List<ParticipantTransportView> showTransportList(){
+	// @MemberOrder(name = "participations", sequence = "4")
+	public List<ParticipantTransportView> showTransportList() {
 		List<ParticipantTransportView> list = new ArrayList<>();
-		for(Participation p : getParticipations()){
+		for (Participation p : getParticipations()) {
 			list.add(new ParticipantTransportView(p));
 		}
 		return list;
@@ -209,10 +250,10 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		}
 		return temp;
 	}
-	
-	/** 
-	 * Participants & Participations lists are combined list from child and parent Activity, but only want to
-	 * remove Participants from child list.
+
+	/**
+	 * Participants & Participations lists are combined list from child and
+	 * parent Activity, but only want to remove Participants from child list.
 	 * 
 	 * Called by Participants#deletedParticipation()
 	 */
@@ -223,8 +264,8 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	}
 
 	/**
-	 * Participants & Participations lists are combined list from child and parent Activity, but only want to
-	 * remove Participants from child list.
+	 * Participants & Participations lists are combined list from child and
+	 * parent Activity, but only want to remove Participants from child list.
 	 */
 	@Override
 	public ActivityEvent removeParticipant(final Participant participant) {
@@ -251,15 +292,15 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		return list;
 	}
 
-	/*@Property(hidden = Where.ALL_TABLES)
-	@Override
-	@NotPersistent
-	public Provider getProvider() {
-		if (getParentActivity() != null && super.getProvider() == null) {
-			return getParentActivity().getProvider();
-		}
-		return super.getProvider();
-	}*/
+	/*
+	 * @Property(hidden = Where.ALL_TABLES)
+	 * 
+	 * @Override
+	 * 
+	 * @NotPersistent public Provider getProvider() { if (getParentActivity() !=
+	 * null && super.getProvider() == null) { return
+	 * getParentActivity().getProvider(); } return super.getProvider(); }
+	 */
 
 	@Property(hidden = Where.EVERYWHERE)
 	@Override
@@ -293,7 +334,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	@Property()
 	@PropertyLayout(named = "Location Name")
-	//@MemberOrder(name = "Location", sequence = "1")
+	// @MemberOrder(name = "Location", sequence = "1")
 	@Override
 	@NotPersistent
 	public String getAddressLocationName() {
@@ -305,7 +346,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	@Property()
 	@PropertyLayout(named = "Address")
-	//@MemberOrder(name = "Location", sequence = "2")
+	// @MemberOrder(name = "Location", sequence = "2")
 	@Override
 	@NotPersistent
 	public String getFullAddress() {
@@ -314,17 +355,17 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		}
 		return super.getFullAddress();
 	}
-	
+
 	@Programmatic
 	@NotPersistent
-	private Address getSelfOrParentAddress(){
+	private Address getSelfOrParentAddress() {
 		if (getParentActivity() != null && super.getAddress() == null) {
 			return getParentActivity().getAddress();
 		}
 		return super.getAddress();
-		
+
 	}
-	
+
 	@Override
 	public String default0UpdateAddress() {
 		return getSelfOrParentAddress() != null ? getSelfOrParentAddress().getName() : null;
@@ -339,10 +380,23 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	public String default2UpdateAddress() {
 		return getSelfOrParentAddress() != null ? getSelfOrParentAddress().getStreet2() : null;
 	}
-	
+
 	@Override
 	public Suburb default3UpdateAddress() {
-		return getSelfOrParentAddress() != null ? suburbs.findSuburb(getSelfOrParentAddress().getSuburb(),new Integer(getSelfOrParentAddress().getPostcode())) : null;
+		if(getSelfOrParentAddress() != null){
+			//convert postcode to integer
+			Integer postcode = null;
+			try{
+				postcode = Integer.valueOf(getSelfOrParentAddress().getPostcode());
+			}catch(NumberFormatException e){
+				//not a problem
+			}
+			//return valid Suburb
+			return suburbs.findSuburb(getSelfOrParentAddress().getSuburb(),
+					postcode);
+		}else{
+			return null;
+		}
 	}
 
 	@Override
@@ -350,10 +404,9 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		return suburbs.listAllSuburbs();
 	}
 
-
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Lat-Long")
-	//@MemberOrder(name = "Location", sequence = "3")
+	// @MemberOrder(name = "Location", sequence = "3")
 	@Override
 	@NotPersistent
 	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
@@ -363,24 +416,27 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		return super.getLocation();
 	}
 
-	/*@Property(hidden = Where.ALL_TABLES)
-	@Override
-	@NotPersistent
-	public Boolean getIsRestricted() {
-		if (getParentActivity() != null && super.getIsRestricted() == null) {
-			return getParentActivity().getIsRestricted();
-		}
-		return super.getIsRestricted();
-	}*/
+	/*
+	 * @Property(hidden = Where.ALL_TABLES)
+	 * 
+	 * @Override
+	 * 
+	 * @NotPersistent public Boolean getIsRestricted() { if (getParentActivity()
+	 * != null && super.getIsRestricted() == null) { return
+	 * getParentActivity().getIsRestricted(); } return super.getIsRestricted();
+	 * }
+	 */
 
-	/*@Property(hidden = Where.ALL_TABLES)
-	@Override
-	@NotPersistent
-	public Long getScheduleId() {
-		if (getParentActivity() != null && super.getScheduleId() == null) {
-			return getParentActivity().getScheduleId();
-		}
-		return super.getScheduleId();
-	}*/
+	/*
+	 * @Property(hidden = Where.ALL_TABLES)
+	 * 
+	 * @Override
+	 * 
+	 * @NotPersistent public Long getScheduleId() { if (getParentActivity() !=
+	 * null && super.getScheduleId() == null) { return
+	 * getParentActivity().getScheduleId(); } return super.getScheduleId(); }
+	 */
 
+	@Inject
+	AttendanceLists attendanceListsRepo;
 }
