@@ -109,23 +109,51 @@
 				</tab>
 				<tab name="DSS Data">
 					<row>
-						<col span="8">
+						<col span="12">
 							<ns2:fieldSet id="DSS" name="DSS (DEX) Data">
 								<ns2:action id="updateDexData" />
 								<ns2:property id="consentToProvideDetails" hidden="ALL_TABLES" />
 								<ns2:property id="consentedForFutureContacts"
 									hidden="ALL_TABLES" />
 								<ns2:property id="usingPsuedonym" hidden="ALL_TABLES" />
-								<ns2:property id="birthDateAnEstimate" hidden="ALL_TABLES" />
-								<ns2:property id="hasDisabilities" hidden="ALL_TABLES" />
+								<ns2:property id="birthDateAnEstimate" hidden="EVERYWHERE" />
 								<ns2:property id="hasCarer" hidden="ALL_TABLES" />
-								<ns2:property id="countryOfBirth" hidden="ALL_TABLES" />
-								<ns2:property id="languageSpokenAtHome" hidden="ALL_TABLES" />
-								<ns2:property id="householdComposition" hidden="ALL_TABLES" />
-								<ns2:property id="accommodationType" hidden="ALL_TABLES" />
+								<ns2:property id="hasDisabilities" hidden="ALL_TABLES" />
+								<ns2:property id="disability" hidden="EVERYWHERE" />
+								<ns2:property id="disabilityDescription" hidden="ALL_TABLES">
+									<ns2:named>Disability</ns2:named>
+								</ns2:property>
+								<ns2:property id="countryOfBirth" hidden="EVERYWHERE" />
+								<ns2:property id="countryOfBirthDescription"
+									hidden="ALL_TABLES">
+									<ns2:named>Country Of Birth</ns2:named>
+								</ns2:property>
+								<ns2:property id="languageSpokenAtHome" hidden="EVERYWHERE" />
+								<ns2:property id="languageSpokenAtHomeDescription"
+									hidden="ALL_TABLES">
+									<ns2:named>Language Spoken at Home</ns2:named>
+								</ns2:property>
+								<ns2:property id="householdComposition" hidden="EVERYWHERE" />
+								<ns2:property id="householdCompositionDescription"
+									hidden="ALL_TABLES">
+									<ns2:named>Household Composition</ns2:named>
+								</ns2:property>
+								<ns2:property id="accommodationType" hidden="EVERYWHERE" />
+								<ns2:property id="accommodationTypeDescription"
+									hidden="ALL_TABLES">
+									<ns2:named>Accommodation Type</ns2:named>
+								</ns2:property>
 								<ns2:property id="aboriginalOrTorresStraitIslanderOrigin"
-									hidden="ALL_TABLES" />
-								<ns2:property id="dvaCardStatus" hidden="ALL_TABLES" />
+									hidden="EVERYWHERE" />
+								<ns2:property
+									id="aboriginalOrTorresStraitIslanderOriginDescription" hidden="ALL_TABLES">
+									<ns2:named>Aboriginal or Torres Strait Islander Origin</ns2:named>
+								</ns2:property>
+								<ns2:property id="dvaCardStatus" hidden="EVERYWHERE" />
+								<ns2:property
+									id="dvaCardStatusDescription" hidden="ALL_TABLES">
+									<ns2:named>DVA Card Status</ns2:named>
+								</ns2:property>
 							</ns2:fieldSet>
 						</col>
 					</row>

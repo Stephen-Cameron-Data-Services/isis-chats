@@ -10,7 +10,10 @@ import javax.jdo.annotations.Query;
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "AboriginalOrTorresStraitIslanderOrigin")
-@Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.chats.dom.dex.reference.AboriginalOrTorresStraitIslanderOrigin ORDER BY orderNumber ASC;")
+@Queries({
+		@Query(name = "all", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.dex.reference.AboriginalOrTorresStraitIslanderOrigin ORDER BY orderNumber ASC"),
+		@Query(name = "description", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.dex.reference.AboriginalOrTorresStraitIslanderOrigin WHERE description == :description"),
+		@Query(name = "allDescriptions", language = "JDOQL", value = "SELECT description FROM au.com.scds.chats.dom.dex.reference.AboriginalOrTorresStraitIslanderOrigin ORDER BY orderNumber ASC")})
 public class AboriginalOrTorresStraitIslanderOrigin extends AbstractDexReferenceItem {
 
 }
