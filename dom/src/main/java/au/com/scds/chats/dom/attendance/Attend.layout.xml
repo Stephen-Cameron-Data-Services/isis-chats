@@ -18,21 +18,32 @@
 								unreferencedProperties="true">
 								<ns2:action id="Delete" />
 								<ns2:property id="activity" hidden="ALL_TABLES" />
+								<ns2:property id="activityName" hidden="ALL_EXCEPT_STANDALONE_TABLES" />
 								<ns2:property id="parentList" hidden="EVERYWHERE" />
 								<ns2:property id="participant" hidden="ALL_TABLES" />
 								<ns2:property id="participantName" hidden="OBJECT_FORMS" />
 							</ns2:fieldSet>
-						</col>
-						<col span="6">
-							<ns2:fieldSet name="Attended" id="attend"
-								unreferencedProperties="true">
-								<ns2:property id="wasAttended">
-									<ns2:action id="wasAttended" />
-									<ns2:action id="wasNotAttended" />
+							<ns2:fieldSet name="Transport" id="transport">
+								<ns2:action id="updateTransportTypes" />
+								<ns2:property id="arrivingTransportType" hidden="EVERYWHERE" />
+								<ns2:property id="departingTransportType" hidden="EVERYWHERE" />
+								<ns2:property id="arrivingTransportTypeName"
+									hidden="ALL_TABLES">
+									<ns2:named>Arriving</ns2:named>
+								</ns2:property>
+								<ns2:property id="departingTransportTypeName"
+									hidden="ALL_TABLES">
+									<ns2:named>Departing</ns2:named>
 								</ns2:property>
 							</ns2:fieldSet>
-							<ns2:fieldSet name="Times" id="times"
-								unreferencedProperties="true">
+						</col>
+						<col span="6">
+							<ns2:fieldSet name="Attended" id="attend">
+								<ns2:action id="wasAttended" />
+								<ns2:action id="wasNotAttended" />
+								<ns2:property id="wasAttended" />
+							</ns2:fieldSet>
+							<ns2:fieldSet name="Times" id="times">
 								<ns2:action id="updateDatesAndTimes" />
 								<ns2:property id="startDateTime" />
 								<ns2:property id="endDateTime" />

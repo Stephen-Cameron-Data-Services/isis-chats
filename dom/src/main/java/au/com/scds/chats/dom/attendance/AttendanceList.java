@@ -33,11 +33,13 @@ import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
-
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.activity.ActivityEvent;
 import au.com.scds.chats.dom.general.Sex;
+import au.com.scds.chats.dom.general.names.TransportType;
+import au.com.scds.chats.dom.general.names.TransportTypes;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
@@ -81,8 +83,6 @@ public class AttendanceList {
 	}
 
 	@Property()
-	//@PropertyLayout()
-	//@MemberOrder(sequence = "1")
 	@Column(allowsNull = "true")
 	public ActivityEvent getParentActivity() {
 		return parentActivity;
@@ -94,21 +94,17 @@ public class AttendanceList {
 
 	@Property()
 	@CollectionLayout(render = RenderType.EAGERLY, named = "Attendance")
-	//@MemberOrder(sequence = "101")
 	@Persistent(mappedBy="parentList")
 	@Order(column="list_order_idx")
 	public final List<Attend> getAttends() {
 		return attends;
 	}
 
-	//@SuppressWarnings("unused")
 	public void setAttends(final List<Attend> attends) {
 		this.attends = attends;
 	}
 
 	@Action
-	@ActionLayout(named = "Add All Participants")
-	//@MemberOrder(name = "attendeds", sequence = "1")
 	public AttendanceList addAllAttends() {
 		for (Participation participation : getParentActivity().getParticipations()) {
 			Participant participant = participation.getParticipant();
@@ -132,8 +128,6 @@ public class AttendanceList {
 	}
 
 	@Action
-	@ActionLayout(named = "Add")
-	//@MemberOrder(name = "attendeds", sequence = "2")
 	public AttendanceList addAttend(@Parameter(optionality = Optionality.MANDATORY) Participant participant) {
 		Attend attended = attendanceListsRepo.createAttend(this, parentActivity, participant, true);
 		getAttends().add(attended);
@@ -153,8 +147,6 @@ public class AttendanceList {
 	}
 
 	@Action
-	@ActionLayout(named = "Add New")
-	//@MemberOrder(name = "attendeds", sequence = "3")
 	public AttendanceList addNewParticipantAndAttend(final @ParameterLayout(named = "First name") String firstname,
 			final @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob,
@@ -163,22 +155,55 @@ public class AttendanceList {
 		addAttend(p);
 		return this;
 	}
+	
+	/* TODO, this bulk-action didn't work as intended as only zero-arg
+	 * actions will show on the collection. Having the wrapper was
+	 * done to not have the bulk-action check-boxes appear on lists of Attends return from
+	 * queries, bummer
 
-	@Action
 	@ActionLayout(named = "Do Bulk Updates")
-	//@MemberOrder(name = "attendeds", sequence = "4")
-	public List<Attend> bulkAction() {
+	public List<AttendBulkActionWrapper> bulkAction() {
+		ArrayList<AttendBulkActionWrapper> wrappedAttends = new ArrayList<>();
+		for(Attend attend : getAttends()){
+			AttendBulkActionWrapper wrapper = new AttendBulkActionWrapper();
+			wrapper.setAttend(attend);
+			wrappedAttends.add(wrapper);
+		}
+		return wrappedAttends;
+	}*/
+	
+	@Action
+	public AttendanceList updateAllAttendsToDefaultValues(){
+		DateTime start = getParentActivity().getStartDateTime();
+		DateTime end = getParentActivity().getApproximateEndDateTime();
+		TransportType transport = transportTypes.transportTypeForName("Self Travel");
+		for(Attend attend : getAttends()){
+			attend.wasAttended();
+			attend.setDatesAndTimes(start, end);
+			attend.setArrivingTransportType(transport);
+			attend.setDepartingTransportType(transport);			
+		}
+		return this;
+	}
+	
+	@Action
+	public AttendanceList removeAttend(Attend attend){
+		if(attend != null)
+			deleteAttend(attend);
+		return this;
+	}
+	
+	public List<Attend> choices0RemoveAttend(){
 		return getAttends();
 	}
 
 	@Programmatic
-	public void removeAttend(Attend attended) {
-		if (attended != null && getAttends().contains(attended)) {
+	public void deleteAttend(Attend attend) {
+		if (attend != null && getAttends().contains(attend)) {
 			System.out.println("Removing Attended");
-			getAttends().remove(attended);
-			attendanceListsRepo.deleteAttend(attended);
+			getAttends().remove(attend);
+			attendanceListsRepo.deleteAttend(attend);
 		}
-
 	}
 
 	@Inject
@@ -186,5 +211,8 @@ public class AttendanceList {
 
 	@Inject
 	Participants participantsRepo;
+	
+	@Inject
+	TransportTypes transportTypes;
 
 }

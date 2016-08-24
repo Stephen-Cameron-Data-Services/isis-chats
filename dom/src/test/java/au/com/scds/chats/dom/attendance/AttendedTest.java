@@ -50,7 +50,7 @@ public class AttendedTest {
 		attendanceListsRepo = new AttendanceLists(mockContainer);
 		attendanceList = new AttendanceList(attendanceListsRepo, participantsRepo);
 		attended = new Attend(mockContainer);
-		attended.actionInvocationContext = ActionInvocationContext.onObject(attended);
+		//attended.actionInvocationContext = ActionInvocationContext.onObject(attended);
 		activity = new ActivityEvent(mockContainer, participantsRepo);
 	}
 
@@ -60,7 +60,7 @@ public class AttendedTest {
 		public void getAttendanceInterval_Test() throws Exception {
 
 			attended.updateDatesAndTimes(new DateTime(2015, 10, 10, 12, 0, 0),new DateTime(2015, 10, 10, 13, 30, 0));
-			assertThat(attended.getAttendanceInterval()).isEqualTo("1.50");
+			assertThat(attended.getAttendanceInterval()).isEqualTo("01:30");
 		}
 
 		@Test

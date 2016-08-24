@@ -49,6 +49,7 @@ import org.apache.isis.applib.services.actinvoc.ActionInvocationContext;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.activity.ActivityEvent;
@@ -85,8 +86,11 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	}
 
 	public String title() {
-		return getParticipant().getFullName() + (getAttended() ? " did attend " : " did NOT attend ")
-				+ getActivity().getName() + " on " + getActivity().getStartDateTime().toString("dd MMMM yyyy");
+		return getParticipant().getFullName();
+	}
+	
+	public String iconName() {
+		return getWasAttended();
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "This is a non-modifiable property")
@@ -100,9 +104,6 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "This is a non-modifiable property")
-	// @PropertyLayout(describedAs = "The Activity attended", hidden =
-	// Where.ALL_TABLES)
-	// @MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
 	public ActivityEvent getActivity() {
 		return activity;
@@ -115,10 +116,13 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 		this.activity = activity;
 	}
 
+	@Property()
+	@NotPersistent
+	public String getActivityName() {
+		return getActivity().getName();
+	}
+
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "This is a non-modifiable property")
-	// @PropertyLayout(describedAs = "The Participant in the Activity", hidden =
-	// Where.ALL_TABLES)
-	// @MemberOrder(sequence = "2.1")
 	@Column(allowsNull = "false")
 	public Participant getParticipant() {
 		return participant;
@@ -129,17 +133,12 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "This is a non-modifiable property")
-	// @PropertyLayout(named = "Participant", describedAs = "The Participant in
-	// the Activity", hidden = Where.OBJECT_FORMS)
-	// @MemberOrder(sequence = "2.2")
 	@NotPersistent
 	public String getParticipantName() {
 		return getParticipant().getFullName();
 	}
 
 	@Property()
-	// @PropertyLayout(describedAs = "When the Participant joined the Activity")
-	// @MemberOrder(sequence = "3.1")
 	@Column(allowsNull = "true")
 	public DateTime getStartDateTime() {
 		return startDateTime;
@@ -150,8 +149,6 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	}
 
 	@Property()
-	// @PropertyLayout(describedAs = "When the Participant left the Activity")
-	// @MemberOrder(sequence = "4.1")
 	@Column(allowsNull = "true")
 	public DateTime getEndDateTime() {
 		return endDateTime;
@@ -162,15 +159,15 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	}
 
 	@Property(editing = Editing.DISABLED)
-	// @PropertyLayout(describedAs = "The interval that the participant attended
-	// the activity in hours")
-	// @MemberOrder(sequence = "5.1")
 	@NotPersistent
 	public String getAttendanceInterval() {
 		if (getStartDateTime() != null && getEndDateTime() != null) {
 			Period per = new Period(getStartDateTime().toLocalDateTime(), getEndDateTime().toLocalDateTime());
-			Float hours = ((float) per.toStandardMinutes().getMinutes()) / 60;
-			return hoursFormat.format(hours);
+			// ASC changed from decimal to hrs:min
+			// Float hours = ((float) per.toStandardMinutes().getMinutes()) /
+			// 60;
+			// return hoursFormat.format(hours);
+			return String.format("%02d:%02d", per.getHours(), per.getMinutes());
 		} else
 			return null;
 	}
@@ -185,8 +182,6 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	}
 
 	@Property(editing = Editing.DISABLED)
-	// @PropertyLayout(hidden = Where.EVERYWHERE)
-	// @MemberOrder(sequence = "6.1")
 	@Column(allowsNull = "false")
 	Boolean getAttended() {
 		return attended;
@@ -196,7 +191,7 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 		this.attended = attended;
 	}
 
-	@Property(hidden = Where.EVERYWHERE)
+	@Property()
 	@Column(allowsNull = "true")
 	public TransportType getArrivingTransportType() {
 		return arrivingTransportType;
@@ -206,9 +201,7 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 		this.arrivingTransportType = transportType;
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
-	@PropertyLayout(named = "Arriving Transport Type")
-	@MemberOrder(sequence = "4")
+	@Property(editing=Editing.DISABLED)
 	@NotPersistent
 	public String getArrivingTransportTypeName() {
 		return getArrivingTransportType() != null ? this.getArrivingTransportType().getName() : null;
@@ -222,7 +215,7 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 		return transportTypes.allNames();
 	}
 
-	@Property(hidden = Where.EVERYWHERE)
+	@Property()
 	@Column(allowsNull = "true")
 	public TransportType getDepartingTransportType() {
 		return departingTransportType;
@@ -232,9 +225,7 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 		this.departingTransportType = transportType;
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
-	@PropertyLayout(named = "Departing Transport Type")
-	@MemberOrder(sequence = "5")
+	@Property(editing=Editing.DISABLED)
 	@NotPersistent
 	public String getDepartingTransportTypeName() {
 		return getDepartingTransportType() != null ? this.getDepartingTransportType().getName() : null;
@@ -248,10 +239,32 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 		return transportTypes.allNames();
 	}
 
-	@Property(editing = Editing.DISABLED)
-	// @PropertyLayout(describedAs = "If the Participant attended the Activity",
-	// hidden = Where.NOWHERE)
-	// @MemberOrder(sequence = "6.2")
+	@Action()
+	public Attend updateTransportTypes(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Arriving Transport Type") String arriving,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Departing Transport Type") String departing) {
+		setArrivingTransportTypeName(arriving);
+		setDepartingTransportTypeName(departing);
+		return this;
+	}
+
+	public String default0UpdateTransportTypes() {
+		return getArrivingTransportTypeName();
+	}
+
+	public String default1UpdateTransportTypes() {
+		return getDepartingTransportTypeName();
+	}
+
+	public List<String> choices0UpdateTransportTypes() {
+		return transportTypes.allNames();
+	}
+
+	public List<String> choices1UpdateTransportTypes() {
+		return transportTypes.allNames();
+	}
+
+	@Property()
 	@NotPersistent()
 	public String getWasAttended() {
 		return (getAttended() ? "YES" : "NO");
@@ -263,47 +276,43 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	 * getParentList(); }
 	 */
 
-	@Action(invokeOn = InvokeOn.OBJECT_AND_COLLECTION)
-	// @MemberOrder(name = "wasattended", sequence = "21.1")
+	@Action()
 	public Attend wasAttended() {
 		if (!getAttended())
 			setAttended(true);
-		return actionInvocationContext.getInvokedOn().isCollection() ? null : this;
+		return this;
 	}
 
-	@Action(invokeOn = InvokeOn.OBJECT_AND_COLLECTION)
-	// @MemberOrder(name = "wasattended", sequence = "22.1")
+	@Action()
 	public Attend wasNotAttended() {
 		if (getAttended())
 			setAttended(false);
-		return actionInvocationContext.getInvokedOn().isCollection() ? null : this;
+		return this;
 	}
 
-	@Action(invokeOn = InvokeOn.OBJECT_AND_COLLECTION)
-	// @MemberOrder(name = "enddatetime", sequence = "23.1")
+	@Action()
 	public Attend updateDatesAndTimes(@ParameterLayout(named = "Start Date Time") DateTime start,
 			@ParameterLayout(named = "End Date Time") DateTime end) {
-		boolean isColl = actionInvocationContext.getInvokedOn().isCollection();
 		if (start != null && end != null) {
 			if (end.isBefore(start)) {
 				container.warnUser("end date & time is earlier than start date & time");
-				return (isColl ? null : this);
+				return this;
 			}
 			if (end.getDayOfWeek() != start.getDayOfWeek()) {
 				container.warnUser("end date and start date are different days of the week");
-				return (isColl ? null : this);
+				return this;
 			}
 			Period period = new Period(start.toLocalDateTime(), end.toLocalDateTime());
 			Float hours = ((float) period.toStandardMinutes().getMinutes()) / 60;
 			if (hours > 12.0) {
 				container.warnUser("end date & time and start date & time are not in the same 12 hour period");
-				return (isColl ? null : this);
+				return this;
 			}
 			setStartDateTime(start);
 			setEndDateTime(end);
 			setAttended(true);
 		}
-		return (isColl ? null : this);
+		return this;
 	}
 
 	// used for data-migration
@@ -327,9 +336,6 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	public int compareTo(Attend o) {
 		return getParticipant().getPerson().compareTo(o.getParticipant().getPerson());
 	}
-
-	@Inject
-	ActionInvocationContext actionInvocationContext;
 
 	@Inject
 	TransportTypes transportTypes;

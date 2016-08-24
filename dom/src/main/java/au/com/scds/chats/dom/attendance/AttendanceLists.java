@@ -96,22 +96,10 @@ public class AttendanceLists {
 	}
 
 	@Programmatic
-	public void deleteAttend(Attend attended) {
-		if (attended != null)
-			container.removeIfNotAlready(attended);
+	public void deleteAttend(Attend attend) {
+		if (attend != null)
+			container.removeIfNotAlready(attend);
 	}
-
-	/*
-	 * @Action()
-	 * 
-	 * @ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	 * 
-	 * @MemberOrder(sequence = "20")
-	 * 
-	 * @CollectionLayout(paged = 20) public List<AttendanceList>
-	 * listAttendanceLists() { return
-	 * container.allInstances(AttendanceList.class); }
-	 */
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
@@ -133,7 +121,7 @@ public class AttendanceLists {
 	}
 	
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named="List Attendances In Period")
 	@MemberOrder(sequence = "3.0")
 	public List<Attend> listAttendsInPeriod(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Period") LocalDate start,
@@ -143,7 +131,7 @@ public class AttendanceLists {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named="Find Attendances By Activity")
 	@MemberOrder(sequence = "4.0")
 	public List<Attend> findAttendsByActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity Name") String name) {
@@ -152,7 +140,7 @@ public class AttendanceLists {
 	}
 	
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named="Find Attendances By Participant")
 	@MemberOrder(sequence = "5.0")
 	public List<Attend> findAttendsByParticipant(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") Participant participant) {

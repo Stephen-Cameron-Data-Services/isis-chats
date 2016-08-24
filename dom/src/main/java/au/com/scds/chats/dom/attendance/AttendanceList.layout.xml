@@ -24,11 +24,22 @@
 				<tab name="Attendances">
 					<row>
 						<col span="12">
-							<ns2:collection id="attends" name="Attendances" >
-								<ns2:action id="addAllAttends" />
-								<ns2:action id="addNewParticipantAndAttend" />
-								<ns2:action id="addAttend" />
-								<ns2:action id="bulkAction" />
+							<ns2:collection id="attends" name="Attendances">
+								<ns2:action id="addAllAttends">
+									<ns2:named>Add All Participants</ns2:named>
+								</ns2:action>
+								<ns2:action id="addNewParticipantAndAttend" >
+									<ns2:named>Add New</ns2:named>
+								</ns2:action>
+								<ns2:action id="addAttend">
+									<ns2:named>Add</ns2:named>
+								</ns2:action>
+								<ns2:action id="removeAttend">
+									<ns2:named>Remove</ns2:named>
+								</ns2:action>
+								<ns2:action id="updateAllAttendsToDefaultValues">
+									<ns2:named>Set All To Defaults</ns2:named>
+								</ns2:action>
 							</ns2:collection>
 						</col>
 					</row>
