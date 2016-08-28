@@ -76,12 +76,12 @@
 		<dependency>
 			<groupId>org.isisaddons.wicket.fullcalendar2</groupId>
 			<artifactId>isis-wicket-fullcalendar2-cpt</artifactId>
-			<version>1.12.0</version>
+			<version>1.13.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.isisaddons.wicket.excel</groupId>
 			<artifactId>isis-wicket-excel-cpt</artifactId>
-			<version>1.12.0</version>
+			<version>1.13.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mindrot</groupId>
@@ -91,12 +91,12 @@
 		<dependency>
 			<groupId>org.isisaddons.module.security</groupId>
 			<artifactId>isis-module-security-dom</artifactId>
-			<version>1.12.2</version>
+			<version>1.13.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.incode.module.note</groupId>
 			<artifactId>incode-module-note-dom</artifactId>
-			<version>1.12.1</version>
+			<version>1.13.0</version>
 		</dependency>
 		<!-- needed for Gmap Geolocation Lookup Service tests -->
 		<dependency>
@@ -107,7 +107,7 @@
 		<dependency>
 			<groupId>org.isisaddons.wicket.gmap3</groupId>
 			<artifactId>isis-wicket-gmap3-cpt</artifactId>
-			<version>1.12.0</version>
+			<version>1.13.0</version>
 		</dependency>
     </dependencies>
 

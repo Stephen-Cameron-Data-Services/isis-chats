@@ -58,8 +58,7 @@ import au.com.scds.chats.dom.general.names.TransportTypes;
 import au.com.scds.chats.dom.participant.Participant;
 
 @DomainObject()
-@DomainObjectLayout(bookmarking = BookmarkPolicy.NEVER)
-@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
+
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Queries({
 		@Query(name = "findAttendsByActivityName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.Attend WHERE activity.name.indexOf(:name) >= 0 ORDER BY activity.startDateTime DESC"),
@@ -240,7 +239,7 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	}
 
 	@Action()
-	public Attend updateTransportTypes(
+	public Attend changeTransportTypes(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Arriving Transport Type") String arriving,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Departing Transport Type") String departing) {
 		setArrivingTransportTypeName(arriving);
@@ -248,19 +247,19 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 		return this;
 	}
 
-	public String default0UpdateTransportTypes() {
+	public String default0ChangeTransportTypes() {
 		return getArrivingTransportTypeName();
 	}
 
-	public String default1UpdateTransportTypes() {
+	public String default1ChangeTransportTypes() {
 		return getDepartingTransportTypeName();
 	}
 
-	public List<String> choices0UpdateTransportTypes() {
+	public List<String> choices0ChangeTransportTypes() {
 		return transportTypes.allNames();
 	}
 
-	public List<String> choices1UpdateTransportTypes() {
+	public List<String> choices1ChangeTransportTypes() {
 		return transportTypes.allNames();
 	}
 

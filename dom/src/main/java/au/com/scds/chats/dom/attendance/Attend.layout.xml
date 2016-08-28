@@ -5,7 +5,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<row>
 		<col span="12" unreferencedActions="true">
-			<ns2:domainObject />
+			<ns2:domainObject/>
 		</col>
 	</row>
 	<row>
@@ -16,7 +16,6 @@
 						<col span="6">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
-								<ns2:action id="Delete" />
 								<ns2:property id="activity" hidden="ALL_TABLES" />
 								<ns2:property id="activityName" hidden="ALL_EXCEPT_STANDALONE_TABLES" />
 								<ns2:property id="parentList" hidden="EVERYWHERE" />
@@ -24,9 +23,7 @@
 								<ns2:property id="participantName" hidden="OBJECT_FORMS" />
 							</ns2:fieldSet>
 							<ns2:fieldSet name="Transport" id="transport">
-								<ns2:action id="updateTransportTypes" />
-								<ns2:property id="arrivingTransportType" hidden="EVERYWHERE" />
-								<ns2:property id="departingTransportType" hidden="EVERYWHERE" />
+								<ns2:action id="changeTransportTypes" />
 								<ns2:property id="arrivingTransportTypeName"
 									hidden="ALL_TABLES">
 									<ns2:named>Arriving</ns2:named>
@@ -35,7 +32,10 @@
 									hidden="ALL_TABLES">
 									<ns2:named>Departing</ns2:named>
 								</ns2:property>
-							</ns2:fieldSet>
+								<!-- don't put hidden everywhere properties first or the actions will disappear -->
+								<ns2:property id="arrivingTransportType" hidden="EVERYWHERE" />
+								<ns2:property id="departingTransportType" hidden="EVERYWHERE" />
+							</ns2:fieldSet>	
 						</col>
 						<col span="6">
 							<ns2:fieldSet name="Attended" id="attend">
@@ -45,10 +45,10 @@
 							</ns2:fieldSet>
 							<ns2:fieldSet name="Times" id="times">
 								<ns2:action id="updateDatesAndTimes" />
-								<ns2:property id="startDateTime" />
+							<ns2:property id="startDateTime" />
 								<ns2:property id="endDateTime" />
 								<ns2:property id="attendanceInterval" />
-							</ns2:fieldSet>
+							</ns2:fieldSet>	
 						</col>
 					</row>
 				</tab>

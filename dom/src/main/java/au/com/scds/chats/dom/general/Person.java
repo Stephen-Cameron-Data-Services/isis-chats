@@ -239,23 +239,20 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	@Programmatic
 	// Creates a Statistical Linkage Key (SLK) for DEX reporting
 	public void buildSlk() throws Exception {
-		
-		String firstname = getFirstname();
-		String surname = getSurname();
 
 		// validate inputs
-		if (firstname == null || firstname.trim().equals(""))
+		if (getFirstname() == null || getFirstname().trim().equals(""))
 			throw new Exception("Person's first name is not set!");
-		else
-			firstname = firstname.trim();
-		if (surname == null || surname.trim().equals(""))
-			throw new Exception("Person's surname is not set!");
-		else
-			surname = surname.trim();			
+		if (getSurname() == null || getSurname().trim().equals(""))
+			throw new Exception("Person's surname is not set!");			
 		if (getBirthdate() == null)
 			throw new Exception("Person's birthdate is not set!");
 		if (getSex() == null)
 			throw new Exception("Person's sex is not set!");
+		
+		//remove all spaces
+		String firstname = getFirstname().replace(" ","");
+		String surname = getSurname().replace(" ","");
 
 		// build the key
 		StringBuffer buffer = new StringBuffer();
@@ -280,37 +277,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 		setSlk(buffer.toString());
 	}
 
-	/*
-	 * @Property()
-	 * 
-	 * //@PropertyLayout(hidden = Where.EVERYWHERE)
-	 * 
-	 * //@MemberOrder(sequence = "7")
-	 * 
-	 * @Column(name = "region", allowsNull = "true") public Region getRegion() {
-	 * return this.region; }
-	 * 
-	 * public void setRegion(Region region) { this.region = region; }
-	 * 
-	 * public List<Region> choicesRegion() { return regions.listAllRegions(); }
-	 * 
-	 * @Property()
-	 * 
-	 * //@PropertyLayout(named = "Region")
-	 * 
-	 * //@MemberOrder(sequence = "7.1")
-	 * 
-	 * @NotPersistent public String getRegionName() { return
-	 * regions.nameForRegion(getRegion()); }
-	 * 
-	 * public void setRegionName(String name) {
-	 * setRegion(regions.regionForName(name)); }
-	 * 
-	 * public List<String> choicesRegionName() { return regions.allNames(); }
-	 */
 	@Property()
-	// @PropertyLayout(hidden = Where.EVERYWHERE)
-	// @MemberOrder(sequence = "8")
 	@Column(allowsNull = "true")
 	public ContactType getContactType() {
 		return this.contactType;

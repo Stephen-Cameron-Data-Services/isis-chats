@@ -5,7 +5,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<row>
 		<col span="12" unreferencedActions="true">
-			<ns2:domainObject />
+			<ns2:domainObject bookmarking="AS_ROOT"/>
 		</col>
 	</row>
 	<row>
