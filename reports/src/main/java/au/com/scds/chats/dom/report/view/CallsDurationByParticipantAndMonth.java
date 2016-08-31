@@ -67,7 +67,7 @@ import org.joda.time.LocalDate;
 						+ "  person.birthdate AS birthDate, "
 						+ "  person.slk, "
 						+ "  timestampdiff(year,person.birthdate,curdate()) AS age, "						
-						+ "  participant.particpant_id AS participantId, "						
+						+ "  participant.participant_id AS participantId, "						
 						+ "  participant.region_name AS regionName, "
 						+ "  participant.status AS participantStatus, "
 						+ "	EXTRACT(YEAR_MONTH FROM telephonecall.startdatetime) as yearMonth, "

@@ -18,6 +18,7 @@
  */
 package au.com.scds.chats.dom.general;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -244,15 +245,15 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 		if (getFirstname() == null || getFirstname().trim().equals(""))
 			throw new Exception("Person's first name is not set!");
 		if (getSurname() == null || getSurname().trim().equals(""))
-			throw new Exception("Person's surname is not set!");			
+			throw new Exception("Person's surname is not set!");
 		if (getBirthdate() == null)
 			throw new Exception("Person's birthdate is not set!");
 		if (getSex() == null)
 			throw new Exception("Person's sex is not set!");
-		
-		//remove all spaces
-		String firstname = getFirstname().replace(" ","");
-		String surname = getSurname().replace(" ","");
+
+		// remove all spaces
+		String firstname = getFirstname().replace(" ", "");
+		String surname = getSurname().replace(" ", "");
 
 		// build the key
 		StringBuffer buffer = new StringBuffer();
@@ -342,11 +343,11 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 		// remove old address(es) if replacing both
 		// TODO this is maybe too complex? prevent orphan addresses
 		if (isMailAddress == true) {
-			if(getMailAddress() != null && !getMailAddress().equals(oldAddress)){
-					container.removeIfNotAlready(getMailAddress());
+			if (getMailAddress() != null && !getMailAddress().equals(oldAddress)) {
+				container.removeIfNotAlready(getMailAddress());
 			}
 			setMailAddress(newAddress);
-			if(oldAddress != null){
+			if (oldAddress != null) {
 				container.removeIfNotAlready(oldAddress);
 			}
 		}
@@ -362,7 +363,9 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	}
 
 	public Suburb default2UpdateStreetAddress() {
-		return getStreetAddress() != null ? suburbs.findSuburb(getStreetAddress().getSuburb(),new Integer(getStreetAddress().getPostcode())) : null;
+		return getStreetAddress() != null
+				? suburbs.findSuburb(getStreetAddress().getSuburb(), new Integer(getStreetAddress().getPostcode()))
+				: null;
 	}
 
 	public List<Suburb> choices2UpdateStreetAddress() {
@@ -512,6 +515,42 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 
 	public void setEnglishSkill(EnglishSkill englishSkill) {
 		this.englishSkill = englishSkill;
+	}
+
+	@Action(semantics = SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE)
+	// Provide a means to change the identifying unique key properties
+	public Person updateIdentity(@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named="First name") String firstname,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named="Surname") String surname,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named="Birthdate") LocalDate birthdate,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named="Sex") Sex sex) throws Exception {
+		Person existing = persons.findPerson(firstname, surname, birthdate);
+		if (existing == null) {
+			// transactional
+			setFirstname(firstname);
+			setSurname(surname);
+			setBirthdate(birthdate);
+			setSex(sex);
+			buildSlk();
+		} else {
+			container.warnUser("Such a person already exists!");
+		}
+		return this;
+	}
+	
+	public String default0UpdateIdentity(){
+		return getFirstname();
+	}
+	
+	public String default1UpdateIdentity(){
+		return getSurname();
+	}
+	
+	public LocalDate default2UpdateIdentity(){
+		return getBirthdate();
+	}
+	
+	public Sex default3UpdateIdentity(){
+		return getSex();
 	}
 
 	@Programmatic()

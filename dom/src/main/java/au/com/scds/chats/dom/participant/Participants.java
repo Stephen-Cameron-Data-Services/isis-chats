@@ -158,7 +158,7 @@ public class Participants {
 			try{
 			person = persons.createPerson(firstname, surname, dob, sex);
 			}catch(Exception e){
-				//discard as validating SLK inputs
+				System.out.print(e.getMessage());
 			}
 		}
 		final Participant participant = container.newTransientInstance(Participant.class);

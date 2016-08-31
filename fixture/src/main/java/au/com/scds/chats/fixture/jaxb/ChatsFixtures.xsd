@@ -87,6 +87,16 @@
 					</sequence>
 				</complexType>
 			</element>
+			<element name="salutations" maxOccurs="1" minOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="salutation"
+							type="tns:SalutationFixture" minOccurs="1"
+							maxOccurs="unbounded">
+						</element>
+					</sequence>				
+				</complexType>
+			</element>
 		</sequence>
 	</complexType>
 	<complexType name="ActivityFixture">
@@ -264,4 +274,10 @@
 	<element name="suburbs" type="tns:SuburbsFixture"></element>
 
     <element name="one-off-activity" type="tns:ActivityEventFixture"></element>
+
+    <complexType name="SalutationFixture">
+    	<simpleContent>
+    		<extension base="string"></extension>
+    	</simpleContent>
+    </complexType>
 </schema>

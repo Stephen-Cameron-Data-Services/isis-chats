@@ -16,19 +16,19 @@
 						<col span="6">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
-								<ns2:property id="salutation" hidden="EVERYWHERE"/>
-								<ns2:property id="salutationName" />
+								<ns2:property id="salutationName" hidden="ALL_TABLES"  />
 								<ns2:property id="firstname" />
+								<ns2:property id="surname" />
 								<ns2:property id="preferredname" />
 								<ns2:property id="middlename" />
-								<ns2:property id="surname" />
 								<ns2:property id="birthdate" />
-								<ns2:property id="sex" />
-								<ns2:property id="slk" />								
-								<ns2:property id="englishSkill" hidden="EVERYWHERE"/>
-								<ns2:property id="contactType" hidden="EVERYWHERE"/>
+								<ns2:property id="sex" />								
+								<ns2:property id="slk" />
 								<ns2:property id="contactTypeName" />
-								<ns2:property id="oldId" hidden="EVERYWHERE"/>
+								<ns2:property id="salutation" hidden="EVERYWHERE" />
+								<ns2:property id="englishSkill" hidden="EVERYWHERE" />
+								<ns2:property id="contactType" hidden="EVERYWHERE" />
+								<ns2:property id="oldId" hidden="EVERYWHERE" />
 							</ns2:fieldSet>
 						</col>
 						<col span="12" unreferencedCollections="true" />
@@ -47,9 +47,9 @@
 						</col>
 						<col span="6">
 							<ns2:fieldSet name="Address" id="addressDetails">
-								<ns2:property id="streetAddress" />
-								<ns2:property id="mailAddress" />
-								<ns2:property id="location" />
+								<ns2:property id="streetAddress" hidden="ALL_TABLES"/>
+								<ns2:property id="mailAddress" hidden="ALL_TABLES"/>
+								
 								<ns2:action id="updateStreetAddress" />
 								<ns2:action id="updateMailAddress" />
 							</ns2:fieldSet>
@@ -68,6 +68,7 @@
 								<ns2:property id="datanucleusVersionTimestamp"
 									hidden="ALL_TABLES" />
 								<ns2:property id="datanucleusVersionLong" hidden="ALL_TABLES" />
+								<ns2:property id="location"  hidden="ALL_TABLES"/>
 								<ns2:property id="createdBy" hidden="ALL_TABLES" />
 								<ns2:property id="createdOn" hidden="ALL_TABLES" />
 								<ns2:property id="lastModifiedBy" hidden="ALL_TABLES" />

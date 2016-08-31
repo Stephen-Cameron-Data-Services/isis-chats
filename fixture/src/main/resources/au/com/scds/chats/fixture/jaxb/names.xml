@@ -48,4 +48,11 @@
 		<tns:volunteerRole>Activity Host</tns:volunteerRole>
 		<tns:volunteerRole>Volunteer Caller</tns:volunteerRole>
 	</tns:volunteerRoles>
+	<tns:salutations>
+		<tns:salutation>Mr</tns:salutation>
+		<tns:salutation>Mrs</tns:salutation>
+		<tns:salutation>Ms</tns:salutation>
+		<tns:salutation>Miss</tns:salutation>
+		<tns:salutation>Dr</tns:salutation>
+	</tns:salutations>
 </tns:names>
