@@ -50,12 +50,13 @@ public class RecreateOneOffActivities extends FixtureScript {
 			wrap(activity).setCostForParticipant(fixture.getCostForParticipant());
 			AddressFixture a = fixture.getAddress();
 			Suburb suburb = wrap(suburbs).findSuburb(a.getSuburb(), a.getPostcode());
-			wrap(activity).updateAddress(a.getLocationName(), a.getStreet1(), a.getStreet2(), suburb);
+			wrap(activity).updateLocation( null, a.getLocationName(), a.getStreet1(), a.getStreet2(), suburb);
 			ec.addResult(this, activity);
-			for(ParticipationFixture par : fixture.getParticipations().getParticipation()){
+			for (ParticipationFixture par : fixture.getParticipations().getParticipation()) {
 				PersonFixture per = par.getPerson();
-				wrap(activity).addNewParticipant(per.getFirstname(), 
-						per.getSurname(), new LocalDate(per.getDateOfBirth().toGregorianCalendar().getTime()), Sex.valueOf(per.getSex().value()));
+				wrap(activity).addNewParticipant(per.getFirstname(), per.getSurname(),
+						new LocalDate(per.getDateOfBirth().toGregorianCalendar().getTime()),
+						Sex.valueOf(per.getSex().value()));
 			}
 		} catch (JAXBException e) {
 			e.printStackTrace();

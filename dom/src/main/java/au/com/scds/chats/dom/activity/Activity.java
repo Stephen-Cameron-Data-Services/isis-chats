@@ -60,7 +60,8 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 
 @PersistenceCapable(table = "activity", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-//@Unique(name = "Activity_UNQ", members = { "name", "startDateTime", "region" })
+// @Unique(name = "Activity_UNQ", members = { "name", "startDateTime", "region"
+// })
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "classifier", value = "_ACTIVITY")
 public abstract class Activity extends AbstractChatsDomainEntity implements Locatable, Comparable<Activity> {
 
@@ -89,7 +90,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	}
 
 	public Activity(DomainObjectContainer container, Participants participants, Volunteers volunteers,
-			 ActivityTypes activityTypes, Locations locations) {
+			ActivityTypes activityTypes, Locations locations) {
 		this.container = container;
 		this.participantsRepo = participants;
 		this.volunteersRepo = volunteers;
@@ -138,7 +139,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	 */
 	public int compareTo(final Activity other) {
 		// return ObjectContracts.compare(other, this, "startDateTime");
-		return ObjectContracts.compare(other, this,  "name", "startDateTime");
+		return ObjectContracts.compare(other, this, "name", "startDateTime");
 
 		// return ComparisonChain.start().compare(getName(),
 		// other.getName()).compare(getStartDateTime(),other.getStartDateTime()).compare(getRegion(),other.getRegion()).result();
@@ -260,8 +261,8 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	@PropertyLayout(named = "Address", hidden = Where.ALL_TABLES)
 	// @MemberOrder(name = "Location", sequence = "2")
 	@NotPersistent
-	public String getFullAddress() {
-		return (getAddress() != null) ? getAddress().title() : null;
+	public String getStreetAddress() {
+		return (getAddress() != null) ? getAddress().getFullStreetAddress() : null;
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
@@ -273,95 +274,100 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	}
 
 	@Action()
-	@ActionLayout(named = "Set Location")
-	// Address extends Location
-	// @MemberOrder(name = "location", sequence = "1")
-	public Activity updateAddress(
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Location") String name,
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Street 1") String street1,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Suburb") Suburb suburb) {
-		Address address = locationsRepo.createAddress();
-		address.setName(name);
-		address.setStreet1(street1);
-		address.setStreet2(street2);
-		address.setPostcode(suburb.getPostcode().toString());
-		address.setSuburb(suburb.getName());
-		// TODO consider empty address values, reset to null
-		address.updateGeocodedLocation();
-		Address oldAddress = getAddress();
-		setAddress(address);
-		if (oldAddress != null){
-			//TODO does not work
-			//container.flush();
-			container.remove(oldAddress);
+	public Activity updateLocation(
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Known Location") Address namedLocation,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "New Location Name") String name,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Address Street 1") String street1,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Address Street 2") String street2,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Address Suburb") Suburb suburb) {
+		if (namedLocation != null) {
+			setAddress(namedLocation);
+		} else {
+			// just orphan the previous address if present
+			Address address = locationsRepo.createAddress();
+			if (name != null && !name.trim().equals(""))
+				address.setName(name);
+			if (street1 != null && !street1.trim().equals(""))
+				address.setStreet1(street1);
+			if (street2 != null && !street2.trim().equals(""))
+				address.setName(street2);
+			if (suburb != null) {
+				address.setPostcode(suburb.getPostcode().toString());
+				address.setSuburb(suburb.getName());
+			}
+			address.updateGeocodedLocation();
+			setAddress(address);
 		}
 		return this;
 	}
 
-	public String default0UpdateAddress() {
-		return getAddress() != null ? getAddress().getName() : null;
+	public String validateUpdateLocation(Address namedLocation, String name, String street1, String street2,
+			Suburb suburb) {
+		String result = null;
+		if (namedLocation != null) {
+			if (name != null || street1 != null || street2 != null || suburb != null) {
+				return "An existing named Location and the details of a new Location/Address are not allowed";
+			}
+		} else if (name != null) {
+			// create a named location that may or may not be an valid street
+			// address
+			if (street1 != null && suburb == null) {
+				// a street address
+				return "Address Street 1 and Suburb are needed to create a valid Address";
+			}
+		} else {
+			// not named so must be an address
+			if (street1 == null || suburb == null) {
+				return "Address Street 1 and Suburb are needed to create a valid Address";
+			}
+		}
+		return result;
 	}
 
-	public String default1UpdateAddress() {
-		return getAddress() != null ? getAddress().getStreet1() : null;
+	public List<Address> choices0UpdateLocation() {
+		return locationsRepo.listAllNamedAddressLocations();
 	}
 
-	public String default2UpdateAddress() {
-		return getAddress() != null ? getAddress().getStreet2() : null;
+	private boolean isNamedAddress() {
+		return (getAddress() != null && getAddress().getName() != null) ? true : false;
 	}
 
-	public Suburb default3UpdateAddress() {
-		return getAddress() != null
-				? suburbs.findSuburb(getAddress().getSuburb(), new Integer(getAddress().getPostcode()))
-				: null;
+	public Address default0UpdateLocation() {
+		if (isNamedAddress()) {
+			return getAddress();
+		} else {
+			return null;
+		}
 	}
 
-	public List<Suburb> choices3UpdateAddress() {
+	public String default2UpdateLocation() {
+		if (isNamedAddress()) {
+			return null;
+		} else {
+			return getAddress() != null ? getAddress().getStreet1() : null;
+		}
+	}
+
+	public String default3UpdateLocation() {
+		if (isNamedAddress()) {
+			return null;
+		} else {
+			return getAddress() != null ? getAddress().getStreet2() : null;
+		}
+	}
+
+	public Suburb default4UpdateLocation() {
+		if (isNamedAddress()) {
+			return null;
+		} else {
+			return getAddress() != null ? suburbs.findSuburb(getAddress().getSuburb(), getAddress().getPostcode())
+					: null;
+		}
+	}
+
+	public List<Suburb> choices4UpdateLocation() {
 		return suburbs.listAllSuburbs();
 	}
-
-	/*@Programmatic()
-	public void updateAddress(String locationName, String street1, String street2, String suburb, int postcode) {
-		Suburb s = suburbs.findSuburb(suburb, postcode);
-		if (s != null) {
-			updateAddress(locationName, street1, street2, s);
-		}
-	}*/
-
-	/*
-	 * @Property(hidden = Where.EVERYWHERE)
-	 * 
-	 * @PropertyLayout(named = "Is Restricted") // @MemberOrder(sequence = "13")
-	 * 
-	 * @Column(allowsNull = "true") public Boolean getIsRestricted() { return
-	 * isRestricted; }
-	 * 
-	 * public void setIsRestricted(Boolean isRestricted) { this.isRestricted =
-	 * isRestricted; }
-	 */
-
-	/*
-	 * @Property(hidden = Where.EVERYWHERE)
-	 * 
-	 * @PropertyLayout(named = "Schedule Id") // @MemberOrder(sequence = "14")
-	 * 
-	 * @Column(allowsNull = "true") public Long getScheduleId() { return
-	 * scheduleId; }
-	 * 
-	 * public void setScheduleId(Long scheduleId) { this.scheduleId =
-	 * scheduleId; }
-	 */
-
-	/*
-	 * @Property(hidden = Where.EVERYWHERE)
-	 * 
-	 * @Column(allowsNull = "true") public Long getCopiedFromActivityId() {
-	 * return copiedFromActivityId; }
-	 * 
-	 * public void setCopiedFromActivityId(Long copiedFromActivityId) {
-	 * this.copiedFromActivityId = copiedFromActivityId; }
-	 */
 
 	@Property()
 	// @MemberOrder(sequence = "100")

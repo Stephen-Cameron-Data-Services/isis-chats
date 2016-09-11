@@ -48,6 +48,7 @@ import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.actinvoc.ActionInvocationContext;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 
@@ -161,21 +162,17 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	@NotPersistent
 	public String getAttendanceInterval() {
 		if (getStartDateTime() != null && getEndDateTime() != null) {
-			Period per = new Period(getStartDateTime().toLocalDateTime(), getEndDateTime().toLocalDateTime());
-			// ASC changed from decimal to hrs:min
-			// Float hours = ((float) per.toStandardMinutes().getMinutes()) /
-			// 60;
-			// return hoursFormat.format(hours);
-			return String.format("%02d:%02d", per.getHours(), per.getMinutes());
+			Duration duration = new Duration(getStartDateTime(), getEndDateTime());
+			return String.format("%02d:%02d", duration.getStandardHours(),  duration.getStandardMinutes() - duration.getStandardHours()*60);
 		} else
 			return null;
 	}
 
 	@Programmatic
-	public Integer getAttendanceIntervalInMinutes() {
+	public Long getAttendanceIntervalInMinutes() {
 		if (getStartDateTime() != null && getEndDateTime() != null) {
-			Period per = new Period(getStartDateTime().toLocalDateTime(), getEndDateTime().toLocalDateTime());
-			return per.toStandardMinutes().getMinutes();
+			Duration duration = new Duration(getStartDateTime(), getEndDateTime());
+			return duration.getStandardMinutes();
 		} else
 			return null;
 	}

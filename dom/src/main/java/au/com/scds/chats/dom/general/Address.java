@@ -27,6 +27,8 @@ import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Queries;
+import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Programmatic;
@@ -39,6 +41,10 @@ import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, value = "ADDRESS")
+@Queries({
+		@Query(name = "findAddressByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.Address WHERE name == :name"),
+		@Query(name = "findAllAddresses", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.Address"),
+		@Query(name = "findAllNamedAddresses", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.Address WHERE name != null && name.trim().length() > 0 ORDER BY name") })
 public class Address extends Location {
 
 	private String street1;
@@ -55,11 +61,26 @@ public class Address extends Location {
 
 	public String title() {
 		final TitleBuffer buf = new TitleBuffer();
-		buf.append(getStreet1());
+		if (getName() != null) {
+			buf.append(getName());
+			buf.append(",", getStreet1());
+		} else {
+			buf.append(getStreet1());
+		}
 		buf.append(",", getStreet2());
 		buf.append(",", getSuburb());
 		buf.append(",", getPostcode());
 		// TODO: append to TitleBuffer, typically value properties
+		return buf.toString();
+	}
+	
+	@NotPersistent
+	public String getFullStreetAddress() {
+		final TitleBuffer buf = new TitleBuffer();
+		buf.append(getStreet1());
+		buf.append(",", getStreet2());
+		buf.append(",", getSuburb());
+		buf.append(",", getPostcode());
 		return buf.toString();
 	}
 
@@ -113,8 +134,11 @@ public class Address extends Location {
 
 	@Programmatic
 	public void updateGeocodedLocation() {
-		String address = (getStreet1() != null ? getStreet1() + ", " : "") + (getStreet2() != null ? getStreet2() + ", " : "") + (getPostcode() != null ? getPostcode() + ", " : "") + ", Australia";
-		org.isisaddons.wicket.gmap3.cpt.applib.Location location = locationsRepo.locationOfAddressViaGmapLookup(address);
+		String address = (getStreet1() != null ? getStreet1() + ", " : "")
+				+ (getStreet2() != null ? getStreet2() + ", " : "")
+				+ (getPostcode() != null ? getPostcode() + ", " : "") + ", Australia";
+		org.isisaddons.wicket.gmap3.cpt.applib.Location location = locationsRepo
+				.locationOfAddressViaGmapLookup(address);
 		if (location != null) {
 			setLatitude(location.getLatitude());
 			setLongitude(location.getLongitude());
@@ -123,4 +147,6 @@ public class Address extends Location {
 
 	@Inject
 	protected Locations locationsRepo;
+
+
 }

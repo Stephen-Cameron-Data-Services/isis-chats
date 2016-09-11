@@ -83,6 +83,12 @@ public class Locations {
 		container.flush();
 		return obj;
 	}
+	
+	@Programmatic()
+	public List<Address> listAllNamedAddressLocations() {
+		List<Address> addresses = container.allMatches(new QueryDefault<>(Address.class, "findAllNamedAddresses"));
+		return addresses;
+	}
 
 	@Programmatic
 	public String nameForLocation(Location location) {

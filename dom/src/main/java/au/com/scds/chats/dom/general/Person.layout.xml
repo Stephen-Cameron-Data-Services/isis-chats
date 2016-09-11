@@ -49,7 +49,6 @@
 							<ns2:fieldSet name="Address" id="addressDetails">
 								<ns2:property id="streetAddress" hidden="ALL_TABLES"/>
 								<ns2:property id="mailAddress" hidden="ALL_TABLES"/>
-								
 								<ns2:action id="updateStreetAddress" />
 								<ns2:action id="updateMailAddress" />
 							</ns2:fieldSet>

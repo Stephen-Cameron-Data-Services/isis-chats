@@ -129,7 +129,7 @@ public class AttendanceList {
 
 	@Action
 	public AttendanceList addAttend(@Parameter(optionality = Optionality.MANDATORY) Participant participant) {
-		Attend attended = attendanceListsRepo.createAttend(this, parentActivity, participant, true);
+		Attend attended = attendanceListsRepo.createAttend(this, getParentActivity(), participant, true);
 		getAttends().add(attended);
 		return this;
 	}

@@ -40,6 +40,8 @@ import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 
+import au.com.scds.chats.dom.AbstractChatsDomainEntity;
+
 /**
  * Has a name and a latitude and longitude
  * 
@@ -51,7 +53,7 @@ import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, value = "LOCATION")
 @Queries({ @Query(name = "findLocationByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.Location WHERE name == :name"),
 		@Query(name = "findAllLocations", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.Location ORDER BY name") })
-public class Location extends AbstractDomainObject implements Locatable {
+public class Location extends AbstractChatsDomainEntity implements Locatable {
 
 	private String name;
 	private Double latitude;

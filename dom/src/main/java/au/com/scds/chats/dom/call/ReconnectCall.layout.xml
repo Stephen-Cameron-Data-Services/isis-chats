@@ -23,6 +23,7 @@
 							<ns2:fieldSet name="Times" id="time">
 								<ns2:action id="startCall" position="RIGHT" />
 								<ns2:action id="endCall" position="RIGHT" />
+								<ns2:action id="updateTimes" position="RIGHT" />
 								<ns2:property id="callLength" />
 								<ns2:property id="startDateTime" hidden="ALL_TABLES"/>
 								<ns2:property id="endDateTime" hidden="ALL_TABLES"/>

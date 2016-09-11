@@ -69,8 +69,8 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
  * 
  */
 @DomainObject(objectType = "ACTIVITY")
-@DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Location", "Admin" })
+//@DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+//@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Location", "Admin" })
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "ACTIVITY")
@@ -333,8 +333,6 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	}
 
 	@Property()
-	@PropertyLayout(named = "Location Name")
-	// @MemberOrder(name = "Location", sequence = "1")
 	@Override
 	@NotPersistent
 	public String getAddressLocationName() {
@@ -345,17 +343,15 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	}
 
 	@Property()
-	@PropertyLayout(named = "Address")
-	// @MemberOrder(name = "Location", sequence = "2")
 	@Override
 	@NotPersistent
-	public String getFullAddress() {
-		if (getParentActivity() != null && super.getFullAddress() == null) {
-			return getParentActivity().getFullAddress();
+	public String getStreetAddress() {
+		if (getParentActivity() != null && super.getStreetAddress() == null) {
+			return getParentActivity().getStreetAddress();
 		}
-		return super.getFullAddress();
+		return super.getStreetAddress();
 	}
-
+/*
 	@Programmatic
 	@NotPersistent
 	private Address getSelfOrParentAddress() {
@@ -367,22 +363,22 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	}
 
 	@Override
-	public String default0UpdateAddress() {
+	public String default0CreateLocation() {
 		return getSelfOrParentAddress() != null ? getSelfOrParentAddress().getName() : null;
 	}
 
 	@Override
-	public String default1UpdateAddress() {
+	public String default1CreateLocation() {
 		return getSelfOrParentAddress() != null ? getSelfOrParentAddress().getStreet1() : null;
 	}
 
 	@Override
-	public String default2UpdateAddress() {
+	public String default2CreateLocation() {
 		return getSelfOrParentAddress() != null ? getSelfOrParentAddress().getStreet2() : null;
 	}
 
 	@Override
-	public Suburb default3UpdateAddress() {
+	public Suburb default3CreateLocation() {
 		if(getSelfOrParentAddress() != null){
 			//convert postcode to integer
 			Integer postcode = null;
@@ -400,13 +396,13 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	}
 
 	@Override
-	public List<Suburb> choices3UpdateAddress() {
+	public List<Suburb> choices3CreateLocation() {
 		return suburbs.listAllSuburbs();
 	}
+	
+	*/
 
-	@Property(hidden = Where.ALL_TABLES)
-	@PropertyLayout(named = "Lat-Long")
-	// @MemberOrder(name = "Location", sequence = "3")
+	@Property()
 	@Override
 	@NotPersistent
 	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
@@ -415,27 +411,6 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		}
 		return super.getLocation();
 	}
-
-	/*
-	 * @Property(hidden = Where.ALL_TABLES)
-	 * 
-	 * @Override
-	 * 
-	 * @NotPersistent public Boolean getIsRestricted() { if (getParentActivity()
-	 * != null && super.getIsRestricted() == null) { return
-	 * getParentActivity().getIsRestricted(); } return super.getIsRestricted();
-	 * }
-	 */
-
-	/*
-	 * @Property(hidden = Where.ALL_TABLES)
-	 * 
-	 * @Override
-	 * 
-	 * @NotPersistent public Long getScheduleId() { if (getParentActivity() !=
-	 * null && super.getScheduleId() == null) { return
-	 * getParentActivity().getScheduleId(); } return super.getScheduleId(); }
-	 */
 
 	@Inject
 	AttendanceLists attendanceListsRepo;

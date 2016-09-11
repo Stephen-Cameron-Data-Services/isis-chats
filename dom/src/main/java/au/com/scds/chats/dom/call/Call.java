@@ -28,12 +28,13 @@ import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.services.clock.ClockService;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.Period;
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.participant.Participant;
 
 /**
- * AbstractCall is a logged call to a Participant.
+ * A Call is a logged call to a Participant.
  * 
  * @author stevec
  */
@@ -97,32 +98,32 @@ public abstract class Call extends AbstractChatsDomainEntity {
 	}
 
 	@Property(editing = Editing.DISABLED, notPersisted = true)
-	@PropertyLayout(named = "Call Length in Hours", describedAs = "The interval that the participant attended the activity in hours")
+	@PropertyLayout(named = "Call Length", describedAs = "The interval that the participant attended the activity (hours:minutes)")
 	@MemberOrder(sequence = "6")
 	@NotPersistent
 	public String getCallLength() {
 		if (getStartDateTime() != null && getEndDateTime() != null) {
-			Period per = new Period(getStartDateTime().toLocalDateTime(), getEndDateTime().toLocalDateTime());
-			Float hours = ((float) per.toStandardMinutes().getMinutes()) / 60;
-			return hoursFormat.format(hours);
+			Duration duration = new Duration(getStartDateTime(), getEndDateTime());
+			return String.format("%01d:%02d", duration.getStandardHours(),  duration.getStandardMinutes() - duration.getStandardHours()*60);
 		} else
 			return null;
 	}
 
 	@Property()
 	@MemberOrder(sequence = "7.1")
-	@Column(allowsNull = "true", jdbcType="CLOB")
+	@Column(allowsNull = "true", jdbcType = "CLOB")
 	public String getSummaryNotes() {
 		return summaryNotes;
 	}
 
 	@Property()
-	@PropertyLayout(named="Notes")
+	@PropertyLayout(named = "Notes")
 	@MemberOrder(sequence = "7.2")
 	@NotPersistent
 	public String getTrimmedSummaryNotes() {
 		if (getSummaryNotes() != null) {
-			return (getSummaryNotes().length() > 50) ? getSummaryNotes().substring(0, 49).concat("...") : getSummaryNotes();
+			return (getSummaryNotes().length() > 50) ? getSummaryNotes().substring(0, 49).concat("...")
+					: getSummaryNotes();
 		} else {
 			return null;
 		}
@@ -131,6 +132,7 @@ public abstract class Call extends AbstractChatsDomainEntity {
 	@Action()
 	public Call startCall() {
 		setStartDateTime(clockService.nowAsDateTime());
+		setEndDateTime(null);
 		return this;
 	}
 
@@ -139,16 +141,52 @@ public abstract class Call extends AbstractChatsDomainEntity {
 		setEndDateTime(clockService.nowAsDateTime());
 		return this;
 	}
+	
+	public String disableEndCall() {
+		if (getStartDateTime() == null) {
+			return "Start Time has not been set";
+		} else {
+			return null;
+		}
+	}
+
+	@Action()
+	public Call updateTimes(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Time") DateTime start,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "End Time") DateTime end) {
+		setStartDateTime(start);
+		setEndDateTime(end);
+		return this;
+	}
+	
+	public DateTime default0UpdateTimes(){
+		return getStartDateTime();
+	}
+	
+	public DateTime default1UpdateTimes(){
+		return getEndDateTime();
+	}
+	
+	public String validateUpdateTimes(DateTime start, DateTime end){
+		if(start.isAfter(end)){
+			return "End Time is before Start Time";
+		}
+		Duration duration = new Duration(getStartDateTime(), getEndDateTime());
+		if(duration.getStandardDays() > 0){
+			return "End Time is not on the same date as Start Time";
+		}
+		return null;
+	}
 
 	public void setSummaryNotes(String notes) {
 		this.summaryNotes = notes;
 	}
 
 	@Programmatic
-	public Integer getCallIntervalInMinutes() {
+	public Long getCallIntervalInMinutes() {
 		if (getStartDateTime() != null && getEndDateTime() != null) {
-			Period per = new Period(getStartDateTime().toLocalDateTime(), getEndDateTime().toLocalDateTime());
-			return per.toStandardMinutes().getMinutes();
+			Duration duration = new Duration(getStartDateTime(), getEndDateTime());
+			return duration.getStandardMinutes();
 		} else
 			return null;
 	}
