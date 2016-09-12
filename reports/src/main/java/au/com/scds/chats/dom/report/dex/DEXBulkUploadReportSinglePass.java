@@ -36,7 +36,7 @@ public class DEXBulkUploadReportSinglePass {
 
 	// constants
 	private final int TELEPHONE_WEB_CONTACT = 65;
-	private final int SOCIAL_SUPPORT_GROUP = 63;
+	private final int SOCIAL_SUPPORT_INDIVIDUAL = 64;
 	private final int OUTLET_ACTIVITY_ID_NORTH = 10262;
 	private final int OUTLET_ACTIVITY_ID_NORTHWEST = 10263;
 	private final int OUTLET_ACTIVITY_ID_SOUTH = 10260;
@@ -336,7 +336,7 @@ public class DEXBulkUploadReportSinglePass {
 		if(a.getActivityAbbreviatedName().equals("ChatsSocialCall")){
 			session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);			
 		}else{
-			session.setServiceTypeId(this.SOCIAL_SUPPORT_GROUP);			
+			session.setServiceTypeId(this.SOCIAL_SUPPORT_INDIVIDUAL);			
 		}
 		SessionClients clients = new SessionClients();
 		session.setCaseId(createCaseId(a.getActivityAbbreviatedName()));

@@ -78,8 +78,8 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 	}
 
 	@Property()
-	@PropertyLayout()
-	@MemberOrder(name = "Scheduling", sequence = "1")
+	//@PropertyLayout()
+	//@MemberOrder(name = "Scheduling", sequence = "1")
 	@Column(allowsNull = "true")
 	public Periodicity getPeriodicity() {
 		return periodicity;
@@ -114,7 +114,7 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 	 * Provides a list of currently scheduled activities sorted soonest to
 	 * latest
 	 */
-	@MemberOrder(sequence = "10")
+	//@MemberOrder(sequence = "10")
 	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<ActivityEvent> getFutureActivities() {
 		ArrayList<ActivityEvent> temp = new ArrayList<>();
@@ -127,7 +127,7 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 		return temp;
 	}
 
-	@MemberOrder(sequence = "20")
+	//@MemberOrder(sequence = "20")
 	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<ActivityEvent> getCompletedActivities() {
 		ArrayList<ActivityEvent> temp = new ArrayList<>();
@@ -140,8 +140,8 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 	}
 
 	@Action
-	@ActionLayout(named = "Add Next")
-	@MemberOrder(name = "futureActivities", sequence = "1")
+	//@ActionLayout(named = "Add Next")
+	//@MemberOrder(name = "futureActivities", sequence = "1")
 	public RecurringActivity addNextScheduledActivity() {
 		if (getChildActivities().size() == 0) {
 			if (getStartDateTime() == null) {

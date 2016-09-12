@@ -30,6 +30,7 @@ import org.apache.isis.applib.util.ObjectContracts;
 import org.incode.module.note.dom.api.notable.Notable;
 //import org.incode.module.note.dom.api.notable.Notable;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.Period;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.volunteer.Volunteer;
@@ -204,14 +205,14 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> , N
 		return this;
 	}
 	
-	@Programmatic
-	public Integer getCallIntervalInMinutes(){
+	/*@Programmatic
+	public Long getCallIntervalInMinutes(){
 		if (getStartDateTime() != null && getEndDateTime() != null) {
-			Period per = new Period(getStartDateTime().toLocalDateTime(), getEndDateTime().toLocalDateTime());
-			return per.toStandardMinutes().getMinutes();
+			Duration duration = new Duration(getStartDateTime(), getEndDateTime());
+			return duration.getStandardMinutes();
 		} else
 			return null;
-	}
+	}*/
 
 	@Override
 	public int compareTo(ScheduledCall other) {

@@ -32,7 +32,7 @@ import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
 @DomainService(nature = NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "200")
 public class DEXReporting {
-	
+
 	public List<ParticipantActivityByMonthForDEX> listAttendanceByYearMonthAndRegion(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Year-Month (YYYYMM)") Integer yearMonth,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Region") String region) {
@@ -51,12 +51,15 @@ public class DEXReporting {
 
 	public Clob createDexReportForMonth(@ParameterLayout(named = "Year") Integer year,
 			@ParameterLayout(named = "Month") Month month, @ParameterLayout(named = "Region") String regionName)
-					throws Exception {
-		DEXBulkUploadReportSinglePass report1 = new DEXBulkUploadReportSinglePass( repository, isisJdoSupport,  participants, 2016, 1, "SOUTH");
+			throws Exception {
+		System.out
+				.println("Starting DEX report: Year=" + year + ",Month=" + month.getValue() + ",region=" + regionName);
+		DEXBulkUploadReportSinglePass report1 = new DEXBulkUploadReportSinglePass(repository, isisJdoSupport,
+				participants, year, month.getValue(), regionName);
 
 		String report = jaxbService.toXml(report1.build());
-		Clob clob = new Clob("DexReportFor" + regionName + (month.getValue() < 10 ? "0" : "") + month + year + ".xml", "text/xml",
-				report);
+		Clob clob = new Clob("DexReportFor" + regionName + "_" + month + "_" + year + ".xml", "text/xml", report);
+		System.out.println("Ending DEX report.");
 		return clob;
 	}
 
@@ -66,7 +69,7 @@ public class DEXReporting {
 
 	@Inject
 	DomainObjectContainer container;
-	
+
 	@Inject
 	RepositoryService repository;
 

@@ -32,7 +32,7 @@
 							<ns2:fieldSet name="Location" id="location">
 								<ns2:action id="updateLocation">
 									<ns2:named>Update</ns2:named>
-								</ns2:action>								
+								</ns2:action>
 								<ns2:property id="addressLocationName" />
 								<ns2:property id="streetAddress" />
 							</ns2:fieldSet>
@@ -54,7 +54,12 @@
 				<tab name="Scheduled">
 					<row>
 						<col span="12">
-							<ns2:collection id="futureActivities" />
+							<ns2:collection id="futureActivities">
+								<ns2:action id="addNextScheduledActivity" >
+									<ns2:named>Add Next</ns2:named>
+									<ns2:describedAs>Adds another child Activity</ns2:describedAs>
+								</ns2:action>
+							</ns2:collection>
 						</col>
 					</row>
 				</tab>
