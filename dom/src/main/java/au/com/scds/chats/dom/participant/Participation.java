@@ -192,11 +192,11 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	@Property(hidden = Where.EVERYWHERE)
 	@Column(allowsNull = "true")
 	public TransportType getDepartingTransportType() {
-		return arrivingTransportType;
+		return departingTransportType;
 	}
 
 	public void setDepartingTransportType(final TransportType transportType) {
-		this.arrivingTransportType = transportType;
+		this.departingTransportType = transportType;
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
