@@ -56,7 +56,7 @@ public class Activities {
 	@MemberOrder(sequence = "1")
 	public RecurringActivity createRecurringActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
-			@Parameter(optionality = Optionality.MANDATORY, maxLength = 25) @ParameterLayout(named = "Abbreviated name") final String abbreviatedName,
+			@Parameter(optionality = Optionality.MANDATORY, maxLength = 25) @ParameterLayout(named = "DEX 'Case' Name") final String abbreviatedName,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start date time") final DateTime startDateTime) {
 		final RecurringActivity obj = container.newTransientInstance(RecurringActivity.class);
 		obj.setName(name);

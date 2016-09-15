@@ -26,6 +26,7 @@ import java.util.TreeSet;
 
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -235,6 +236,84 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	public void setStartDateTime(DateTime startDateTime) {
 		this.startDateTime = startDateTime;
+	}
+
+	public void modifyStartDateTime(DateTime startDateTime) {
+		if (startDateTime == null)
+			return;
+		if (getApproximateEndDateTime().isBefore(startDateTime)) {
+			setApproximateEndDateTime(null);
+		}
+		setStartDateTime(startDateTime);
+	}
+
+	@Action
+	public Activity updateGeneral(@Parameter(optionality = Optionality.MANDATORY) String name,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "DEX 'Case' Id", describedAs = "Gets used to build a DSS DEX Case name (5 digits are appended for region-month-year)") String abbreviatedName,
+			@Parameter(optionality = Optionality.OPTIONAL) String description,
+			@Parameter(optionality = Optionality.OPTIONAL) String activityType,
+			@Parameter(optionality = Optionality.MANDATORY) DateTime startDateTime,
+			@Parameter(optionality = Optionality.OPTIONAL) DateTime approximateEndDateTime,
+			@Parameter(optionality = Optionality.OPTIONAL) String costForParticipant) {
+		setName(name);
+		setApproximateEndDateTime(approximateEndDateTime);
+		setDescription(description);
+		setActivityType((activityType != null) ? activityTypesRepo.activityTypeForName(activityType): null);
+		setStartDateTime(startDateTime);
+		setApproximateEndDateTime(approximateEndDateTime);
+		setCostForParticipant(costForParticipant);
+		return this;
+	}
+
+	public String default0UpdateGeneral() {
+		return getName();
+	}
+
+	public String default1UpdateGeneral() {
+		return getAbbreviatedName();
+	}
+
+	public String default2UpdateGeneral() {
+		return getDescription();
+	}
+
+	public String default3UpdateGeneral() {
+		return (getActivityType() != null) ? getActivityType().getName() : null;
+	}
+	
+	public List<String> choices3UpdateGeneral() {
+		return activityTypesRepo.allNames();
+	}
+
+	public DateTime default4UpdateGeneral() {
+		return getStartDateTime();
+	}
+
+	public DateTime default5UpdateGeneral() {
+		if (getApproximateEndDateTime() != null)
+			return getApproximateEndDateTime();
+		else
+			return getStartDateTime();
+	}
+
+	public String default6UpdateGeneral() {
+		return getCostForParticipant();
+	}
+
+	public String validateUpdateGeneral(String name, String abbreviatedName, String description,
+			ActivityType activityType, DateTime startDateTime, DateTime approximateEndDateTime,
+			String costForParticipant) {
+		if (approximateEndDateTime != null) {
+			if (approximateEndDateTime.isBefore(startDateTime))
+				return "Approximate End Date Time is before Start Date Time";
+			Duration dur = new Duration(startDateTime, approximateEndDateTime);
+			if (dur.getStandardHours() > 12) {
+				return " Start Date Time and Approximate End Date Time are on different days";
+			} else {
+				return null;
+			}
+		} else
+			return null;
 	}
 
 	@Property(hidden = Where.EVERYWHERE)

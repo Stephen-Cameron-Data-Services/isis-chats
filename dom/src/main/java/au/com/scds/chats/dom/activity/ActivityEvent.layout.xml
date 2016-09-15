@@ -5,7 +5,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<row>
 		<col span="12" unreferencedActions="true">
-			<ns2:domainObject />
+			<ns2:domainObject bookmarking="AS_ROOT" />
 		</col>
 	</row>
 	<row>
@@ -16,21 +16,26 @@
 						<col span="6">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
+								<ns2.action id="updateGeneral">
+									<ns2:named>Update</ns2:named>
+								</ns2.action>
 								<ns2:property id="name" />
-								<ns2:property id="abbreviatedName" hidden="ALL_TABLES" />
-								<ns2:property id="parentActivity" hidden="ALL_TABLES"/>
-								<ns2:property id="description" hidden="ALL_TABLES"/>
+								<ns2:property id="abbreviatedName" hidden="ALL_TABLES">
+									<ns2:named>DEX 'Case' Id</ns2:named>
+								</ns2:property>
+								<ns2:property id="parentActivity" hidden="ALL_TABLES" />
+								<ns2:property id="description" hidden="ALL_TABLES" />
 								<ns2:property id="activityTypeName" />
 								<ns2:property id="startDateTime" />
 								<ns2:property id="approximateEndDateTime" />
-								<ns2:property id="costForParticipant" hidden="ALL_TABLES"/>
+								<ns2:property id="costForParticipant" hidden="ALL_TABLES" />
 							</ns2:fieldSet>
 						</col>
 						<col span="6">
 							<ns2:fieldSet name="Location" id="location">
 								<ns2:action id="updateLocation">
 									<ns2:named>Update</ns2:named>
-								</ns2:action>								
+								</ns2:action>
 								<ns2:property id="addressLocationName" />
 								<ns2:property id="streetAddress" />
 							</ns2:fieldSet>
@@ -52,7 +57,7 @@
 				<tab name="Attendance">
 					<row>
 						<col span="12">
-							<ns2:collection id="attends" >
+							<ns2:collection id="attends">
 								<ns2:action id="createAttendanceList" />
 								<ns2:action id="showAttendanceList" />
 							</ns2:collection>
@@ -93,7 +98,7 @@
 								<ns2:property id="lastModifiedOn" hidden="ALL_TABLES" />
 								<ns2:property id="region" hidden="EVERYWHERE" />
 								<ns2:property id="regionName" />
-								<ns2:property id="location" hidden="ALL_TABLES"/>
+								<ns2:property id="location" hidden="ALL_TABLES" />
 							</ns2:fieldSet>
 						</col>
 						<col span="8" unreferencedCollections="true">

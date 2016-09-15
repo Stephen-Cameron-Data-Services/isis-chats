@@ -18,6 +18,8 @@
  */
 package au.com.scds.chats.dom;
 
+import java.util.regex.Matcher;
+
 import javax.inject.Inject;
 
 import javax.jdo.annotations.*;
@@ -57,7 +59,7 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 	private String lastModifiedBy;
 	private DateTime lastModifiedOn;
 	private Region region;
-
+	
 	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Created by")
 	@MemberOrder(name = "Admin", sequence = "1")

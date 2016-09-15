@@ -17,6 +17,7 @@
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
 								<ns2:property id="name" />
+								<ns2:property id="abbreviatedName" />
 								<ns2:property id="description" />
 								<ns2:property id="activityTypeName" />
 								<ns2:property id="startDateTime" />

@@ -163,6 +163,8 @@ public class Volunteers {
 		time.setStartDateTime(startDateTime);
 		time.setEndDateTime(endDateTime);
 		time.setVolunteer(volunteer);
+		if(volunteer.getVolunteerRoles().size() == 1)
+			time.setVolunteerRole(volunteer.getVolunteerRoles().get(0));
 		volunteer.addVolunteeredTime(time);
 		activity.addVolunteeredTime(time);
 		container.persistIfNotAlready(time);

@@ -143,10 +143,13 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 	//@ActionLayout(named = "Add Next")
 	//@MemberOrder(name = "futureActivities", sequence = "1")
 	public RecurringActivity addNextScheduledActivity() {
+		System.out.println("AddNextScheduledActivity start");
 		if (getChildActivities().size() == 0) {
+			System.out.println("AddNextScheduledActivity 1");
 			if (getStartDateTime() == null) {
 				container.warnUser("Please set 'Start date time' for this Recurring Activity (as starting time from which to schedule more activity events)");
 			} else {
+				System.out.println("AddNextScheduledActivity 2");
 				ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 				obj.setParentActivity(this);
 				obj.setName(getName());
@@ -156,8 +159,10 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 				getChildActivities().add(obj);
 				container.persistIfNotAlready(obj);
 				container.flush();
+				System.out.println("AddNextScheduledActivity 3");
 			}
 		} else {
+			System.out.println("AddNextScheduledActivity 4");
 			// find last event from which to schedule next
 			// first should be last in chronological order
 			DateTime origin = getChildActivities().first().getStartDateTime();
@@ -185,6 +190,16 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 			getChildActivities().add(obj);
 			container.persistIfNotAlready(obj);
 			container.flush();
+			System.out.println("AddNextScheduledActivity 5");
+		}
+		System.out.println("AddNextScheduledActivity end");
+		return this;
+	}
+	
+	@Action 
+	public RecurringActivity addMany(Integer count){
+		for(int i = 1; i <= count; i++){
+			addNextScheduledActivity();
 		}
 		return this;
 	}

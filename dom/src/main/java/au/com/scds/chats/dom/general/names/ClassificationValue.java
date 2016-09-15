@@ -48,6 +48,8 @@ import au.com.scds.chats.dom.activity.Activity;
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
 public abstract class ClassificationValue {
+	
+	private String name;
 
 	public ClassificationValue() {
 	}
@@ -55,8 +57,10 @@ public abstract class ClassificationValue {
 	public ClassificationValue(String name) {
 		this.name = name;
 	}
-
-	private String name;
+	
+	public String title(){
+		return getName();
+	}
 
 	@PrimaryKey
 	@Column(allowsNull = "false", length = 50)

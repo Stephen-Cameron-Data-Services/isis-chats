@@ -50,6 +50,7 @@ import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.activity.Activity;
+import au.com.scds.chats.dom.general.TransportHub;
 import au.com.scds.chats.dom.general.names.TransportType;
 import au.com.scds.chats.dom.general.names.TransportTypes;
 
@@ -65,8 +66,11 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	private String oldId;
 	private TransportType arrivingTransportType;
 	private TransportType departingTransportType;
+	private TransportHub transportHub;
 	private String dropoffTime;
 	private String pickupTime;
+
+
 	//private AdditionalTransportTime transportTime = AdditionalTransportTime.ZERO;
 	private Long roleId;
 	private String transportNotes;
@@ -130,8 +134,9 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	public Participation updateGeneral(
 			@ParameterLayout(named = "Arriving Transport Type") @Parameter(optionality = Optionality.MANDATORY) String arrivingTransportType,
 			@ParameterLayout(named = "Departing Transport Type") @Parameter(optionality = Optionality.MANDATORY) String departingTransportType,
-			@ParameterLayout(named = "Pickup Time") @Parameter(optionality = Optionality.MANDATORY, regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM") String pickupTime,
-			@ParameterLayout(named = "Dropoff Time") @Parameter(optionality = Optionality.MANDATORY, regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM") String dropoffTime) {
+			@ParameterLayout(named = "Transport Hub") @Parameter(optionality = Optionality.OPTIONAL) TransportHub transportHub,
+			@ParameterLayout(named = "Pickup Time") @Parameter(optionality = Optionality.OPTIONAL, regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM") String pickupTime,
+			@ParameterLayout(named = "Dropoff Time") @Parameter(optionality = Optionality.OPTIONAL, regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM") String dropoffTime) {
 		setArrivingTransportTypeName(arrivingTransportType);
 		setDepartingTransportTypeName(departingTransportType);
 		setPickupTime(pickupTime);
@@ -146,12 +151,16 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	public String default1UpdateGeneral() {
 		return getDepartingTransportTypeName();
 	}
-
+	
 	public String default2UpdateGeneral() {
-		return getPickupTime();
+		return getTransportHubName();
 	}
 
 	public String default3UpdateGeneral() {
+		return getPickupTime();
+	}
+
+	public String default4UpdateGeneral() {
 		return getDropoffTime();
 	}
 
@@ -213,6 +222,22 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 
 	public List<String> choicesDepartingTransportTypeName() {
 		return transportTypes.allNames();
+	}
+	
+	@Property()
+	@Column(allowsNull = "true")
+	public TransportHub getTransportHub() {
+		return transportHub;
+	}
+
+	public void setTransportHub(TransportHub transportHub) {
+		this.transportHub = transportHub;
+	}
+	
+	@Property()
+	@NotPersistent()
+	public String getTransportHubName() {
+		return (getTransportHub() != null) ? getTransportHub().title() : null;
 	}
 
 	@Property(regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM")

@@ -89,6 +89,12 @@ public class Locations {
 		List<Address> addresses = container.allMatches(new QueryDefault<>(Address.class, "findAllNamedAddresses"));
 		return addresses;
 	}
+	
+	@Programmatic()
+	public List<TransportHub> listAllTransportHubs() {
+		List<TransportHub> hubs = container.allMatches(new QueryDefault<>(TransportHub.class, "findAllTransportHubs"));
+		return hubs;
+	}
 
 	@Programmatic
 	public String nameForLocation(Location location) {

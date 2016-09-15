@@ -63,14 +63,13 @@ public class Address extends Location {
 		final TitleBuffer buf = new TitleBuffer();
 		if (getName() != null) {
 			buf.append(getName());
-			buf.append(",", getStreet1());
+			buf.append(",", getSuburb());
 		} else {
 			buf.append(getStreet1());
+			buf.append(",", getStreet2());
+			buf.append(",", getSuburb());
+			buf.append(",", getPostcode());
 		}
-		buf.append(",", getStreet2());
-		buf.append(",", getSuburb());
-		buf.append(",", getPostcode());
-		// TODO: append to TitleBuffer, typically value properties
 		return buf.toString();
 	}
 	

@@ -281,8 +281,11 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 
 	@Action()
 	public Attend wasNotAttended() {
-		if (getAttended())
+		if (getAttended()){
 			setAttended(false);
+			setStartDateTime(null);
+			setEndDateTime(null);
+		}
 		return this;
 	}
 

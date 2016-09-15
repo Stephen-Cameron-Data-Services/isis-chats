@@ -69,8 +69,9 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
  * 
  */
 @DomainObject(objectType = "ACTIVITY")
-//@DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-//@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Location", "Admin" })
+// @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+// @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" },
+// middle = { "Location", "Admin" })
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "ACTIVITY")
@@ -142,7 +143,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 			return "Attendance-List already created for this Activity";
 		}
 	}
-	
+
 	@Action()
 	public AttendanceList showAttendanceList() {
 		return getAttendances();
@@ -169,7 +170,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	@Property
 	@CollectionLayout(render = RenderType.EAGERLY)
 	@Persistent(mappedBy = "activity")
-	@Order(column="activity_order_idx")
+	@Order(column = "activity_order_idx")
 	public List<Attend> getAttends() {
 		return this.attends;
 	}
@@ -193,11 +194,22 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 			@ParameterLayout(named = "Finished At") DateTime endDateTime) {
 		VolunteeredTimeForActivity time = volunteersRepo.createVolunteeredTimeForActivity(volunteer, this,
 				startDateTime, endDateTime);
+		if (time != null) {
+			super.addVolunteeredTime(time);
+		}
 		return this;
 	}
 
 	public List<Volunteer> choices0AddVolunteeredTime() {
 		return volunteersRepo.listActive();
+	}
+
+	public DateTime default1AddVolunteeredTime() {
+		return getStartDateTime();
+	}
+
+	public DateTime default2AddVolunteeredTime() {
+		return getApproximateEndDateTime();
 	}
 
 	@Action()
@@ -351,56 +363,39 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		}
 		return super.getStreetAddress();
 	}
-/*
-	@Programmatic
-	@NotPersistent
-	private Address getSelfOrParentAddress() {
-		if (getParentActivity() != null && super.getAddress() == null) {
-			return getParentActivity().getAddress();
-		}
-		return super.getAddress();
-
-	}
-
-	@Override
-	public String default0CreateLocation() {
-		return getSelfOrParentAddress() != null ? getSelfOrParentAddress().getName() : null;
-	}
-
-	@Override
-	public String default1CreateLocation() {
-		return getSelfOrParentAddress() != null ? getSelfOrParentAddress().getStreet1() : null;
-	}
-
-	@Override
-	public String default2CreateLocation() {
-		return getSelfOrParentAddress() != null ? getSelfOrParentAddress().getStreet2() : null;
-	}
-
-	@Override
-	public Suburb default3CreateLocation() {
-		if(getSelfOrParentAddress() != null){
-			//convert postcode to integer
-			Integer postcode = null;
-			try{
-				postcode = Integer.valueOf(getSelfOrParentAddress().getPostcode());
-			}catch(NumberFormatException e){
-				//not a problem
-			}
-			//return valid Suburb
-			return suburbs.findSuburb(getSelfOrParentAddress().getSuburb(),
-					postcode);
-		}else{
-			return null;
-		}
-	}
-
-	@Override
-	public List<Suburb> choices3CreateLocation() {
-		return suburbs.listAllSuburbs();
-	}
-	
-	*/
+	/*
+	 * @Programmatic
+	 * 
+	 * @NotPersistent private Address getSelfOrParentAddress() { if
+	 * (getParentActivity() != null && super.getAddress() == null) { return
+	 * getParentActivity().getAddress(); } return super.getAddress();
+	 * 
+	 * }
+	 * 
+	 * @Override public String default0CreateLocation() { return
+	 * getSelfOrParentAddress() != null ? getSelfOrParentAddress().getName() :
+	 * null; }
+	 * 
+	 * @Override public String default1CreateLocation() { return
+	 * getSelfOrParentAddress() != null ? getSelfOrParentAddress().getStreet1()
+	 * : null; }
+	 * 
+	 * @Override public String default2CreateLocation() { return
+	 * getSelfOrParentAddress() != null ? getSelfOrParentAddress().getStreet2()
+	 * : null; }
+	 * 
+	 * @Override public Suburb default3CreateLocation() {
+	 * if(getSelfOrParentAddress() != null){ //convert postcode to integer
+	 * Integer postcode = null; try{ postcode =
+	 * Integer.valueOf(getSelfOrParentAddress().getPostcode());
+	 * }catch(NumberFormatException e){ //not a problem } //return valid Suburb
+	 * return suburbs.findSuburb(getSelfOrParentAddress().getSuburb(),
+	 * postcode); }else{ return null; } }
+	 * 
+	 * @Override public List<Suburb> choices3CreateLocation() { return
+	 * suburbs.listAllSuburbs(); }
+	 * 
+	 */
 
 	@Property()
 	@Override

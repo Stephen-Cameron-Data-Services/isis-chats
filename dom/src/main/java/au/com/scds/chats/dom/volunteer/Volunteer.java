@@ -37,6 +37,7 @@ import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
+import org.apache.isis.applib.annotation.RenderType;
 //import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.annotation.Where;
 //import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
@@ -190,6 +191,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 			getVolunteeredTimes().add(time);
 	}
 
+	@CollectionLayout(render=RenderType.EAGERLY)
 	public List<VolunteerRole> getVolunteerRoles() {
 		return volunteerRoles;
 	}

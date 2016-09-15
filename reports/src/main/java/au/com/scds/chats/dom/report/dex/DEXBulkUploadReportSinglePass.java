@@ -1,6 +1,7 @@
 package au.com.scds.chats.dom.report.dex;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.List;
@@ -75,9 +76,9 @@ public class DEXBulkUploadReportSinglePass {
 	private Boolean validationMode;
 	private Map<String, Map<String, ParticipantActivityByMonthForDEX>> participationByMonth;
 
-	//utility
+	// utility
 	private SimpleDateFormat formatter;
-	
+
 	private DEXBulkUploadReportSinglePass() {
 	}
 
@@ -126,7 +127,7 @@ public class DEXBulkUploadReportSinglePass {
 		this.mode = ClientIdGenerationMode.NAME_KEY;
 		// see if data is valid and report results
 		this.validationMode = false;
-		
+
 		formatter = new SimpleDateFormat("ddMMYYYY");
 
 	}
@@ -134,7 +135,7 @@ public class DEXBulkUploadReportSinglePass {
 	public DEXFileUpload build() throws Exception {
 
 		String clientKey = null, caseKey = null, sessionKey = null;
-		Map<String, Client> clientsMap = new HashMap<>();
+		Map<String, ClientWrapper> clientsMap = new HashMap<>();
 		Map<String, Case> casesMap = new HashMap<>();
 		Map<String, String> clientsInCaseMap = new HashMap<>();
 		Map<String, SessionWrapper> sessionsMap = new HashMap<>();
@@ -146,7 +147,10 @@ public class DEXBulkUploadReportSinglePass {
 				this.endDateTime.toDate() /* new DateTime("2016-01-14") */, "attended", true, "region",
 				this.regionName));
 		for (ActivityParticipantAttendance attend : attendances) {
-			if ( true /*attend.getBirthDate().isBefore(this.bornBeforeDate) && !attend.getSurname().contains("STAFF")*/) {
+			if (true /*
+						 * attend.getBirthDate().isBefore(this.bornBeforeDate)
+						 * && !attend.getSurname().contains("STAFF")
+						 */) {
 				System.out.print(attend.getActivityAbbreviatedName() + "," + attend.getStartDateTime() + ",");
 				System.out.print(attend.getSurname() + "," + attend.getFirstName() + "," + attend.getBirthDate() + ",");
 				System.out.println(attend.getMinutesAttended());
@@ -187,8 +191,8 @@ public class DEXBulkUploadReportSinglePass {
 				// find or make a session
 				SessionWrapper sessionWrapper = null;
 				if (!sessionsMap.containsKey(sessionKey)) {
-					Session session = buildNewSession(sessionKey,attend);
-					sessionWrapper = new SessionWrapper(session);
+					sessionWrapper = buildNewSession(sessionKey, attend);
+
 					sessionsMap.put(sessionKey, sessionWrapper);
 				} else {
 					sessionWrapper = sessionsMap.get(sessionKey);
@@ -325,24 +329,26 @@ public class DEXBulkUploadReportSinglePass {
 		return minutesAttended + arrive + depart;
 	}
 
-	private Session buildNewSession(String sessionKey, ActivityParticipantAttendance a) {
+	private SessionWrapper buildNewSession(String sessionKey, ActivityParticipantAttendance a) {
 		Session session = new Session();
 		this.sessions.getSession().add(session);
 		if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
-			session.setSessionId((String.format("%1$-12s",Math.abs(sessionKey.hashCode()))+formatter.format(a.getStartDateTime())).replace(" ", "0"));
-		}else{
+			session.setSessionId(
+					(String.format("%1$-12s", Math.abs(sessionKey.hashCode())) + formatter.format(a.getStartDateTime()))
+							.replace(" ", "0"));
+		} else {
 			session.setSessionId(sessionKey);
 		}
-		if(a.getActivityAbbreviatedName().equals("ChatsSocialCall")){
-			session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);			
-		}else{
-			session.setServiceTypeId(this.SOCIAL_SUPPORT_INDIVIDUAL);			
+		if (a.getActivityAbbreviatedName().equals("ChatsSocialCall")) {
+			session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
+		} else {
+			session.setServiceTypeId(this.SOCIAL_SUPPORT_INDIVIDUAL);
 		}
 		SessionClients clients = new SessionClients();
 		session.setCaseId(createCaseId(a.getActivityAbbreviatedName()));
 		session.setSessionDate(new LocalDate(a.getStartDateTime()));
 		session.setSessionClients(clients);
-		return session;
+		return new SessionWrapper(session);
 	}
 
 	private Case buildNewCase(ActivityParticipantAttendance a) {
@@ -355,46 +361,54 @@ public class DEXBulkUploadReportSinglePass {
 		return case_;
 	}
 
-	private Client buildNewClient(String clientKey, Long participantId) {
+	private ClientWrapper buildNewClient(String clientKey, Long participantId) {
 		Participant participant = persistenceManager.getObjectById(Participant.class,
 				participantId + "[OID]au.com.scds.chats.dom.participant.Participant");
-		Client client = new Client();
-		client.setClientId(clientKey);
-		client.setSlk(participant.getPerson().getSlk());
-		client.setConsentToProvideDetails(participant.isConsentToProvideDetails());
-		client.setConsentedForFutureContacts(participant.isConsentedForFutureContacts());
-		switch (this.mode) {
-		case NAME_KEY:
-			client.setGivenName(participant.getPerson().getFirstname());
-			client.setFamilyName(participant.getPerson().getSurname());
-			break;
-		case SLK_KEY:
-			client.setGivenName(null);
-			client.setFamilyName(null);
+
+		// first validate the client data;
+		ClientWrapper wrapper = new ClientWrapper();
+		wrapper.validateParticipant(participant);
+		// build a client
+		if (wrapper.getErrorCount() == 0) {
+			Client client = new Client();
+			wrapper.setClient(client);
+			client.setClientId(clientKey);
+			client.setSlk(participant.getPerson().getSlk());
+			client.setConsentToProvideDetails(participant.isConsentToProvideDetails());
+			client.setConsentedForFutureContacts(participant.isConsentedForFutureContacts());
+			switch (this.mode) {
+			case NAME_KEY:
+				client.setGivenName(participant.getPerson().getFirstname());
+				client.setFamilyName(participant.getPerson().getSurname());
+				break;
+			case SLK_KEY:
+				client.setGivenName(null);
+				client.setFamilyName(null);
+			}
+			client.setIsUsingPsuedonym(false);
+			client.setBirthDate(participant.getPerson().getBirthdate());
+			client.setIsBirthDateAnEstimate(false);
+			client.setGenderCode(participant.getPerson().getSex() == Sex.MALE ? "MALE" : "FEMALE");
+			client.setCountryOfBirthCode(participant.getCountryOfBirth().getName().substring(9));
+			client.setLanguageSpokenAtHomeCode(participant.getLanguageSpokenAtHome().getName().substring(10));
+			client.setAboriginalOrTorresStraitIslanderOriginCode(
+					participant.getAboriginalOrTorresStraitIslanderOrigin().getName().substring(40));
+			client.setHasDisabilities(participant.isHasDisabilities());
+			client.setAccommodationTypeCode(participant.getAccommodationType().getName().substring(19));
+			client.setDvaCardStatusCode(participant.getDvaCardStatus().getName().substring(15));
+			client.setHasCarer(participant.isHasCarer());
+			client.setHouseholdCompositionCode(participant.getHouseholdComposition().getName().substring(22));
+			Address s = participant.getPerson().getStreetAddress();
+			if (s != null) {
+				ResidentialAddress address = new ResidentialAddress();
+				address.setSuburb(s.getSuburb());
+				address.setPostcode(s.getPostcode());
+				address.setStateCode("TAS");
+				client.setResidentialAddress(address);
+			}
+			clients.getClient().add(client);
 		}
-		client.setIsUsingPsuedonym(false);
-		client.setBirthDate(participant.getPerson().getBirthdate());
-		client.setIsBirthDateAnEstimate(false);
-		client.setGenderCode(participant.getPerson().getSex() == Sex.MALE ? "MALE" : "FEMALE");
-		client.setCountryOfBirthCode(participant.getCountryOfBirth().getName().substring(9));
-		client.setLanguageSpokenAtHomeCode(participant.getLanguageSpokenAtHome().getName().substring(10));
-		client.setAboriginalOrTorresStraitIslanderOriginCode(
-				participant.getAboriginalOrTorresStraitIslanderOrigin().getName().substring(40));
-		client.setHasDisabilities(participant.isHasDisabilities());
-		client.setAccommodationTypeCode(participant.getAccommodationType().getName().substring(19));
-		client.setDvaCardStatusCode(participant.getDvaCardStatus().getName().substring(15));
-		client.setHasCarer(participant.isHasCarer());
-		client.setHouseholdCompositionCode(participant.getHouseholdComposition().getName().substring(22));
-		Address s = participant.getPerson().getStreetAddress();
-		if (s != null) {
-			ResidentialAddress address = new ResidentialAddress();
-			address.setSuburb(s.getSuburb());
-			address.setPostcode(s.getPostcode());
-			address.setStateCode("TAS");
-			client.setResidentialAddress(address);
-		}
-		clients.getClient().add(client);
-		return client;
+		return wrapper;
 	}
 
 	private String createCaseId(String activityName) {
@@ -415,6 +429,7 @@ public class DEXBulkUploadReportSinglePass {
 		return id + ((this.month < 10) ? "0" : "") + this.month.toString() + this.year.toString().substring(2);
 	}
 
+	/** Class used to determine total time for a Session **/
 	private class SessionWrapper {
 
 		private int count = 0;
@@ -426,7 +441,7 @@ public class DEXBulkUploadReportSinglePass {
 		}
 
 		public int getAverageTimeInMinutes() {
-			return  Math.round(((float)totalMinutes)/count);
+			return Math.round(((float) totalMinutes) / count);
 		}
 
 		public Session getSession() {
@@ -445,5 +460,76 @@ public class DEXBulkUploadReportSinglePass {
 		public void addClient(SessionClient client) {
 			session.getSessionClients().getSessionClient().add(client);
 		}
+	}
+
+	/** Class used to validate Client data **/
+	private class ClientWrapper {
+
+		private Client client = null;
+		private List<String> errors = new ArrayList<>();
+
+		public void validateParticipant(Participant participant) {
+			if (participant == null) {
+				errors.add("No Participant found");
+			} else {
+				if (participant.getPerson()==null)
+					errors.add("No Person found");
+				if (participant.getPerson().getSlk()==null)
+					errors.add("No SLK found for Person " + participant.getPerson().getFullname());
+				if (participant.getPerson().getFirstname()==null)
+					errors.add("No SLK found for Person " + participant.getPerson().getFullname());
+				if (participant.getPerson().getSurname()==null)
+					errors.add("No SLK found for Person " + participant.getPerson().getFullname());
+				if (participant.getPerson().getSlk()==null)
+					errors.add("No SLK found for Person " + participant.getPerson().getFullname());
+				if (participant.isConsentToProvideDetails()==null)
+					errors.add("Consent To Provide Details is NULL for Participant " + participant.getFullName());
+				if (participant.isConsentedForFutureContacts()==null)
+					errors.add("Consent To Future Contacts is NULL for Participant " + participant.getFullName());
+
+				if (participant.getPerson().getBirthdate())==null)
+					errors.add("Brthdate is NULL for Person " + participant.getPerson().getFullname());
+				if (participant.getPerson().getSex()==null)
+					errors.add("Sex is NULL for Person " + participant.getPerson().getFullname());
+				if (participant.getCountryOfBirth().getName()==null)
+					errors.add("Country of Birth is NULL for Participant " + participant.getFullName());
+				if (participant.getLanguageSpokenAtHome().getName()==null)
+					errors.add("Language Spoken at Home is NULL for Participant " + participant.getFullName());
+				if (participant.getAboriginalOrTorresStraitIslanderOrigin()==null)
+					errors.add("Aboriginal  OrTorres Strait Islander Origin is NULL for Participant " + participant.getFullName());
+				if (participant.isHasDisabilities()==null)
+					errors.add("Has Disabilities is NULL for Participant " + participant.getFullName());
+				if (participant.getDvaCardStatus()==null)
+					errors.add("DVA Card Status is NULL for Participant " + participant.getFullName());
+				if (participant.isHasCarer()==null)
+					errors.add("Has Carer is NULL for Participant " + participant.getFullName());
+				if (participant.isHasDisabilities()==null)
+					errors.add("Has Disabilities is NULL for Participant " + participant.getFullName());
+				if (participant.getHouseholdComposition()==null)
+					errors.add("Household Composition Code is NULL for Participant " + participant.getFullName());
+				Address s = participant.getPerson().getStreetAddress();
+				if (s != null) {
+					ResidentialAddress address = new ResidentialAddress();
+					address.setSuburb(s.getSuburb());
+					address.setPostcode(s.getPostcode());
+					address.setStateCode("TAS");
+					client.setResidentialAddress(address);
+				}
+			}
+
+		}
+
+		public void setClient(Client client) {
+			this.client = client;
+		}
+
+		public Client getClient() {
+			return this.client;
+		}
+
+		public int getErrorCount() {
+			return errors.size();
+		}
+
 	}
 }
