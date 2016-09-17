@@ -26,6 +26,7 @@ import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportSinglePass;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportSinglePass.DEXFileUploadWrapper;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
 
@@ -57,10 +58,19 @@ public class DEXReporting {
 		DEXBulkUploadReportSinglePass report1 = new DEXBulkUploadReportSinglePass(repository, isisJdoSupport,
 				participants, year, month.getValue(), regionName);
 
-		String report = jaxbService.toXml(report1.build());
-		Clob clob = new Clob("DexReportFor" + regionName + "_" + month + "_" + year + ".xml", "text/xml", report);
-		System.out.println("Ending DEX report.");
-		return clob;
+		DEXFileUploadWrapper wrapped = report1.build();
+		if (wrapped.hasErrors()) {
+			String report = wrapped.getErrors();
+			Clob clob = new Clob("DexReportingERRORSFor" + regionName + "_" + month + "_" + year + ".txt", "text/", report);
+			System.out.println("Ending DEX report.");
+			return clob;
+		} else {
+			String report = jaxbService.toXml(wrapped.getFileUpload());
+			Clob clob = new Clob("DexReportFor" + regionName + "_" + month + "_" + year + ".xml", "text/xml", report);
+			System.out.println("Ending DEX report.");
+			return clob;
+		}
+		
 	}
 
 	public List<String> choices2CreateDexReportForMonth() {

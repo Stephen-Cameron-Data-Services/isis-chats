@@ -32,6 +32,7 @@ import javax.jdo.annotations.Unique;
 
 import com.google.common.collect.ComparisonChain;
 
+import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
@@ -50,6 +51,10 @@ import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.activity.Activity;
+import au.com.scds.chats.dom.general.TransportHub;
+import au.com.scds.chats.dom.general.Locations;
+import au.com.scds.chats.dom.general.Suburb;
+import au.com.scds.chats.dom.general.Suburbs;
 import au.com.scds.chats.dom.general.TransportHub;
 import au.com.scds.chats.dom.general.names.TransportType;
 import au.com.scds.chats.dom.general.names.TransportTypes;
@@ -152,8 +157,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 		return getDepartingTransportTypeName();
 	}
 	
-	public String default2UpdateGeneral() {
-		return getTransportHubName();
+	public TransportHub default2UpdateGeneral() {
+		return getTransportHub();
 	}
 
 	public String default3UpdateGeneral() {
@@ -239,6 +244,102 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	public String getTransportHubName() {
 		return (getTransportHub() != null) ? getTransportHub().title() : null;
 	}
+	
+	@Action()
+	public Participation updateTransportHub(
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Known Location") TransportHub namedTransportHub,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "New Location Name") String name,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "TransportHub Street 1") String street1,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "TransportHub Street 2") String street2,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "TransportHub Suburb") Suburb suburb) {
+		if (namedTransportHub != null) {
+			setTransportHub(namedTransportHub);
+		} else {
+			// just orphan the previous address if present
+			TransportHub hub = locationsRepo.createTransportHub();
+			if (name != null && !name.trim().equals(""))
+				hub.setName(name);
+			if (street1 != null && !street1.trim().equals(""))
+				hub.setStreet1(street1);
+			if (street2 != null && !street2.trim().equals(""))
+				hub.setName(street2);
+			if (suburb != null) {
+				hub.setPostcode(suburb.getPostcode().toString());
+				hub.setSuburb(suburb.getName());
+			}
+			hub.updateGeocodedLocation();
+			setTransportHub(hub);
+		}
+		return this;
+	}
+
+	public String validateUpdateTransportHub(TransportHub namedLocation, String name, String street1, String street2,
+			Suburb suburb) {
+		String result = null;
+		if (namedLocation != null) {
+			if (name != null || street1 != null || street2 != null || suburb != null) {
+				return "An existing named Location and the details of a new Location/Transport Hub are not allowed";
+			}
+		} else if (name != null) {
+			// create a named location that may or may not be an valid street
+			// address
+			if (street1 != null && suburb == null) {
+				// a street address
+				return "Transport Hub Street 1 and Suburb are needed to create a valid TransportHub";
+			}
+		} else {
+			// not named so must be an address
+			if (street1 == null || suburb == null) {
+				return "Transport Hub Street 1 and Suburb are needed to create a valid TransportHub";
+			}
+		}
+		return result;
+	}
+
+	public List<TransportHub> choices0UpdateTransportHub() {
+		return locationsRepo.listAllNamedTransportHubs();
+	}
+
+	private boolean isNamedTransportHub() {
+		return (getTransportHub() != null && getTransportHub().getName() != null) ? true : false;
+	}
+
+	public TransportHub default0UpdateTransportHub() {
+		if (isNamedTransportHub()) {
+			return getTransportHub();
+		} else {
+			return null;
+		}
+	}
+
+	public String default2UpdateTransportHub() {
+		if (isNamedTransportHub()) {
+			return null;
+		} else {
+			return getTransportHub() != null ? getTransportHub().getStreet1() : null;
+		}
+	}
+
+	public String default3UpdateTransportHub() {
+		if (isNamedTransportHub()) {
+			return null;
+		} else {
+			return getTransportHub() != null ? getTransportHub().getStreet2() : null;
+		}
+	}
+
+	public Suburb default4UpdateTransportHub() {
+		if (isNamedTransportHub()) {
+			return null;
+		} else {
+			return getTransportHub() != null ? suburbs.findSuburb(getTransportHub().getSuburb(), getTransportHub().getPostcode())
+					: null;
+		}
+	}
+
+	public List<Suburb> choices4UpdateTransportHub() {
+		return suburbs.listAllSuburbs();
+	}
 
 	@Property(regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM")
 	@PropertyLayout(hidden = Where.ALL_TABLES)
@@ -316,5 +417,11 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 
 	@Inject
 	TransportTypes transportTypes;
+	
+	@Inject
+	Locations locationsRepo;
+	
+	@Inject
+	Suburbs suburbs;
 
 }

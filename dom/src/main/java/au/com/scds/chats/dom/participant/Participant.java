@@ -75,8 +75,8 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 
 	private Person person;
 	private Status status = Status.ACTIVE;
+	@Persistent(mappedBy = "participant")
 	protected SortedSet<Participation> participations = new TreeSet<Participation>();
-
 	// Social Factor Properties
 	private String limitingHealthIssues;
 	private String otherLimitingFactors;

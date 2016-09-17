@@ -16,7 +16,8 @@ import org.apache.isis.applib.util.TitleBuffer;
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, value = "TRANSPORT_HUB")
 @Queries({
 		@Query(name = "findTransportHubByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.TransportHub WHERE name == :name"),
-		@Query(name = "findAllTransportHubs", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.TransportHub") })
+		@Query(name = "findAllTransportHubs", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.TransportHub"),
+		@Query(name = "findAllNamedTransportHubs", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.TransportHub WHERE name != null && name.trim().length() > 0 ORDER BY name") })
 public class TransportHub extends Address {
 
 	@Override

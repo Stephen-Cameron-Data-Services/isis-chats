@@ -49,6 +49,8 @@ public class DEXBulkUploadReportSinglePass {
 
 	// the XML report file object
 	private DEXFileUpload fileUpload;
+	// wrapper for the above
+	private DEXFileUploadWrapper fileUploadWrapper;
 
 	// xml report root node children
 	private Clients clients;
@@ -86,6 +88,8 @@ public class DEXBulkUploadReportSinglePass {
 			Participants participants, Integer year, Integer month, String regionName) {
 
 		this.fileUpload = new DEXFileUpload();
+		this.fileUploadWrapper = new DEXFileUploadWrapper();
+		this.fileUploadWrapper.setFileUpload(this.fileUpload);
 		this.clients = new Clients();
 		this.cases = new Cases();
 		this.sessions = new Sessions();
@@ -132,7 +136,7 @@ public class DEXBulkUploadReportSinglePass {
 
 	}
 
-	public DEXFileUpload build() throws Exception {
+	public DEXFileUploadWrapper build() throws Exception {
 
 		String clientKey = null, caseKey = null, sessionKey = null;
 		Map<String, ClientWrapper> clientsMap = new HashMap<>();
@@ -268,7 +272,7 @@ public class DEXBulkUploadReportSinglePass {
 		if (callsCaseClientsMap.size() > 0) {
 			this.cases.getCase().add(callsCase);
 		}
-		return fileUpload;
+		return fileUploadWrapper;
 	}
 
 	private Integer adjustTimeForTransport(Integer minutesAttended, String arrivingTransportType,
@@ -368,7 +372,7 @@ public class DEXBulkUploadReportSinglePass {
 		// first validate the client data;
 		ClientWrapper wrapper = new ClientWrapper();
 		wrapper.validateParticipant(participant);
-		// build a client
+		// build a client if no errors
 		if (wrapper.getErrorCount() == 0) {
 			Client client = new Client();
 			wrapper.setClient(client);
@@ -408,6 +412,8 @@ public class DEXBulkUploadReportSinglePass {
 			}
 			clients.getClient().add(client);
 		}
+		// add wrapper for final check for errors
+		this.fileUploadWrapper.addClientWrapper(wrapper);
 		return wrapper;
 	}
 
@@ -472,51 +478,55 @@ public class DEXBulkUploadReportSinglePass {
 			if (participant == null) {
 				errors.add("No Participant found");
 			} else {
-				if (participant.getPerson()==null)
+				if (participant.getPerson() == null) {
 					errors.add("No Person found");
-				if (participant.getPerson().getSlk()==null)
-					errors.add("No SLK found for Person " + participant.getPerson().getFullname());
-				if (participant.getPerson().getFirstname()==null)
-					errors.add("No SLK found for Person " + participant.getPerson().getFullname());
-				if (participant.getPerson().getSurname()==null)
-					errors.add("No SLK found for Person " + participant.getPerson().getFullname());
-				if (participant.getPerson().getSlk()==null)
-					errors.add("No SLK found for Person " + participant.getPerson().getFullname());
-				if (participant.isConsentToProvideDetails()==null)
-					errors.add("Consent To Provide Details is NULL for Participant " + participant.getFullName());
-				if (participant.isConsentedForFutureContacts()==null)
-					errors.add("Consent To Future Contacts is NULL for Participant " + participant.getFullName());
-
-				if (participant.getPerson().getBirthdate())==null)
-					errors.add("Brthdate is NULL for Person " + participant.getPerson().getFullname());
-				if (participant.getPerson().getSex()==null)
-					errors.add("Sex is NULL for Person " + participant.getPerson().getFullname());
-				if (participant.getCountryOfBirth().getName()==null)
-					errors.add("Country of Birth is NULL for Participant " + participant.getFullName());
-				if (participant.getLanguageSpokenAtHome().getName()==null)
-					errors.add("Language Spoken at Home is NULL for Participant " + participant.getFullName());
-				if (participant.getAboriginalOrTorresStraitIslanderOrigin()==null)
-					errors.add("Aboriginal  OrTorres Strait Islander Origin is NULL for Participant " + participant.getFullName());
-				if (participant.isHasDisabilities()==null)
-					errors.add("Has Disabilities is NULL for Participant " + participant.getFullName());
-				if (participant.getDvaCardStatus()==null)
-					errors.add("DVA Card Status is NULL for Participant " + participant.getFullName());
-				if (participant.isHasCarer()==null)
-					errors.add("Has Carer is NULL for Participant " + participant.getFullName());
-				if (participant.isHasDisabilities()==null)
-					errors.add("Has Disabilities is NULL for Participant " + participant.getFullName());
-				if (participant.getHouseholdComposition()==null)
-					errors.add("Household Composition Code is NULL for Participant " + participant.getFullName());
-				Address s = participant.getPerson().getStreetAddress();
-				if (s != null) {
-					ResidentialAddress address = new ResidentialAddress();
-					address.setSuburb(s.getSuburb());
-					address.setPostcode(s.getPostcode());
-					address.setStateCode("TAS");
-					client.setResidentialAddress(address);
+				} else {
+					if (participant.getPerson().getSlk() == null)
+						errors.add("No SLK found for Person " + participant.getPerson().getFullname());
+					if (participant.getPerson().getFirstname() == null)
+						errors.add("No SLK found for Person " + participant.getPerson().getFullname());
+					if (participant.getPerson().getSurname() == null)
+						errors.add("No SLK found for Person " + participant.getPerson().getFullname());
+					if (participant.getPerson().getSlk() == null)
+						errors.add("No SLK found for Person " + participant.getPerson().getFullname());
+					if (participant.isConsentToProvideDetails() == null)
+						errors.add("Consent To Provide Details is NULL for Participant " + participant.getFullName());
+					if (participant.isConsentedForFutureContacts() == null)
+						errors.add("Consent To Future Contacts is NULL for Participant " + participant.getFullName());
+					if (participant.getPerson().getBirthdate() == null)
+						errors.add("Brthdate is NULL for Person " + participant.getPerson().getFullname());
+					if (participant.getPerson().getSex() == null)
+						errors.add("Sex is NULL for Person " + participant.getPerson().getFullname());
+					if (participant.getCountryOfBirth() == null)
+						errors.add("Country of Birth is NULL for Participant " + participant.getFullName());
+					if (participant.getLanguageSpokenAtHome() == null)
+						errors.add("Language Spoken at Home is NULL for Participant " + participant.getFullName());
+					if (participant.getAboriginalOrTorresStraitIslanderOrigin() == null)
+						errors.add("Aboriginal  OrTorres Strait Islander Origin is NULL for Participant "
+								+ participant.getFullName());
+					if (participant.isHasDisabilities() == null)
+						errors.add("Has Disabilities is NULL for Participant " + participant.getFullName());
+					if (participant.getDvaCardStatus() == null)
+						errors.add("DVA Card Status is NULL for Participant " + participant.getFullName());
+					if (participant.isHasCarer() == null)
+						errors.add("Has Carer is NULL for Participant " + participant.getFullName());
+					if (participant.isHasDisabilities() == null)
+						errors.add("Has Disabilities is NULL for Participant " + participant.getFullName());
+					if (participant.getHouseholdComposition() == null)
+						errors.add("Household Composition Code is NULL for Participant " + participant.getFullName());
+					if (participant.getPerson().getStreetAddress() == null) {
+						errors.add("Street Address is NULL for Person " + participant.getPerson().getFullname());
+					} else {
+						Address s = participant.getPerson().getStreetAddress();
+						if (participant.getPerson().getStreetAddress().getSuburb() == null)
+							errors.add("Street Address Suburb is NULL for Person "
+									+ participant.getPerson().getFullname());
+						if (participant.getPerson().getStreetAddress().getPostcode() == null)
+							errors.add("Street Address Postcode is NULL for Person "
+									+ participant.getPerson().getFullname());
+					}
 				}
 			}
-
 		}
 
 		public void setClient(Client client) {
@@ -529,6 +539,50 @@ public class DEXBulkUploadReportSinglePass {
 
 		public int getErrorCount() {
 			return errors.size();
+		}
+
+		public List<String> getErrors() {
+			return errors;
+		}
+	}
+
+	/** Class used to report all Client/Participant errors to user **/
+	public class DEXFileUploadWrapper {
+
+		private DEXFileUpload fileUpload;
+		private ArrayList<ClientWrapper> clients = new ArrayList<>();
+
+		public DEXFileUpload getFileUpload() {
+			return fileUpload;
+		}
+
+		public void setFileUpload(DEXFileUpload fileUpload) {
+			this.fileUpload = fileUpload;
+		}
+
+		public void addClientWrapper(ClientWrapper client) {
+			this.clients.add(client);
+		}
+
+		public boolean hasErrors() {
+			boolean hasErrors = false;
+			for (ClientWrapper client : clients) {
+				if (client.getErrorCount() > 0)
+					hasErrors = true;
+			}
+			return hasErrors;
+		}
+
+		public String getErrors() {
+			StringBuffer allErrors = new StringBuffer();
+			for (ClientWrapper client : clients) {
+				if (client.getErrorCount() > 0) {
+					for (String error : client.getErrors()) {
+						allErrors.append(error + "\r\n");
+					}
+				}
+			}
+			return allErrors.toString();
 		}
 
 	}

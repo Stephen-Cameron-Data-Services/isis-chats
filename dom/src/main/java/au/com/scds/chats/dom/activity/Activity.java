@@ -248,7 +248,8 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	}
 
 	@Action
-	public Activity updateGeneral(@Parameter(optionality = Optionality.MANDATORY) String name,
+	public Activity updateGeneral(
+			@Parameter(optionality = Optionality.MANDATORY) String name,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "DEX 'Case' Id", describedAs = "Gets used to build a DSS DEX Case name (5 digits are appended for region-month-year)") String abbreviatedName,
 			@Parameter(optionality = Optionality.OPTIONAL) String description,
 			@Parameter(optionality = Optionality.OPTIONAL) String activityType,
@@ -301,7 +302,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	}
 
 	public String validateUpdateGeneral(String name, String abbreviatedName, String description,
-			ActivityType activityType, DateTime startDateTime, DateTime approximateEndDateTime,
+			String activityType, DateTime startDateTime, DateTime approximateEndDateTime,
 			String costForParticipant) {
 		if (approximateEndDateTime != null) {
 			if (approximateEndDateTime.isBefore(startDateTime))

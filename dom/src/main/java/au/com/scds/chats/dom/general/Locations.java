@@ -85,6 +85,14 @@ public class Locations {
 	}
 	
 	@Programmatic()
+	public TransportHub createTransportHub() {
+		final TransportHub obj = container.newTransientInstance(TransportHub.class);
+		container.persistIfNotAlready(obj);
+		container.flush();
+		return obj;
+	}
+	
+	@Programmatic()
 	public List<Address> listAllNamedAddressLocations() {
 		List<Address> addresses = container.allMatches(new QueryDefault<>(Address.class, "findAllNamedAddresses"));
 		return addresses;
@@ -93,6 +101,11 @@ public class Locations {
 	@Programmatic()
 	public List<TransportHub> listAllTransportHubs() {
 		List<TransportHub> hubs = container.allMatches(new QueryDefault<>(TransportHub.class, "findAllTransportHubs"));
+		return hubs;
+	}
+	
+	public List<TransportHub> listAllNamedTransportHubs() {
+		List<TransportHub> hubs = container.allMatches(new QueryDefault<>(TransportHub.class, "findAllNamedTransportHubs"));
 		return hubs;
 	}
 
@@ -129,5 +142,9 @@ public class Locations {
 	
 	@Inject
 	private LocationLookupService locationLookupService;
+
+
+
+
 
 }
