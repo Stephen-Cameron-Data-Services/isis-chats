@@ -75,7 +75,6 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	private String dropoffTime;
 	private String pickupTime;
 
-
 	//private AdditionalTransportTime transportTime = AdditionalTransportTime.ZERO;
 	private Long roleId;
 	private String transportNotes;
@@ -98,8 +97,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Created from Parent Activity")
-	@PropertyLayout(hidden = Where.REFERENCES_PARENT)
-	@MemberOrder(sequence = "1")
+	//@PropertyLayout(hidden = Where.REFERENCES_PARENT)
+	//@MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
 	public Participant getParticipant() {
 		return participant;
@@ -112,7 +111,7 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	@Property(editing = Editing.DISABLED)
-	@PropertyLayout(hidden = Where.EVERYWHERE)
+	//@PropertyLayout(hidden = Where.EVERYWHERE)
 	@Column(allowsNull = "true")
 	public String getOldId() {
 		return this.oldId;
@@ -123,8 +122,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Created from Parent Activity")
-	@PropertyLayout(hidden = Where.REFERENCES_PARENT)
-	@MemberOrder(sequence = "3")
+	//@PropertyLayout(hidden = Where.REFERENCES_PARENT)
+	//@MemberOrder(sequence = "3")
 	@Column(allowsNull = "false")
 	public Activity getActivity() {
 		return this.activity;
@@ -188,8 +187,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
-	@PropertyLayout(named = "Arriving Transport Type")
-	@MemberOrder(sequence = "4")
+	//@PropertyLayout(named = "Arriving Transport Type")
+	//@MemberOrder(sequence = "4")
 	@NotPersistent
 	public String getArrivingTransportTypeName() {
 		return getArrivingTransportType() != null ? this.getArrivingTransportType().getName() : null;
@@ -214,8 +213,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
-	@PropertyLayout(named = "Departing Transport Type")
-	@MemberOrder(sequence = "5")
+	//@PropertyLayout(named = "Departing Transport Type")
+	//@MemberOrder(sequence = "5")
 	@NotPersistent
 	public String getDepartingTransportTypeName() {
 		return getDepartingTransportType() != null ? this.getDepartingTransportType().getName() : null;
@@ -247,11 +246,11 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	
 	@Action()
 	public Participation updateTransportHub(
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Known Location") TransportHub namedTransportHub,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "New Location Name") String name,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "TransportHub Street 1") String street1,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "TransportHub Street 2") String street2,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "TransportHub Suburb") Suburb suburb) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Known Transport Hub") TransportHub namedTransportHub,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "New Transport Hub Name") String name,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 1") String street1,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Street 2") String street2,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Suburb") Suburb suburb) {
 		if (namedTransportHub != null) {
 			setTransportHub(namedTransportHub);
 		} else {
@@ -278,19 +277,19 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 		String result = null;
 		if (namedLocation != null) {
 			if (name != null || street1 != null || street2 != null || suburb != null) {
-				return "An existing named Location and the details of a new Location/Transport Hub are not allowed";
+				return "An existing named Transport Hub and the details of a new Location/Transport Hub are not allowed";
 			}
 		} else if (name != null) {
 			// create a named location that may or may not be an valid street
 			// address
 			if (street1 != null && suburb == null) {
 				// a street address
-				return "Transport Hub Street 1 and Suburb are needed to create a valid TransportHub";
+				return "Transport Hub Street 1 and Suburb are needed to create a valid Transport Hub";
 			}
 		} else {
 			// not named so must be an address
 			if (street1 == null || suburb == null) {
-				return "Transport Hub Street 1 and Suburb are needed to create a valid TransportHub";
+				return "Transport Hub Street 1 and Suburb are needed to create a valid Transport Hub";
 			}
 		}
 		return result;
@@ -342,8 +341,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	@Property(regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM")
-	@PropertyLayout(hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "6")
+	//@PropertyLayout(hidden = Where.ALL_TABLES)
+	//@MemberOrder(sequence = "6")
 	@Column(allowsNull = "true")
 	public String getDropoffTime() {
 		return this.dropoffTime;
@@ -354,8 +353,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	@Property(regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM")
-	@PropertyLayout(hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "7")
+	//@PropertyLayout(hidden = Where.ALL_TABLES)
+	//@MemberOrder(sequence = "7")
 	@Column(allowsNull = "true")
 	public String getPickupTime() {
 		return this.pickupTime;
@@ -366,8 +365,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	@Property()
-	@PropertyLayout(hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "9")
+	//@PropertyLayout(hidden = Where.ALL_TABLES)
+	//@MemberOrder(sequence = "9")
 	@Column(allowsNull = "true")
 	public Long getRoleId() {
 		return this.roleId;
@@ -394,8 +393,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	@Property()
-	@PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP, hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "11")
+	//@PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP, hidden = Where.ALL_TABLES)
+	//@MemberOrder(sequence = "11")
 	@Column(allowsNull = "true", length = 1000)
 	public String getTransportNotes() {
 		return this.transportNotes;

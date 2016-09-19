@@ -61,7 +61,7 @@ public class DEXReporting {
 		DEXFileUploadWrapper wrapped = report1.build();
 		if (wrapped.hasErrors()) {
 			String report = wrapped.getErrors();
-			Clob clob = new Clob("DexReportingERRORSFor" + regionName + "_" + month + "_" + year + ".txt", "text/", report);
+			Clob clob = new Clob("DexReportingERRORSFor" + regionName + "_" + month + "_" + year + ".txt", "text/plain", report);
 			System.out.println("Ending DEX report.");
 			return clob;
 		} else {

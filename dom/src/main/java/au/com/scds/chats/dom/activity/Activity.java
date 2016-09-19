@@ -74,6 +74,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	protected DateTime approximateEndDateTime;
 	// protected Long copiedFromActivityId;
 	protected String costForParticipant;
+	protected Integer cutoffLimit;
 	protected String description;
 	protected DateTime startDateTime;
 	protected Address address;
@@ -214,6 +215,17 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	public void setCostForParticipant(final String costForParticipant) {
 		this.costForParticipant = costForParticipant;
 	}
+	
+	@Property()
+	@Column(allowsNull = "true")
+	public Integer getCutoffLimit() {
+		return cutoffLimit;
+	}
+
+	public void setCutoffLimit(Integer cutoffLimit) {
+		this.cutoffLimit = cutoffLimit;
+	}
+
 
 	@Property(hidden = Where.ALL_TABLES, maxLength = 1000)
 	// @MemberOrder(sequence = "9")
@@ -249,20 +261,22 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Action
 	public Activity updateGeneral(
-			@Parameter(optionality = Optionality.MANDATORY) String name,
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "DEX 'Case' Id", describedAs = "Gets used to build a DSS DEX Case name (5 digits are appended for region-month-year)") String abbreviatedName,
-			@Parameter(optionality = Optionality.OPTIONAL) String description,
-			@Parameter(optionality = Optionality.OPTIONAL) String activityType,
-			@Parameter(optionality = Optionality.MANDATORY) DateTime startDateTime,
-			@Parameter(optionality = Optionality.OPTIONAL) DateTime approximateEndDateTime,
-			@Parameter(optionality = Optionality.OPTIONAL) String costForParticipant) {
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Name")String name,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "DEX 'Case' Id", describedAs = "Gets used to build a DSS DEX Case name (Note: 5 digits get appended for region-month-year)") String abbreviatedName,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "DEscription") String description,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Activity Type") String activityType,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Date Time") DateTime startDateTime,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Approx End Date Time") DateTime approximateEndDateTime,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Cost for Participant") String costForParticipant,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Cut-off Limit") Integer cutoffLimit) {
 		setName(name);
-		setApproximateEndDateTime(approximateEndDateTime);
+		setAbbreviatedName(abbreviatedName);
 		setDescription(description);
 		setActivityType((activityType != null) ? activityTypesRepo.activityTypeForName(activityType): null);
 		setStartDateTime(startDateTime);
 		setApproximateEndDateTime(approximateEndDateTime);
 		setCostForParticipant(costForParticipant);
+		setCutoffLimit(cutoffLimit);
 		return this;
 	}
 
@@ -299,6 +313,10 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	public String default6UpdateGeneral() {
 		return getCostForParticipant();
+	}
+	
+	public Integer default7UpdateGeneral() {
+		return getCutoffLimit();
 	}
 
 	public String validateUpdateGeneral(String name, String abbreviatedName, String description,

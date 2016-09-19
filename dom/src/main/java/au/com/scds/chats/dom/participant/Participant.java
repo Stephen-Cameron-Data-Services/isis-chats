@@ -100,8 +100,6 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	// DEX reporting related
 	private Boolean consentToProvideDetails = false;
 	private Boolean consentedForFutureContacts = false;
-	private Boolean usingPsuedonym = false;
-	private Boolean birthDateAnEstimate = false;
 	private Boolean hasDisabilities = false;
 	private Boolean hasCarer = false;
 	private Disability disability;
@@ -441,26 +439,6 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 
 	@Property()
 	@Column(allowsNull = "false")
-	public Boolean isUsingPsuedonym() {
-		return usingPsuedonym;
-	}
-
-	public void setUsingPsuedonym(Boolean isUsingPsuedonym) {
-		this.usingPsuedonym = isUsingPsuedonym;
-	}
-
-	@Property()
-	@Column(allowsNull = "false")
-	public Boolean isBirthDateAnEstimate() {
-		return birthDateAnEstimate;
-	}
-
-	public void setBirthDateAnEstimate(Boolean birthDateAnEstimate) {
-		this.birthDateAnEstimate = birthDateAnEstimate;
-	}
-
-	@Property()
-	@Column(allowsNull = "false")
 	public Boolean isHasDisabilities() {
 		return hasDisabilities;
 	}
@@ -755,8 +733,6 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public Participant updateDexData(
 			@ParameterLayout(named = "Consent To Provide Details") final Boolean consentToProvideDetails,
 			@ParameterLayout(named = "Consented For Future Contacts") final Boolean consentedForFutureContacts,
-			@ParameterLayout(named = "Is Using Psuedonym") final Boolean isUsingPsuedonym,
-			@ParameterLayout(named = "Is Birth Date An Estimate") final Boolean isBirthDateAnEstimate,
 			@ParameterLayout(named = "Has Carer") final Boolean hasCarer,
 			@ParameterLayout(named = "Has Disabilities") final Boolean hasDisabilities, final Disability disability,
 			final Country countryOfBirth, final Language languageSpokenAtHome,
@@ -766,8 +742,6 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 
 		setConsentToProvideDetails(consentToProvideDetails);
 		setConsentedForFutureContacts(consentedForFutureContacts);
-		setUsingPsuedonym(isUsingPsuedonym);
-		setBirthDateAnEstimate(isBirthDateAnEstimate);
 		setHasCarer(hasCarer);
 		setHasDisabilities(hasDisabilities);
 		setDisability(disability);
@@ -789,75 +763,59 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 		return isConsentedForFutureContacts();
 	}
 
-	public Boolean default2UpdateDexData() {
-		return isUsingPsuedonym();
-	}
-
-	public Boolean default3UpdateDexData() {
-		return isBirthDateAnEstimate();
-	}
-
-	public Boolean default4UpdateDexData() {
-		return isHasCarer();
-	}
-
-	public Boolean default5UpdateDexData() {
-		return isHasDisabilities();
-	}
-
-	public Disability default6UpdateDexData() {
+	public Disability default4UpdateDexData() {
 		return getDisability();
 	}
 
-	public List<Disability> choices6UpdateDexData() {
+	public List<Disability> choices4UpdateDexData() {
 		return dexRefData.allDisability();
 	}
 
-	public Country default7UpdateDexData() {
+	public Country default5UpdateDexData() {
 		return getCountryOfBirth();
 	}
 
-	public List<Country> choices7UpdateDexData() {
+	public List<Country> choices5UpdateDexData() {
 		return dexRefData.allCountry();
 	}
 
-	public Language default8UpdateDexData() {
+	public Language default6UpdateDexData() {
 		return getLanguageSpokenAtHome();
 	}
 
-	public List<Language> choices8UpdateDexData() {
+	public List<Language> choices6UpdateDexData() {
 		return dexRefData.allLanguage();
 	}
 
-	public AboriginalOrTorresStraitIslanderOrigin default9UpdateDexData() {
+	public AboriginalOrTorresStraitIslanderOrigin default7UpdateDexData() {
 		return getAboriginalOrTorresStraitIslanderOrigin();
 	}
 
-	public List<AboriginalOrTorresStraitIslanderOrigin> choices9UpdateDexData() {
+	public List<AboriginalOrTorresStraitIslanderOrigin> choices7UpdateDexData() {
 		return dexRefData.allAboriginalOrTorresStraitIslanderOrigin();
 	}
 
-	public AccommodationType default10UpdateDexData() {
+	public AccommodationType default8UpdateDexData() {
 		return getAccommodationType();
 	}
 
-	public List<AccommodationType> choices10UpdateDexData() {
+	public List<AccommodationType> choices8UpdateDexData() {
 		return dexRefData.allAccommodationType();
 	}
 
-	public DVACardStatus default11UpdateDexData() {
+	public DVACardStatus default9UpdateDexData() {
 		return getDvaCardStatus();
 	}
 
-	public List<DVACardStatus> choices11UpdateDexData() {
+	public List<DVACardStatus> choices9UpdateDexData() {
 		return dexRefData.allDVACardStatus();
 	}
 
-	public HouseholdComposition default12UpdateDexData() {
+	public HouseholdComposition default10UpdateDexData() {
 		return getHouseholdComposition();
 	}
 
-	public List<HouseholdComposition> choices12UpdateDexData() {
+	public List<HouseholdComposition> choices10UpdateDexData() {
 		return dexRefData.allHouseholdComposition();
 	}
 

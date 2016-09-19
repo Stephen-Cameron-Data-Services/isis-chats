@@ -372,7 +372,7 @@ public class DEXBulkUploadReportSinglePass {
 		// first validate the client data;
 		ClientWrapper wrapper = new ClientWrapper();
 		wrapper.validateParticipant(participant);
-		// build a client if no errors
+		// build a client if no validation errors
 		if (wrapper.getErrorCount() == 0) {
 			Client client = new Client();
 			wrapper.setClient(client);
@@ -490,39 +490,39 @@ public class DEXBulkUploadReportSinglePass {
 					if (participant.getPerson().getSlk() == null)
 						errors.add("No SLK found for Person " + participant.getPerson().getFullname());
 					if (participant.isConsentToProvideDetails() == null)
-						errors.add("Consent To Provide Details is NULL for Participant " + participant.getFullName());
+						errors.add("'Consent To Provide Details' is NULL for Participant " + participant.getFullName());
 					if (participant.isConsentedForFutureContacts() == null)
-						errors.add("Consent To Future Contacts is NULL for Participant " + participant.getFullName());
+						errors.add("'Consent To Future Contacts' is NULL for Participant " + participant.getFullName());
 					if (participant.getPerson().getBirthdate() == null)
-						errors.add("Brthdate is NULL for Person " + participant.getPerson().getFullname());
+						errors.add("Birthdate is NULL for Person " + participant.getPerson().getFullname());
 					if (participant.getPerson().getSex() == null)
 						errors.add("Sex is NULL for Person " + participant.getPerson().getFullname());
 					if (participant.getCountryOfBirth() == null)
-						errors.add("Country of Birth is NULL for Participant " + participant.getFullName());
+						errors.add("'Country of Birth' is NULL for Participant " + participant.getFullName());
 					if (participant.getLanguageSpokenAtHome() == null)
-						errors.add("Language Spoken at Home is NULL for Participant " + participant.getFullName());
+						errors.add("'Language Spoken at Home' is NULL for Participant " + participant.getFullName());
 					if (participant.getAboriginalOrTorresStraitIslanderOrigin() == null)
-						errors.add("Aboriginal  OrTorres Strait Islander Origin is NULL for Participant "
+						errors.add("'Aboriginal Or Torres Strait Islander Origin' is NULL for Participant "
 								+ participant.getFullName());
 					if (participant.isHasDisabilities() == null)
-						errors.add("Has Disabilities is NULL for Participant " + participant.getFullName());
+						errors.add("'Has Disabilities' is NULL for Participant " + participant.getFullName());
 					if (participant.getDvaCardStatus() == null)
-						errors.add("DVA Card Status is NULL for Participant " + participant.getFullName());
+						errors.add("'DVA Card Status' is NULL for Participant " + participant.getFullName());
 					if (participant.isHasCarer() == null)
-						errors.add("Has Carer is NULL for Participant " + participant.getFullName());
+						errors.add("'Has Carer' is NULL for Participant " + participant.getFullName());
 					if (participant.isHasDisabilities() == null)
-						errors.add("Has Disabilities is NULL for Participant " + participant.getFullName());
+						errors.add("'Has Disabilities' is NULL for Participant " + participant.getFullName());
 					if (participant.getHouseholdComposition() == null)
-						errors.add("Household Composition Code is NULL for Participant " + participant.getFullName());
+						errors.add("'Household Composition Code' is NULL for Participant " + participant.getFullName());
 					if (participant.getPerson().getStreetAddress() == null) {
-						errors.add("Street Address is NULL for Person " + participant.getPerson().getFullname());
+						errors.add("'Street Address' is NULL for Person " + participant.getPerson().getFullname());
 					} else {
 						Address s = participant.getPerson().getStreetAddress();
 						if (participant.getPerson().getStreetAddress().getSuburb() == null)
-							errors.add("Street Address Suburb is NULL for Person "
+							errors.add("'Street Address Suburb' is NULL for Person "
 									+ participant.getPerson().getFullname());
 						if (participant.getPerson().getStreetAddress().getPostcode() == null)
-							errors.add("Street Address Postcode is NULL for Person "
+							errors.add("'Street Address Postcode' is NULL for Person "
 									+ participant.getPerson().getFullname());
 					}
 				}
