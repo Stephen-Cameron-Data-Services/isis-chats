@@ -42,7 +42,7 @@ import au.com.scds.chats.dom.general.names.Region;
 @DomainService(repositoryFor = ActivityEvent.class)
 @DomainServiceLayout(named = "Activities", menuOrder = "10")
 public class Activities {
-	
+
 	public Activities() {
 	}
 
@@ -56,11 +56,15 @@ public class Activities {
 	@MemberOrder(sequence = "1")
 	public RecurringActivity createRecurringActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
-			@Parameter(optionality = Optionality.MANDATORY, maxLength = 25) @ParameterLayout(named = "DEX 'Case' Name") final String abbreviatedName,
+			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25) @ParameterLayout(named = "DEX 'Case' Name") final String abbreviatedName,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start date time") final DateTime startDateTime) {
 		final RecurringActivity obj = container.newTransientInstance(RecurringActivity.class);
 		obj.setName(name);
-		obj.setAbbreviatedName(abbreviatedName);
+		if (abbreviatedName != null) {
+			obj.setAbbreviatedName(abbreviatedName);
+		} else {
+			obj.setAbbreviatedName(name.replaceAll("\\s", ""));
+		}
 		obj.setStartDateTime(startDateTime);
 		container.persistIfNotAlready(obj);
 		container.flush();
@@ -99,11 +103,15 @@ public class Activities {
 	@MemberOrder(sequence = "2")
 	public ActivityEvent createOneOffActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
-			@Parameter(optionality = Optionality.MANDATORY, maxLength = 25) @ParameterLayout(named = "Abbreviated name") final String abbreviatedName,
+			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25) @ParameterLayout(named = "DEX 'Case' Id") final String abbreviatedName,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start date time") final DateTime startDateTime) {
 		final ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 		obj.setName(name);
-		obj.setAbbreviatedName(abbreviatedName);
+		if (abbreviatedName != null) {
+			obj.setAbbreviatedName(abbreviatedName);
+		} else {
+			obj.setAbbreviatedName(name.replaceAll("\\s", ""));
+		}
 		obj.setStartDateTime(startDateTime);
 		container.persistIfNotAlready(obj);
 		container.flush();
@@ -138,29 +146,28 @@ public class Activities {
 				new QueryDefault<>(ActivityEvent.class, "findAllFutureActivities", "currentDateTime", new DateTime()));
 	}
 
-	//@Action(semantics = SemanticsOf.SAFE)
-	//@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	//@MemberOrder(sequence = "7")
+	// @Action(semantics = SemanticsOf.SAFE)
+	// @ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	// @MemberOrder(sequence = "7")
 	@Programmatic
 	public List<ActivityEvent> listAllPastActivities() {
 		return container.allMatches(
 				new QueryDefault<>(ActivityEvent.class, "findAllPastActivities", "currentDateTime", new DateTime()));
 	}
-	
+
 	@Programmatic
 	public List<ActivityEvent> allActivities() {
-		return container.allMatches(
-				new QueryDefault<>(ActivityEvent.class, "findActivities"));
+		return container.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivities"));
 	}
-	
+
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "7")
 	public List<ActivityEvent> listActivitiesInPeriod(
-			@Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="Start Period") LocalDate start, 
-			@Parameter(optionality=Optionality.MANDATORY) @ParameterLayout(named="End Period")  LocalDate end) {
-		return container.allMatches(
-				new QueryDefault<>(ActivityEvent.class, "findActivitiesInPeriod", "startDateTime", start.toDateTimeAtStartOfDay(), "endDateTime", end.toDateTime(new LocalTime(23,59))));
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Period") LocalDate start,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "End Period") LocalDate end) {
+		return container.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivitiesInPeriod", "startDateTime",
+				start.toDateTimeAtStartOfDay(), "endDateTime", end.toDateTime(new LocalTime(23, 59))));
 	}
 
 	@javax.inject.Inject

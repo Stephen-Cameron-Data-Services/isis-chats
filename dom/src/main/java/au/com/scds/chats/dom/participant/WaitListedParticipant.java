@@ -4,6 +4,7 @@ import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import org.apache.isis.applib.annotation.DomainObject;
+import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.Property;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
@@ -20,7 +21,7 @@ public class WaitListedParticipant extends AbstractChatsDomainEntity implements 
 		return getParticipant().getFullName();
 	}
 	
-	@Property()
+	@Property(editing=Editing.DISABLED)
 	@Column(allowsNull="false")
 	public Activity getActivity() {
 		return activity;
@@ -30,7 +31,7 @@ public class WaitListedParticipant extends AbstractChatsDomainEntity implements 
 		this.activity = activity;
 	}
 	
-	@Property()
+	@Property(editing=Editing.DISABLED)
 	@Column(allowsNull="false")
 	public Participant getParticipant() {
 		return participant;

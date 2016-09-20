@@ -274,7 +274,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	public Activity updateGeneral(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Name") String name,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "DEX 'Case' Id", describedAs = "Gets used to build a DSS DEX Case name (Note: 5 digits get appended for region-month-year)") String abbreviatedName,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "DEscription") String description,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Description") String description,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Activity Type") String activityType,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Date Time") DateTime startDateTime,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Approx End Date Time") DateTime approximateEndDateTime,
@@ -662,7 +662,29 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 			return null;
 		}
 	}
+	
+	/*TO-DO
+	@Action
+	public Activity moveParticipantToWaitList(final Participation participation) {
+		if (getWaitListed().contains(waitListed)){
+			Participant participant = waitListed.getParticipant();
+			getWaitListed().remove(waitListed);
+			addParticipant(participant);
+		}
+		return this;
+	}
 
+	public Set<WaitListedParticipant> choices0MoveParticipantToWaitList() {
+		return getWaitListed();
+	}
+	
+	public String disableMoveParticipantToWaitList() {
+		if (getCutoffLimit() != null && getParticipations().size() >= getCutoffLimit()) {
+			return "Participation count has reached Cut-off Limit";
+		} else {
+			return null;
+		}
+	}*/
 
 	@Property()
 	// @MemberOrder(sequence = "100")
