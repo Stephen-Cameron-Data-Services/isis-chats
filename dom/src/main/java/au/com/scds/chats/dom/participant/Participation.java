@@ -26,6 +26,8 @@ import javax.inject.Inject;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.DatastoreIdentity;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.Inheritance;
+import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Unique;
@@ -97,7 +99,7 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Created from Parent Activity")
-	//@PropertyLayout(hidden = Where.REFERENCES_PARENT)
+	@PropertyLayout(hidden = Where.REFERENCES_PARENT)
 	//@MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
 	public Participant getParticipant() {
@@ -122,7 +124,7 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Created from Parent Activity")
-	//@PropertyLayout(hidden = Where.REFERENCES_PARENT)
+	@PropertyLayout(hidden = Where.REFERENCES_PARENT)
 	//@MemberOrder(sequence = "3")
 	@Column(allowsNull = "false")
 	public Activity getActivity() {
@@ -138,7 +140,6 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	public Participation updateGeneral(
 			@ParameterLayout(named = "Arriving Transport Type") @Parameter(optionality = Optionality.MANDATORY) String arrivingTransportType,
 			@ParameterLayout(named = "Departing Transport Type") @Parameter(optionality = Optionality.MANDATORY) String departingTransportType,
-			@ParameterLayout(named = "Transport Hub") @Parameter(optionality = Optionality.OPTIONAL) TransportHub transportHub,
 			@ParameterLayout(named = "Pickup Time") @Parameter(optionality = Optionality.OPTIONAL, regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM") String pickupTime,
 			@ParameterLayout(named = "Dropoff Time") @Parameter(optionality = Optionality.OPTIONAL, regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM") String dropoffTime) {
 		setArrivingTransportTypeName(arrivingTransportType);
@@ -151,29 +152,25 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	public String default0UpdateGeneral() {
 		return getArrivingTransportTypeName();
 	}
+	
+	public List<String> choices0UpdateGeneral() {
+		return transportTypes.allNames();
+	}
 
 	public String default1UpdateGeneral() {
 		return getDepartingTransportTypeName();
 	}
 	
-	public TransportHub default2UpdateGeneral() {
-		return getTransportHub();
+	public List<String> choices1UpdateGeneral() {
+		return transportTypes.allNames();
 	}
 
-	public String default3UpdateGeneral() {
+	public String default2UpdateGeneral() {
 		return getPickupTime();
 	}
 
-	public String default4UpdateGeneral() {
+	public String default3UpdateGeneral() {
 		return getDropoffTime();
-	}
-
-	public List<String> choices0UpdateGeneral() {
-		return transportTypes.allNames();
-	}
-
-	public List<String> choices1UpdateGeneral() {
-		return transportTypes.allNames();
 	}
 
 	@Property(hidden = Where.EVERYWHERE)
@@ -365,7 +362,7 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	@Property()
-	//@PropertyLayout(hidden = Where.ALL_TABLES)
+	@PropertyLayout(hidden = Where.ALL_TABLES)
 	//@MemberOrder(sequence = "9")
 	@Column(allowsNull = "true")
 	public Long getRoleId() {

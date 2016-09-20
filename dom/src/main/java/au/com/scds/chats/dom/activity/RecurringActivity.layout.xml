@@ -59,6 +59,23 @@
 						</col>
 					</row>
 				</tab>
+				<tab name="Wait List">
+					<row>
+						<col span="12">
+							<ns2:collection id="waitListed">
+								<ns2:action id="addWaitListedParticipant">
+									<ns2:named>Add</ns2:named>
+								</ns2:action>
+								<ns2:action id="removeWaitListedParticipant">
+									<ns2:named>Remove</ns2:named>
+								</ns2:action>
+								<ns2:action id="moveWaitListedParticipant">
+									<ns2:named>Move Across</ns2:named>
+								</ns2:action>
+							</ns2:collection>
+						</col>
+					</row>
+				</tab>
 				<tab name="Scheduled">
 					<row>
 						<col span="12">

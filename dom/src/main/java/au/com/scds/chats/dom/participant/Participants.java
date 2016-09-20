@@ -68,8 +68,8 @@ public class Participants {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	//@MemberOrder(sequence = "1")
 	//@SuppressWarnings("all")
-	public List<Participant> listActive(@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageClass) {
-		switch (ageClass) {
+	public List<Participant> listActive(@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup) {
+		switch (ageGroup) {
 		case All:
 			return container.allMatches(
 					new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.ACTIVE));
@@ -207,6 +207,22 @@ public class Participants {
 		container.flush();
 		return participation;
 	}
+	
+	@Programmatic
+	public WaitListedParticipant createWaitListedParticipant(Activity activity, Participant participant) {
+		WaitListedParticipant waitListed = container.newTransientInstance(WaitListedParticipant.class);
+		waitListed.setActivity(activity);
+		waitListed.setParticipant(participant);
+		container.persistIfNotAlready(waitListed);
+		container.flush();
+		return waitListed;
+	}
+	
+	@Programmatic
+	public void deleteWaitListedParticipant(WaitListedParticipant waitListed) {
+		container.removeIfNotAlready(waitListed);
+		container.flush();
+	}
 
 	@Programmatic
 	public Participation createParticipation(Activity activity, Participant participant, Region region) {
@@ -240,5 +256,7 @@ public class Participants {
 
 	@Inject
 	private IsisJdoSupport isisJdoSupport;
+
+
 
 }

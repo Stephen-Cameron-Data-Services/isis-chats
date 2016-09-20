@@ -21,6 +21,7 @@ import javax.jdo.annotations.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -56,6 +57,7 @@ import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.participant.Participation;
+import au.com.scds.chats.dom.participant.WaitListedParticipant;
 import au.com.scds.chats.dom.volunteer.VolunteeredTimeForActivity;
 import au.com.scds.chats.dom.volunteer.Volunteers;
 
@@ -82,6 +84,9 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	// protected Long scheduleId;
 	@Persistent(mappedBy = "activity")
 	protected SortedSet<Participation> participations = new TreeSet<>();
+	@Persistent(mappedBy = "activity")
+	protected SortedSet<WaitListedParticipant> waitListed = new TreeSet<>();
+
 	@Persistent(mappedBy = "activity")
 	@Order(column = "a_idx")
 	protected List<VolunteeredTimeForActivity> volunteeredTimes = new ArrayList<>();
@@ -215,7 +220,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	public void setCostForParticipant(final String costForParticipant) {
 		this.costForParticipant = costForParticipant;
 	}
-	
+
 	@Property()
 	@Column(allowsNull = "true")
 	public Integer getCutoffLimit() {
@@ -226,6 +231,12 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		this.cutoffLimit = cutoffLimit;
 	}
 
+	public String validateCutoffLimit(Integer cutoffLimit) {
+		if (cutoffLimit != null && cutoffLimit < 1) {
+			return "Cut-off Limit must be greater than 0";
+		}
+		return null;
+	}
 
 	@Property(hidden = Where.ALL_TABLES, maxLength = 1000)
 	// @MemberOrder(sequence = "9")
@@ -261,7 +272,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Action
 	public Activity updateGeneral(
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Name")String name,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Name") String name,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "DEX 'Case' Id", describedAs = "Gets used to build a DSS DEX Case name (Note: 5 digits get appended for region-month-year)") String abbreviatedName,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "DEscription") String description,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Activity Type") String activityType,
@@ -272,7 +283,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		setName(name);
 		setAbbreviatedName(abbreviatedName);
 		setDescription(description);
-		setActivityType((activityType != null) ? activityTypesRepo.activityTypeForName(activityType): null);
+		setActivityType((activityType != null) ? activityTypesRepo.activityTypeForName(activityType) : null);
 		setStartDateTime(startDateTime);
 		setApproximateEndDateTime(approximateEndDateTime);
 		setCostForParticipant(costForParticipant);
@@ -295,7 +306,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	public String default3UpdateGeneral() {
 		return (getActivityType() != null) ? getActivityType().getName() : null;
 	}
-	
+
 	public List<String> choices3UpdateGeneral() {
 		return activityTypesRepo.allNames();
 	}
@@ -314,14 +325,13 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	public String default6UpdateGeneral() {
 		return getCostForParticipant();
 	}
-	
+
 	public Integer default7UpdateGeneral() {
 		return getCutoffLimit();
 	}
 
-	public String validateUpdateGeneral(String name, String abbreviatedName, String description,
-			String activityType, DateTime startDateTime, DateTime approximateEndDateTime,
-			String costForParticipant) {
+	public String validateUpdateGeneral(String name, String abbreviatedName, String description, String activityType,
+			DateTime startDateTime, DateTime approximateEndDateTime, String costForParticipant, Integer cuffoffLimit) {
 		if (approximateEndDateTime != null) {
 			if (approximateEndDateTime.isBefore(startDateTime))
 				return "Approximate End Date Time is before Start Date Time";
@@ -331,6 +341,8 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 			} else {
 				return null;
 			}
+		} else if (cutoffLimit != null && cutoffLimit < 1) {
+			return "Cut-off Limit must be greater than 0";
 		} else
 			return null;
 	}
@@ -495,6 +507,19 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	}
 
 	@Programmatic
+	public Boolean hasParticipant(Participant participant) {
+		for (Participation p : getParticipations()) {
+			if (p.getParticipant().compareTo(participant) == 0)
+				return true;
+		}
+		for (WaitListedParticipant w : getWaitListed()) {
+			if (w.getParticipant().compareTo(participant) == 0)
+				return true;
+		}
+		return false;
+	}
+
+	@Programmatic
 	public void removeParticipation(Participation participation) {
 		if (getParticipations().contains(participation))
 			getParticipations().remove(participation);
@@ -513,13 +538,23 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	@ActionLayout(named = "Add")
 	// @MemberOrder(name = "participations", sequence = "1")
 	public Activity addParticipant(final Participant participant) {
-		if (findParticipation(participant) == null) {
+		if (participant == null)
+			return this;
+		if (!hasParticipant(participant)) {
 			participantsRepo.createParticipation(this, participant);
 		} else {
-			container.informUser(
-					"A Participant (" + participant.getFullName() + ") is already participating in this Activity");
+			container.informUser("A Participant (" + participant.getFullName()
+					+ ") is already participating or wait-listed in this Activity");
 		}
 		return this;
+	}
+
+	public String disableAddParticipant() {
+		if (getCutoffLimit() != null && getParticipations().size() == getCutoffLimit()) {
+			return "Participation count has reached Cut-off Limit";
+		} else {
+			return null;
+		}
 	}
 
 	@Action()
@@ -531,6 +566,14 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 			final @ParameterLayout(named = "Sex") Sex sex) {
 		addParticipant(participantsRepo.newParticipant(firstname, surname, dob, sex));
 		return this;
+	}
+
+	public String disableAddNewParticipant() {
+		if (getCutoffLimit() != null && getParticipations().size() == getCutoffLimit()) {
+			return "Participation count has reached Cut-off Limit";
+		} else {
+			return null;
+		}
 	}
 
 	@Action()
@@ -552,6 +595,74 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	public List<Participant> choices0RemoveParticipant() {
 		return getParticipants();
 	}
+
+	@CollectionLayout(render = RenderType.EAGERLY)
+	public SortedSet<WaitListedParticipant> getWaitListed() {
+		return waitListed;
+	}
+
+	public void setWaitListed(SortedSet<WaitListedParticipant> waitListed) {
+		this.waitListed = waitListed;
+	}
+
+	@Action
+	public Activity addWaitListedParticipant(final Participant participant) {
+		if (participant == null)
+			return this;
+		if (!hasParticipant(participant)) {
+			WaitListedParticipant waitListed = participantsRepo.createWaitListedParticipant(this, participant);
+			getWaitListed().add(waitListed);
+		} else {
+			container.informUser("A Participant (" + participant.getFullName()
+					+ ") is already participating or wait-listed in this Activity");
+		}
+		return this;
+	}
+
+	public List<Participant> choices0AddWaitListedParticipant() {
+		List<Participant> list = participantsRepo.listActive(AgeGroup.All);
+		ArrayList<Participant> temp = new ArrayList<>();
+		for (Participant participant : list) {
+			if (!this.hasParticipant(participant)) {
+				temp.add(participant);
+			}
+		}
+		return temp;
+	}
+
+	@Action
+	public Activity removeWaitListedParticipant(final WaitListedParticipant participant) {
+		if (getWaitListed().contains(participant))
+			getWaitListed().remove(participant);
+		return this;
+	}
+
+	public Set<WaitListedParticipant> choices0RemoveWaitListedParticipant() {
+		return getWaitListed();
+	}
+
+	@Action
+	public Activity moveWaitListedParticipant(final WaitListedParticipant waitListed) {
+		if (getWaitListed().contains(waitListed)){
+			Participant participant = waitListed.getParticipant();
+			getWaitListed().remove(waitListed);
+			addParticipant(participant);
+		}
+		return this;
+	}
+
+	public Set<WaitListedParticipant> choices0MoveWaitListedParticipant() {
+		return getWaitListed();
+	}
+	
+	public String disableMoveWaitListedParticipant() {
+		if (getCutoffLimit() != null && getParticipations().size() >= getCutoffLimit()) {
+			return "Participation count has reached Cut-off Limit";
+		} else {
+			return null;
+		}
+	}
+
 
 	@Property()
 	// @MemberOrder(sequence = "100")

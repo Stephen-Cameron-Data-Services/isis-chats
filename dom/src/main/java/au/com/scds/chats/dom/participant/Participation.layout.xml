@@ -16,9 +16,11 @@
 						<col span="6">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
-								<ns2:action id="updateGeneral" />
-								<ns2:property id="activity" hidden="REFERENCES_PARENT" />
-								<ns2:property id="participant" hidden="REFERENCES_PARENT" />
+								<ns2:action id="updateGeneral">
+									<ns2:named>Update</ns2:named>
+								</ns2:action>
+								<ns2:property id="activity"  />
+								<ns2:property id="participant" />
 								<ns2:property id="roleId" hidden="EVERYWHERE" />
 								<ns2:property id="oldId" hidden="EVERYWHERE" />
 								<ns2:property id="arrivingTransportType" />
@@ -31,11 +33,10 @@
 						</col>
 						<col span="6" unreferencedCollections="true">
 							<ns2:fieldSet name="Transport Hub" id="hub">
-								<ns2:property id="transportHubName">
-									<ns2:action id="updateTransportHub" position="PANEL">
-										<ns2:named>Update</ns2:named>
-									</ns2:action>
-								</ns2:property>
+								<ns2:action id="updateTransportHub">
+									<ns2:named>Update</ns2:named>
+								</ns2:action>
+								<ns2:property id="transportHubName" />
 								<ns2:property id="transportHub" hidden="EVERYWHERE" />
 							</ns2:fieldSet>
 							<ns2:property id="transportTime" />
