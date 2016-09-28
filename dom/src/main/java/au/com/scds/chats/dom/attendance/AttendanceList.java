@@ -42,6 +42,7 @@ import au.com.scds.chats.dom.general.names.TransportType;
 import au.com.scds.chats.dom.general.names.TransportTypes;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
+import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.participant.Participation;
 
@@ -62,8 +63,8 @@ import au.com.scds.chats.dom.participant.Participation;
  */
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Queries({
-	@Query(name = "findAttendanceListsByActivityName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.AttendanceList WHERE parentActivity.name.indexOf(:name) >= 0 ORDER BY parentActivity.startDateTime DESC"),
-	@Query(name = "findAttendanceListsInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.AttendanceList WHERE parentActivity.startDateTime >= :startDateTime && parentActivity.startDateTime <= :endDateTime ORDER BY parentActivity.startDateTime DESC")})
+		@Query(name = "findAttendanceListsByActivityName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.AttendanceList WHERE parentActivity.name.indexOf(:name) >= 0 ORDER BY parentActivity.startDateTime DESC"),
+		@Query(name = "findAttendanceListsInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.AttendanceList WHERE parentActivity.startDateTime >= :startDateTime && parentActivity.startDateTime <= :endDateTime ORDER BY parentActivity.startDateTime DESC") })
 public class AttendanceList {
 
 	private ActivityEvent parentActivity;
@@ -94,8 +95,8 @@ public class AttendanceList {
 
 	@Property()
 	@CollectionLayout(render = RenderType.EAGERLY, named = "Attendance")
-	@Persistent(mappedBy="parentList")
-	@Order(column="list_order_idx")
+	@Persistent(mappedBy = "parentList")
+	@Order(column = "list_order_idx")
 	public final List<Attend> getAttends() {
 		return attends;
 	}
@@ -126,21 +127,33 @@ public class AttendanceList {
 		}
 		return false;
 	}
-
-	@Action
+	
+	@Programmatic
 	public AttendanceList addAttend(@Parameter(optionality = Optionality.MANDATORY) Participant participant) {
 		Attend attended = attendanceListsRepo.createAttend(this, getParentActivity(), participant, true);
 		getAttends().add(attended);
 		return this;
 	}
 
-	public List<Participant> choices0AddAttend() {
-		List<Participant> list = participantsRepo.listActive(AgeGroup.All);
-		List<Participant> temp = new ArrayList<>(list);
-		for (Participant participant : list) {
+	@Action
+	public AttendanceList addAttend(@Parameter(optionality = Optionality.MANDATORY) ParticipantIdentity identity) {
+		if (identity == null)
+			return null;
+		Participant participant = participantsRepo.getParticipant(identity);
+		if (participant == null)
+			return null;
+		Attend attended = attendanceListsRepo.createAttend(this, getParentActivity(), participant, true);
+		getAttends().add(attended);
+		return this;
+	}
+
+	public List<ParticipantIdentity> choices0AddAttend() {
+		List<ParticipantIdentity> list = participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
+		List<ParticipantIdentity> temp = new ArrayList<>(list);
+		for (ParticipantIdentity identity : list) {
 			for (Attend attend : getAttends()) {
-				if (attend.getParticipant().equals(participant))
-					temp.remove(participant);
+				if (participantsRepo.isIdentityOfParticipant(identity, attend.getParticipant()))
+					temp.remove(identity);
 			}
 		}
 		return temp;
@@ -155,45 +168,43 @@ public class AttendanceList {
 		addAttend(p);
 		return this;
 	}
-	
-	/* TODO, this bulk-action didn't work as intended as only zero-arg
-	 * actions will show on the collection. Having the wrapper was
-	 * done to not have the bulk-action check-boxes appear on lists of Attends return from
-	 * queries, bummer
 
-	@ActionLayout(named = "Do Bulk Updates")
-	public List<AttendBulkActionWrapper> bulkAction() {
-		ArrayList<AttendBulkActionWrapper> wrappedAttends = new ArrayList<>();
-		for(Attend attend : getAttends()){
-			AttendBulkActionWrapper wrapper = new AttendBulkActionWrapper();
-			wrapper.setAttend(attend);
-			wrappedAttends.add(wrapper);
-		}
-		return wrappedAttends;
-	}*/
-	
+	/*
+	 * TODO, this bulk-action didn't work as intended as only zero-arg actions
+	 * will show on the collection. Having the wrapper was done to not have the
+	 * bulk-action check-boxes appear on lists of Attends return from queries,
+	 * bummer
+	 * 
+	 * @ActionLayout(named = "Do Bulk Updates") public
+	 * List<AttendBulkActionWrapper> bulkAction() {
+	 * ArrayList<AttendBulkActionWrapper> wrappedAttends = new ArrayList<>();
+	 * for(Attend attend : getAttends()){ AttendBulkActionWrapper wrapper = new
+	 * AttendBulkActionWrapper(); wrapper.setAttend(attend);
+	 * wrappedAttends.add(wrapper); } return wrappedAttends; }
+	 */
+
 	@Action
-	public AttendanceList updateAllAttendsToDefaultValues(){
+	public AttendanceList updateAllAttendsToDefaultValues() {
 		DateTime start = getParentActivity().getStartDateTime();
 		DateTime end = getParentActivity().getApproximateEndDateTime();
 		TransportType transport = transportTypes.transportTypeForName("Self Travel");
-		for(Attend attend : getAttends()){
+		for (Attend attend : getAttends()) {
 			attend.wasAttended();
 			attend.setDatesAndTimes(start, end);
 			attend.setArrivingTransportType(transport);
-			attend.setDepartingTransportType(transport);			
+			attend.setDepartingTransportType(transport);
 		}
 		return this;
 	}
-	
+
 	@Action
-	public AttendanceList removeAttend(Attend attend){
-		if(attend != null)
+	public AttendanceList removeAttend(Attend attend) {
+		if (attend != null)
 			deleteAttend(attend);
 		return this;
 	}
-	
-	public List<Attend> choices0RemoveAttend(){
+
+	public List<Attend> choices0RemoveAttend() {
 		return getAttends();
 	}
 
@@ -211,7 +222,7 @@ public class AttendanceList {
 
 	@Inject
 	Participants participantsRepo;
-	
+
 	@Inject
 	TransportTypes transportTypes;
 

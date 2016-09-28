@@ -35,6 +35,9 @@ import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.Optionality;
+import org.apache.isis.applib.annotation.Parameter;
+import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.RenderType;
@@ -55,6 +58,7 @@ import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
+import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 
 @Queries({
@@ -92,8 +96,11 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 
 	@Action()
 	// @MemberOrder(name = "callschedules", sequence = "1")
-	public Volunteer addScheduledCall(final Participant participant, final DateTime dateTime) {
+	public Volunteer addScheduledCall(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") final ParticipantIdentity identity,
+			@Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) {
 		try {
+			Participant participant = participantsRepo.getParticipant(identity);
 			ScheduledCall call = schedulesRepo.createScheduledCall(this, participant, dateTime);
 		} catch (Exception e) {
 			container.warnUser(e.getMessage());
@@ -101,9 +108,8 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 		return this;
 	}
 
-	public List<Participant> choices0AddScheduledCall() {
-		List<Participant> list = participantsRepo.listActive(AgeGroup.All);
-		return list;
+	public List<ParticipantIdentity> choices0AddScheduledCall() {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
 
 	@Property(editing = Editing.DISABLED)
@@ -191,7 +197,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 			getVolunteeredTimes().add(time);
 	}
 
-	@CollectionLayout(render=RenderType.EAGERLY)
+	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<VolunteerRole> getVolunteerRoles() {
 		return volunteerRoles;
 	}
@@ -201,7 +207,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 	}
 
 	@Action()
-	@ActionLayout(named="Add")
+	@ActionLayout(named = "Add")
 	// @MemberOrder(name = "VolunteerRoles", sequence = "1")
 	public Volunteer addVolunteerRole(VolunteerRole role) {
 		if (role != null)
@@ -214,7 +220,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 	}
 
 	@Action()
-	@ActionLayout(named="Remove")
+	@ActionLayout(named = "Remove")
 	// @MemberOrder(name = "VolunteerRoles", sequence = "2")
 	public Volunteer removeVolunteerRole(VolunteerRole role) {
 		if (role != null)

@@ -55,6 +55,7 @@ import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
+import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.participant.Participation;
 import au.com.scds.chats.dom.participant.WaitListedParticipant;
@@ -534,19 +535,39 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		return participants;
 	}
 
-	@Action()
-	@ActionLayout(named = "Add")
-	// @MemberOrder(name = "participations", sequence = "1")
-	public Activity addParticipant(final Participant participant) {
+	@Action(hidden=Where.EVERYWHERE)
+	public void addParticipant(final Participant participant) {
 		if (participant == null)
-			return this;
+			return;
 		if (!hasParticipant(participant)) {
 			participantsRepo.createParticipation(this, participant);
 		} else {
 			container.informUser("A Participant (" + participant.getFullName()
 					+ ") is already participating or wait-listed in this Activity");
 		}
+		return;
+	}
+
+	@Action()
+	@ActionLayout(named = "Add")
+	// @MemberOrder(name = "participations", sequence = "1")
+	public Activity addParticipant(final ParticipantIdentity identity) {
+		if (identity == null)
+			return this;
+		Participant participant = participantsRepo.getParticipant(identity);
+		if (participant != null) {
+			if (!hasParticipant(participant)) {
+				participantsRepo.createParticipation(this, participant);
+			} else {
+				container.informUser("A Participant (" + participant.getFullName()
+						+ ") is already participating or wait-listed in this Activity");
+			}
+		}
 		return this;
+	}
+
+	public List<ParticipantIdentity> choices0AddParticipant() {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
 
 	public String disableAddParticipant() {
@@ -586,10 +607,6 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		if (participation != null)
 			participantsRepo.deleteParticipation(participation);
 		return this;
-	}
-
-	public List<Participant> choices0AddParticipant() {
-		return participantsRepo.listActive(AgeGroup.All);
 	}
 
 	public List<Participant> choices0RemoveParticipant() {
@@ -643,7 +660,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Action
 	public Activity moveWaitListedParticipant(final WaitListedParticipant waitListed) {
-		if (getWaitListed().contains(waitListed)){
+		if (getWaitListed().contains(waitListed)) {
 			Participant participant = waitListed.getParticipant();
 			getWaitListed().remove(waitListed);
 			addParticipant(participant);
@@ -654,7 +671,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	public Set<WaitListedParticipant> choices0MoveWaitListedParticipant() {
 		return getWaitListed();
 	}
-	
+
 	public String disableMoveWaitListedParticipant() {
 		if (getCutoffLimit() != null && getParticipations().size() >= getCutoffLimit()) {
 			return "Participation count has reached Cut-off Limit";
@@ -662,29 +679,24 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 			return null;
 		}
 	}
-	
-	/*TO-DO
-	@Action
-	public Activity moveParticipantToWaitList(final Participation participation) {
-		if (getWaitListed().contains(waitListed)){
-			Participant participant = waitListed.getParticipant();
-			getWaitListed().remove(waitListed);
-			addParticipant(participant);
-		}
-		return this;
-	}
 
-	public Set<WaitListedParticipant> choices0MoveParticipantToWaitList() {
-		return getWaitListed();
-	}
-	
-	public String disableMoveParticipantToWaitList() {
-		if (getCutoffLimit() != null && getParticipations().size() >= getCutoffLimit()) {
-			return "Participation count has reached Cut-off Limit";
-		} else {
-			return null;
-		}
-	}*/
+	/*
+	 * TO-DO
+	 * 
+	 * @Action public Activity moveParticipantToWaitList(final Participation
+	 * participation) { if (getWaitListed().contains(waitListed)){ Participant
+	 * participant = waitListed.getParticipant();
+	 * getWaitListed().remove(waitListed); addParticipant(participant); } return
+	 * this; }
+	 * 
+	 * public Set<WaitListedParticipant> choices0MoveParticipantToWaitList() {
+	 * return getWaitListed(); }
+	 * 
+	 * public String disableMoveParticipantToWaitList() { if (getCutoffLimit()
+	 * != null && getParticipations().size() >= getCutoffLimit()) { return
+	 * "Participation count has reached Cut-off Limit"; } else { return null; }
+	 * }
+	 */
 
 	@Property()
 	// @MemberOrder(sequence = "100")

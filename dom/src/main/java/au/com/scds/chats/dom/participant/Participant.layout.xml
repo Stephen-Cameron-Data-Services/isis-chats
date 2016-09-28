@@ -24,7 +24,6 @@
 								<ns2:property id="emailAddress" typicalLength="20" />
 								<ns2:property id="streetAddress" typicalLength="40" />
 								<ns2:property id="mailAddress" hidden="ALL_TABLES" />
-								<ns2:property id="location" hidden="ALL_TABLES" />
 								<ns2:property id="age" typicalLength="2" />
 								<ns2:property id="sex" typicalLength="5" />
 								<ns2:property id="status" typicalLength="5" />
@@ -183,6 +182,7 @@
 								<ns2:property id="lastModifiedOn" hidden="ALL_TABLES" />
 								<ns2:property id="region" hidden="EVERYWHERE" />
 								<ns2:property id="regionName" />
+								<ns2:property id="location" hidden="ALL_TABLES" />
 							</ns2:fieldSet>
 						</col>
 					</row>

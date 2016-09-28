@@ -46,6 +46,7 @@ import au.com.scds.chats.dom.activity.Activities;
 import au.com.scds.chats.dom.activity.ActivityEvent;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
+import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 
 @DomainService(repositoryFor = AttendanceList.class, nature = NatureOfService.VIEW_MENU_ONLY)
@@ -112,46 +113,47 @@ public class AttendanceLists {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named = "Find Attendance Lists By Activity Name")
 	@MemberOrder(sequence = "2.0")
 	public List<AttendanceList> findAttendanceListsByActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity Name") String name) {
 		return container.allMatches(
 				new QueryDefault<>(AttendanceList.class, "findAttendanceListsByActivityName", "name", name));
 	}
-	
+
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named="List Attendances In Period")
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named = "List Attendances In Period")
 	@MemberOrder(sequence = "3.0")
 	public List<Attend> listAttendsInPeriod(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Period") LocalDate start,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "End Period") LocalDate end) {
-		return container.allMatches(new QueryDefault<>(Attend.class, "findAttendsInPeriod",
-				"startDateTime", start.toDateTimeAtStartOfDay(), "endDateTime", end.toDateTime(new LocalTime(23, 59))));
+		return container.allMatches(new QueryDefault<>(Attend.class, "findAttendsInPeriod", "startDateTime",
+				start.toDateTimeAtStartOfDay(), "endDateTime", end.toDateTime(new LocalTime(23, 59))));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named="Find Attendances By Activity")
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named = "Find Attendances By Activity Name")
 	@MemberOrder(sequence = "4.0")
 	public List<Attend> findAttendsByActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity Name") String name) {
-		return container.allMatches(
-				new QueryDefault<>(Attend.class, "findAttendsByActivityName", "name", name));
+		return container.allMatches(new QueryDefault<>(Attend.class, "findAttendsByActivityName", "name", name));
 	}
-	
+
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named="Find Attendances By Participant")
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named = "Find Attendances By Participant")
 	@MemberOrder(sequence = "5.0")
 	public List<Attend> findAttendsByParticipant(
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") Participant participant) {
-		return container.allMatches(
-				new QueryDefault<>(Attend.class, "findAttendsByParticipant", "participant", participant));
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") ParticipantIdentity identity) {
+		if (identity == null)
+			return null;
+		return container.allMatches(new QueryDefault<>(Attend.class, "findAttendsByParticipant", "participant",
+				participants.getParticipant(identity)));
 	}
-	
-	public List<Participant> choices0FindAttendsByParticipant(){
-		return participants.listActive(AgeGroup.All);
+
+	public List<ParticipantIdentity> choices0FindAttendsByParticipant() {
+		return participants.listActiveParticipantIdentities(AgeGroup.All);
 	}
-	
+
 	@Inject
 	Participants participants;
 

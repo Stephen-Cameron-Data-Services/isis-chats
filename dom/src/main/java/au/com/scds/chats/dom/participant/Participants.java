@@ -66,8 +66,8 @@ public class Participants {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	//@MemberOrder(sequence = "1")
-	//@SuppressWarnings("all")
+	// @MemberOrder(sequence = "1")
+	// @SuppressWarnings("all")
 	public List<Participant> listActive(@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup) {
 		switch (ageGroup) {
 		case All:
@@ -100,7 +100,7 @@ public class Participants {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	//@MemberOrder(sequence = "2")
+	// @MemberOrder(sequence = "2")
 	public List<Participant> listInactive() {
 		return container.allMatches(
 				new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.INACTIVE));
@@ -108,7 +108,7 @@ public class Participants {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	//@MemberOrder(sequence = "3")
+	// @MemberOrder(sequence = "3")
 	public List<Participant> listToExit() {
 		return container.allMatches(
 				new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.TO_EXIT));
@@ -116,21 +116,58 @@ public class Participants {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	//@MemberOrder(sequence = "3")
+	// @MemberOrder(sequence = "3")
 	public List<Participant> listExited() {
 		return container
 				.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.EXITED));
 	}
+	
+	@Programmatic
+	public List<ParticipantIdentity> listActiveParticipantIdentities(@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup) {
+		switch (ageGroup) {
+		case All:
+			return container.allMatches(
+					new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatus", "status", Status.ACTIVE.toString()));
+		case Under_Sixty_Five:
+			LocalDate lowerLimit = LocalDate.now().minusYears(65);
+			return container.allMatches(new QueryDefault<>(ParticipantIdentity.class,
+					"listParticipantsByStatusAndBirthdateAbove", "status", Status.ACTIVE.toString(), "lowerLimit", lowerLimit));
+		case Sixty_Five_and_Over:
+			LocalDate upperLimit = LocalDate.now().minusYears(65).plusDays(1);
+			return container.allMatches(new QueryDefault<>(ParticipantIdentity.class,
+					"listParticipantsByStatusAndBirthdateBelow", "status", Status.ACTIVE.toString(), "upperLimit", upperLimit));
+		default:
+			return null;
+		}
+	}
+	
+	@Programmatic
+	public List<ParticipantIdentity> listInactiveParticipantIdentities(@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup) {
+			return container.allMatches(
+					new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatus", "status", Status.ACTIVE.toString()));
+	}
+	
+	@Programmatic
+	public Participant getParticipant(ParticipantIdentity identity) {
+		return isisJdoSupport.getJdoPersistenceManager().getObjectById(Participant.class,
+				identity.getJdoObjectId());
+	}
+	
+	@Programmatic
+	public Boolean isIdentityOfParticipant(ParticipantIdentity identity, Participant participant) {
+		String id = isisJdoSupport.getJdoPersistenceManager().getObjectId(participant).toString();
+		return id.equals(identity.getJdoObjectId());
+	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	//@MemberOrder(sequence = "4")
+	// @MemberOrder(sequence = "4")
 	public List<Participant> findBySurname(@ParameterLayout(named = "Surname") final String surname) {
 		return container
 				.allMatches(new QueryDefault<>(Participant.class, "findParticipantsBySurname", "surname", surname));
 	}
 
-	//@MemberOrder(sequence = "5")
+	// @MemberOrder(sequence = "5")
 	public Participant create(final @Parameter(maxLength = 100) @ParameterLayout(named = "First name") String firstname,
 			final @Parameter(maxLength = 100) @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob,
@@ -155,9 +192,9 @@ public class Participants {
 		// find or create Person
 		Person person = persons.findPerson(firstname, surname, dob);
 		if (person == null) {
-			try{
-			person = persons.createPerson(firstname, surname, dob, sex);
-			}catch(Exception e){
+			try {
+				person = persons.createPerson(firstname, surname, dob, sex);
+			} catch (Exception e) {
 				System.out.print(e.getMessage());
 			}
 		}
@@ -207,7 +244,7 @@ public class Participants {
 		container.flush();
 		return participation;
 	}
-	
+
 	@Programmatic
 	public WaitListedParticipant createWaitListedParticipant(Activity activity, Participant participant) {
 		WaitListedParticipant waitListed = container.newTransientInstance(WaitListedParticipant.class);
@@ -217,7 +254,7 @@ public class Participants {
 		container.flush();
 		return waitListed;
 	}
-	
+
 	@Programmatic
 	public void deleteWaitListedParticipant(WaitListedParticipant waitListed) {
 		container.removeIfNotAlready(waitListed);
@@ -239,9 +276,9 @@ public class Participants {
 
 	@Programmatic
 	public void deleteParticipation(Participation participation) {
-		//TODO why does this no longer work in 1.12.1?
-		//(throws an error about reading from a deleted object.)
-		//means unit test no longer works.
+		// TODO why does this no longer work in 1.12.1?
+		// (throws an error about reading from a deleted object.)
+		// means unit test no longer works.
 		// participation.getActivity().removeParticipation(participation);
 		// participation.getParticipant().removeParticipation(participation);
 		container.removeIfNotAlready(participation);

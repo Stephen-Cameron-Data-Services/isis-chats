@@ -59,6 +59,7 @@ import org.joda.time.LocalTime;
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
+import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.VolunteeredTimeForActivity;
@@ -192,19 +193,24 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	public Volunteer default0AddVolunteeredTime() {
 		return getAllocatedVolunteer();
 	}
+	
+	public CalendarDayCallSchedule addNewCall(final Participant participant,  final DateTime dateTime) throws Exception {
+		ScheduledCall call = scheduleCall(participant, dateTime.toLocalTime());
+		return this;
+	}
 
 	// ACTIONS
 	@Action()
-	@ActionLayout()
-	@MemberOrder(name = "scheduledCalls", sequence = "1")
-	public CalendarDayCallSchedule addNewCall(@Parameter(optionality = Optionality.MANDATORY) final Participant participant, @Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) throws Exception {
-		ScheduledCall call = scheduleCall(participant, dateTime.toLocalTime());
-		//call.setParticipant(participant);
+	//@ActionLayout()
+	//@MemberOrder(name = "scheduledCalls", sequence = "1")
+	public CalendarDayCallSchedule addNewCall(@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named="Participant") final ParticipantIdentity identity, @Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) throws Exception {
+		Participant participant = participantsRepo.getParticipant(identity);
+		addNewCall(participant, dateTime);
 		return this;
 	}
 	
-	public List<Participant> choices0AddNewCall() {
-		return participantsRepo.listActive(AgeGroup.All);
+	public List<ParticipantIdentity> choices0AddNewCall() {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
 
 	public DateTime default1AddNewCall() {

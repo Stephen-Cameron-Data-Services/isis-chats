@@ -33,6 +33,7 @@ import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
+import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
@@ -43,6 +44,7 @@ import org.joda.time.LocalTime;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
+import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.Volunteers;
@@ -68,10 +70,11 @@ public class Calls {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1.0")
 	public Call create(@Parameter(optionality = Optionality.MANDATORY) final CallType type,
-			@Parameter(optionality = Optionality.MANDATORY) final Participant participant,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named="Participant") final ParticipantIdentity identity,
 			@Parameter(optionality = Optionality.OPTIONAL) final Volunteer volunteer,
 			@Parameter(optionality = Optionality.OPTIONAL) final DateTime dateTime) throws Exception {
 		Call call = null;
+		Participant participant = participantsRepo.getParticipant(identity);
 		switch (type) {
 		case Care:
 			call = container.newTransientInstance(CareCall.class);
@@ -114,7 +117,7 @@ public class Calls {
 		return volunteersRepo.listActive();
 	}
 
-	public String validateCreate(final CallType type, final Participant participant, final Volunteer volunteer,
+	public String validateCreate(final CallType type, final ParticipantIdentity identity, final Volunteer volunteer,
 			final DateTime dateTime) {
 		if (type == CallType.Scheduled && (volunteer == null || dateTime == null)) {
 			return "For a Scheduled Call, both Volunteer and DateTime are required too.";
@@ -127,7 +130,8 @@ public class Calls {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.1")
 	public List<CareCall> listCareCalls(
-			@Parameter(optionality = Optionality.OPTIONAL) final Participant activeParticipant) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named="Active Participant") final ParticipantIdentity identity) {
+		Participant activeParticipant = participantsRepo.getParticipant(identity);
 		if (activeParticipant != null) {
 			return container.allMatches(
 					new QueryDefault<>(CareCall.class, "findCareCallsByParticipant", "participant", activeParticipant));
@@ -136,15 +140,16 @@ public class Calls {
 		}
 	}
 
-	public List<Participant> choices0ListCareCalls() {
-		return participantsRepo.listActive(AgeGroup.All);
+	public List<ParticipantIdentity> choices0ListCareCalls() {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.2")
 	public List<ReconnectCall> listReconnectCalls(
-			@Parameter(optionality = Optionality.OPTIONAL) final Participant activeParticipant) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named="Participant") final ParticipantIdentity identity) {
+		Participant activeParticipant = participantsRepo.getParticipant(identity);
 		if (activeParticipant != null) {
 			return container.allMatches(new QueryDefault<>(ReconnectCall.class, "findReconnectCallsByParticipant",
 					"participant", activeParticipant));
@@ -153,15 +158,15 @@ public class Calls {
 		}
 	}
 
-	public List<Participant> choices0ListReconnectCalls() {
-		return participantsRepo.listActive(AgeGroup.All);
+	public List<ParticipantIdentity> choices0ListReconnectCalls() {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.3")
 	public List<SurveyCall> listSurveyCalls(
-			@Parameter(optionality = Optionality.OPTIONAL) final Participant activeParticipant) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named="Active Participant") final ParticipantIdentity activeParticipant) {
 		if (activeParticipant != null) {
 			return container.allMatches(new QueryDefault<>(SurveyCall.class, "findSurveyCallsByParticipant",
 					"participant", activeParticipant));
@@ -170,8 +175,8 @@ public class Calls {
 		}
 	}
 
-	public List<Participant> choices0ListSurveyCalls() {
-		return participantsRepo.listActive(AgeGroup.All);
+	public List<ParticipantIdentity> choices0ListSurveyCalls() {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
@@ -179,7 +184,8 @@ public class Calls {
 	@MemberOrder(sequence = "10.4")
 	public List<ScheduledCall> listScheduledCalls(
 			@Parameter(optionality = Optionality.OPTIONAL) final Volunteer activeVolunteer,
-			@Parameter(optionality = Optionality.OPTIONAL) final Participant activeParticipant) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named="Participant") final ParticipantIdentity identity) {
+		Participant activeParticipant = participantsRepo.getParticipant(identity);
 		if (activeVolunteer != null && activeParticipant != null) {
 			return container
 					.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipantAndVolunteer",
@@ -199,8 +205,8 @@ public class Calls {
 		return volunteersRepo.listActive();
 	}
 
-	public List<Participant> choices1ListScheduledCalls() {
-		return participantsRepo.listActive(AgeGroup.All);
+	public List<ParticipantIdentity> choices1ListScheduledCalls() {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)

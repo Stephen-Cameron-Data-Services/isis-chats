@@ -29,34 +29,44 @@ import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
+import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.query.QueryDefault;
 
 import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
+import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.report.view.InactiveParticipant;
 
-@DomainService(nature=NatureOfService.VIEW_MENU_ONLY)
+@DomainService(nature = NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.5")
 public class InactiveParticipantsByMonthsInactive {
 
-	public List<InactiveParticipant> findMostInactiveParticipants(){
-		return container.allMatches(new QueryDefault<>(InactiveParticipant.class,"findInactiveParticipants"));
+	public List<InactiveParticipant> findMostInactiveParticipants() {
+		return container.allMatches(new QueryDefault<>(InactiveParticipant.class, "findInactiveParticipants"));
 	}
-	
-	public List<InactiveParticipant> findParticipantActivity(@Parameter(optionality=Optionality.MANDATORY) Participant participant){
+
+	public List<InactiveParticipant> findParticipantActivity(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") ParticipantIdentity identity) {
+		if (identity == null)
+			return null;
+		Participant participant = participantsRepo.getParticipant(identity);
+		if (participant == null)
+			return null;
 		Person p = participant.getPerson();
-		return container.allMatches(new QueryDefault<>(InactiveParticipant.class,"getParticipantActivity","firstname",p.getFirstname(),"surname",p.getSurname(),"birthdate",p.getBirthdate()));
+		return container.allMatches(new QueryDefault<>(InactiveParticipant.class, "getParticipantActivity", "firstname",
+				p.getFirstname(), "surname", p.getSurname(), "birthdate", p.getBirthdate()));
 	}
-	
-	public List<Participant> choices0FindParticipantActivity(){
-		return participantsRepo.listActive(AgeGroup.All);
+
+	public List<ParticipantIdentity> choices0FindParticipantActivity() {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
-	
+
 	@Inject
 	DomainObjectContainer container;
+
 	@Inject
 	Participants participantsRepo;
-	
+
 }
