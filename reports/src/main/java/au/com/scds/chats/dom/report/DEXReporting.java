@@ -20,6 +20,7 @@ import org.apache.isis.applib.services.jaxb.JaxbService;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
 import org.apache.isis.applib.services.repository.RepositoryService;
 import org.apache.isis.applib.value.Clob;
+import org.joda.time.DateTime;
 
 //import au.com.scds.chats.dom.dex.reference.Month;
 import au.com.scds.chats.dom.general.names.Region;
@@ -27,6 +28,7 @@ import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportSinglePass;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportSinglePass.DEXFileUploadWrapper;
+import au.com.scds.chats.dom.report.view.ActivityAttendanceSummary;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
 
@@ -61,7 +63,8 @@ public class DEXReporting {
 		DEXFileUploadWrapper wrapped = report1.build();
 		if (wrapped.hasErrors()) {
 			String report = wrapped.getErrors();
-			Clob clob = new Clob("DexReportingERRORSFor" + regionName + "_" + month + "_" + year + ".txt", "text/plain", report);
+			Clob clob = new Clob("DexReportingERRORSFor" + regionName + "_" + month + "_" + year + ".txt", "text/plain",
+					report);
 			System.out.println("Ending DEX report.");
 			return clob;
 		} else {
@@ -70,10 +73,23 @@ public class DEXReporting {
 			System.out.println("Ending DEX report.");
 			return clob;
 		}
-		
+
 	}
 
 	public List<String> choices2CreateDexReportForMonth() {
+		return Arrays.asList("SOUTH", "NORTH", "NORTH-WEST");
+	}
+
+	public List<ActivityAttendanceSummary> checkAttendanceDataForMonth(@ParameterLayout(named = "Year") Integer year,
+			@ParameterLayout(named = "Month") Month month, @ParameterLayout(named = "Region") String regionName) {
+		DateTime start =  new DateTime(year,month.getValue(),1,0,0).withTimeAtStartOfDay();
+		DateTime end = start.plusDays(start.dayOfMonth().getMaximumValue()).withTime(23, 59, 59, 999);
+		return container.allMatches(
+				new QueryDefault<>(ActivityAttendanceSummary.class, "allActivityAttendanceSummaryForPeriodAndRegion",
+						"startDateTime", start, "endDateTime", end, "region", regionName));
+	}
+
+	public List<String> choices2CheckAttendanceDataForMonth() {
 		return Arrays.asList("SOUTH", "NORTH", "NORTH-WEST");
 	}
 
