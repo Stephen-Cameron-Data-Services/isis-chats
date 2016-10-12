@@ -29,6 +29,7 @@ import au.com.scds.chats.dom.report.dex.model.generated.Session;
 import au.com.scds.chats.dom.report.dex.model.generated.SessionClient;
 import au.com.scds.chats.dom.report.dex.model.generated.SessionClients;
 import au.com.scds.chats.dom.report.dex.model.generated.Sessions;
+import au.com.scds.chats.dom.report.view.ActivityAttendanceSummary;
 import au.com.scds.chats.dom.report.view.ActivityParticipantAttendance;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
@@ -137,6 +138,10 @@ public class DEXBulkUploadReportSinglePass {
 	}
 
 	public DEXFileUploadWrapper build() throws Exception {
+
+		if (fileUploadWrapper.hasAttendanceErrors(this.startDateTime, this.endDateTime, this.regionName)) {
+			return fileUploadWrapper;
+		}
 
 		String clientKey = null, caseKey = null, sessionKey = null;
 		Map<String, ClientWrapper> clientsMap = new HashMap<>();
@@ -476,54 +481,59 @@ public class DEXBulkUploadReportSinglePass {
 
 		public void validateParticipant(Participant participant) {
 			if (participant == null) {
-				errors.add("No Participant found");
+				errors.add("No Participant found\r\n");
 			} else {
 				if (participant.getPerson() == null) {
-					errors.add("No Person found");
+					errors.add("No Person found\r\n");
 				} else {
 					if (participant.getPerson().getSlk() == null)
-						errors.add("No SLK found for Person " + participant.getPerson().getFullname());
+						errors.add("No SLK found for Person " + participant.getPerson().getFullname() + "\r\n");
 					if (participant.getPerson().getFirstname() == null)
-						errors.add("No SLK found for Person " + participant.getPerson().getFullname());
+						errors.add("No SLK found for Person " + participant.getPerson().getFullname() + "\r\n");
 					if (participant.getPerson().getSurname() == null)
-						errors.add("No SLK found for Person " + participant.getPerson().getFullname());
+						errors.add("No SLK found for Person " + participant.getPerson().getFullname() + "\r\n");
 					if (participant.getPerson().getSlk() == null)
-						errors.add("No SLK found for Person " + participant.getPerson().getFullname());
+						errors.add("No SLK found for Person " + participant.getPerson().getFullname() + "\r\n");
 					if (participant.isConsentToProvideDetails() == null)
-						errors.add("'Consent To Provide Details' is NULL for Participant " + participant.getFullName());
+						errors.add("'Consent To Provide Details' is NULL for Participant " + participant.getFullName()
+								+ "\r\n");
 					if (participant.isConsentedForFutureContacts() == null)
-						errors.add("'Consent To Future Contacts' is NULL for Participant " + participant.getFullName());
+						errors.add("'Consent To Future Contacts' is NULL for Participant " + participant.getFullName()
+								+ "\r\n");
 					if (participant.getPerson().getBirthdate() == null)
-						errors.add("Birthdate is NULL for Person " + participant.getPerson().getFullname());
+						errors.add("Birthdate is NULL for Person " + participant.getPerson().getFullname() + "\r\n");
 					if (participant.getPerson().getSex() == null)
-						errors.add("Sex is NULL for Person " + participant.getPerson().getFullname());
+						errors.add("Sex is NULL for Person " + participant.getPerson().getFullname() + "\r\n");
 					if (participant.getCountryOfBirth() == null)
-						errors.add("'Country of Birth' is NULL for Participant " + participant.getFullName());
+						errors.add("'Country of Birth' is NULL for Participant " + participant.getFullName() + "\r\n");
 					if (participant.getLanguageSpokenAtHome() == null)
-						errors.add("'Language Spoken at Home' is NULL for Participant " + participant.getFullName());
+						errors.add("'Language Spoken at Home' is NULL for Participant " + participant.getFullName()
+								+ "\r\n");
 					if (participant.getAboriginalOrTorresStraitIslanderOrigin() == null)
 						errors.add("'Aboriginal Or Torres Strait Islander Origin' is NULL for Participant "
-								+ participant.getFullName());
+								+ participant.getFullName() + "\r\n");
 					if (participant.isHasDisabilities() == null)
-						errors.add("'Has Disabilities' is NULL for Participant " + participant.getFullName());
+						errors.add("'Has Disabilities' is NULL for Participant " + participant.getFullName() + "\r\n");
 					if (participant.getDvaCardStatus() == null)
-						errors.add("'DVA Card Status' is NULL for Participant " + participant.getFullName());
+						errors.add("'DVA Card Status' is NULL for Participant " + participant.getFullName() + "\r\n");
 					if (participant.isHasCarer() == null)
-						errors.add("'Has Carer' is NULL for Participant " + participant.getFullName());
+						errors.add("'Has Carer' is NULL for Participant " + participant.getFullName() + "\r\n");
 					if (participant.isHasDisabilities() == null)
-						errors.add("'Has Disabilities' is NULL for Participant " + participant.getFullName());
+						errors.add("'Has Disabilities' is NULL for Participant " + participant.getFullName() + "\r\n");
 					if (participant.getHouseholdComposition() == null)
-						errors.add("'Household Composition Code' is NULL for Participant " + participant.getFullName());
+						errors.add("'Household Composition Code' is NULL for Participant " + participant.getFullName()
+								+ "\r\n");
 					if (participant.getPerson().getStreetAddress() == null) {
-						errors.add("'Street Address' is NULL for Person " + participant.getPerson().getFullname());
+						errors.add("'Street Address' is NULL for Person " + participant.getPerson().getFullname()
+								+ "\r\n");
 					} else {
 						Address s = participant.getPerson().getStreetAddress();
 						if (participant.getPerson().getStreetAddress().getSuburb() == null)
 							errors.add("'Street Address Suburb' is NULL for Person "
-									+ participant.getPerson().getFullname());
+									+ participant.getPerson().getFullname() + "\r\n");
 						if (participant.getPerson().getStreetAddress().getPostcode() == null)
 							errors.add("'Street Address Postcode' is NULL for Person "
-									+ participant.getPerson().getFullname());
+									+ participant.getPerson().getFullname() + "\r\n");
 					}
 				}
 			}
@@ -550,6 +560,7 @@ public class DEXBulkUploadReportSinglePass {
 	public class DEXFileUploadWrapper {
 
 		private DEXFileUpload fileUpload;
+		private List<String> errors = new ArrayList<>();
 		private ArrayList<ClientWrapper> clients = new ArrayList<>();
 
 		public DEXFileUpload getFileUpload() {
@@ -566,6 +577,8 @@ public class DEXBulkUploadReportSinglePass {
 
 		public boolean hasErrors() {
 			boolean hasErrors = false;
+			if (errors.size() > 0)
+				hasErrors = true;
 			for (ClientWrapper client : clients) {
 				if (client.getErrorCount() > 0)
 					hasErrors = true;
@@ -573,17 +586,43 @@ public class DEXBulkUploadReportSinglePass {
 			return hasErrors;
 		}
 
+		private Boolean hasAttendanceErrors(DateTime start, DateTime end, String regionName) {
+			List<ActivityAttendanceSummary> attendances = repository.allMatches(
+					new QueryDefault(ActivityAttendanceSummary.class, "allActivityAttendanceSummaryForPeriodAndRegion",
+							"startDateTime", start.toDate(), "endDateTime", end.toDate(), "region", regionName));
+			boolean hasErrors = false;
+			for (ActivityAttendanceSummary attendance : attendances) {
+				if (attendance.getCancelled()) {
+					if (attendance.getAttendedCount() > 0 || attendance.getNotAttendedCount() > 0) {
+						this.errors.add("Activity '" + attendance.getActivityName()
+								+ "' is cancelled but still has entries in its attendance list.\r\n");
+						hasErrors = true;
+					}
+				} else {
+					if (attendance.getAttendedCount() == 0) {
+						this.errors.add("Activity '" + attendance.getActivityName()
+								+ "' is not cancelled but has no attendees.\r\n");
+						hasErrors = true;
+					}
+					if (attendance.getHasStartAndEndDateTimesCount() < attendance.getAttendedCount()) {
+						this.errors.add("Activity '" + attendance.getActivityName()
+								+ "' has missing date-time(s) for some attendees.\r\n");
+						hasErrors = true;
+					}
+				}
+			}
+			return hasErrors;
+		}
+
 		public String getErrors() {
 			StringBuffer allErrors = new StringBuffer();
+			allErrors.append(this.errors);
 			for (ClientWrapper client : clients) {
 				if (client.getErrorCount() > 0) {
-					for (String error : client.getErrors()) {
-						allErrors.append(error + "\r\n");
-					}
+					allErrors.append(client.getErrors());
 				}
 			}
 			return allErrors.toString();
 		}
-
 	}
 }

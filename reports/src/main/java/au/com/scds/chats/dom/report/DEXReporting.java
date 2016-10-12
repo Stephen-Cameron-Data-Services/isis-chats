@@ -1,8 +1,12 @@
 package au.com.scds.chats.dom.report;
 
+
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -86,7 +90,29 @@ public class DEXReporting {
 		DateTime end = start.plusDays(start.dayOfMonth().getMaximumValue()).withTime(23, 59, 59, 999);
 		return container.allMatches(
 				new QueryDefault<>(ActivityAttendanceSummary.class, "allActivityAttendanceSummaryForPeriodAndRegion",
-						"startDateTime", start, "endDateTime", end, "region", regionName));
+						"startDateTime", start.toDate(), "endDateTime", end.toDate(), "region", regionName));
+	}
+	
+	public List<ActivityAttendanceSummary> listAttendanceData() {
+		ArrayList<ActivityAttendanceSummary> list = new ArrayList<>();
+		Calendar calendar1 = new GregorianCalendar(2015,0,29);
+		ActivityAttendanceSummary temp1 = new ActivityAttendanceSummary();
+		temp1.setActivityId(1000L);
+		temp1.setMaxEndDateTime(calendar1.getTime());
+		temp1.setMinEndDateTime(calendar1.getTime());
+		temp1.setMaxStartDateTime(calendar1.getTime());
+		temp1.setMinStartDateTime(calendar1.getTime());
+		list.add(temp1);
+
+		Calendar calendar2 = new GregorianCalendar(2015,0,30);
+		ActivityAttendanceSummary temp2 = new ActivityAttendanceSummary();
+		temp2.setActivityId(1001L);
+		temp2.setMaxEndDateTime(calendar2.getTime());
+		temp2.setMinEndDateTime(calendar2.getTime());
+		temp2.setMaxStartDateTime(calendar2.getTime());
+		temp2.setMinStartDateTime(calendar2.getTime());
+		list.add(temp2);
+		return list;
 	}
 
 	public List<String> choices2CheckAttendanceDataForMonth() {

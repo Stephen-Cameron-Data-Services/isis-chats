@@ -87,9 +87,12 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 
 public class ActivityEvent extends Activity implements Notable, CalendarEventable {
 
+
+
 	protected RecurringActivity parentActivity;
 	protected AttendanceList attendances;
 	protected List<Attend> attends;
+	protected Boolean cancelled;
 
 	public ActivityEvent() {
 		super();
@@ -119,6 +122,14 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	public boolean hideParentActivity() {
 		return getParentActivity() == null;
 	}
+	
+	public Boolean getCancelled() {
+		return cancelled;
+	}
+
+	public void setCancelled(Boolean cancelled) {
+		this.cancelled = cancelled;
+	}	
 
 	@Property(hidden = Where.EVERYWHERE)
 	@Column(allowsNull = "true")
