@@ -25,7 +25,7 @@
 								</ns2:property>
 								<ns2:property id="parentActivity" hidden="ALL_TABLES" />
 								<ns2:property id="description" hidden="ALL_TABLES" />
-								<ns2:property id="activityTypeName" />
+								<ns2:property id="activityTypeName" hidden="EVERYWHERE"/>
 								<ns2:property id="startDateTime" />
 								<ns2:property id="approximateEndDateTime" />
 								<ns2:property id="costForParticipant" hidden="ALL_TABLES" />
@@ -39,7 +39,14 @@
 								<ns2:action id="updateLocation">
 									<ns2:named>Update</ns2:named>
 								</ns2:action>
-								<ns2:property id="addressLocationName" />
+								<ns2:action id="removeLocation">
+									<ns2:named>Clear</ns2:named>
+								</ns2:action>
+								<ns2:property id="addressLocationName">
+									<ns2:action id="updateNamedLocation">
+										<ns2:named>Modify Named Location</ns2:named>
+									</ns2:action>
+								</ns2:property>
 								<ns2:property id="streetAddress" />
 							</ns2:fieldSet>
 						</col>

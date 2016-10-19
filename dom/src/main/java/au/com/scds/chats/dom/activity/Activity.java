@@ -360,6 +360,51 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		this.address = address;
 	}
 
+	@Action
+	public Activity updateNamedLocation(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Location Name") String name,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Address Street 1") String street1,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Address Street 2") String street2,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Address Suburb") Suburb suburb) {
+		if (name != null && name.trim().length() > 0) {
+			if (suburb != null) {
+				getAddress().updateNamedAddress(name, street1, street2, suburb.getName(),
+						suburb.getPostcode().toString());
+			} else {
+				getAddress().updateNamedAddress(name, street1, street2, null, null);
+			}
+		}
+		return this;
+	}
+
+	public String disableUpdateNamedLocation() {
+		if (getAddress() == null || getAddress().getName() == null) {
+			return "Can only change a global named Location/Address, otherwide use Update action";
+		} else {
+			return "";
+		}
+	}
+	
+	public String default0UpdateNamedLocation() {
+		return getAddress().getName();
+	}
+
+	public String default1UpdateNamedLocation() {
+		return getAddress().getStreet1();
+	}
+	
+	public String default2UpdateNamedLocation() {
+		return getAddress().getStreet2();
+	}
+
+	public Suburb default3UpdateNamedLocation() {
+		return suburbs.findSuburb(getAddress().getSuburb(), getAddress().getPostcode());
+	}
+
+	public List<Suburb> choices3UpdateNamedLocation() {
+		return suburbs.listAllSuburbs();
+	}
+
 	@Property()
 	@PropertyLayout(named = "Location Name")
 	// @MemberOrder(name = "Location", sequence = "1")
@@ -479,6 +524,19 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	public List<Suburb> choices4UpdateLocation() {
 		return suburbs.listAllSuburbs();
 	}
+	
+	@Action(semantics=SemanticsOf.IDEMPOTENT_ARE_YOU_SURE)
+	public Activity removeLocation(){
+		setAddress(null);
+		return this;
+	}
+	
+	public String disableRemoveLocation(){
+		if(getAddress() != null)
+			return null;
+		else
+			return "Location not currently set";
+	}
 
 	@Property()
 	// @MemberOrder(sequence = "100")
@@ -535,7 +593,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 		return participants;
 	}
 
-	@Action(hidden=Where.EVERYWHERE)
+	@Action(hidden = Where.EVERYWHERE)
 	public void addParticipant(final Participant participant) {
 		if (participant == null)
 			return;

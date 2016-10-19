@@ -103,7 +103,9 @@ import org.joda.time.LocalDate;
 @Queries({
 		@Query(name = "listMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.MailMergeData "),
 		@Query(name = "listActiveParticipantMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.MailMergeData WHERE participantStatus == 'ACTIVE'"),
-		@Query(name = "listActiveVolunteerMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.MailMergeData WHERE volunteerStatus == 'ACTIVE'") })
+		@Query(name = "listActiveVolunteerMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.MailMergeData WHERE volunteerStatus == 'ACTIVE'"),
+		@Query(name = "listInactiveParticipantMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.MailMergeData WHERE participantStatus == 'INACTIVE'"),
+		@Query(name = "listInactiveVolunteerMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.MailMergeData WHERE volunteerStatus == 'INACTIVE'")})
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class MailMergeData implements WithApplicationTenancy{
 

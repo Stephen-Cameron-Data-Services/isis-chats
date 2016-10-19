@@ -72,7 +72,7 @@ public class Address extends Location {
 		}
 		return buf.toString();
 	}
-	
+
 	@NotPersistent
 	public String getFullStreetAddress() {
 		final TitleBuffer buf = new TitleBuffer();
@@ -132,6 +132,22 @@ public class Address extends Location {
 	}
 
 	@Programmatic
+	public void updateNamedAddress(String name, String street1, String street2, String suburb, String postcode) {
+		if (getName() != null && getName().trim().length() > 0) {
+			if (name != null && name.trim().length() > 0) {
+				if (suburb != null && suburb.trim().length() > 0) {
+					this.setName(name);
+					this.setStreet1(street1);
+					this.setStreet2(street2);
+					this.setSuburb(suburb);
+					this.setPostcode(postcode);
+				}
+			}
+		}
+
+	}
+
+	@Programmatic
 	public void updateGeocodedLocation() {
 		String address = (getStreet1() != null ? getStreet1() + ", " : "")
 				+ (getStreet2() != null ? getStreet2() + ", " : "")
@@ -146,6 +162,5 @@ public class Address extends Location {
 
 	@Inject
 	protected Locations locationsRepo;
-
 
 }

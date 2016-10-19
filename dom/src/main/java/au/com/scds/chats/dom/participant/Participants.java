@@ -154,6 +154,12 @@ public class Participants {
 	}
 	
 	@Programmatic
+	public Participant getParticipant(Person person) {
+		return container
+				.firstMatch(new QueryDefault<>(Participant.class, "findParticipantForPerson", "person", person));
+	}
+	
+	@Programmatic
 	public Boolean isIdentityOfParticipant(ParticipantIdentity identity, Participant participant) {
 		String id = isisJdoSupport.getJdoPersistenceManager().getObjectId(participant).toString();
 		return id.equals(identity.getJdoObjectId());
@@ -293,6 +299,8 @@ public class Participants {
 
 	@Inject
 	private IsisJdoSupport isisJdoSupport;
+
+
 
 
 

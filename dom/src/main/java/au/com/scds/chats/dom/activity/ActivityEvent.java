@@ -92,7 +92,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	protected RecurringActivity parentActivity;
 	protected AttendanceList attendances;
 	protected List<Attend> attends;
-	protected Boolean cancelled;
+	protected boolean cancelled;
 
 	public ActivityEvent() {
 		super();
@@ -123,11 +123,11 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		return getParentActivity() == null;
 	}
 	
-	public Boolean getCancelled() {
+	public boolean getCancelled() {
 		return cancelled;
 	}
 
-	public void setCancelled(Boolean cancelled) {
+	public void setCancelled(boolean cancelled) {
 		this.cancelled = cancelled;
 	}	
 

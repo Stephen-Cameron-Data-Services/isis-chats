@@ -54,12 +54,14 @@ public class ParticipantTransportView {
 			return;
 		Participant p = participation.getParticipant();
 		Activity a = participation.getActivity();
-		this.name = p.getFullName();
-		this.address = p.getPerson().getFullStreetAddress();
+		this.name = p.getPerson().getKnownAsName();
+		this.address = p.getStreetAddress();
+		this.mobilePhone = p.getMobilePhoneNumber();
+		this.homePhone = p.getHomePhoneNumber();
 		this.location = p.getLocation();
 		this.pickupTime = participation.getPickupTime();
 		this.dropoffTime = participation.getDropoffTime();
-		this.notes = participation.getTransportNotes();
+		this.notes = ((p.getMobility() != null) ? p.getMobility() + " " : "") + participation.getTransportNotes();
 		this.arrivingTransportType = participation.getArrivingTransportType();
 		this.departingTransportType = participation.getDepartingTransportType();
 	}

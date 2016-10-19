@@ -69,6 +69,7 @@ import au.com.scds.chats.dom.participant.Participants;
 // @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" },
 // middle = { "VolunteerRoles", "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
+@Unique(name = "Volunteer_UNQ", members = { "person" })
 public class Volunteer extends AbstractChatsDomainEntity implements Notable, Locatable {
 
 	private Person person;

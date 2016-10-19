@@ -46,6 +46,8 @@ import au.com.scds.chats.dom.general.Persons;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.dom.general.names.Region;
+import au.com.scds.chats.dom.participant.Participant;
+import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 
 @DomainService(repositoryFor = Volunteer.class)
@@ -103,6 +105,8 @@ public class Volunteers {
 			Sex sex) {
 		return newVolunteer(firstname, surname, dob, sex);
 	}
+	
+
 
 	@Programmatic
 	public Volunteer newVolunteer(final String firstname, final String surname, final LocalDate dob, Sex sex) {
@@ -114,7 +118,8 @@ public class Volunteers {
 				return volunteer;
 			}
 		}
-		// find or create Person
+		// find or create Person (and find Participant for person)
+		Participant participant = null;
 		Person person = persons.findPerson(firstname, surname, dob);
 		if (person == null) {
 			try{
@@ -122,7 +127,21 @@ public class Volunteers {
 			}catch(Exception e){
 				//discard as validating SLK inputs
 			}
+		}else{
+			//person so probably a Participant
+			participant = participantsRepo.getParticipant(person);
 		}
+		final Volunteer volunteer = container.newTransientInstance(Volunteer.class);
+		volunteer.setPerson(person);
+		container.persistIfNotAlready(volunteer);
+		container.flush();
+		if(participant != null)
+			participant.setVolunteer(volunteer);
+		return volunteer;
+	}
+	
+	@Programmatic
+	public Volunteer create(Person person) {
 		final Volunteer volunteer = container.newTransientInstance(Volunteer.class);
 		volunteer.setPerson(person);
 		container.persistIfNotAlready(volunteer);
@@ -203,7 +222,12 @@ public class Volunteers {
 	@Inject
 	Persons persons;
 	
+	@Inject
+	Participants participantsRepo;
+	
 	@Inject 
 	VolunteerRoles volunteerRoles;
+
+
 
 }

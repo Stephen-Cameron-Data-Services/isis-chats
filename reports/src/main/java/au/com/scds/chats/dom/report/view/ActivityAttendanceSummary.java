@@ -194,7 +194,7 @@ public class ActivityAttendanceSummary implements Comparable<ActivityAttendanceS
 			else
 				return 1;
 		}
-		// compare on activityId
+		// compare on activity Id
 		if (getActivityId() != null && o.getActivityId() != null) {
 			if (getActivityId().equals(o.getActivityId()))
 				return 0;

@@ -47,11 +47,14 @@ import au.com.scds.chats.dom.general.Address;
 import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.general.Status;
+import au.com.scds.chats.dom.volunteer.Volunteer;
+import au.com.scds.chats.dom.volunteer.Volunteers;
 
 @DomainObject(objectType = "PARTICIPANT")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
+@Unique(name = "Participant_UNQ", members = { "person" })
 @Queries({
 		@Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.participant.Participant p WHERE status == :status"),
@@ -67,16 +70,23 @@ import au.com.scds.chats.dom.general.Status;
 		@Query(name = "findParticipantsBySurname", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.participant.Participant  "
 				+ "WHERE person.surname.indexOf(:surname) >= 0"),
+		@Query(name = "findParticipantForPerson", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.participant.Participant  "
+				+ "WHERE person == :person"),
 		@Query(name = "findNewOrModifiedParticipantsByPeriodAndRegion", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.participant.Participant "
 				+ "WHERE ((person.createdOn >= :startDate AND person.createdOn < :startDate) "
 				+ "OR (person.modifiedOn >= :startDate AND person.modifiedOn < :startDate)) AND region = :region"), })
 public class Participant extends AbstractChatsDomainEntity implements Locatable, Notable, Comparable<Participant> {
 
+	//general
 	private Person person;
+	private Volunteer volunteer;
 	private Status status = Status.ACTIVE;
+	private String mobility;
 	@Persistent(mappedBy = "participant")
 	protected SortedSet<Participation> participations = new TreeSet<Participation>();
+		
 	// Social Factor Properties
 	private String limitingHealthIssues;
 	private String otherLimitingFactors;
@@ -125,7 +135,6 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	}
 
 	@Property(hidden = Where.ALL_TABLES)
-	// @MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
 	public Person getPerson() {
 		return person;
@@ -135,51 +144,73 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 		this.person = person;
 	}
 
+	@Property(hidden = Where.ALL_TABLES)
+	@Column(allowsNull = "true")
+	public Volunteer getVolunteer() {
+		return volunteer;
+	}
+
+	public void setVolunteer(Volunteer volunteer) {
+		this.volunteer = volunteer;
+	}
+
+	@Action
+	public Participant makeParticipantIntoVolunteer() {
+		if (getVolunteer() != null) {
+			return this;
+		} else {
+			setVolunteer(volunteersRepo.create(getPerson()));
+		}
+		return this;
+	}
+
+	public String disableMakeParticipantIntoVolunteer() {
+		if (getVolunteer() == null)
+			return null;
+		else
+			return "This Participant is already a Volunteer too!";
+	}
+
 	@Property(hidden = Where.OBJECT_FORMS, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	// @MemberOrder(sequence = "1.1")
 	public String getFullName() {
 		return getPerson().getFullname();
 	}
 
 	@Property(hidden = Where.NOWHERE, editing = Editing.DISABLED, editingDisabledReason = "Calculated from Person record")
-	// @MemberOrder(sequence = "1.2")
 	public Integer getAge() {
 		return getPerson().getAge(null);
 	}
 
 	@Property(hidden = Where.NOWHERE, editing = Editing.DISABLED, editingDisabledReason = "Calculated from Person record")
-	// @MemberOrder(sequence = "1.2")
+
 	public String getSex() {
 		return getPerson().getSex().name();
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	// @MemberOrder(sequence = "2")
+
 	public String getHomePhoneNumber() {
 		return getPerson().getHomePhoneNumber();
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	// @MemberOrder(sequence = "3")
+
 	public String getMobilePhoneNumber() {
 		return getPerson().getMobilePhoneNumber();
 	}
 
 	@Property(hidden = Where.PARENTED_TABLES, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	// @MemberOrder(sequence = "4")
+
 	public String getStreetAddress() {
 		return getPerson().getFullStreetAddress();
 	}
 
 	@Property(hidden = Where.PARENTED_TABLES, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	// @PropertyLayout()
-	// @MemberOrder(sequence = "5")
 	public String getMailAddress() {
 		return getPerson().getFullMailAddress();
 	}
 
 	@Property(hidden = Where.PARENTED_TABLES, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	// @MemberOrder(sequence = "6")
 	public String getEmailAddress() {
 		return getPerson().getEmailAddress();
 	}
@@ -203,7 +234,16 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	}
 
 	@Property()
-	// @MemberOrder(sequence = "100")
+	@Column(allowsNull = "true")
+	public String getMobility() {
+		return mobility;
+	}
+
+	public void setMobility(String mobility) {
+		this.mobility = mobility;
+	}
+
+	@Property()
 	@CollectionLayout(named = "Participation", render = RenderType.EAGERLY)
 	public SortedSet<Participation> getParticipations() {
 		return participations;
@@ -313,7 +353,6 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 
 	@Property()
 	// @PropertyLayout(labelPosition = LabelPosition.TOP)
-	// @MemberOrder(sequence = "6")
 	@Column(allowsNull = "true")
 	public String getPlaceOfOrigin() {
 		return placeOfOrigin;
@@ -325,7 +364,6 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 
 	@Property()
 	// @PropertyLayout(labelPosition = LabelPosition.TOP)
-	// @MemberOrder(sequence = "7")
 	@Column(allowsNull = "true")
 	public LocalDate getDateOfSettlement() {
 		return dateOfSettlement;
@@ -446,10 +484,10 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public void setHasDisabilities(Boolean hasDisabilities) {
 		this.hasDisabilities = hasDisabilities;
 	}
-	
+
 	public void modifyHasDisabilities(Boolean hasDisabilities) {
 		setHasDisabilities(hasDisabilities);
-		if(!isHasDisabilities()){
+		if (!isHasDisabilities()) {
 			setDisability(null);
 		}
 	}
@@ -486,7 +524,7 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public List<Disability> choicesDisabilityDescription() {
 		return dexRefData.allDisabilityDescriptions();
 	}
-	
+
 	public String disableDisabilityDescription() {
 		return isHasDisabilities() ? null : "Has Disabilities must be true to enable this property";
 	}
@@ -682,7 +720,6 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 
 	@Property()
 	// @PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP)
-	// @MemberOrder(sequence = "1")
 	@Column(allowsNull = "true", length = 1000)
 	public String getLifeStory() {
 		return lifeStory;
@@ -694,7 +731,6 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 
 	@Property()
 	// @PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP)
-	// @MemberOrder(sequence = "2")
 	@Column(allowsNull = "true", length = 1000)
 	public String getLifeExperiences() {
 		return lifeExperiences;
@@ -706,7 +742,6 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 
 	@Property()
 	// @PropertyLayout(multiLine = 2, labelPosition = LabelPosition.TOP)
-	// @MemberOrder(sequence = "3")
 	@Column(allowsNull = "true")
 	public String getHobbies() {
 		return hobbies;
@@ -718,7 +753,6 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 
 	@Property()
 	// @PropertyLayout(multiLine = 2, labelPosition = LabelPosition.TOP)
-	// @MemberOrder(sequence = "4")
 	@Column(allowsNull = "true")
 	public String getInterests() {
 		return interests;
@@ -821,6 +855,9 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 
 	@Inject
 	Participants participantsRepo;
+
+	@Inject
+	Volunteers volunteersRepo;
 
 	@Inject
 	DexReferenceData dexRefData;

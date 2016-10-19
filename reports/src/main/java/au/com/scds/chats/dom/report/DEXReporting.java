@@ -98,6 +98,10 @@ public class DEXReporting {
 		Calendar calendar1 = new GregorianCalendar(2015,0,29);
 		ActivityAttendanceSummary temp1 = new ActivityAttendanceSummary();
 		temp1.setActivityId(1000L);
+		temp1.setActivityName("Activity 1");
+		temp1.setAttendedCount(10);
+		temp1.setCancelled(false);
+		temp1.setRegionName("SOUTH");
 		temp1.setMaxEndDateTime(calendar1.getTime());
 		temp1.setMinEndDateTime(calendar1.getTime());
 		temp1.setMaxStartDateTime(calendar1.getTime());
@@ -107,6 +111,10 @@ public class DEXReporting {
 		Calendar calendar2 = new GregorianCalendar(2015,0,30);
 		ActivityAttendanceSummary temp2 = new ActivityAttendanceSummary();
 		temp2.setActivityId(1001L);
+		temp2.setActivityName("Activity 2");
+		temp2.setAttendedCount(20);
+		temp2.setCancelled(true);
+		temp2.setRegionName("NORTH");
 		temp2.setMaxEndDateTime(calendar2.getTime());
 		temp2.setMinEndDateTime(calendar2.getTime());
 		temp2.setMaxStartDateTime(calendar2.getTime());

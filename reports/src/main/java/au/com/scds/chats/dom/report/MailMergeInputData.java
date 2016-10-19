@@ -29,6 +29,7 @@ import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
+import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
 
@@ -40,17 +41,24 @@ import au.com.scds.chats.dom.report.view.MailMergeData;
 @DomainService(nature=NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.10")
 public class MailMergeInputData {
-
-	public List<MailMergeData> allMailMergeData(){
-		return container.allMatches(new QueryDefault<>(MailMergeData.class,"listMailMergeData"));
+	
+	public List<MailMergeData> mailMergeData(@Parameter(optionality=Optionality.MANDATORY)  @ParameterLayout(named="Mail Merge Data Group")
+	MailMergeGroup group){
+		switch (group){
+		case Active_Participants:
+			return container.allMatches(new QueryDefault<>(MailMergeData.class,"listActiveParticipantMailMergeData"));
+		case Active_Volunteers:
+			return container.allMatches(new QueryDefault<>(MailMergeData.class,"listActiveVolunteerMailMergeData"));
+		case Inactive_Participants:
+			return container.allMatches(new QueryDefault<>(MailMergeData.class,"listInactiveParticipantMailMergeData"));
+		case Inactive_Volunteers:
+			return container.allMatches(new QueryDefault<>(MailMergeData.class,"listInactiveVolunteerMailMergeData"));
+		}
+		return null;
 	}
 	
-	public List<MailMergeData> allActiveParticipantsMailMergeInputData(){
-		return container.allMatches(new QueryDefault<>(MailMergeData.class,"listActiveParticipantMailMergeData"));
-	}
-	
-	public List<MailMergeData> allActiveVolunteerMailMergeInputData(){
-		return container.allMatches(new QueryDefault<>(MailMergeData.class,"listActiveVolunteerMailMergeData"));
+	private enum MailMergeGroup{
+		Active_Participants,Active_Volunteers,Inactive_Participants,Inactive_Volunteers
 	}
 	
 	@Inject

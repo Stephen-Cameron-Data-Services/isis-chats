@@ -20,6 +20,7 @@ package au.com.scds.chats.dom.general;
 
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -119,6 +120,11 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 	public String getFullname() {
 		return this.getFirstname() + " " + (this.getPreferredname() != null ? "(" + this.getPreferredname() + ") " : "")
 				+ (this.getMiddlename() != null ? this.getMiddlename() + " " : "") + this.getSurname();
+	}
+	
+	@Programmatic
+	public String getKnownAsName() {
+		return (this.getPreferredname() != null ?  this.getPreferredname() : this.getFirstname()) + " " + this.getSurname();
 	}
 
 	@Property()
@@ -457,7 +463,7 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 		this.homePhoneNumber = homePhoneNumber;
 	}
 
-	@Property(regexPattern = RegexValidation.CommunicationChannel.PHONENUMBER)
+	@Property(regexPattern = RegexValidation.CommunicationChannel.MOBILENUMBER)
 	// @PropertyLayout(named = "Mobile Phone Number")
 	// @MemberOrder(name = "Contact Details", sequence = "4")
 	@Column(allowsNull = "true")
@@ -603,5 +609,6 @@ public class Person extends AbstractChatsDomainEntity implements Locatable, Comp
 
 	@Inject
 	private DomainObjectContainer container;
+
 
 }

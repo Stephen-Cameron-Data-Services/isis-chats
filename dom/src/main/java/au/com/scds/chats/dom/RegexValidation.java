@@ -56,7 +56,8 @@ public final class RegexValidation {
         private CommunicationChannel() {
         }
 
-        public static final String PHONENUMBER = "[+]?[0-9 -]*";
+        public static final String PHONENUMBER = "\\d{2}\\s\\d{4}\\s\\d{4}";
+        public static final String MOBILENUMBER = "\\d{4}\\s\\d{3}\\s\\d{3}";
         public static final String EMAIL = "[^@ ]*@{1}[^@ ]*[.]+[^@ ]*";
     }
 

@@ -17,16 +17,33 @@
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
 								<ns2:property id="person" hidden="ALL_TABLES" />
+								<ns2:property id="volunteer" hidden="ALL_TABLES">
+									<ns2:action id="makeParticipantIntoVolunteer"
+										position="BELOW">
+										<ns2:named>Make a Volunteer too</ns2:named>
+									</ns2:action>
+								</ns2:property>
 								<ns2:property id="fullName" typicalLength="30"
 									hidden="OBJECT_FORMS" />
-								<ns2:property id="homePhoneNumber" typicalLength="10" />
-								<ns2:property id="mobilePhoneNumber" typicalLength="10" />
-								<ns2:property id="emailAddress" typicalLength="20" />
-								<ns2:property id="streetAddress" typicalLength="40" />
-								<ns2:property id="mailAddress" hidden="ALL_TABLES" />
 								<ns2:property id="age" typicalLength="2" />
 								<ns2:property id="sex" typicalLength="5" />
 								<ns2:property id="status" typicalLength="5" />
+							</ns2:fieldSet>
+							<ns2:fieldSet name="Mobility" id="mobility"
+								unreferencedProperties="true">
+								<ns2:property id="mobility" hidden="ALL_TABLES"
+									multiLine="2" />
+							</ns2:fieldSet>
+						</col>
+						<col span="6">
+							<ns2:fieldSet name="Contact" id="contact">
+								<ns2:property id="homePhoneNumber" typicalLength="10" />
+								<ns2:property id="mobilePhoneNumber" typicalLength="10" />
+								<ns2:property id="emailAddress" typicalLength="20" />
+							</ns2:fieldSet>
+							<ns2:fieldSet name="Address" id="address">
+								<ns2:property id="streetAddress" typicalLength="40" />
+								<ns2:property id="mailAddress" hidden="ALL_TABLES" />
 							</ns2:fieldSet>
 						</col>
 					</row>
@@ -149,8 +166,7 @@
 									<ns2:named>Aboriginal or Torres Strait Islander Origin</ns2:named>
 								</ns2:property>
 								<ns2:property id="dvaCardStatus" hidden="EVERYWHERE" />
-								<ns2:property
-									id="dvaCardStatusDescription" hidden="ALL_TABLES">
+								<ns2:property id="dvaCardStatusDescription" hidden="ALL_TABLES">
 									<ns2:named>DVA Card Status</ns2:named>
 								</ns2:property>
 							</ns2:fieldSet>
