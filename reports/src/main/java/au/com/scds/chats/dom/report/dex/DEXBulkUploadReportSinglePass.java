@@ -13,6 +13,8 @@ import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
 import org.apache.isis.applib.services.repository.RepositoryService;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+
+import au.com.scds.chats.dom.dex.reference.Disability;
 import au.com.scds.chats.dom.general.Address;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.participant.Participant;
@@ -402,7 +404,19 @@ public class DEXBulkUploadReportSinglePass {
 			client.setLanguageSpokenAtHomeCode(participant.getLanguageSpokenAtHome().getName().substring(10));
 			client.setAboriginalOrTorresStraitIslanderOriginCode(
 					participant.getAboriginalOrTorresStraitIslanderOrigin().getName().substring(40));
-			client.setHasDisabilities(participant.isHasDisabilities());
+			
+			List<Disability> disabilities = participant.getDisabilities();
+			if(disabilities.size() > 0){
+				client.setHasDisabilities(true);
+				Client.Disabilities d = new Client.Disabilities();
+				client.setDisabilities(d);
+				for(Disability dis : disabilities){
+					d.getDisabilityCode().add(dis.getName());
+				}
+			}else{
+				client.setHasDisabilities(false);
+			}
+			
 			client.setAccommodationTypeCode(participant.getAccommodationType().getName().substring(19));
 			client.setDvaCardStatusCode(participant.getDvaCardStatus().getName().substring(15));
 			client.setHasCarer(participant.isHasCarer());
@@ -494,12 +508,12 @@ public class DEXBulkUploadReportSinglePass {
 						errors.add("No SLK found for Person " + participant.getPerson().getFullname() + "\r\n");
 					if (participant.getPerson().getSlk() == null)
 						errors.add("No SLK found for Person " + participant.getPerson().getFullname() + "\r\n");
-					if (participant.isConsentToProvideDetails() == null)
+					/*if (participant.isConsentToProvideDetails() == null)
 						errors.add("'Consent To Provide Details' is NULL for Participant " + participant.getFullName()
 								+ "\r\n");
 					if (participant.isConsentedForFutureContacts() == null)
 						errors.add("'Consent To Future Contacts' is NULL for Participant " + participant.getFullName()
-								+ "\r\n");
+								+ "\r\n");*/
 					if (participant.getPerson().getBirthdate() == null)
 						errors.add("Birthdate is NULL for Person " + participant.getPerson().getFullname() + "\r\n");
 					if (participant.getPerson().getSex() == null)
@@ -512,14 +526,14 @@ public class DEXBulkUploadReportSinglePass {
 					if (participant.getAboriginalOrTorresStraitIslanderOrigin() == null)
 						errors.add("'Aboriginal Or Torres Strait Islander Origin' is NULL for Participant "
 								+ participant.getFullName() + "\r\n");
-					if (participant.isHasDisabilities() == null)
+					/*if (participant.isHasDisabilities() == null)
 						errors.add("'Has Disabilities' is NULL for Participant " + participant.getFullName() + "\r\n");
-					if (participant.getDvaCardStatus() == null)
+					if (participant.getDvaCardStatus() == null)*/
 						errors.add("'DVA Card Status' is NULL for Participant " + participant.getFullName() + "\r\n");
-					if (participant.isHasCarer() == null)
+					/*if (participant.isHasCarer() == null)
 						errors.add("'Has Carer' is NULL for Participant " + participant.getFullName() + "\r\n");
 					if (participant.isHasDisabilities() == null)
-						errors.add("'Has Disabilities' is NULL for Participant " + participant.getFullName() + "\r\n");
+						errors.add("'Has Disabilities' is NULL for Participant " + participant.getFullName() + "\r\n");*/
 					if (participant.getHouseholdComposition() == null)
 						errors.add("'Household Composition Code' is NULL for Participant " + participant.getFullName()
 								+ "\r\n");

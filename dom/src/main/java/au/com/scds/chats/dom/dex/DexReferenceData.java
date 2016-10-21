@@ -186,6 +186,13 @@ public class DexReferenceData {
 		return container.firstMatch(
 				new QueryDefault<>(Language.class, "description", "description", description));
 	}
+	
+	@Action()
+	public HouseholdComposition getHouseholdCompositionForDescription(String description) {
+			return container.firstMatch(
+					new QueryDefault<>(HouseholdComposition.class, "description", "description", description));
+		
+	}
 
 	@Action()
 	public List<Language> allLanguageSpokenAtHomeDescriptions() {
@@ -236,7 +243,11 @@ public class DexReferenceData {
 		return container.allMatches(new QueryDefault(DVACardStatus.class, "allDescriptions"));
 	}
 	
+
+	
 	@Inject
 	private DomainObjectContainer container;
+
+
 
 }

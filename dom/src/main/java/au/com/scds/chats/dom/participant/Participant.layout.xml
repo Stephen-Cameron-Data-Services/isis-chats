@@ -134,11 +134,6 @@
 								<ns2:property id="usingPsuedonym" hidden="ALL_TABLES" />
 								<ns2:property id="birthDateAnEstimate" hidden="EVERYWHERE" />
 								<ns2:property id="hasCarer" hidden="ALL_TABLES" />
-								<ns2:property id="hasDisabilities" hidden="ALL_TABLES" />
-								<ns2:property id="disability" hidden="EVERYWHERE" />
-								<ns2:property id="disabilityDescription" hidden="ALL_TABLES">
-									<ns2:named>Disability</ns2:named>
-								</ns2:property>
 								<ns2:property id="countryOfBirth" hidden="EVERYWHERE" />
 								<ns2:property id="countryOfBirthDescription"
 									hidden="ALL_TABLES">
@@ -148,6 +143,12 @@
 								<ns2:property id="languageSpokenAtHomeDescription"
 									hidden="ALL_TABLES">
 									<ns2:named>Language Spoken at Home</ns2:named>
+								</ns2:property>
+								<ns2:property id="aboriginalOrTorresStraitIslanderOrigin"
+									hidden="EVERYWHERE" />
+								<ns2:property
+									id="aboriginalOrTorresStraitIslanderOriginDescription" hidden="ALL_TABLES">
+									<ns2:named>Aboriginal or Torres Strait Islander Origin</ns2:named>
 								</ns2:property>
 								<ns2:property id="householdComposition" hidden="EVERYWHERE" />
 								<ns2:property id="householdCompositionDescription"
@@ -159,21 +160,37 @@
 									hidden="ALL_TABLES">
 									<ns2:named>Accommodation Type</ns2:named>
 								</ns2:property>
-								<ns2:property id="aboriginalOrTorresStraitIslanderOrigin"
-									hidden="EVERYWHERE" />
-								<ns2:property
-									id="aboriginalOrTorresStraitIslanderOriginDescription" hidden="ALL_TABLES">
-									<ns2:named>Aboriginal or Torres Strait Islander Origin</ns2:named>
-								</ns2:property>
 								<ns2:property id="dvaCardStatus" hidden="EVERYWHERE" />
 								<ns2:property id="dvaCardStatusDescription" hidden="ALL_TABLES">
 									<ns2:named>DVA Card Status</ns2:named>
 								</ns2:property>
 							</ns2:fieldSet>
+							<ns2:collection id="disabilities">
+								<ns2:action id="addDisability">
+									<ns2:named>Add</ns2:named>
+								</ns2:action>
+								<ns2:action id="removeDisability">
+									<ns2:named>Remove</ns2:named>
+								</ns2:action>
+							</ns2:collection>
 						</col>
 					</row>
 				</tab>
-				<tab name="Notes">
+				<tab name="Client Notes">
+					<row>
+						<col span="12">
+							<ns2:collection id="clientNotes">
+								<ns2:action id="addClientNote">
+									<ns2:named>Add Note</ns2:named>
+								</ns2:action>
+								<ns2:action id="removeClientNote">
+									<ns2:named>Remove Note</ns2:named>
+								</ns2:action>
+							</ns2:collection>
+						</col>
+					</row>
+				</tab>
+				<tab name="Reminders">
 					<row>
 						<col span="12">
 							<ns2:collection id="notes" />

@@ -241,14 +241,14 @@ public class Participants {
 
 	@Programmatic
 	public Participation createParticipation(Activity activity, Participant participant) {
-		Participation participation = container.newTransientInstance(Participation.class);
-		participation.setActivity(activity);
-		participation.setParticipant(participant);
-		activity.addParticipation(participation);
-		participant.addParticipation(participation);
-		container.persistIfNotAlready(participation);
+		Participation note = container.newTransientInstance(Participation.class);
+		note.setActivity(activity);
+		note.setParticipant(participant);
+		activity.addParticipation(note);
+		participant.addParticipation(note);
+		container.persistIfNotAlready(note);
 		container.flush();
-		return participation;
+		return note;
 	}
 
 	@Programmatic
@@ -269,25 +269,40 @@ public class Participants {
 
 	@Programmatic
 	public Participation createParticipation(Activity activity, Participant participant, Region region) {
-		Participation participation = container.newTransientInstance(Participation.class);
-		participation.setActivity(activity);
-		participation.setParticipant(participant);
-		participation.setRegion(region);
-		activity.addParticipation(participation);
-		participant.addParticipation(participation);
-		container.persistIfNotAlready(participation);
+		Participation note = container.newTransientInstance(Participation.class);
+		note.setActivity(activity);
+		note.setParticipant(participant);
+		note.setRegion(region);
+		activity.addParticipation(note);
+		participant.addParticipation(note);
+		container.persistIfNotAlready(note);
 		container.flush();
-		return participation;
+		return note;
 	}
 
 	@Programmatic
-	public void deleteParticipation(Participation participation) {
+	public void deleteParticipation(Participation note) {
 		// TODO why does this no longer work in 1.12.1?
 		// (throws an error about reading from a deleted object.)
 		// means unit test no longer works.
-		// participation.getActivity().removeParticipation(participation);
-		// participation.getParticipant().removeParticipation(participation);
-		container.removeIfNotAlready(participation);
+		// note.getActivity().removeParticipation(note);
+		// note.getParticipant().removeParticipation(note);
+		container.removeIfNotAlready(note);
+		container.flush();
+	}
+	
+	@Programmatic
+	public ParticipantNote createParticipantNote(Participant participant) {
+		ParticipantNote note = container.newTransientInstance(ParticipantNote.class);
+		note.setParticipant(participant);
+		container.persistIfNotAlready(note);
+		container.flush();
+		return note;
+	}
+
+	@Programmatic
+	public void deleteParticipantNote(ParticipantNote note) {
+		container.removeIfNotAlready(note);
 		container.flush();
 	}
 

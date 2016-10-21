@@ -85,8 +85,12 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	private Status status = Status.ACTIVE;
 	private String mobility;
 	@Persistent(mappedBy = "participant")
-	protected SortedSet<Participation> participations = new TreeSet<Participation>();
-		
+	protected SortedSet<Participation> participations = new TreeSet<>();
+	@Persistent(mappedBy = "participant")
+	protected SortedSet<ParticipantNote> clientNotes = new TreeSet<>();
+	@Join
+	protected List<Disability> disabilities = new ArrayList<>();
+			
 	// Social Factor Properties
 	private String limitingHealthIssues;
 	private String otherLimitingFactors;
@@ -108,11 +112,9 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	private String loneliness;
 
 	// DEX reporting related
-	private Boolean consentToProvideDetails = false;
-	private Boolean consentedForFutureContacts = false;
-	private Boolean hasDisabilities = false;
-	private Boolean hasCarer = false;
-	private Disability disability;
+	private boolean consentToProvideDetails = false;
+	private boolean consentedForFutureContacts = false;
+	private boolean hasCarer = false;
 	private Country countryOfBirth;
 	private Language languageSpokenAtHome;
 	private AboriginalOrTorresStraitIslanderOrigin aboriginalOrTorresStraitIslanderOrigin;
@@ -456,86 +458,32 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	}
 
 	@Property()
-	@Column(allowsNull = "false")
-	public Boolean isConsentToProvideDetails() {
+	@Column()
+	public boolean isConsentToProvideDetails() {
 		return consentToProvideDetails;
 	}
 
-	public void setConsentToProvideDetails(Boolean consentToProvideDetails) {
+	public void setConsentToProvideDetails(boolean consentToProvideDetails) {
 		this.consentToProvideDetails = consentToProvideDetails;
 	}
 
 	@Property()
-	@Column(allowsNull = "false")
-	public Boolean isConsentedForFutureContacts() {
+	@Column()
+	public boolean isConsentedForFutureContacts() {
 		return consentedForFutureContacts;
 	}
 
-	public void setConsentedForFutureContacts(Boolean consentedForFutureContacts) {
+	public void setConsentedForFutureContacts(boolean consentedForFutureContacts) {
 		this.consentedForFutureContacts = consentedForFutureContacts;
 	}
 
 	@Property()
-	@Column(allowsNull = "false")
-	public Boolean isHasDisabilities() {
-		return hasDisabilities;
-	}
-
-	public void setHasDisabilities(Boolean hasDisabilities) {
-		this.hasDisabilities = hasDisabilities;
-	}
-
-	public void modifyHasDisabilities(Boolean hasDisabilities) {
-		setHasDisabilities(hasDisabilities);
-		if (!isHasDisabilities()) {
-			setDisability(null);
-		}
-	}
-
-	@Column(allowsNull = "true")
-	public Disability getDisability() {
-		return disability;
-	}
-
-	public void setDisability(Disability disability) {
-		this.disability = disability;
-	}
-
-	public List<Disability> choicesDisability() {
-		return dexRefData.allDisability();
-	}
-
-	@Property()
-	@NotPersistent()
-	public String getDisabilityDescription() {
-		if (getDisability() == null)
-			return null;
-		else
-			return getDisability().getDescription();
-	}
-
-	public void setDisabilityDescription(String description) {
-		if (description == null)
-			setDisability(null);
-		else
-			setDisability(dexRefData.getDisabilityForDescription(description));
-	}
-
-	public List<Disability> choicesDisabilityDescription() {
-		return dexRefData.allDisabilityDescriptions();
-	}
-
-	public String disableDisabilityDescription() {
-		return isHasDisabilities() ? null : "Has Disabilities must be true to enable this property";
-	}
-
-	@Property()
-	@Column(allowsNull = "false")
-	public Boolean isHasCarer() {
+	@Column()
+	public boolean isHasCarer() {
 		return hasCarer;
 	}
 
-	public void setHasCarer(Boolean hasCarer) {
+	public void setHasCarer(boolean hasCarer) {
 		this.hasCarer = hasCarer;
 	}
 
@@ -717,6 +665,22 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public List<HouseholdComposition> choicesHouseholdComposition() {
 		return dexRefData.allHouseholdComposition();
 	}
+	
+	@Property()
+	@NotPersistent()
+	public String getHouseholdCompositionDescription() {
+		if (getHouseholdComposition() == null)
+			return null;
+		else
+			return getHouseholdComposition().getDescription();
+	}
+
+	public void setHouseholdCompositionDescription(String description) {
+		if (description == null)
+			setHouseholdComposition(null);
+		else
+			setHouseholdComposition(dexRefData.getHouseholdCompositionForDescription(description));
+	}
 
 	@Property()
 	// @PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP)
@@ -765,20 +729,20 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	@Action()
 	@ActionLayout(named = "Change")
 	public Participant updateDexData(
-			@ParameterLayout(named = "Consent To Provide Details") final Boolean consentToProvideDetails,
-			@ParameterLayout(named = "Consented For Future Contacts") final Boolean consentedForFutureContacts,
-			@ParameterLayout(named = "Has Carer") final Boolean hasCarer,
-			@ParameterLayout(named = "Has Disabilities") final Boolean hasDisabilities, final Disability disability,
-			final Country countryOfBirth, final Language languageSpokenAtHome,
-			final AboriginalOrTorresStraitIslanderOrigin aboriginalOrTorresStraitIslanderOrigin,
-			final AccommodationType accommodationType, final DVACardStatus dvaCardStatus,
-			final HouseholdComposition householdComposition) {
+			@ParameterLayout(named = "Consent To Provide Details") final boolean consentToProvideDetails,
+			@ParameterLayout(named = "Consented For Future Contacts") final boolean consentedForFutureContacts,
+			@ParameterLayout(named = "Has Carer") final boolean hasCarer,
+			@Parameter(optionality=Optionality.MANDATORY) final Country countryOfBirth, 
+			@Parameter(optionality=Optionality.MANDATORY) final Language languageSpokenAtHome,
+			@Parameter(optionality=Optionality.MANDATORY) final AboriginalOrTorresStraitIslanderOrigin aboriginalOrTorresStraitIslanderOrigin,
+			@Parameter(optionality=Optionality.MANDATORY) final AccommodationType accommodationType, 
+			@Parameter(optionality=Optionality.MANDATORY) final HouseholdComposition householdComposition,
+			@Parameter(optionality=Optionality.MANDATORY) final DVACardStatus dvaCardStatus
+) {
 
 		setConsentToProvideDetails(consentToProvideDetails);
 		setConsentedForFutureContacts(consentedForFutureContacts);
 		setHasCarer(hasCarer);
-		setHasDisabilities(hasDisabilities);
-		setDisability(disability);
 		setCountryOfBirth(countryOfBirth);
 		setLanguageSpokenAtHome(languageSpokenAtHome);
 		setAboriginalOrTorresStraitIslanderOrigin(aboriginalOrTorresStraitIslanderOrigin);
@@ -789,68 +753,131 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 		return this;
 	}
 
-	public Boolean default0UpdateDexData() {
+	public boolean default0UpdateDexData() {
 		return isConsentToProvideDetails();
 	}
 
-	public Boolean default1UpdateDexData() {
+	public boolean default1UpdateDexData() {
 		return isConsentedForFutureContacts();
 	}
-
-	public Disability default4UpdateDexData() {
-		return getDisability();
+	
+	public boolean default2UpdateDexData() {
+		return isHasCarer();
 	}
 
-	public List<Disability> choices4UpdateDexData() {
-		return dexRefData.allDisability();
-	}
-
-	public Country default5UpdateDexData() {
+	public Country default3UpdateDexData() {
 		return getCountryOfBirth();
 	}
 
-	public List<Country> choices5UpdateDexData() {
+	public List<Country> choices3UpdateDexData() {
 		return dexRefData.allCountry();
 	}
 
-	public Language default6UpdateDexData() {
+	public Language default4UpdateDexData() {
 		return getLanguageSpokenAtHome();
 	}
 
-	public List<Language> choices6UpdateDexData() {
+	public List<Language> choices4UpdateDexData() {
 		return dexRefData.allLanguage();
 	}
 
-	public AboriginalOrTorresStraitIslanderOrigin default7UpdateDexData() {
+	public AboriginalOrTorresStraitIslanderOrigin default5UpdateDexData() {
 		return getAboriginalOrTorresStraitIslanderOrigin();
 	}
 
-	public List<AboriginalOrTorresStraitIslanderOrigin> choices7UpdateDexData() {
+	public List<AboriginalOrTorresStraitIslanderOrigin> choices5UpdateDexData() {
 		return dexRefData.allAboriginalOrTorresStraitIslanderOrigin();
 	}
 
-	public AccommodationType default8UpdateDexData() {
+	public AccommodationType default6UpdateDexData() {
 		return getAccommodationType();
 	}
 
-	public List<AccommodationType> choices8UpdateDexData() {
+	public List<AccommodationType> choices6UpdateDexData() {
 		return dexRefData.allAccommodationType();
 	}
 
-	public DVACardStatus default9UpdateDexData() {
-		return getDvaCardStatus();
-	}
-
-	public List<DVACardStatus> choices9UpdateDexData() {
-		return dexRefData.allDVACardStatus();
-	}
-
-	public HouseholdComposition default10UpdateDexData() {
+	public HouseholdComposition default7UpdateDexData() {
 		return getHouseholdComposition();
 	}
 
-	public List<HouseholdComposition> choices10UpdateDexData() {
+	public List<HouseholdComposition> choices7UpdateDexData() {
 		return dexRefData.allHouseholdComposition();
+	}
+	
+	public DVACardStatus default8UpdateDexData() {
+		return getDvaCardStatus();
+	}
+
+	public List<DVACardStatus> choices8UpdateDexData() {
+		return dexRefData.allDVACardStatus();
+	}
+	
+	public List<Disability> getDisabilities() {
+		return disabilities;
+	}
+
+	public void setDisabilities(List<Disability> disabilities) {
+		this.disabilities = disabilities;
+	}	
+	
+	@Action
+	public Participant addDisability(Disability disability){
+		if(!getDisabilities().contains(disability))
+			getDisabilities().add(disability);
+		return this;
+	}
+	
+	public List<Disability> choices0AddDisability(){
+		List<Disability> dis1 = dexRefData.allDisability();
+		List<Disability> dis2 = new ArrayList<>();
+		for(Disability dis : dis1){
+			if(!getDisabilities().contains(dis)){
+				dis2.add(dis);
+			}
+		}
+		return dis2;
+	}
+	
+	@Action
+	public Participant removeDisability(Disability disability){
+		if(getDisabilities().contains(disability))
+			getDisabilities().remove(disability);
+		return this;
+	}
+	
+	public List<Disability> choices0RemoveDisability(){
+		return getDisabilities();
+	}
+	
+	@CollectionLayout(render=RenderType.EAGERLY)
+	public SortedSet<ParticipantNote> getClientNotes() {
+		return clientNotes;
+	}
+
+	public void setClientNotes(SortedSet<ParticipantNote> notes) {
+		this.clientNotes = notes;
+	}
+	
+	@Action
+	public Participant addClientNote(String notes){
+		ParticipantNote note = participantsRepo.createParticipantNote(this);
+		note.setNote(notes);
+		getClientNotes().add(note);
+		return this;
+	}
+	
+	@Action
+	public Participant removeClientNote(@Parameter() ParticipantNote note){
+		if(note != null && getClientNotes().contains(note)){
+			getClientNotes().remove(note);
+		}
+		return this;
+	}
+	
+	public List<ParticipantNote> choices0RemoveClientNote(){
+		//ArrayList<ParticipantNote> temp = new ArrayList<>(getNotes());
+		return new ArrayList<ParticipantNote>(getClientNotes());
 	}
 
 	@Inject

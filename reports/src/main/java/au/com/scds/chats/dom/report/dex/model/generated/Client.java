@@ -10,9 +10,12 @@ package au.com.scds.chats.dom.report.dex.model.generated;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
@@ -134,6 +137,8 @@ public class Client {
     protected String aboriginalOrTorresStraitIslanderOriginCode;
     @XmlElement(name = "HasDisabilities")
     protected boolean hasDisabilities;
+    @XmlElementRef(name = "Disabilities", type = Client.Disabilities.class, required = false)
+    protected Client.Disabilities disabilities;
     @XmlElement(name = "AccommodationTypeCode")
     protected String accommodationTypeCode;
     @XmlElement(name = "DVACardStatusCode")
@@ -440,6 +445,30 @@ public class Client {
      */
     public void setHasDisabilities(boolean value) {
         this.hasDisabilities = value;
+    }
+    
+    /**
+     * Gets the value of the disabilities property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link JAXBElement }{@code <}{@link Client.Disabilities }{@code >}
+     *     
+     */
+    public Client.Disabilities getDisabilities() {
+        return disabilities;
+    }
+
+    /**
+     * Sets the value of the disabilities property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link JAXBElement }{@code <}{@link Client.Disabilities }{@code >}
+     *     
+     */
+    public void setDisabilities(Client.Disabilities value) {
+        this.disabilities = value;
     }
 
     /**
