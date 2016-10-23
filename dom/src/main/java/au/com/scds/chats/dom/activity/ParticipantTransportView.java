@@ -61,7 +61,7 @@ public class ParticipantTransportView {
 		this.location = p.getLocation();
 		this.pickupTime = participation.getPickupTime();
 		this.dropoffTime = participation.getDropoffTime();
-		this.notes = ((p.getMobility() != null) ? p.getMobility() + " " : "") + participation.getTransportNotes();
+		this.notes = ((p.getMobility() != null) ? p.getMobility() + " " : "") + ((participation.getTransportNotes()!= null) ? participation.getTransportNotes() : "");
 		this.arrivingTransportType = participation.getArrivingTransportType();
 		this.departingTransportType = participation.getDepartingTransportType();
 	}

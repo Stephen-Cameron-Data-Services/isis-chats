@@ -32,7 +32,7 @@
 						</col>
 					</row>
 				</tab>
-				<tab name="Notes">
+				<tab name="Calendar Notes">
 					<row>
 						<col span="6">
 							<ns2:fieldSet name="Summary" id="summary">

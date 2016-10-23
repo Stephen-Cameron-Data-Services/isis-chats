@@ -165,7 +165,10 @@
 									<ns2:named>DVA Card Status</ns2:named>
 								</ns2:property>
 							</ns2:fieldSet>
-							<ns2:collection id="disabilities">
+							<ns2:collection id="disabilities" hidden="EVERYWHERE">
+							</ns2:collection>
+							<ns2:collection id="disabilitiesDescriptions">
+								<ns2:named>Disabilities</ns2:named>
 								<ns2:action id="addDisability">
 									<ns2:named>Add</ns2:named>
 								</ns2:action>
@@ -187,6 +190,13 @@
 									<ns2:named>Remove Note</ns2:named>
 								</ns2:action>
 							</ns2:collection>
+						</col>
+					</row>
+				</tab>
+				<tab name="Calendar Notes">
+					<row>
+						<col span="12">
+							<ns2:collection id="notes"/>
 						</col>
 					</row>
 				</tab>

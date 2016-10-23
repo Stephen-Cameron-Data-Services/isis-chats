@@ -69,7 +69,7 @@
 						</col>
 					</row>
 				</tab>
-				<tab name="Notes">
+				<tab name="Calendar Notes">
 					<row>
 						<col span="12">
 							<ns2:collection id="notes"/>

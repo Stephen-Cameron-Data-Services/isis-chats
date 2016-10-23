@@ -26,7 +26,7 @@ public abstract class AbstractDexReferenceItem {
 		return getDescription();
 	}
 
-	@Property(hidden = Where.EVERYWHERE)
+	@Property()
 	@MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
 	@PrimaryKey()

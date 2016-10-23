@@ -41,6 +41,7 @@ import au.com.scds.chats.dom.dex.reference.AccommodationType;
 import au.com.scds.chats.dom.dex.reference.Country;
 import au.com.scds.chats.dom.dex.reference.DVACardStatus;
 import au.com.scds.chats.dom.dex.reference.Disability;
+import au.com.scds.chats.dom.dex.reference.DisabilityDescription;
 import au.com.scds.chats.dom.dex.reference.HouseholdComposition;
 import au.com.scds.chats.dom.dex.reference.Language;
 import au.com.scds.chats.dom.general.Address;
@@ -819,6 +820,16 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 
 	public void setDisabilities(List<Disability> disabilities) {
 		this.disabilities = disabilities;
+	}
+	
+	//cannot provide a list of strings, so use a view model
+	@CollectionLayout(render=RenderType.EAGERLY)
+	public List<DisabilityDescription> getDisabilitiesDescriptions() {
+		ArrayList<DisabilityDescription> list = new ArrayList<>();
+		for(Disability d : getDisabilities()){
+			list.add(new DisabilityDescription(d.getDescription()));
+		}
+		return list;
 	}	
 	
 	@Action
