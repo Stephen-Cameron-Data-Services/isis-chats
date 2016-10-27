@@ -374,6 +374,16 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		}
 		return super.getStreetAddress();
 	}
+	
+	@Property()
+	@Override
+	@NotPersistent
+	public Integer getCutoffLimit() {
+		if (getParentActivity() != null && super.getCutoffLimit() == null) {
+			return getParentActivity().getCutoffLimit();
+		}
+		return super.getCutoffLimit();
+	}
 	/*
 	 * @Programmatic
 	 * 

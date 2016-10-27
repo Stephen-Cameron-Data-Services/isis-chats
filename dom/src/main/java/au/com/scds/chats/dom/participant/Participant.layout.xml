@@ -200,13 +200,6 @@
 						</col>
 					</row>
 				</tab>
-				<tab name="Reminders">
-					<row>
-						<col span="12">
-							<ns2:collection id="notes" />
-						</col>
-					</row>
-				</tab>
 				<tab name="Other">
 					<row>
 						<col span="4">

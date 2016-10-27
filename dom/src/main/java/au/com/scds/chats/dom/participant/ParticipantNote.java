@@ -14,7 +14,11 @@ public class ParticipantNote extends AbstractChatsDomainEntity implements Compar
 	private Participant participant;
 	private String note;
 
-	@Column(allowsNull="false")
+	public String title() {
+		return (getNote().length() > 50) ? getNote().substring(0, 50) + "..." : getNote();
+	}
+
+	@Column(allowsNull = "false")
 	public Participant getParticipant() {
 		return participant;
 	}
@@ -23,7 +27,7 @@ public class ParticipantNote extends AbstractChatsDomainEntity implements Compar
 		this.participant = parent;
 	}
 
-	@Column(allowsNull="true", length=1000)
+	@Column(allowsNull = "true", length = 1000)
 	public String getNote() {
 		return note;
 	}
@@ -34,13 +38,12 @@ public class ParticipantNote extends AbstractChatsDomainEntity implements Compar
 
 	@Override
 	public int compareTo(ParticipantNote o) {
-		if(getCreatedOn().isEqual(o.getCreatedOn()))
+		if (getCreatedOn().isEqual(o.getCreatedOn()))
 			return 0;
 		else if (getCreatedOn().isBefore(o.getCreatedOn()))
 			return -1;
-		else return 1;
+		else
+			return 1;
 	}
-	
-	
 
 }

@@ -29,7 +29,7 @@
 								<ns2:property id="startDateTime" />
 								<ns2:property id="approximateEndDateTime" />
 								<ns2:property id="costForParticipant" hidden="ALL_TABLES" />
-								<ns2:property id="cutoffLimit">
+								<ns2:property id="cutoffLimit" hidden="ALL_TABLES" >
 									<ns2:named>Cut-off Limit</ns2:named>
 								</ns2:property>
 							</ns2:fieldSet>

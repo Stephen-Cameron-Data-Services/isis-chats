@@ -19,7 +19,7 @@
 								<ns2:property id="participant" hidden="ALL_TABLES">
 									<ns2:named>Parent Participant</ns2:named>
 								</ns2:property>
-								<ns2:property id="note" multiLine="5" />
+								<ns2:property id="note" multiLine="10" />
 							</ns2:fieldSet>
 						</col>
 					</row>

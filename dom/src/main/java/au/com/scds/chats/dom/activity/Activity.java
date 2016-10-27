@@ -265,7 +265,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	public void modifyStartDateTime(DateTime startDateTime) {
 		if (startDateTime == null)
 			return;
-		if (getApproximateEndDateTime().isBefore(startDateTime)) {
+		if (getApproximateEndDateTime() != null && getApproximateEndDateTime().isBefore(startDateTime)) {
 			setApproximateEndDateTime(null);
 		}
 		setStartDateTime(startDateTime);
@@ -384,7 +384,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 			return "";
 		}
 	}
-	
+
 	public String default0UpdateNamedLocation() {
 		return getAddress().getName();
 	}
@@ -392,7 +392,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	public String default1UpdateNamedLocation() {
 		return getAddress().getStreet1();
 	}
-	
+
 	public String default2UpdateNamedLocation() {
 		return getAddress().getStreet2();
 	}
@@ -524,15 +524,15 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	public List<Suburb> choices4UpdateLocation() {
 		return suburbs.listAllSuburbs();
 	}
-	
-	@Action(semantics=SemanticsOf.IDEMPOTENT_ARE_YOU_SURE)
-	public Activity removeLocation(){
+
+	@Action(semantics = SemanticsOf.IDEMPOTENT_ARE_YOU_SURE)
+	public Activity removeLocation() {
 		setAddress(null);
 		return this;
 	}
-	
-	public String disableRemoveLocation(){
-		if(getAddress() != null)
+
+	public String disableRemoveLocation() {
+		if (getAddress() != null)
 			return null;
 		else
 			return "Location not currently set";
@@ -609,7 +609,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 	@Action()
 	@ActionLayout(named = "Add")
 	// @MemberOrder(name = "participations", sequence = "1")
-	public Activity addParticipant(final ParticipantIdentity identity) {
+	public Activity addParticipant(@ParameterLayout(named = "Participant") final ParticipantIdentity identity) {
 		if (identity == null)
 			return this;
 		Participant participant = participantsRepo.getParticipant(identity);
@@ -786,6 +786,9 @@ public abstract class Activity extends AbstractChatsDomainEntity implements Loca
 
 	@Inject
 	protected Locations locationsRepo;
+	
+	@Inject
+	protected Activities activitiesRepo;
 
 	@Inject
 	protected ActivityTypes activityTypesRepo;

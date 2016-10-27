@@ -72,15 +72,14 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 				+ "FROM au.com.scds.chats.dom.participant.Participant  "
 				+ "WHERE person.surname.indexOf(:surname) >= 0"),
 		@Query(name = "findParticipantForPerson", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.participant.Participant  "
-				+ "WHERE person == :person"),
+				+ "FROM au.com.scds.chats.dom.participant.Participant  " + "WHERE person == :person"),
 		@Query(name = "findNewOrModifiedParticipantsByPeriodAndRegion", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.participant.Participant "
 				+ "WHERE ((person.createdOn >= :startDate AND person.createdOn < :startDate) "
 				+ "OR (person.modifiedOn >= :startDate AND person.modifiedOn < :startDate)) AND region = :region"), })
 public class Participant extends AbstractChatsDomainEntity implements Locatable, Notable, Comparable<Participant> {
 
-	//general
+	// general
 	private Person person;
 	private Volunteer volunteer;
 	private Status status = Status.ACTIVE;
@@ -91,7 +90,7 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	protected SortedSet<ParticipantNote> clientNotes = new TreeSet<>();
 	@Join
 	protected List<Disability> disabilities = new ArrayList<>();
-			
+
 	// Social Factor Properties
 	private String limitingHealthIssues;
 	private String otherLimitingFactors;
@@ -666,7 +665,7 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public List<HouseholdComposition> choicesHouseholdComposition() {
 		return dexRefData.allHouseholdComposition();
 	}
-	
+
 	@Property()
 	@NotPersistent()
 	public String getHouseholdCompositionDescription() {
@@ -733,13 +732,12 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 			@ParameterLayout(named = "Consent To Provide Details") final boolean consentToProvideDetails,
 			@ParameterLayout(named = "Consented For Future Contacts") final boolean consentedForFutureContacts,
 			@ParameterLayout(named = "Has Carer") final boolean hasCarer,
-			@Parameter(optionality=Optionality.MANDATORY) final Country countryOfBirth, 
-			@Parameter(optionality=Optionality.MANDATORY) final Language languageSpokenAtHome,
-			@Parameter(optionality=Optionality.MANDATORY) final AboriginalOrTorresStraitIslanderOrigin aboriginalOrTorresStraitIslanderOrigin,
-			@Parameter(optionality=Optionality.MANDATORY) final AccommodationType accommodationType, 
-			@Parameter(optionality=Optionality.MANDATORY) final HouseholdComposition householdComposition,
-			@Parameter(optionality=Optionality.MANDATORY) final DVACardStatus dvaCardStatus
-) {
+			@Parameter(optionality = Optionality.MANDATORY) final Country countryOfBirth,
+			@Parameter(optionality = Optionality.MANDATORY) final Language languageSpokenAtHome,
+			@Parameter(optionality = Optionality.MANDATORY) final AboriginalOrTorresStraitIslanderOrigin aboriginalOrTorresStraitIslanderOrigin,
+			@Parameter(optionality = Optionality.MANDATORY) final AccommodationType accommodationType,
+			@Parameter(optionality = Optionality.MANDATORY) final HouseholdComposition householdComposition,
+			@Parameter(optionality = Optionality.MANDATORY) final DVACardStatus dvaCardStatus) {
 
 		setConsentToProvideDetails(consentToProvideDetails);
 		setConsentedForFutureContacts(consentedForFutureContacts);
@@ -761,7 +759,7 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public boolean default1UpdateDexData() {
 		return isConsentedForFutureContacts();
 	}
-	
+
 	public boolean default2UpdateDexData() {
 		return isHasCarer();
 	}
@@ -805,7 +803,7 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public List<HouseholdComposition> choices7UpdateDexData() {
 		return dexRefData.allHouseholdComposition();
 	}
-	
+
 	public DVACardStatus default8UpdateDexData() {
 		return getDvaCardStatus();
 	}
@@ -813,7 +811,7 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public List<DVACardStatus> choices8UpdateDexData() {
 		return dexRefData.allDVACardStatus();
 	}
-	
+
 	public List<Disability> getDisabilities() {
 		return disabilities;
 	}
@@ -821,47 +819,47 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public void setDisabilities(List<Disability> disabilities) {
 		this.disabilities = disabilities;
 	}
-	
-	//cannot provide a list of strings, so use a view model
-	@CollectionLayout(render=RenderType.EAGERLY)
+
+	// cannot provide a list of strings, so use a view model
+	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<DisabilityDescription> getDisabilitiesDescriptions() {
 		ArrayList<DisabilityDescription> list = new ArrayList<>();
-		for(Disability d : getDisabilities()){
+		for (Disability d : getDisabilities()) {
 			list.add(new DisabilityDescription(d.getDescription()));
 		}
 		return list;
-	}	
-	
+	}
+
 	@Action
-	public Participant addDisability(Disability disability){
-		if(!getDisabilities().contains(disability))
+	public Participant addDisability(Disability disability) {
+		if (!getDisabilities().contains(disability))
 			getDisabilities().add(disability);
 		return this;
 	}
-	
-	public List<Disability> choices0AddDisability(){
+
+	public List<Disability> choices0AddDisability() {
 		List<Disability> dis1 = dexRefData.allDisability();
 		List<Disability> dis2 = new ArrayList<>();
-		for(Disability dis : dis1){
-			if(!getDisabilities().contains(dis)){
+		for (Disability dis : dis1) {
+			if (!getDisabilities().contains(dis)) {
 				dis2.add(dis);
 			}
 		}
 		return dis2;
 	}
-	
+
 	@Action
-	public Participant removeDisability(Disability disability){
-		if(getDisabilities().contains(disability))
+	public Participant removeDisability(Disability disability) {
+		if (getDisabilities().contains(disability))
 			getDisabilities().remove(disability);
 		return this;
 	}
-	
-	public List<Disability> choices0RemoveDisability(){
+
+	public List<Disability> choices0RemoveDisability() {
 		return getDisabilities();
 	}
-	
-	@CollectionLayout(render=RenderType.EAGERLY)
+
+	@CollectionLayout(render = RenderType.EAGERLY)
 	public SortedSet<ParticipantNote> getClientNotes() {
 		return clientNotes;
 	}
@@ -869,25 +867,25 @@ public class Participant extends AbstractChatsDomainEntity implements Locatable,
 	public void setClientNotes(SortedSet<ParticipantNote> notes) {
 		this.clientNotes = notes;
 	}
-	
+
 	@Action
-	public Participant addClientNote(String notes){
+	public Participant addClientNote(@ParameterLayout(named = "Note Content", multiLine = 10) String notes) {
 		ParticipantNote note = participantsRepo.createParticipantNote(this);
 		note.setNote(notes);
 		getClientNotes().add(note);
 		return this;
 	}
-	
+
 	@Action
-	public Participant removeClientNote(@Parameter() ParticipantNote note){
-		if(note != null && getClientNotes().contains(note)){
+	public Participant removeClientNote(@Parameter() ParticipantNote note) {
+		if (note != null && getClientNotes().contains(note)) {
 			getClientNotes().remove(note);
 		}
 		return this;
 	}
-	
-	public List<ParticipantNote> choices0RemoveClientNote(){
-		//ArrayList<ParticipantNote> temp = new ArrayList<>(getNotes());
+
+	public List<ParticipantNote> choices0RemoveClientNote() {
+		// ArrayList<ParticipantNote> temp = new ArrayList<>(getNotes());
 		return new ArrayList<ParticipantNote>(getClientNotes());
 	}
 

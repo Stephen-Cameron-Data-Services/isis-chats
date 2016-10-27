@@ -19,6 +19,7 @@
 package au.com.scds.chats.dom.volunteer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -31,6 +32,7 @@ import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.NatureOfService;
+import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
@@ -92,8 +94,28 @@ public class Volunteers {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "2")
-	public List<Volunteer> findBySurname(@ParameterLayout(named = "Surname") final String surname) {
-		return container.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersBySurname", "surname", surname));
+	public List<Volunteer> findBySurname(
+			@ParameterLayout(named = "Surname") final String surname,
+			@Parameter(optionality=Optionality.OPTIONAL) @ParameterLayout(named = "Status") final Status status) {
+		List<Volunteer> list1 = container
+				.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersBySurname", "surname", surname));
+		List<Volunteer> list2 = new ArrayList<>(list1);
+		if(status != null){
+			for(Volunteer p : list1){
+				if(!p.getStatus().equals(status)){
+					list2.remove(p);
+				}
+			}
+		}
+		return list2;
+	}
+	
+	public Status default1FindBySurname(){
+		return Status.ACTIVE;
+	}
+	
+	public List<Status> choices1FindBySurname(){
+		return Arrays.asList(Status.values());
 	}
 
 	@Action()

@@ -17,6 +17,8 @@
  *  under the License.
  */package au.com.scds.chats.dom.participant;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -168,9 +170,28 @@ public class Participants {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	// @MemberOrder(sequence = "4")
-	public List<Participant> findBySurname(@ParameterLayout(named = "Surname") final String surname) {
-		return container
+	public List<Participant> findBySurname(
+			@ParameterLayout(named = "Surname") final String surname,
+			@Parameter(optionality=Optionality.OPTIONAL) @ParameterLayout(named = "Status") final Status status) {
+		List<Participant> list1 = container
 				.allMatches(new QueryDefault<>(Participant.class, "findParticipantsBySurname", "surname", surname));
+		List<Participant> list2 = new ArrayList<>(list1);
+		if(status != null){
+			for(Participant p : list1){
+				if(!p.getStatus().equals(status)){
+					list2.remove(p);
+				}
+			}
+		}
+		return list2;
+	}
+	
+	public Status default1FindBySurname(){
+		return Status.ACTIVE;
+	}
+	
+	public List<Status> choices1FindBySurname(){
+		return Arrays.asList(Status.values());
 	}
 
 	// @MemberOrder(sequence = "5")

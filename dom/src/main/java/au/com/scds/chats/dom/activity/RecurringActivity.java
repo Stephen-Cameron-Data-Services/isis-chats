@@ -54,9 +54,10 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "RECURRING_ACTIVITY")
-@Queries({ @Query(name = "findRecurringActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.RecurringActivity "),
+@Queries({
+		@Query(name = "findRecurringActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.RecurringActivity "),
 		@Query(name = "findRecurringActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.RecurringActivity WHERE name.indexOf(:name) >= 0 ") })
-public class RecurringActivity extends Activity /*implements Notable*/ {
+public class RecurringActivity extends Activity /* implements Notable */ {
 
 	private Periodicity periodicity = Periodicity.WEEKLY;
 	@Persistent(mappedBy = "parentActivity")
@@ -67,7 +68,7 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 	}
 
 	// used for testing only
-	public RecurringActivity(DomainObjectContainer container, Participants participantsRepo, Volunteers volunteersRepo, 
+	public RecurringActivity(DomainObjectContainer container, Participants participantsRepo, Volunteers volunteersRepo,
 			ActivityTypes activityTypes, Locations locations) {
 		super(container, participantsRepo, volunteersRepo, activityTypes, locations);
 	}
@@ -78,8 +79,8 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 	}
 
 	@Property()
-	//@PropertyLayout()
-	//@MemberOrder(name = "Scheduling", sequence = "1")
+	// @PropertyLayout()
+	// @MemberOrder(name = "Scheduling", sequence = "1")
 	@Column(allowsNull = "true")
 	public Periodicity getPeriodicity() {
 		return periodicity;
@@ -89,13 +90,16 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 		this.periodicity = periodicity;
 	}
 
-	/*@Property()
-	@PropertyLayout()
-	@MemberOrder(name = "Scheduling", sequence = "2")
-	@Override
-	public DateTime getStartDateTime() {
-		return super.getStartDateTime();
-	}*/
+	/*
+	 * @Property()
+	 * 
+	 * @PropertyLayout()
+	 * 
+	 * @MemberOrder(name = "Scheduling", sequence = "2")
+	 * 
+	 * @Override public DateTime getStartDateTime() { return
+	 * super.getStartDateTime(); }
+	 */
 
 	/**
 	 * ActivityEvents are displayed as two separate lists: Future and Completed,
@@ -114,7 +118,7 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 	 * Provides a list of currently scheduled activities sorted soonest to
 	 * latest
 	 */
-	//@MemberOrder(sequence = "10")
+	// @MemberOrder(sequence = "10")
 	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<ActivityEvent> getFutureActivities() {
 		ArrayList<ActivityEvent> temp = new ArrayList<>();
@@ -127,7 +131,7 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 		return temp;
 	}
 
-	//@MemberOrder(sequence = "20")
+	// @MemberOrder(sequence = "20")
 	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<ActivityEvent> getCompletedActivities() {
 		ArrayList<ActivityEvent> temp = new ArrayList<>();
@@ -139,22 +143,23 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 		return temp;
 	}
 
-	@Action
-	//@ActionLayout(named = "Add Next")
-	//@MemberOrder(name = "futureActivities", sequence = "1")
+	@Programmatic
+	// @ActionLayout(named = "Add Next")
+	// @MemberOrder(name = "futureActivities", sequence = "1")
 	public RecurringActivity addNextScheduledActivity() {
 		System.out.println("AddNextScheduledActivity start");
 		if (getChildActivities().size() == 0) {
 			System.out.println("AddNextScheduledActivity 1");
 			if (getStartDateTime() == null) {
-				container.warnUser("Please set 'Start date time' for this Recurring Activity (as starting time from which to schedule more activity events)");
+				container.warnUser(
+						"Please set 'Start date time' for this Recurring Activity (as starting time from which to schedule more activity events)");
 			} else {
 				System.out.println("AddNextScheduledActivity 2");
 				ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 				obj.setParentActivity(this);
 				obj.setName(getName());
 				obj.setAbbreviatedName(getAbbreviatedName());
-				//set time one second ahead for comparison inequality
+				// set time one second ahead for comparison inequality
 				obj.setStartDateTime(getStartDateTime().plusSeconds(1));
 				getChildActivities().add(obj);
 				container.persistIfNotAlready(obj);
@@ -195,10 +200,45 @@ public class RecurringActivity extends Activity /*implements Notable*/ {
 		System.out.println("AddNextScheduledActivity end");
 		return this;
 	}
-	
-	@Action 
-	public RecurringActivity addMany(Integer count){
-		for(int i = 1; i <= count; i++){
+
+	@Action
+	public RecurringActivity addNextScheduledActivity(DateTime startDateTime) {
+		System.out.println("AddNextScheduledActivity start");
+		ActivityEvent activity = activitiesRepo.createOneOffActivity(getName(), getAbbreviatedName(), startDateTime);
+		activity.setParentActivity(this);
+		return this;
+	}
+
+	public DateTime default0AddNextScheduledActivity() {
+		if (getChildActivities().size() == 0) {
+			if (getStartDateTime() == null) {
+				container.warnUser(
+						"Please set 'Start date time' for this Recurring Activity (as starting time from which to schedule more activity events)");
+				return null;
+			} else {
+				return getStartDateTime().plusSeconds(1);
+			}
+		} else {
+			DateTime origin = getChildActivities().first().getStartDateTime();
+			switch (getPeriodicity()) {
+			case DAILY:
+				return origin.plusDays(1);
+			case WEEKLY:
+				return origin.plusDays(7);
+			case FORTNIGHTLY:
+				return origin.plusDays(14);
+			case MONTHLY:
+				return origin.plusDays(28);
+			case BIMONTHLY:
+				return origin.plusDays(56);
+			}
+		}
+		return null;
+	}
+
+	@Programmatic
+	public RecurringActivity addManyScheduledActivities(Integer count) {
+		for (int i = 1; i <= count; i++) {
 			addNextScheduledActivity();
 		}
 		return this;
