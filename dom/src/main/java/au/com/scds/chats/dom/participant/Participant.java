@@ -77,7 +77,7 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 				+ "FROM au.com.scds.chats.dom.participant.Participant "
 				+ "WHERE ((person.createdOn >= :startDate AND person.createdOn < :startDate) "
 				+ "OR (person.modifiedOn >= :startDate AND person.modifiedOn < :startDate)) AND region = :region"), })
-public class Participant extends AbstractChatsDomainEntity implements Locatable, Notable, Comparable<Participant> {
+public class Participant extends AbstractChatsDomainEntity implements /*Locatable,*/ Notable, Comparable<Participant> {
 
 	// general
 	private Person person;

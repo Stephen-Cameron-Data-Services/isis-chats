@@ -26,7 +26,7 @@
 								<ns2:property id="parentActivity" hidden="ALL_TABLES" />
 								<ns2:property id="description" hidden="ALL_TABLES" />
 								<ns2:property id="activityTypeName" hidden="EVERYWHERE"/>
-								<ns2:property id="startDateTime" />
+								<ns2:property id="startDateTime" typicalLength="16"/>
 								<ns2:property id="approximateEndDateTime" />
 								<ns2:property id="costForParticipant" hidden="ALL_TABLES" />
 								<ns2:property id="cutoffLimit" hidden="ALL_TABLES" >
@@ -124,7 +124,7 @@
 								<ns2:property id="lastModifiedBy" hidden="ALL_TABLES" />
 								<ns2:property id="lastModifiedOn" hidden="ALL_TABLES" />
 								<ns2:property id="region" hidden="EVERYWHERE" />
-								<ns2:property id="regionName" />
+								<ns2:property id="regionName" typicalLength="10"/>
 								<ns2:property id="location" hidden="ALL_TABLES" />
 							</ns2:fieldSet>
 						</col>

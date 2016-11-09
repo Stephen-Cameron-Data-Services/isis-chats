@@ -67,7 +67,7 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 // @Unique(name = "Activity_UNQ", members = { "name", "startDateTime", "region"
 // })
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "classifier", value = "_ACTIVITY")
-public abstract class Activity extends AbstractChatsDomainEntity implements Locatable, Comparable<Activity> {
+public abstract class Activity extends AbstractChatsDomainEntity implements /*Locatable,*/ Comparable<Activity> {
 
 	private Long oldId; // id copied from old system
 	protected String name;

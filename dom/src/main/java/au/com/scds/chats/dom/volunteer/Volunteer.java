@@ -70,7 +70,7 @@ import au.com.scds.chats.dom.participant.Participants;
 // middle = { "VolunteerRoles", "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Unique(name = "Volunteer_UNQ", members = { "person" })
-public class Volunteer extends AbstractChatsDomainEntity implements Notable, Locatable {
+public class Volunteer extends AbstractChatsDomainEntity implements Notable, /*Locatable*/ Comparable<Volunteer> {
 
 	private Person person;
 	private Status status = Status.ACTIVE;
@@ -231,6 +231,11 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, Loc
 
 	public List<VolunteerRole> choices0RemoveVolunteerRole() {
 		return getVolunteerRoles();
+	}
+	
+	@Override
+	public int compareTo(final Volunteer o) {
+		return this.getPerson().compareTo(o.getPerson());
 	}
 
 	@Inject

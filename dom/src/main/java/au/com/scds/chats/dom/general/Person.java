@@ -69,7 +69,7 @@ import au.com.scds.chats.dom.general.names.Salutations;
 @DomainObject(objectType = "PERSON")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = "General", middle = { "Contact Details", "Admin" })
-public class Person extends AbstractChatsDomainEntity implements Locatable, Comparable<Person> {
+public class Person extends AbstractChatsDomainEntity implements /*Locatable,*/ Comparable<Person> {
 
 	private Long oldId;
 	private Salutation salutation;
