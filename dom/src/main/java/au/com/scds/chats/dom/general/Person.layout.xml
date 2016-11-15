@@ -16,19 +16,20 @@
 						<col span="6">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
-								<ns2:property id="salutationName" hidden="ALL_TABLES"  />
+								<ns2:property id="salutationName" hidden="ALL_TABLES" />
 								<ns2:property id="firstname" />
 								<ns2:property id="surname" />
-								<ns2:property id="preferredname" />
-								<ns2:property id="middlename" />
-								<ns2:property id="birthdate" />
-								<ns2:property id="sex" />								
+								<ns2:property id="preferredname"><ns2:named>Preferred Name</ns2:named></ns2:property>
+								<ns2:property id="middlename" ><ns2:named>Middle Name</ns2:named></ns2:property>
+								<ns2:property id="birthdate" ><ns2:named>Birth Date</ns2:named></ns2:property>
+								<ns2:property id="sex" />
 								<ns2:property id="slk" />
-								<ns2:property id="contactTypeName" />
+								<ns2:property id="contactTypeName" hidden="EVERYWHERE"/>
 								<ns2:property id="salutation" hidden="EVERYWHERE" />
 								<ns2:property id="englishSkill" hidden="EVERYWHERE" />
 								<ns2:property id="contactType" hidden="EVERYWHERE" />
 								<ns2:property id="oldId" hidden="EVERYWHERE" />
+								<ns2:action id="updateIdentity" hidden="EVERYWHERE" />
 							</ns2:fieldSet>
 						</col>
 						<col span="12" unreferencedCollections="true" />
@@ -42,15 +43,35 @@
 								<ns2:property id="mobilePhoneNumber" />
 								<ns2:property id="emailAddress" />
 								<ns2:property id="fixedPhoneNumber" />
-								<ns2:property id="faxNumber" />
+								<ns2:property id="silentNumber" />
 							</ns2:fieldSet>
 						</col>
 						<col span="6">
 							<ns2:fieldSet name="Address" id="addressDetails">
-								<ns2:property id="streetAddress" hidden="ALL_TABLES"/>
-								<ns2:property id="mailAddress" hidden="ALL_TABLES"/>
+								<ns2:property id="streetAddress" hidden="ALL_TABLES" />
+								<ns2:property id="mailAddress" hidden="ALL_TABLES" />
 								<ns2:action id="updateStreetAddress" />
 								<ns2:action id="updateMailAddress" />
+							</ns2:fieldSet>
+						</col>
+					</row>
+				</tab>
+				<tab name="Emergency">
+					<row>
+						<col span="6">
+							<ns2:fieldSet name="Emergency Contact" id="emergencyContactDetails">
+								<ns2:property id="emergencyContactName">
+									<ns2:named>Full Name</ns2:named>
+								</ns2:property>
+								<ns2:property id="emergencyContactAddress">
+									<ns2:named>Address</ns2:named>
+								</ns2:property>
+								<ns2:property id="emergencyContactPhone">
+									<ns2:named>Phone</ns2:named>
+								</ns2:property>
+								<ns2:property id="emergencyContactRelationship">
+									<ns2:named>Relationship</ns2:named>
+								</ns2:property>
 							</ns2:fieldSet>
 						</col>
 					</row>
@@ -67,7 +88,7 @@
 								<ns2:property id="datanucleusVersionTimestamp"
 									hidden="ALL_TABLES" />
 								<ns2:property id="datanucleusVersionLong" hidden="ALL_TABLES" />
-								<ns2:property id="location"  hidden="ALL_TABLES"/>
+								<ns2:property id="location" hidden="ALL_TABLES" />
 								<ns2:property id="createdBy" hidden="ALL_TABLES" />
 								<ns2:property id="createdOn" hidden="ALL_TABLES" />
 								<ns2:property id="lastModifiedBy" hidden="ALL_TABLES" />

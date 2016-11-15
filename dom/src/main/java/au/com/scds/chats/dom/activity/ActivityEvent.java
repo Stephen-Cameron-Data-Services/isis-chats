@@ -87,8 +87,6 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 
 public class ActivityEvent extends Activity implements Notable, CalendarEventable {
 
-
-
 	protected RecurringActivity parentActivity;
 	protected AttendanceList attendances;
 	protected List<Attend> attends;

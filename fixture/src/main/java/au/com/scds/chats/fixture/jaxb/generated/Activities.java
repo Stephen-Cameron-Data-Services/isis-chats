@@ -12,20 +12,22 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for CalendarDayCallSchedule complex type.
+ * <p>Java class for anonymous complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="CalendarDayCallSchedule">
+ * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="call" type="{http://scds.com.au/chats/fixture/jaxb/generated}ScheduledCall" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="activity" type="{http://scds.com.au/chats/fixture/jaxb/generated}ActivityEvent" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -35,40 +37,42 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CalendarDayCallSchedule", propOrder = {
-    "call"
+@XmlType(name = "", propOrder = {
+    "activity"
 })
-public class CalendarDayCallSchedule {
+@XmlRootElement(name = "activities")
+public class Activities {
 
-    protected List<ScheduledCall> call;
+    @XmlElement(required = true)
+    protected List<ActivityEvent> activity;
 
     /**
-     * Gets the value of the call property.
+     * Gets the value of the activity property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the call property.
+     * This is why there is not a <CODE>set</CODE> method for the activity property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getCall().add(newItem);
+     *    getActivity().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link ScheduledCall }
+     * {@link ActivityEvent }
      * 
      * 
      */
-    public List<ScheduledCall> getCall() {
-        if (call == null) {
-            call = new ArrayList<ScheduledCall>();
+    public List<ActivityEvent> getActivity() {
+        if (activity == null) {
+            activity = new ArrayList<ActivityEvent>();
         }
-        return this.call;
+        return this.activity;
     }
 
 }

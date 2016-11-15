@@ -412,3 +412,24 @@ WHERE
 GROUP BY 
   participant.participant_id, 
   DATE(telephonecall.startdatetime);
+  
+#DROP VIEW ParticipantIdentity; 
+CREATE VIEW ParticipantIdentity 
+AS 
+SELECT 
+   `person`.`person_id` AS `personId`,
+   `participant`.`participant_id` AS `participantId`,
+   `person`.`surname` AS `surname`,
+   `person`.`firstname` AS `firstName`,
+   `person`.`middlename` AS `middleName`,
+   `person`.`preferredname` AS `preferredName`,
+   `person`.`birthdate` AS `birthDate`,
+   TIMESTAMPDIFF(YEAR,`person`.`birthdate`,CURDATE()) AS `age`,
+   `participant`.`status` AS `status`,
+   `participant`.`region_name` AS `region`
+FROM
+   `person`
+LEFT JOIN 
+   `participant` 
+ON
+   `participant`.`person_person_id` = `person`.`person_id`;

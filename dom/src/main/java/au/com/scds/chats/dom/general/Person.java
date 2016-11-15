@@ -69,7 +69,7 @@ import au.com.scds.chats.dom.general.names.Salutations;
 @DomainObject(objectType = "PERSON")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = "General", middle = { "Contact Details", "Admin" })
-public class Person extends AbstractChatsDomainEntity implements /*Locatable,*/ Comparable<Person> {
+public class Person extends AbstractChatsDomainEntity implements /* Locatable, */ Comparable<Person> {
 
 	private Long oldId;
 	private Salutation salutation;
@@ -86,8 +86,12 @@ public class Person extends AbstractChatsDomainEntity implements /*Locatable,*/ 
 	private String homePhoneNumber;
 	private String mobilePhoneNumber;
 	private String fixedPhoneNumber;
-	private String faxNumber;
+	private String silentNumber;
 	private String emailAddress;
+	private String emergencyContactName;
+	private String emergencyContactAddress;
+	private String emergencyContactPhone;
+	private String emergencyContactRelationship;
 	private Sex sex;
 
 	public Person() {
@@ -121,10 +125,11 @@ public class Person extends AbstractChatsDomainEntity implements /*Locatable,*/ 
 		return this.getFirstname() + " " + (this.getPreferredname() != null ? "(" + this.getPreferredname() + ") " : "")
 				+ (this.getMiddlename() != null ? this.getMiddlename() + " " : "") + this.getSurname();
 	}
-	
+
 	@Programmatic
 	public String getKnownAsName() {
-		return (this.getPreferredname() != null ?  this.getPreferredname() : this.getFirstname()) + " " + this.getSurname();
+		return (this.getPreferredname() != null ? this.getPreferredname() : this.getFirstname()) + " "
+				+ this.getSurname();
 	}
 
 	@Property()
@@ -491,12 +496,12 @@ public class Person extends AbstractChatsDomainEntity implements /*Locatable,*/ 
 	// @PropertyLayout(named = "Fax Number")
 	// @MemberOrder(name = "Contact Details", sequence = "6")
 	@Column(allowsNull = "true")
-	public String getFaxNumber() {
-		return faxNumber;
+	public String getSilentNumber() {
+		return silentNumber;
 	}
 
-	public void setFaxNumber(String faxNumber) {
-		this.faxNumber = faxNumber;
+	public void setSilentNumber(String silentNumber) {
+		this.silentNumber = silentNumber;
 	}
 
 	@Property(regexPattern = RegexValidation.CommunicationChannel.EMAIL)
@@ -525,10 +530,11 @@ public class Person extends AbstractChatsDomainEntity implements /*Locatable,*/ 
 
 	@Action(semantics = SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE)
 	// Provide a means to change the identifying unique key properties
-	public Person updateIdentity(@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named="First name") String firstname,
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named="Surname") String surname,
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named="Birthdate") LocalDate birthdate,
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named="Sex") Sex sex) throws Exception {
+	public Person updateIdentity(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "First name") String firstname,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Surname") String surname,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Birthdate") LocalDate birthdate,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Sex") Sex sex) throws Exception {
 		Person existing = persons.findPerson(firstname, surname, birthdate);
 		if (existing == null) {
 			// transactional
@@ -542,20 +548,20 @@ public class Person extends AbstractChatsDomainEntity implements /*Locatable,*/ 
 		}
 		return this;
 	}
-	
-	public String default0UpdateIdentity(){
+
+	public String default0UpdateIdentity() {
 		return getFirstname();
 	}
-	
-	public String default1UpdateIdentity(){
+
+	public String default1UpdateIdentity() {
 		return getSurname();
 	}
-	
-	public LocalDate default2UpdateIdentity(){
+
+	public LocalDate default2UpdateIdentity() {
 		return getBirthdate();
 	}
-	
-	public Sex default3UpdateIdentity(){
+
+	public Sex default3UpdateIdentity() {
 		return getSex();
 	}
 
@@ -587,6 +593,42 @@ public class Person extends AbstractChatsDomainEntity implements /*Locatable,*/ 
 			return null;
 	}
 
+	@Column(allowsNull = "true")
+	public String getEmergencyContactName() {
+		return emergencyContactName;
+	}
+
+	public void setEmergencyContactName(String emergencyContactName) {
+		this.emergencyContactName = emergencyContactName;
+	}
+
+	@Column(allowsNull = "true")
+	public String getEmergencyContactAddress() {
+		return emergencyContactAddress;
+	}
+
+	public void setEmergencyContactAddress(String emergencyContactAddress) {
+		this.emergencyContactAddress = emergencyContactAddress;
+	}
+
+	@Column(allowsNull = "true")
+	public String getEmergencyContactPhone() {
+		return emergencyContactPhone;
+	}
+
+	public void setEmergencyContactPhone(String emergencyContactPhone) {
+		this.emergencyContactPhone = emergencyContactPhone;
+	}
+
+	@Column(allowsNull = "true")
+	public String getEmergencyContactRelationship() {
+		return emergencyContactRelationship;
+	}
+
+	public void setEmergencyContactRelationship(String emergencyContactRelationship) {
+		this.emergencyContactRelationship = emergencyContactRelationship;
+	}
+
 	@Override
 	public int compareTo(Person o) {
 		String thisNameAndBirthdate = getSurname().toUpperCase() + getFirstname().toUpperCase() + getBirthdate();
@@ -609,6 +651,4 @@ public class Person extends AbstractChatsDomainEntity implements /*Locatable,*/ 
 
 	@Inject
 	private DomainObjectContainer container;
-
-
 }

@@ -194,6 +194,7 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 		return getAllocatedVolunteer();
 	}
 	
+	@Programmatic
 	public CalendarDayCallSchedule addNewCall(final Participant participant,  final DateTime dateTime) throws Exception {
 		ScheduledCall call = scheduleCall(participant, dateTime.toLocalTime());
 		return this;
@@ -203,7 +204,8 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	@Action()
 	//@ActionLayout()
 	//@MemberOrder(name = "scheduledCalls", sequence = "1")
-	public CalendarDayCallSchedule addNewCall(@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named="Participant") final ParticipantIdentity identity, @Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) throws Exception {
+	public CalendarDayCallSchedule addNewCall(@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named="Participant") final ParticipantIdentity identity, 
+			@Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) throws Exception {
 		Participant participant = participantsRepo.getParticipant(identity);
 		addNewCall(participant, dateTime);
 		return this;

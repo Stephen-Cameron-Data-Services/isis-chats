@@ -61,9 +61,7 @@ public abstract class Call extends AbstractChatsDomainEntity {
 		return "Call to: " + getParticipant().getFullName();
 	}
 
-	@Property(hidden = Where.REFERENCES_PARENT)
-	@PropertyLayout()
-	@MemberOrder(sequence = "1")
+	@Property(editing=Editing.DISABLED)
 	@Column(allowsNull = "false")
 	public Participant getParticipant() {
 		return participant;
@@ -73,9 +71,7 @@ public abstract class Call extends AbstractChatsDomainEntity {
 		this.participant = participant;
 	}
 
-	@Property(editing = Editing.DISABLED, editingDisabledReason = "Use 'Start Call' to set")
-	@PropertyLayout(hidden = Where.PARENTED_TABLES)
-	@MemberOrder(sequence = "4")
+	@Property(editing=Editing.DISABLED)
 	@Column(allowsNull = "true")
 	public DateTime getStartDateTime() {
 		return startDateTime;
@@ -85,9 +81,7 @@ public abstract class Call extends AbstractChatsDomainEntity {
 		this.startDateTime = startDateTime;
 	}
 
-	@Property(editing = Editing.DISABLED, editingDisabledReason = "Use 'End Call' to set")
-	@PropertyLayout(hidden = Where.PARENTED_TABLES)
-	@MemberOrder(sequence = "5")
+	@Property(editing=Editing.DISABLED)
 	@Column(allowsNull = "true")
 	public DateTime getEndDateTime() {
 		return endDateTime;
@@ -97,28 +91,28 @@ public abstract class Call extends AbstractChatsDomainEntity {
 		this.endDateTime = endDateTime;
 	}
 
-	@Property(editing = Editing.DISABLED, notPersisted = true)
-	@PropertyLayout(named = "Call Length", describedAs = "The interval that the participant attended the activity (hours:minutes)")
-	@MemberOrder(sequence = "6")
 	@NotPersistent
 	public String getCallLength() {
 		if (getStartDateTime() != null && getEndDateTime() != null) {
 			Duration duration = new Duration(getStartDateTime(), getEndDateTime());
-			return String.format("%01d:%02d", duration.getStandardHours(),  duration.getStandardMinutes() - duration.getStandardHours()*60);
+			Long hours = duration.getStandardHours();
+			Long minutes = duration.getStandardMinutes();
+			Long seconds = duration.getStandardSeconds();
+			if (hours > 0)
+				minutes = minutes - hours * 60;
+			if (seconds > 30)
+				minutes = minutes + 1;
+			return String.format("%01d:%02d", hours, minutes);
+			
 		} else
 			return null;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "7.1")
 	@Column(allowsNull = "true", jdbcType = "CLOB")
 	public String getSummaryNotes() {
 		return summaryNotes;
 	}
 
-	@Property()
-	@PropertyLayout(named = "Notes")
-	@MemberOrder(sequence = "7.2")
 	@NotPersistent
 	public String getTrimmedSummaryNotes() {
 		if (getSummaryNotes() != null) {
@@ -141,7 +135,7 @@ public abstract class Call extends AbstractChatsDomainEntity {
 		setEndDateTime(clockService.nowAsDateTime());
 		return this;
 	}
-	
+
 	public String disableEndCall() {
 		if (getStartDateTime() == null) {
 			return "Start Time has not been set";
@@ -158,21 +152,21 @@ public abstract class Call extends AbstractChatsDomainEntity {
 		setEndDateTime(end);
 		return this;
 	}
-	
-	public DateTime default0UpdateTimes(){
+
+	public DateTime default0UpdateTimes() {
 		return getStartDateTime();
 	}
-	
-	public DateTime default1UpdateTimes(){
+
+	public DateTime default1UpdateTimes() {
 		return getEndDateTime();
 	}
-	
-	public String validateUpdateTimes(DateTime start, DateTime end){
-		if(start.isAfter(end)){
+
+	public String validateUpdateTimes(DateTime start, DateTime end) {
+		if (start.isAfter(end)) {
 			return "End Time is before Start Time";
 		}
 		Duration duration = new Duration(getStartDateTime(), getEndDateTime());
-		if(duration.getStandardDays() > 0){
+		if (duration.getStandardDays() > 0) {
 			return "End Time is not on the same date as Start Time";
 		}
 		return null;

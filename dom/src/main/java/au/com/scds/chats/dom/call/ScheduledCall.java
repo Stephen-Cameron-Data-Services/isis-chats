@@ -62,9 +62,8 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> , N
 	private Volunteer allocatedVolunteer;
 	private CalendarDayCallSchedule callSchedule;
 	private DateTime scheduledDateTime;
-	private Boolean isCompleted = false;
-
-	private static DecimalFormat hoursFormat = new DecimalFormat("#,##0.00");
+	//private Boolean isCompleted = false;
+	private ScheduledCallStatus status;
 
 	public ScheduledCall() {
 	}
@@ -77,9 +76,7 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> , N
 		return "Call to: " + getParticipant().getFullName();
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
-	@PropertyLayout()
-	@MemberOrder(sequence = "2")
+	@Property(editing=Editing.DISABLED)
 	@Column(allowsNull = "true")
 	public Volunteer getAllocatedVolunteer() {
 		return allocatedVolunteer;
@@ -89,10 +86,8 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> , N
 		this.allocatedVolunteer = volunteer;
 	}
 
-	@Property(editing = Editing.DISABLED, editingDisabledReason = "Value Set By Scheduler")
-	@PropertyLayout(named = "Scheduled For")
+	@Property(editing=Editing.DISABLED)
 	@Column(allowsNull = "true")
-	@MemberOrder(sequence = "3")
 	public DateTime getScheduledDateTime() {
 		return scheduledDateTime;
 	}
@@ -101,27 +96,32 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> , N
 		this.scheduledDateTime = dateTime;
 	}
 
-	@Property(editing = Editing.DISABLED, editingDisabledReason = "Set Automatically")
-	@PropertyLayout()
-	@MemberOrder(sequence = "4")
-	@Column(allowsNull = "false")
+	@NotPersistent()
 	public Boolean getIsCompleted() {
-		return isCompleted;
+		if (getStatus() == ScheduledCallStatus.Completed)
+			return true;
+		else
+			return false;
 	}
 
-	// also used by DataNucleus
 	public void setIsCompleted(final Boolean isCompleted) {
-		this.isCompleted = isCompleted;
+		if(isCompleted)
+			setStatus(ScheduledCallStatus.Completed);
+		else
+			setStatus(ScheduledCallStatus.Scheduled);
 	}
+	
 
 	// used by the Application
 	public void setIsCompleted2(final Boolean isCompleted) throws Exception {
 		if (isCompleted == null)
 			return;
+		
 		if (getCallSchedule() != null)
 			getCallSchedule().completeCall(this, isCompleted);
 		else
 			setIsCompleted(isCompleted);
+		
 		if (!isCompleted)
 			setEndDateTime(null);
 	}
@@ -140,22 +140,7 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> , N
 			setIsCompleted(isCompleted);
 	}
 
-	@Property(editing = Editing.DISABLED, notPersisted = true)
-	@PropertyLayout(named = "Call Length in Hours", describedAs = "The interval that the participant attended the activity in hours")
-	@MemberOrder(sequence = "6")
-	@NotPersistent
-	public String getCallLength() {
-		if (getStartDateTime() != null && getEndDateTime() != null) {
-			Period per = new Period(getStartDateTime().toLocalDateTime(), getEndDateTime().toLocalDateTime());
-			Float hours = ((float) per.toStandardMinutes().getMinutes()) / 60;
-			return hoursFormat.format(hours);
-		} else
-			return null;
-	}
-
-	@Property(hidden = Where.ALL_TABLES)
-	@PropertyLayout()
-	@MemberOrder(sequence = "7")
+	@Property(editing=Editing.DISABLED)
 	@Column(allowsNull = "true")
 	public CalendarDayCallSchedule getCallSchedule() {
 		return callSchedule;
@@ -165,10 +150,17 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> , N
 		if (getCallSchedule() == null && callSchedule != null)
 			this.callSchedule = callSchedule;
 	}
+	
+	@Column(allowsNull = "false")
+	public ScheduledCallStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(ScheduledCallStatus status) {
+		this.status = status;
+	}
 
 	@Action()
-	@ActionLayout(named = "Call Start")
-	@MemberOrder(name = "isCompleted", sequence = "1")
 	public ScheduledCall startCall() {
 		if (getStartDateTime() == null)
 			setStartDateTime(clockService.nowAsDateTime());
@@ -176,8 +168,6 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> , N
 	}
 
 	@Action()
-	@ActionLayout(named = "Call End")
-	@MemberOrder(name = "isCompleted", sequence = "2")
 	public ScheduledCall endCall() {
 		if (getEndDateTime() == null) {
 			setEndDateTime(clockService.nowAsDateTime());
@@ -191,8 +181,6 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> , N
 	}
 
 	@Action()
-	@ActionLayout(named = "Change End Date Time")
-	@MemberOrder(name = "isCompleted", sequence = "3")
 	public ScheduledCall changeEndTime(@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "New End Time") final DateTime endDateTime) {
 		if (endDateTime == null) {
 			try {
@@ -205,14 +193,10 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> , N
 		return this;
 	}
 	
-	/*@Programmatic
-	public Long getCallIntervalInMinutes(){
-		if (getStartDateTime() != null && getEndDateTime() != null) {
-			Duration duration = new Duration(getStartDateTime(), getEndDateTime());
-			return duration.getStandardMinutes();
-		} else
-			return null;
-	}*/
+
+	public DateTime default0ChangeEndTime() {
+		return getEndDateTime();
+	}
 
 	@Override
 	public int compareTo(ScheduledCall other) {
@@ -226,5 +210,7 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> , N
 
 	@Inject()
 	DomainObjectContainer container;
+
+
 
 }

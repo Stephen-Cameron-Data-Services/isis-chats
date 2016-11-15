@@ -127,7 +127,9 @@
 					<row>
 						<col span="12">
 							<ns2:fieldSet id="DSS" name="DSS (DEX) Data">
-								<ns2:action id="updateDexData" />
+								<ns2:action id="updateDexData">
+									<ns2:named>Update</ns2:named>
+								</ns2:action>
 								<ns2:property id="consentToProvideDetails" hidden="ALL_TABLES" />
 								<ns2:property id="consentedForFutureContacts"
 									hidden="ALL_TABLES" />
@@ -196,7 +198,7 @@
 				<tab name="Calendar Notes">
 					<row>
 						<col span="12">
-							<ns2:collection id="notes"/>
+							<ns2:collection id="notes" />
 						</col>
 					</row>
 				</tab>

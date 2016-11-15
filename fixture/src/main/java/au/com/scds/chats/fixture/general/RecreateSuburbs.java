@@ -12,9 +12,7 @@ import org.apache.isis.applib.fixturescripts.FixtureScript;
 
 import au.com.scds.chats.dom.general.Suburbs;
 import au.com.scds.chats.dom.general.names.Names;
-import au.com.scds.chats.fixture.jaxb.generated.NamesFixture;
 import au.com.scds.chats.fixture.jaxb.generated.ObjectFactory;
-import au.com.scds.chats.fixture.jaxb.generated.SuburbsFixture;
 
 
 public class RecreateSuburbs extends FixtureScript {
@@ -29,12 +27,13 @@ public class RecreateSuburbs extends FixtureScript {
 		Suburbs suburbs = new Suburbs();
 		
 		try {
-			InputStream is = NamesFixture.class.getResourceAsStream("/au/com/scds/chats/fixture/jaxb/suburbs.xml");
+			InputStream is = au.com.scds.chats.fixture.jaxb.generated.Names.class.getResourceAsStream("/au/com/scds/chats/fixture/jaxb/suburbs.xml");
 			JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			SuburbsFixture fixture = ((JAXBElement<SuburbsFixture>) jaxbUnmarshaller.unmarshal(is)).getValue();
-			for(SuburbsFixture.Suburb suburb: fixture.getSuburb())
-				wrap(suburbs).createSuburb(suburb.getName(),suburb.getPostcode());			
+			au.com.scds.chats.fixture.jaxb.generated.Suburbs fixture = ((JAXBElement<au.com.scds.chats.fixture.jaxb.generated.Suburbs>) jaxbUnmarshaller.unmarshal(is)).getValue();
+			for(au.com.scds.chats.fixture.jaxb.generated.Suburbs.Suburb suburb : fixture.getSuburb()){
+				wrap(suburbs).createSuburb(suburb.getName(),suburb.getPostcode());
+			}
 			ec.addResult(this, suburbs.listAllSuburbs());
 		} catch (JAXBException e) {
 			e.printStackTrace();

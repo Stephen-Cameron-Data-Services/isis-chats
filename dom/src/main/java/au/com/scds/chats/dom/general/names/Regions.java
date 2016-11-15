@@ -71,6 +71,19 @@ public class Regions {
 			return container.firstMatch(new QueryDefault<>(Region.class, "findRegionByName", "name", name));
 	}
 
+	@Programmatic
+	public Region findOrCreateRegion(String name) {
+		if(name == null || name.trim().length() == 0)
+			return null;
+		Region region = regionForName(name);
+		if(region == null)
+			return createRegion(name);
+		else
+			return region;
+	}
+
 	@javax.inject.Inject
 	DomainObjectContainer container;
+
+
 }

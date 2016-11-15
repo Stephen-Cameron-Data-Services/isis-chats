@@ -151,12 +151,16 @@ public class Participants {
 	
 	@Programmatic
 	public Participant getParticipant(ParticipantIdentity identity) {
+		if(identity == null)
+			return null;
 		return isisJdoSupport.getJdoPersistenceManager().getObjectById(Participant.class,
 				identity.getJdoObjectId());
 	}
 	
 	@Programmatic
 	public Participant getParticipant(Person person) {
+		if(person == null)
+			return null;
 		return container
 				.firstMatch(new QueryDefault<>(Participant.class, "findParticipantForPerson", "person", person));
 	}

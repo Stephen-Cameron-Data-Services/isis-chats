@@ -21,16 +21,37 @@ import org.joda.time.LocalDate;
 @ViewModel
 @DomainObject(editing = Editing.DISABLED)
 @PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "ParticipantIdentity", extensions = {
-		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW ParticipantIdentity "
-				+ "( " + "  {this.personId}, " + "  {this.participantId}, " + "  {this.surname}, "
-				+ "  {this.firstName}, " + "  {this.middleName}, " + "  {this.preferredName}, " + "  {this.birthDate}, "
-				+ "  {this.age}, " + "  {this.status}" + "  {this.region}" + ") AS " + "SELECT "
-				+ "  person.person_id as personId, " + "  participant.participant_id as participantId, "
-				+ "  person.surname, " + "  person.firstname AS firstName, " + "  person.middlename AS middleName, "
-				+ "  person.preferredname AS preferredName, " + "  person.birthdate AS birthDate, "
-				+ "  timestampdiff(year,person.birthdate,curdate()) AS age, " + "  participant.status as status, "
-				+ "  participant.region_name as region " + "FROM " + "  person " + "LEFT OUTER JOIN " + "  participant "
-				+ "ON " + "  participant.person_person_id = person.person_id;  ") })
+		@Extension(vendorName = "datanucleus", key = "view-definition", 
+				value = "CREATE VIEW ParticipantIdentity "
+				+ "( " 
+				+ "  {this.personId}, "
+				+ "  {this.participantId}, "
+				+ "  {this.surname}, "
+				+ "  {this.firstName}, " 
+				+ "  {this.middleName}, " 
+				+ "  {this.preferredName}, " 
+				+ "  {this.birthDate}, "
+				+ "  {this.age}, " 
+				+ "  {this.status}," 
+				+ "  {this.region}" 
+				+ ") AS " 
+				+ "SELECT "
+				+ "  person.person_id as personId, " 
+				+ "  participant.participant_id as participantId, "
+				+ "  person.surname, " 
+				+ "  person.firstname AS firstName, " 
+				+ "  person.middlename AS middleName, "
+				+ "  person.preferredname AS preferredName, " 
+				+ "  person.birthdate AS birthDate, "
+				+ "  timestampdiff(year,person.birthdate,curdate()) AS age, " 
+				+ "  participant.status as status, "
+				+ "  participant.region_name as region " 
+				+ "FROM " 
+				+ "  person " 
+				+ "LEFT OUTER JOIN " 
+				+ "  participant "
+				+ "ON " 
+				+ "  participant.person_person_id = person.person_id  ") })
 @Queries({
 	@Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT "
 			+ "FROM au.com.scds.chats.dom.participant.ParticipantIdentity p WHERE status == :status"),

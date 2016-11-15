@@ -188,17 +188,22 @@ public class DexReferenceData {
 	}
 	
 	@Action()
+	public List<String> allLanguageSpokenAtHomeDescriptions() {
+		return container.allMatches(new QueryDefault(Language.class, "allDescriptions"));
+	}
+	
+	@Action()
 	public HouseholdComposition getHouseholdCompositionForDescription(String description) {
 			return container.firstMatch(
 					new QueryDefault<>(HouseholdComposition.class, "description", "description", description));
 		
 	}
-
-	@Action()
-	public List<Language> allLanguageSpokenAtHomeDescriptions() {
-		return container.allMatches(new QueryDefault(Language.class, "allDescriptions"));
-	}
 	
+	@Action()
+	public List<String> allHouseholdCompositionDescriptions() {
+		return container.allMatches(new QueryDefault(HouseholdComposition.class, "allDescriptions"));
+	}
+
 	@Action()
 	public Country getCountryOfBirthForDescription(String description) {
 		return container.firstMatch(
@@ -206,7 +211,7 @@ public class DexReferenceData {
 	}
 
 	@Action()
-	public List<Country> allCountryOfBirthDescriptions() {
+	public List<String> allCountryOfBirthDescriptions() {
 		return container.allMatches(new QueryDefault(Country.class, "allDescriptions"));
 	}
 	
@@ -217,7 +222,7 @@ public class DexReferenceData {
 	}
 
 	@Action()
-	public List<Disability> allDisabilityDescriptions() {
+	public List<String> allDisabilityDescriptions() {
 		return container.allMatches(new QueryDefault(Disability.class, "allDescriptions"));
 	}
 	
@@ -228,7 +233,7 @@ public class DexReferenceData {
 	}
 
 	@Action()
-	public List<AccommodationType> allAccommodationTypeDescriptions() {
+	public List<String> allAccommodationTypeDescriptions() {
 		return container.allMatches(new QueryDefault(AccommodationType.class, "allDescriptions"));
 	}
 
@@ -239,11 +244,9 @@ public class DexReferenceData {
 	}
 
 	@Action()
-	public List<DVACardStatus> allDVACardStatusDescriptions() {
+	public List<String> allDVACardStatusDescriptions() {
 		return container.allMatches(new QueryDefault(DVACardStatus.class, "allDescriptions"));
 	}
-	
-
 	
 	@Inject
 	private DomainObjectContainer container;

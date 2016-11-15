@@ -94,6 +94,14 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /*L
 	public void setScheduledCalls(final SortedSet<CalendarDayCallSchedule> callSchedules) {
 		this.callSchedules = callSchedules;
 	}
+	
+	@Programmatic
+	public Volunteer addScheduledCall(
+			final Participant participant,
+			final DateTime dateTime) throws Exception {
+		ScheduledCall call = schedulesRepo.createScheduledCall(this, participant, dateTime);
+		return this;
+	}
 
 	@Action()
 	// @MemberOrder(name = "callschedules", sequence = "1")
@@ -101,8 +109,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /*L
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") final ParticipantIdentity identity,
 			@Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) {
 		try {
-			Participant participant = participantsRepo.getParticipant(identity);
-			ScheduledCall call = schedulesRepo.createScheduledCall(this, participant, dateTime);
+			addScheduledCall(participantsRepo.getParticipant(identity),dateTime);
 		} catch (Exception e) {
 			container.warnUser(e.getMessage());
 		}

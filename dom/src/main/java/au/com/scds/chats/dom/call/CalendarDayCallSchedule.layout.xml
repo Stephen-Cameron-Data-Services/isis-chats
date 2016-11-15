@@ -27,7 +27,9 @@
 				<tab name="Calls">
 					<row>
 						<col span="12">
-							<ns2:collection id="scheduledCalls" />
+							<ns2:collection id="scheduledCalls">
+								<ns2:action id="addNewCall" />
+							</ns2:collection>
 						</col>
 					</row>
 				</tab>

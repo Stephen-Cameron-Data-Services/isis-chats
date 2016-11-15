@@ -36,8 +36,8 @@
 								<ns2:property id="datanucleusVersionLong" hidden="ALL_TABLES" />
 								<ns2:property id="datanucleusVersionTimestamp"
 									hidden="ALL_TABLES" />
-								<ns2:property id="createdBy" hidden="ALL_TABLES" />
-								<ns2:property id="createdOn" hidden="ALL_TABLES" />
+								<ns2:property id="createdBy" />
+								<ns2:property id="createdOn" />
 								<ns2:property id="lastModifiedBy" hidden="ALL_TABLES" />
 								<ns2:property id="lastModifiedOn" hidden="ALL_TABLES" />
 								<ns2:property id="region" hidden="EVERYWHERE" />

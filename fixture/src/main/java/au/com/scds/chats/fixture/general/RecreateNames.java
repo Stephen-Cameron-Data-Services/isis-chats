@@ -10,7 +10,6 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.isis.applib.fixturescripts.FixtureScript;
 import au.com.scds.chats.dom.general.names.Names;
-import au.com.scds.chats.fixture.jaxb.generated.NamesFixture;
 import au.com.scds.chats.fixture.jaxb.generated.ObjectFactory;
 
 public class RecreateNames extends FixtureScript {
@@ -25,10 +24,10 @@ public class RecreateNames extends FixtureScript {
 		Names names = new Names();
 		
 		try {
-			InputStream is = NamesFixture.class.getResourceAsStream("/au/com/scds/chats/fixture/jaxb/names.xml");
+			InputStream is = au.com.scds.chats.fixture.jaxb.generated.Names.class.getResourceAsStream("/au/com/scds/chats/fixture/jaxb/names.xml");
 			JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			NamesFixture fixture = ((JAXBElement<NamesFixture>) jaxbUnmarshaller.unmarshal(is)).getValue();
+			au.com.scds.chats.fixture.jaxb.generated.Names fixture = ((JAXBElement<au.com.scds.chats.fixture.jaxb.generated.Names>) jaxbUnmarshaller.unmarshal(is)).getValue();
 			for(String region: fixture.getRegions().getRegion())
 				wrap(names).createRegion(region);
 			for(String type: fixture.getActivityTypes().getActivityType())

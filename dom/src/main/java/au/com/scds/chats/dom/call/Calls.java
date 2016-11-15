@@ -109,8 +109,8 @@ public class Calls {
 		return CallType.Scheduled;
 	}
 
-	public List<Participant> choices1Create() {
-		return participantsRepo.listActive(AgeGroup.All);
+	public List<ParticipantIdentity> choices1Create() {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
 
 	public List<Volunteer> choices2Create() {
@@ -166,7 +166,8 @@ public class Calls {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.3")
 	public List<SurveyCall> listSurveyCalls(
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named="Active Participant") final ParticipantIdentity activeParticipant) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named="Active Participant") final ParticipantIdentity identity) {
+		Participant activeParticipant = participantsRepo.getParticipant(identity);
 		if (activeParticipant != null) {
 			return container.allMatches(new QueryDefault<>(SurveyCall.class, "findSurveyCallsByParticipant",
 					"participant", activeParticipant));
@@ -273,6 +274,7 @@ public class Calls {
 			throws Exception {
 		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
 		call.setParticipant(participant);
+		call.setStatus(ScheduledCallStatus.Scheduled);
 		// TODO
 		// call.setRegion(region);
 		// set the scheduled date-time for comparable to work in the call-back
@@ -289,6 +291,7 @@ public class Calls {
 		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
 		call.setParticipant(participant);
 		call.setAllocatedVolunteer(volunteer);
+		call.setStatus(ScheduledCallStatus.Scheduled);
 		call.setRegion(participant.getRegion());
 		container.persistIfNotAlready(call);
 		container.flush();

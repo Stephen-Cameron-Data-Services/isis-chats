@@ -18,6 +18,7 @@
  */
 package au.com.scds.chats.dom.activity;
 
+import java.util.Date;
 import java.util.List;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
@@ -129,6 +130,22 @@ public class Activities {
 		container.persistIfNotAlready(obj);
 		container.flush();
 		return obj;
+	}
+
+	@Programmatic
+	public ActivityEvent findOrCreateOneOffActivity(String name, DateTime time, Region region) {
+		if (name == null || name.trim().length() == 0)
+			return null;
+		if (time == null)
+			return null;
+		if (region == null)
+			return null;
+		for (ActivityEvent activity : findActivityByName(name)) {
+			if(activity.getStartDateTime().equals(time)){
+				return activity;
+			}
+		}
+		return createOneOffActivity(name, time, region);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)

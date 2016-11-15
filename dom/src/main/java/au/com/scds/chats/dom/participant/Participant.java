@@ -516,7 +516,7 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 			setCountryOfBirth(dexRefData.getCountryOfBirthForDescription(description));
 	}
 
-	public List<Country> choicesCountryOfBirthDescription() {
+	public List<String> choicesCountryOfBirthDescription() {
 		return dexRefData.allCountryOfBirthDescriptions();
 	}
 
@@ -549,7 +549,7 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 			setLanguageSpokenAtHome(dexRefData.getLanguageSpokenAtHomeForDescription(description));
 	}
 
-	public List<Language> choicesLanguageSpokenAtHomeDescription() {
+	public List<String> choicesLanguageSpokenAtHomeDescription() {
 		return dexRefData.allLanguageSpokenAtHomeDescriptions();
 	}
 
@@ -614,7 +614,7 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 			setAccommodationType(dexRefData.getAccommodationTypeForDescription(description));
 	}
 
-	public List<AccommodationType> choicesAccommodationTypeDescription() {
+	public List<String> choicesAccommodationTypeDescription() {
 		return dexRefData.allAccommodationTypeDescriptions();
 	}
 
@@ -648,7 +648,7 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 			setDvaCardStatus(dexRefData.getDVACardStatusForDescription(description));
 	}
 
-	public List<DVACardStatus> choicesDvaCardStatusDescription() {
+	public List<String> choicesDvaCardStatusDescription() {
 		return dexRefData.allDVACardStatusDescriptions();
 	}
 
@@ -660,10 +660,6 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 
 	public void setHouseholdComposition(HouseholdComposition householdComposition) {
 		this.householdComposition = householdComposition;
-	}
-
-	public List<HouseholdComposition> choicesHouseholdComposition() {
-		return dexRefData.allHouseholdComposition();
 	}
 
 	@Property()
@@ -680,6 +676,10 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 			setHouseholdComposition(null);
 		else
 			setHouseholdComposition(dexRefData.getHouseholdCompositionForDescription(description));
+	}
+	
+	public List<String> choicesHouseholdCompositionDescription() {
+		return dexRefData.allHouseholdCompositionDescriptions();
 	}
 
 	@Property()
@@ -727,7 +727,6 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 	}
 
 	@Action()
-	@ActionLayout(named = "Change")
 	public Participant updateDexData(
 			@ParameterLayout(named = "Consent To Provide Details") final boolean consentToProvideDetails,
 			@ParameterLayout(named = "Consented For Future Contacts") final boolean consentedForFutureContacts,
