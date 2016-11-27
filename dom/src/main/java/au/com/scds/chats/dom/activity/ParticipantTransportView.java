@@ -24,10 +24,11 @@ import org.apache.isis.applib.annotation.Nature;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
-
+import org.apache.isis.applib.util.TitleBuffer;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 import org.joda.time.DateTime;
 
+import au.com.scds.chats.dom.general.Address;
 import au.com.scds.chats.dom.general.names.TransportType;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participation;
@@ -35,11 +36,12 @@ import au.com.scds.chats.dom.participant.Participation;
 @DomainObject(nature = Nature.VIEW_MODEL)
 public class ParticipantTransportView {
 
+	private String activityDetails;
 	private String name;
 	private String homePhone;
 	private String mobilePhone;
 	private String address;
-	private Location location;
+	private String postcode;
 	private String notes;
 	private String pickupTime;
 	private String dropoffTime;
@@ -54,19 +56,27 @@ public class ParticipantTransportView {
 			return;
 		Participant p = participation.getParticipant();
 		Activity a = participation.getActivity();
+		this.activityDetails = a.getName() + " -- " + a.getStreetAddress();
 		this.name = p.getPerson().getKnownAsName();
-		this.address = p.getStreetAddress();
+		if (p.getPerson().getStreetAddress() != null) {
+			Address address = p.getPerson().getStreetAddress();
+			final TitleBuffer buf = new TitleBuffer();
+			buf.append(address.getStreet1());
+			buf.append(", ", address.getStreet2());
+			buf.append(", ", address.getSuburb());
+			this.address = buf.toString();
+			this.postcode = address.getPostcode();
+		}
 		this.mobilePhone = p.getMobilePhoneNumber();
 		this.homePhone = p.getHomePhoneNumber();
-		this.location = p.getLocation();
 		this.pickupTime = participation.getPickupTime();
 		this.dropoffTime = participation.getDropoffTime();
-		this.notes = ((p.getMobility() != null) ? p.getMobility() + " " : "") + ((participation.getTransportNotes()!= null) ? participation.getTransportNotes() : "");
+		this.notes = ((p.getMobility() != null) ? p.getMobility() + " " : "")
+				+ ((participation.getTransportNotes() != null) ? participation.getTransportNotes() : "");
 		this.arrivingTransportType = participation.getArrivingTransportType();
 		this.departingTransportType = participation.getDepartingTransportType();
 	}
 
-	@MemberOrder(sequence = "1")
 	public String getName() {
 		return name;
 	}
@@ -75,7 +85,6 @@ public class ParticipantTransportView {
 		this.name = name;
 	}
 
-	@MemberOrder(sequence = "2")
 	public String getHomePhone() {
 		return homePhone;
 	}
@@ -84,7 +93,6 @@ public class ParticipantTransportView {
 		this.homePhone = homePhone;
 	}
 
-	@MemberOrder(sequence = "3")
 	public String getMobilePhone() {
 		return mobilePhone;
 	}
@@ -93,7 +101,6 @@ public class ParticipantTransportView {
 		this.mobilePhone = mobilePhone;
 	}
 
-	@MemberOrder(sequence = "4")
 	public String getAddress() {
 		return address;
 	}
@@ -102,16 +109,6 @@ public class ParticipantTransportView {
 		this.address = address;
 	}
 
-	@MemberOrder(sequence = "5")
-	public Location getLocation() {
-		return location;
-	}
-
-	public void setLocation(Location location) {
-		this.location = location;
-	}
-
-	@MemberOrder(sequence = "6")
 	public String getNotes() {
 		return notes;
 	}
@@ -120,7 +117,6 @@ public class ParticipantTransportView {
 		this.notes = notes;
 	}
 
-	@MemberOrder(sequence = "7")
 	public String getPickupTime() {
 		return pickupTime;
 	}
@@ -129,7 +125,6 @@ public class ParticipantTransportView {
 		this.pickupTime = pickupTime;
 	}
 
-	@MemberOrder(sequence = "8")
 	public String getDropoffTime() {
 		return dropoffTime;
 	}
@@ -138,7 +133,6 @@ public class ParticipantTransportView {
 		this.dropoffTime = dropoffTime;
 	}
 
-	@Property(hidden = Where.EVERYWHERE)
 	public TransportType getArrivingTransportType() {
 		return arrivingTransportType;
 	}
@@ -147,13 +141,10 @@ public class ParticipantTransportView {
 		this.arrivingTransportType = arrivingTransportType;
 	}
 
-	@PropertyLayout(named = "Arriving Transport")
-	@MemberOrder(sequence = "20")
 	public String getArrivingTransportTypeName() {
 		return (getArrivingTransportType() != null) ? getArrivingTransportType().getName() : null;
 	}
 
-	@Property(hidden = Where.EVERYWHERE)
 	public TransportType getDepartingTransportType() {
 		return departingTransportType;
 	}
@@ -162,10 +153,23 @@ public class ParticipantTransportView {
 		this.departingTransportType = departingTransportType;
 	}
 
-	@PropertyLayout(named = "Departing Transport")
-	@MemberOrder(sequence = "21")
 	public String getDepartingTransportTypeName() {
 		return (getDepartingTransportType() != null) ? getDepartingTransportType().getName() : null;
 	}
 
+	public String getActivityDetails() {
+		return activityDetails;
+	}
+
+	public void setActivityDetails(String activityDetails) {
+		this.activityDetails = activityDetails;
+	}
+
+	public String getPostcode() {
+		return postcode;
+	}
+
+	public void setPostcode(String postcode) {
+		this.postcode = postcode;
+	}
 }

@@ -53,6 +53,8 @@ import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.activity.Activity;
+import au.com.scds.chats.dom.activity.ActivityEvent;
+import au.com.scds.chats.dom.activity.RecurringActivity;
 import au.com.scds.chats.dom.general.TransportHub;
 import au.com.scds.chats.dom.general.Locations;
 import au.com.scds.chats.dom.general.Suburb;
@@ -97,10 +99,12 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 			return null;
 		}
 	}
+	
+	public String iconName() {
+		return (getActivity() instanceof RecurringActivity) ? "Recurring" : "Oneoff";	
+	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Created from Parent Activity")
-	@PropertyLayout(hidden = Where.REFERENCES_PARENT)
-	//@MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
 	public Participant getParticipant() {
 		return participant;
@@ -113,7 +117,6 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	@Property(editing = Editing.DISABLED)
-	//@PropertyLayout(hidden = Where.EVERYWHERE)
 	@Column(allowsNull = "true")
 	public String getOldId() {
 		return this.oldId;
@@ -124,8 +127,6 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Created from Parent Activity")
-	@PropertyLayout(hidden = Where.REFERENCES_PARENT)
-	//@MemberOrder(sequence = "3")
 	@Column(allowsNull = "false")
 	public Activity getActivity() {
 		return this.activity;
@@ -173,7 +174,6 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 		return getDropoffTime();
 	}
 
-	@Property(hidden = Where.EVERYWHERE)
 	@Column(allowsNull = "true")
 	public TransportType getArrivingTransportType() {
 		return arrivingTransportType;
@@ -183,9 +183,6 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 		this.arrivingTransportType = transportType;
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
-	//@PropertyLayout(named = "Arriving Transport Type")
-	//@MemberOrder(sequence = "4")
 	@NotPersistent
 	public String getArrivingTransportTypeName() {
 		return getArrivingTransportType() != null ? this.getArrivingTransportType().getName() : null;
@@ -199,7 +196,6 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 		return transportTypes.allNames();
 	}
 
-	@Property(hidden = Where.EVERYWHERE)
 	@Column(allowsNull = "true")
 	public TransportType getDepartingTransportType() {
 		return departingTransportType;
@@ -209,9 +205,6 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 		this.departingTransportType = transportType;
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
-	//@PropertyLayout(named = "Departing Transport Type")
-	//@MemberOrder(sequence = "5")
 	@NotPersistent
 	public String getDepartingTransportTypeName() {
 		return getDepartingTransportType() != null ? this.getDepartingTransportType().getName() : null;

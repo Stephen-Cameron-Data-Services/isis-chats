@@ -36,7 +36,14 @@
 				<tab name="Volunteering">
 					<row>
 						<col span="12">
-							<ns2:collection id="volunteeredTimes" />
+							<ns2:collection id="volunteeredTimes">
+								<ns2:action id="addVolunteeredTime">
+									<ns2:named>Add</ns2:named>
+								</ns2:action>
+								<ns2:action id="removeVolunteeredTime">
+									<ns2:named>Remove</ns2:named>
+								</ns2:action>
+							</ns2:collection>
 						</col>
 					</row>
 				</tab>
@@ -49,8 +56,7 @@
 								<ns2:action id="downloadJdoMetadata" position="PANEL_DROPDOWN" />
 								<ns2:action id="rebuildMetamodel" position="PANEL_DROPDOWN" />
 								<ns2:property id="datanucleusIdLong" hidden="ALL_TABLES" />
-								<ns2:property id="datanucleusVersionTimestamp"
-									hidden="ALL_TABLES" />
+								<ns2:property id="datanucleusVersionTimestamp" hidden="ALL_TABLES" />
 								<ns2:property id="datanucleusVersionLong" hidden="ALL_TABLES" />
 								<ns2:property id="createdBy" hidden="ALL_TABLES" />
 								<ns2:property id="createdOn" hidden="ALL_TABLES" />

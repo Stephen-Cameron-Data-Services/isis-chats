@@ -19,6 +19,8 @@
 package au.com.scds.chats.dom.call;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.jdo.annotations.*;
@@ -32,6 +34,8 @@ import org.incode.module.note.dom.api.notable.Notable;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Period;
+
+import au.com.scds.chats.dom.StartAndFinishDateTime;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 
@@ -62,7 +66,6 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> , N
 	private Volunteer allocatedVolunteer;
 	private CalendarDayCallSchedule callSchedule;
 	private DateTime scheduledDateTime;
-	//private Boolean isCompleted = false;
 	private ScheduledCallStatus status;
 
 	public ScheduledCall() {
@@ -151,26 +154,51 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> , N
 			this.callSchedule = callSchedule;
 	}
 	
+	@Property(editing=Editing.DISABLED)
 	@Column(allowsNull = "false")
 	public ScheduledCallStatus getStatus() {
 		return status;
 	}
-
+	
 	public void setStatus(ScheduledCallStatus status) {
 		this.status = status;
+	}
+	
+	@Action()
+	public ScheduledCall updateStatus(ScheduledCallStatus status) throws Exception{
+		if(status != null)	
+		setStatus(status);
+		setIsCompleted2(status.equals(ScheduledCallStatus.Completed));
+		return this;
+	}
+	
+	public List<ScheduledCallStatus> choices0UpdateStatus(){
+		List<ScheduledCallStatus> list = new ArrayList<>();
+		for(ScheduledCallStatus status : ScheduledCallStatus.values()){
+			if(getStatus() != null && getStatus() != status)
+				list.add(status);
+		}
+		return list;
 	}
 
 	@Action()
 	public ScheduledCall startCall() {
 		if (getStartDateTime() == null)
-			setStartDateTime(clockService.nowAsDateTime());
+			setStartDateTime(trimSeconds(clockService.nowAsDateTime()));
 		return this;
+	}
+	
+	public String disableStartCall(){
+		if(getStartDateTime()== null)
+			return null;
+		else
+			return "Start Date Time is set, use Update Start Date Time";
 	}
 
 	@Action()
 	public ScheduledCall endCall() {
 		if (getEndDateTime() == null) {
-			setEndDateTime(clockService.nowAsDateTime());
+			setEndDateTime(trimSeconds(clockService.nowAsDateTime()));
 			try {
 				setIsCompleted2(true);
 			} catch (Exception e) {
@@ -179,23 +207,26 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> , N
 		}
 		return this;
 	}
-
+	
+	public String disableEndCall(){
+		if(getEndDateTime()== null)
+			return null;
+		else
+			return "End Date Time is set, use Update End Date Time";
+	}
+	
 	@Action()
-	public ScheduledCall changeEndTime(@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "New End Time") final DateTime endDateTime) {
-		if (endDateTime == null) {
+	public ScheduledCall updateEndDateTime(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "End Time") DateTime end){
+		if (end == null) {
 			try {
 				setIsCompleted2(false);
 			} catch (Exception e) {
 				container.warnUser("Sorry, an error occurred as follows: " + e.getMessage());
 			}
 		}
-		setEndDateTime(endDateTime);
+		super.updateEndDateTime(end);
 		return this;
-	}
-	
-
-	public DateTime default0ChangeEndTime() {
-		return getEndDateTime();
 	}
 
 	@Override

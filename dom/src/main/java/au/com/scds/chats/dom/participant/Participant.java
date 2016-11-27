@@ -98,7 +98,7 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 	private String drivingAbility;
 	private String drivingConfidence;
 	private String placeOfOrigin;
-	private LocalDate dateOfSettlement;
+	private Integer yearOfSettlement;
 	private String closeRelatives;
 	private Integer closeRlFrCount;
 	private String proximityOfRelatives;
@@ -293,9 +293,6 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		return this.getPerson().compareTo(o.getPerson());
 	}
 
-	@Property()
-	// @PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
-	// @MemberOrder(name = "Limitations", sequence = "1")
 	@Column(allowsNull = "true")
 	public String getLimitingHealthIssues() {
 		return limitingHealthIssues;
@@ -305,9 +302,6 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		this.limitingHealthIssues = limitingHealthIssues;
 	}
 
-	@Property()
-	// @PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
-	// @MemberOrder(name = "Limitations", sequence = "2")
 	@Column(allowsNull = "true")
 	public String getOtherLimitingFactors() {
 		return otherLimitingFactors;
@@ -317,9 +311,6 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		this.otherLimitingFactors = otherLimitingFactors;
 	}
 
-	@Property()
-	// @PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
-	// @MemberOrder(name = "Driving", sequence = "3")
 	@Column(allowsNull = "true")
 	public String getDriversLicence() {
 		return driversLicence;
@@ -329,9 +320,6 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		this.driversLicence = driversLicence;
 	}
 
-	@Property()
-	// @PropertyLayout(labelPosition = LabelPosition.TOP)
-	// @MemberOrder(name = "Driving", sequence = "4")
 	@Column(allowsNull = "true")
 	public String getDrivingAbility() {
 		return drivingAbility;
@@ -341,9 +329,6 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		this.drivingAbility = drivingAbility;
 	}
 
-	@Property()
-	// @PropertyLayout(labelPosition = LabelPosition.TOP)
-	// @MemberOrder(name = "Driving", sequence = "5")
 	@Column(allowsNull = "true")
 	public String getDrivingConfidence() {
 		return drivingConfidence;
@@ -353,8 +338,6 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		this.drivingConfidence = drivingConfidence;
 	}
 
-	@Property()
-	// @PropertyLayout(labelPosition = LabelPosition.TOP)
 	@Column(allowsNull = "true")
 	public String getPlaceOfOrigin() {
 		return placeOfOrigin;
@@ -364,20 +347,15 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		this.placeOfOrigin = placeOfOrigin;
 	}
 
-	@Property()
-	// @PropertyLayout(labelPosition = LabelPosition.TOP)
 	@Column(allowsNull = "true")
-	public LocalDate getDateOfSettlement() {
-		return dateOfSettlement;
+	public Integer getYearOfSettlement() {
+		return yearOfSettlement;
 	}
 
-	public void setDateOfSettlement(final LocalDate dateOfSettlement) {
-		this.dateOfSettlement = dateOfSettlement;
+	public void setYearOfSettlement(final Integer dateOfSettlement) {
+		this.yearOfSettlement = dateOfSettlement;
 	}
 
-	@Property()
-	// @PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
-	// @MemberOrder(name = "Friends and Relatives", sequence = "8")
 	@Column(allowsNull = "true")
 	public String getCloseRelatives() {
 		return closeRelatives;
@@ -387,9 +365,6 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		this.closeRelatives = closeRelatives;
 	}
 
-	@Property()
-	// @PropertyLayout(labelPosition = LabelPosition.TOP)
-	// @MemberOrder(name = "Friends and Relatives", sequence = "9")
 	@Column(allowsNull = "true")
 	public Integer getCloseRelativeAndFriendCount() {
 		return closeRlFrCount;
@@ -399,9 +374,6 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		this.closeRlFrCount = count;
 	}
 
-	@Property()
-	// @PropertyLayout(labelPosition = LabelPosition.TOP)
-	// @MemberOrder(name = "Friends and Relatives", sequence = "10")
 	@Column(allowsNull = "true")
 	public String getProximityOfRelatives() {
 		return proximityOfRelatives;
@@ -411,9 +383,6 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		this.proximityOfRelatives = proximityOfRelatives;
 	}
 
-	@Property()
-	// @PropertyLayout(labelPosition = LabelPosition.TOP)
-	// @MemberOrder(name = "Friends and Relatives", sequence = "11")
 	@Column(allowsNull = "true")
 	public String getProximityOfFriends() {
 		return proximityOfFriends;
@@ -423,9 +392,6 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		this.proximityOfFriends = proximityOfFriends;
 	}
 
-	@Property()
-	// @PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
-	// @MemberOrder(name = "Involvement", sequence = "12")
 	@Column(allowsNull = "true")
 	public String getInvolvementInGroupsClubs() {
 		return involvementGC;
@@ -435,9 +401,6 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		this.involvementGC = involvement;
 	}
 
-	@Property()
-	// @PropertyLayout(multiLine = 3, labelPosition = LabelPosition.TOP)
-	// @MemberOrder(name = "Involvement", sequence = "13")
 	@Column(allowsNull = "true")
 	public String getInvolvementInInterestsHobbies() {
 		return involvementIH;
@@ -447,7 +410,6 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		this.involvementIH = involvmentInInterestsHobbies;
 	}
 
-	@Property()
 	@Column(allowsNull = "true")
 	public String getLoneliness() {
 		return loneliness;
@@ -456,9 +418,8 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 	public void setLoneliness(String loneliness) {
 		this.loneliness = loneliness;
 	}
-
-	@Property()
-	@Column()
+	
+	@Column(allowsNull = "true")
 	public boolean isConsentToProvideDetails() {
 		return consentToProvideDetails;
 	}
@@ -467,8 +428,7 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		this.consentToProvideDetails = consentToProvideDetails;
 	}
 
-	@Property()
-	@Column()
+	@Column(allowsNull = "true")
 	public boolean isConsentedForFutureContacts() {
 		return consentedForFutureContacts;
 	}
@@ -477,8 +437,7 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		this.consentedForFutureContacts = consentedForFutureContacts;
 	}
 
-	@Property()
-	@Column()
+	@Column(allowsNull = "true")
 	public boolean isHasCarer() {
 		return hasCarer;
 	}
@@ -500,7 +459,6 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		return dexRefData.allCountry();
 	}
 
-	@Property()
 	@NotPersistent()
 	public String getCountryOfBirthDescription() {
 		if (getCountryOfBirth() == null)

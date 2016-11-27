@@ -54,8 +54,6 @@ public class VolunteeredTimeForActivity extends VolunteeredTime {
 	private VolunteerRole volunteerRole;
 
 	@Property(editing=Editing.DISABLED)
-	@PropertyLayout(hidden=Where.ALL_TABLES)
-	@MemberOrder(sequence = "2")
 	@Column(allowsNull="false")
 	public Activity getActivity() {
 		return activity;
@@ -65,7 +63,6 @@ public class VolunteeredTimeForActivity extends VolunteeredTime {
 		this.activity = activity;
 	}
 
-	@Property(hidden = Where.EVERYWHERE)
 	@Column(allowsNull = "true")
 	public VolunteerRole getVolunteerRole() {
 		return volunteerRole;
@@ -74,10 +71,7 @@ public class VolunteeredTimeForActivity extends VolunteeredTime {
 	public void setVolunteerRole(final VolunteerRole volunteerRole) {
 		this.volunteerRole = volunteerRole;
 	}
-
-	@Property(hidden = Where.ALL_TABLES)
-	@PropertyLayout(named = "Volunteer Role")
-	@MemberOrder(sequence = "3")
+	
 	@NotPersistent
 	public String getVolunteerRoleName() {
 		return getVolunteerRole() != null ? this.getVolunteerRole().getName() : null;

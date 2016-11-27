@@ -70,7 +70,7 @@ public class AttendBulkActionWrapper {
 
 	@Property(editing = Editing.DISABLED)
 	public String getAttendanceInterval() {
-		return getAttend().getAttendanceInterval();
+		return getAttend().getIntervalLength();
 	}
 
 	@Property(editing = Editing.DISABLED)

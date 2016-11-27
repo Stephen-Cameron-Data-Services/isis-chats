@@ -29,6 +29,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
+import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
@@ -48,9 +49,7 @@ public class VolunteeredTimeForCalls extends VolunteeredTime {
 	
 	private CalendarDayCallSchedule callSchedule;
 
-	@Property()
-	@PropertyLayout(hidden=Where.ALL_TABLES)
-	@MemberOrder(sequence = "2")
+	@Property(editing=Editing.DISABLED)
 	@Column(allowsNull="false")
 	public CalendarDayCallSchedule getCallSchedule() {
 		return callSchedule;

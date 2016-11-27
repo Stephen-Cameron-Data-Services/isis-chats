@@ -84,7 +84,7 @@
 						<col span="6">
 							<ns2:fieldSet id="origin" name="Origin">
 								<ns2:property id="placeOfOrigin" hidden="ALL_TABLES" />
-								<ns2:property id="dateOfSettlement" hidden="ALL_TABLES" />
+								<ns2:property id="yearOfSettlement" hidden="ALL_TABLES" />
 							</ns2:fieldSet>
 							<ns2:fieldSet id="involvement" name="Involvement">
 								<ns2:property id="involvementInGroupsClubs" named="In Groups Clubs"

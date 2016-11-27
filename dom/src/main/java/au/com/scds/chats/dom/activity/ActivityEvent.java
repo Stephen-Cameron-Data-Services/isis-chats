@@ -189,20 +189,25 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	}
 
 	@Property()
-	// @MemberOrder(sequence = "200")
 	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<VolunteeredTimeForActivity> getVolunteeredTimes() {
 		return super.getVolunteeredTimes();
 	}
+	
+	@Programmatic
+	public ActivityEvent addVolunteeredTime(Volunteer volunteer, DateTime start, DateTime end) {
+		VolunteeredTimeForActivity time = volunteersRepo.createVolunteeredTimeForActivity(volunteer, this,
+				start, end);
+		if (time != null) {
+			super.addVolunteeredTime(time);
+		}
+		return this;
+	}
 
 	@Action()
-	@ActionLayout()
-	// @MemberOrder(name = "volunteeredTimes", sequence = "1")
-	public ActivityEvent addVolunteeredTime(Volunteer volunteer,
-			@ParameterLayout(named = "Started At") DateTime startDateTime,
-			@ParameterLayout(named = "Finished At") DateTime endDateTime) {
+	public ActivityEvent addVolunteeredTime(Volunteer volunteer) {
 		VolunteeredTimeForActivity time = volunteersRepo.createVolunteeredTimeForActivity(volunteer, this,
-				startDateTime, endDateTime);
+				getStartDateTime(), getApproximateEndDateTime());
 		if (time != null) {
 			super.addVolunteeredTime(time);
 		}
@@ -212,17 +217,19 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	public List<Volunteer> choices0AddVolunteeredTime() {
 		return volunteersRepo.listActive();
 	}
-
-	public DateTime default1AddVolunteeredTime() {
-		return getStartDateTime();
+	
+	@Action()
+	public ActivityEvent removeVolunteeredTime(VolunteeredTimeForActivity time) {
+		getVolunteeredTimes().remove(time);
+		volunteersRepo.deleteVolunteeredTimeForActivity(time);
+		return this;
 	}
-
-	public DateTime default2AddVolunteeredTime() {
-		return getApproximateEndDateTime();
+	
+	public List<VolunteeredTimeForActivity> choices0RemoveVolunteeredTime() {
+		return getVolunteeredTimes();
 	}
 
 	@Action()
-	// @MemberOrder(name = "participations", sequence = "4")
 	public List<ParticipantTransportView> showTransportList() {
 		List<ParticipantTransportView> list = new ArrayList<>();
 		for (Participation p : getParticipations()) {

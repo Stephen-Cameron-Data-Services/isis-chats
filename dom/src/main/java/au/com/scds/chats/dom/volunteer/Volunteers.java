@@ -198,7 +198,7 @@ public class Volunteers {
 
 	@Programmatic
 	public VolunteeredTimeForActivity createVolunteeredTimeForActivity(Volunteer volunteer, Activity activity, DateTime startDateTime, DateTime endDateTime) {
-		if (volunteer == null || activity == null || startDateTime == null || endDateTime == null)
+		if (volunteer == null || activity == null)
 			return null;
 		VolunteeredTimeForActivity time = container.newTransientInstance(VolunteeredTimeForActivity.class);
 		time.setStartDateTime(startDateTime);
@@ -212,10 +212,16 @@ public class Volunteers {
 		container.flush();
 		return time;
 	}
+	
+	@Programmatic
+	public void deleteVolunteeredTimeForActivity(VolunteeredTimeForActivity time) {
+		container.removeIfNotAlready(time);
+		container.flush();
+	}
 
 	@Programmatic
 	public VolunteeredTimeForCalls createVolunteeredTimeForCalls(Volunteer volunteer, CalendarDayCallSchedule callSchedule, DateTime startDateTime, DateTime endDateTime) {
-		if (volunteer == null || callSchedule == null || startDateTime == null || endDateTime == null)
+		if (volunteer == null || callSchedule == null)
 			return null;
 		VolunteeredTimeForCalls time = container.newTransientInstance(VolunteeredTimeForCalls.class);
 		time.setStartDateTime(startDateTime);
@@ -226,6 +232,12 @@ public class Volunteers {
 		container.persistIfNotAlready(time);
 		container.flush();
 		return time;
+	}
+	
+	@Programmatic
+	public void deleteVolunteeredTimeForCalls(VolunteeredTimeForCalls time) {
+		container.removeIfNotAlready(time);
+		container.flush();
 	}
 	
 	@Programmatic
@@ -249,7 +261,5 @@ public class Volunteers {
 	
 	@Inject 
 	VolunteerRoles volunteerRoles;
-
-
 
 }

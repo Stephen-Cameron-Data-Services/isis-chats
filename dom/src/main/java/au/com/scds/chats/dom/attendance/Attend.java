@@ -36,7 +36,6 @@ import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.InvokeOn;
-import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
@@ -53,6 +52,7 @@ import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
+import au.com.scds.chats.dom.StartAndFinishDateTime;
 import au.com.scds.chats.dom.activity.ActivityEvent;
 import au.com.scds.chats.dom.general.names.TransportType;
 import au.com.scds.chats.dom.general.names.TransportTypes;
@@ -65,7 +65,7 @@ import au.com.scds.chats.dom.participant.Participant;
 		@Query(name = "findAttendsByActivityName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.Attend WHERE activity.name.indexOf(:name) >= 0 ORDER BY activity.startDateTime DESC"),
 		@Query(name = "findAttendsInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.Attend WHERE activity.startDateTime >= :startDateTime && activity.startDateTime <= :endDateTime ORDER BY activity.startDateTime DESC"),
 		@Query(name = "findAttendsByParticipant", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.Attend WHERE participant == :participant ORDER BY activity.startDateTime DESC") })
-public class Attend extends AbstractChatsDomainEntity implements Comparable<Attend> {
+public class Attend extends StartAndFinishDateTime implements Comparable<Attend> {
 
 	private static DecimalFormat hoursFormat = new DecimalFormat("#,##0.00");
 	private AttendanceList parentList;
@@ -88,7 +88,7 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	public String title() {
 		return getParticipant().getFullName();
 	}
-	
+
 	public String iconName() {
 		return getWasAttended();
 	}
@@ -138,45 +138,6 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 		return getParticipant().getFullName();
 	}
 
-	@Property()
-	@Column(allowsNull = "true")
-	public DateTime getStartDateTime() {
-		return startDateTime;
-	}
-
-	private void setStartDateTime(final DateTime startDateTime) {
-		this.startDateTime = startDateTime;
-	}
-
-	@Property()
-	@Column(allowsNull = "true")
-	public DateTime getEndDateTime() {
-		return endDateTime;
-	}
-
-	private void setEndDateTime(final DateTime endDateTime) {
-		this.endDateTime = endDateTime;
-	}
-
-	@Property(editing = Editing.DISABLED)
-	@NotPersistent
-	public String getAttendanceInterval() {
-		if (getStartDateTime() != null && getEndDateTime() != null) {
-			Duration duration = new Duration(getStartDateTime(), getEndDateTime());
-			return String.format("%02d:%02d", duration.getStandardHours(),  duration.getStandardMinutes() - duration.getStandardHours()*60);
-		} else
-			return null;
-	}
-
-	@Programmatic
-	public Long getAttendanceIntervalInMinutes() {
-		if (getStartDateTime() != null && getEndDateTime() != null) {
-			Duration duration = new Duration(getStartDateTime(), getEndDateTime());
-			return duration.getStandardMinutes();
-		} else
-			return null;
-	}
-
 	@Property(editing = Editing.DISABLED)
 	@Column(allowsNull = "false")
 	Boolean getAttended() {
@@ -197,7 +158,7 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 		this.arrivingTransportType = transportType;
 	}
 
-	@Property(editing=Editing.DISABLED)
+	@Property(editing = Editing.DISABLED)
 	@NotPersistent
 	public String getArrivingTransportTypeName() {
 		return getArrivingTransportType() != null ? this.getArrivingTransportType().getName() : null;
@@ -221,7 +182,7 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 		this.departingTransportType = transportType;
 	}
 
-	@Property(editing=Editing.DISABLED)
+	@Property(editing = Editing.DISABLED)
 	@NotPersistent
 	public String getDepartingTransportTypeName() {
 		return getDepartingTransportType() != null ? this.getDepartingTransportType().getName() : null;
@@ -281,7 +242,7 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 
 	@Action()
 	public Attend wasNotAttended() {
-		if (getAttended()){
+		if (getAttended()) {
 			setAttended(false);
 			setStartDateTime(null);
 			setEndDateTime(null);
@@ -292,34 +253,14 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 	@Action()
 	public Attend updateDatesAndTimes(@ParameterLayout(named = "Start Date Time") DateTime start,
 			@ParameterLayout(named = "End Date Time") DateTime end) {
-		if (start != null && end != null) {
-			if (end.isBefore(start)) {
-				container.warnUser("end date & time is earlier than start date & time");
-				return this;
-			}
-			if (end.getDayOfWeek() != start.getDayOfWeek()) {
-				container.warnUser("end date and start date are different days of the week");
-				return this;
-			}
-			Period period = new Period(start.toLocalDateTime(), end.toLocalDateTime());
-			Float hours = ((float) period.toStandardMinutes().getMinutes()) / 60;
-			if (hours > 12.0) {
-				container.warnUser("end date & time and start date & time are not in the same 12 hour period");
-				return this;
-			}
-			setStartDateTime(start);
-			setEndDateTime(end);
-			setAttended(true);
-		}
-		return this;
-	}
-
-	// used for data-migration
-	@Programmatic
-	public void setDatesAndTimes(DateTime start, DateTime end) {
 		setStartDateTime(start);
 		setEndDateTime(end);
 		setAttended(true);
+		return this;
+	}
+	
+	public String validateUpdateDatesAndTimes( DateTime start, DateTime end) {
+		return validateStartAndEndDateTimes(start,end);
 	}
 
 	public DateTime default0UpdateDatesAndTimes() {
@@ -328,6 +269,14 @@ public class Attend extends AbstractChatsDomainEntity implements Comparable<Atte
 
 	public DateTime default1UpdateDatesAndTimes() {
 		return getEndDateTime();
+	}
+
+	// used for data-migration
+	@Programmatic
+	public void setDatesAndTimes(DateTime start, DateTime end) {
+		setStartDateTime(start);
+		setEndDateTime(end);
+		setAttended(true);
 	}
 
 	@Override

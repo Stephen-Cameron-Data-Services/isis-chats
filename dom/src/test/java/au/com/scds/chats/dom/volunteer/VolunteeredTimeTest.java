@@ -110,7 +110,6 @@ public class VolunteeredTimeTest {
 			activity.addVolunteeredTime(volunteer, start, end);
 
 			// then
-			// then
 			assertThat(activity.getVolunteeredTimes().get(0)).isEqualTo(va);
 			assertThat(volunteer.getVolunteeredTimes().get(0)).isEqualTo(va);
 		}

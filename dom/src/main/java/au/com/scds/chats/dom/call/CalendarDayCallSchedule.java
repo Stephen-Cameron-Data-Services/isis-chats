@@ -57,6 +57,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
+import au.com.scds.chats.dom.StartAndFinishDateTime;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.ParticipantIdentity;
@@ -69,8 +70,6 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 /**
  * A manager of ScheduledCall objects for a specific Calendar day, usually for a
  * specific Volunteer .
- * 
- * 
  */
 @DomainObject(objectType = "CALENDAR_DAY_CALL_SCHEDULE")
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
@@ -106,9 +105,6 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 		return "Total: " + getTotalCalls() + "; Completed: " + getCompletedCalls();
 	}
 
-	@Property()
-	@PropertyLayout()
-	@MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
 	public LocalDate getCalendarDate() {
 		return calendarDate;
@@ -118,9 +114,6 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 		this.calendarDate = calendarDate;
 	}
 
-	@Property()
-	@PropertyLayout(hidden = Where.REFERENCES_PARENT)
-	@MemberOrder(sequence = "2")
 	@Column(allowsNull = "true")
 	public Volunteer getAllocatedVolunteer() {
 		return allocatedVolunteer;
@@ -130,9 +123,6 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 		this.allocatedVolunteer = volunteer;
 	}
 
-	@Property()
-	@PropertyLayout()
-	@MemberOrder(sequence = "3")
 	@Column(allowsNull = "false")
 	public Integer getTotalCalls() {
 		return totalCalls;
@@ -142,9 +132,6 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 		this.totalCalls = total;
 	}
 
-	@Property()
-	@PropertyLayout()
-	@MemberOrder(sequence = "4")
 	@Column(allowsNull = "false")
 	public Integer getCompletedCalls() {
 		return completedCalls;
@@ -159,8 +146,6 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 		return scheduledCalls;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "200")
 	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<VolunteeredTimeForCalls> getVolunteeredTimes() {
 		return volunteeredTimes;
@@ -168,14 +153,6 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 
 	public void setVolunteeredTimes(List<VolunteeredTimeForCalls> volunteeredTimes) {
 		this.volunteeredTimes = volunteeredTimes;
-	}
-
-	@Action()
-	@ActionLayout()
-	@MemberOrder(name = "volunteeredTimes", sequence = "1")
-	public CalendarDayCallSchedule addVolunteeredTime(Volunteer volunteer, @ParameterLayout(named = "Started At") DateTime startDateTime, @ParameterLayout(named = "Finished At") DateTime endDateTime) {
-		VolunteeredTimeForCalls time = volunteersRepo.createVolunteeredTimeForCalls(volunteer, this, startDateTime, endDateTime);
-		return this;
 	}
 	
 	// used by public addVolunteerdTime actions in extending classes
@@ -185,7 +162,15 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 			return;
 		getVolunteeredTimes().add(time);
 	}
-
+	
+	@Action()
+	public CalendarDayCallSchedule addVolunteeredTime(Volunteer volunteer, 
+			@ParameterLayout(named = "Started At") DateTime startDateTime, 
+			@ParameterLayout(named = "Finished At") DateTime endDateTime) {
+		VolunteeredTimeForCalls time = volunteersRepo.createVolunteeredTimeForCalls(volunteer, this, startDateTime, endDateTime);
+		return this;
+	}
+	
 	public List<Volunteer> choices0AddVolunteeredTime() {
 		return volunteersRepo.listActive();
 	}
@@ -194,16 +179,33 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 		return getAllocatedVolunteer();
 	}
 	
+	public String validateAddVolunteeredTime(Volunteer volunteer, 
+			 DateTime startDateTime, 
+			 DateTime endDateTime) {
+		return StartAndFinishDateTime.validateStartAndEndDateTimes(startDateTime, endDateTime);
+	}
+	
+	@Action()
+	public CalendarDayCallSchedule removeVolunteeredTime(
+			VolunteeredTimeForCalls time) {
+		if(time != null){
+			getVolunteeredTimes().remove(time);
+			volunteersRepo.deleteVolunteeredTimeForCalls(time);
+		}
+		return this;
+	}
+	
+	public List<VolunteeredTimeForCalls> choices0RemoveVolunteeredTime(){
+		return getVolunteeredTimes();
+	}
+	
 	@Programmatic
 	public CalendarDayCallSchedule addNewCall(final Participant participant,  final DateTime dateTime) throws Exception {
 		ScheduledCall call = scheduleCall(participant, dateTime.toLocalTime());
 		return this;
 	}
 
-	// ACTIONS
 	@Action()
-	//@ActionLayout()
-	//@MemberOrder(name = "scheduledCalls", sequence = "1")
 	public CalendarDayCallSchedule addNewCall(@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named="Participant") final ParticipantIdentity identity, 
 			@Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) throws Exception {
 		Participant participant = participantsRepo.getParticipant(identity);
@@ -234,8 +236,6 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	public void addCall(ScheduledCall call) throws Exception {
 		setTotalCalls(getTotalCalls() + 1);
 		getScheduledCalls().add(call);
-//TODO		if (getTotalCalls() != getScheduledCalls().size())
-//			throw new Exception("Error: total call count and scheduledCalls.size() are different");
 	}
 
 	@Programmatic

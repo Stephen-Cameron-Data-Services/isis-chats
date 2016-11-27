@@ -13,23 +13,34 @@
 			<tabGroup>
 				<tab name="General">
 					<row>
-						<col span="8">
+						<col span="6">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
-								<ns2:property id="effortLength" />
-								<ns2:property id="activity" />
+								<ns2:property id="activity" hidden="PARENTED_TABLES" />
 								<ns2:property id="volunteer" />
 								<ns2:property id="volunteerRole" hidden="EVERYWHERE" />
 								<ns2:property id="volunteerRoleName" />
-								<ns2:property id="description" />
-								<ns2:property id="startDateTime" />
-								<ns2:property id="endDateTime">
-									<ns2:action id="updateDatesAndTimes" />
-								</ns2:property>
+								<ns2:property id="description" hidden="ALL_TABLES"/>
 								<ns2:property id="includeAsParticipation" />
 							</ns2:fieldSet>
 						</col>
-
+						<col span="6">
+							<ns2:fieldSet name="Times" id="time">
+								<ns2:property id="intervalLength">
+									<ns2:named>Period Length</ns2:named>
+									<ns2:describedAs>Calculated Time Period Length (HH:MM)</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="startDateTime" hidden="ALL_TABLES">
+									<ns2:action id="updateStartDateTime" position="BELOW" />
+								</ns2:property>
+								<ns2:property id="endDateTime" hidden="ALL_TABLES">
+									<ns2:action id="updateEndDateTime" position="BELOW" />
+									<ns2:action id="updateEndDateTimeOffStart" position="BELOW">
+										<ns2:named>Start Date Time + N</ns2:named>
+									</ns2:action>
+								</ns2:property>
+							</ns2:fieldSet>
+						</col>
 					</row>
 				</tab>
 

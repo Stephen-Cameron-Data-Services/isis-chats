@@ -83,7 +83,6 @@ public class Address extends Location {
 		return buf.toString();
 	}
 
-	@MemberOrder(sequence = "1")
 	@Column(allowsNull = "true")
 	public String getStreet1() {
 		if (street1 == null)
@@ -95,7 +94,6 @@ public class Address extends Location {
 		this.street1 = street1;
 	}
 
-	@MemberOrder(sequence = "2")
 	@Column(allowsNull = "true")
 	public String getStreet2() {
 		if (street2 == null)
@@ -107,7 +105,6 @@ public class Address extends Location {
 		this.street2 = street2;
 	}
 
-	@MemberOrder(sequence = "3")
 	@Column(allowsNull = "true")
 	public String getSuburb() {
 		if (suburb == null)
@@ -119,7 +116,6 @@ public class Address extends Location {
 		this.suburb = suburb;
 	}
 
-	@MemberOrder(sequence = "4")
 	@Column(allowsNull = "true")
 	public String getPostcode() {
 		if (postcode == null)

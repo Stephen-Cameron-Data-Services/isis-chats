@@ -48,6 +48,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
+import au.com.scds.chats.dom.StartAndFinishDateTime;
 import au.com.scds.chats.dom.attendance.Attend;
 
 @DomainObject(objectType = "VOLUNTEERED_TIME")
@@ -56,11 +57,9 @@ import au.com.scds.chats.dom.attendance.Attend;
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "role", value = "GENERAL")
-public class VolunteeredTime extends AbstractChatsDomainEntity implements Comparable<VolunteeredTime> {
+public class VolunteeredTime extends StartAndFinishDateTime implements Comparable<VolunteeredTime> {
 
 	private Volunteer volunteer;
-	private DateTime startDateTime;
-	private DateTime endDateTime;
 	private String description;
 	private Boolean includeAsParticipation;
 
@@ -69,7 +68,35 @@ public class VolunteeredTime extends AbstractChatsDomainEntity implements Compar
 	public String title() {
 		return "Volunteered Time";
 	}
+	
+	@Property(editing=Editing.DISABLED)
+	@Column(allowsNull = "false")
+	public Volunteer getVolunteer() {
+		return volunteer;
+	}
 
+	public void setVolunteer(Volunteer volunteer) {
+		this.volunteer = volunteer;
+	}
+
+	@Column(allowsNull = "true")
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	@Column(allowsNull = "false")
+	public Boolean getIncludeAsParticipation() {
+		return includeAsParticipation;
+	}
+
+	public void setIncludeAsParticipation(Boolean includeAsParticipation) {
+		this.includeAsParticipation = includeAsParticipation;
+	}
+	
 	@Override
 	public int compareTo(VolunteeredTime other) {
 		System.out.println("compare");
@@ -80,112 +107,6 @@ public class VolunteeredTime extends AbstractChatsDomainEntity implements Compar
 		} else {
 			return ObjectContracts.compare(this, other, "startDateTime", "endDateTime");
 		}
-	}
-
-	@Property(editing = Editing.DISABLED)
-	@PropertyLayout(hidden = Where.REFERENCES_PARENT)
-	@MemberOrder(sequence = "1")
-	@Column(allowsNull = "false")
-	public Volunteer getVolunteer() {
-		return volunteer;
-	}
-
-	public void setVolunteer(Volunteer volunteer) {
-		this.volunteer = volunteer;
-	}
-
-	@Property(editing = Editing.DISABLED)
-	@PropertyLayout(hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "10")
-	@Column(allowsNull = "false")
-	public DateTime getStartDateTime() {
-		return startDateTime;
-	}
-
-	public void setStartDateTime(DateTime startDateTime) {
-		this.startDateTime = startDateTime;
-	}
-
-	@Property(editing = Editing.DISABLED)
-	@PropertyLayout(hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "11")
-	@Column(allowsNull = "false")
-	public DateTime getEndDateTime() {
-		return endDateTime;
-	}
-
-	public void setEndDateTime(DateTime endDateTime) {
-		this.endDateTime = endDateTime;
-	}
-
-	@Action()
-	@MemberOrder(name = "enddatetime", sequence = "1")
-	public VolunteeredTime updateDatesAndTimes(@ParameterLayout(named = "Start Date Time") DateTime start,
-			@ParameterLayout(named = "End Date Time") DateTime end) {
-		if (start != null && end != null) {
-			if (end.isBefore(start)) {
-				container.warnUser("end date & time is earlier than start date & time");
-				return this;
-			}
-			if (end.getDayOfWeek() != start.getDayOfWeek()) {
-				container.warnUser("end date and start date are different days of the week");
-				return this;
-			}
-			Period period = new Period(start.toLocalDateTime(), end.toLocalDateTime());
-			Float hours = ((float) period.toStandardMinutes().getMinutes()) / 60;
-			if (hours > 12.0) {
-				container.warnUser("end date & time and start date & time are not in the same 12 hour period");
-				return this;
-			}
-			setStartDateTime(start);
-			setEndDateTime(end);
-		}
-		return this;
-	}
-
-	public DateTime default0UpdateDatesAndTimes() {
-		return getStartDateTime();
-	}
-
-	public DateTime default1UpdateDatesAndTimes() {
-		return getEndDateTime();
-	}
-
-	@Property()
-	@PropertyLayout(hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "12")
-	@Column(allowsNull = "true")
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	@Property(editing = Editing.DISABLED, notPersisted = true)
-	@PropertyLayout(named = "Effort in Hours", describedAs = "The interval of volunteer effort provided in hours")
-	@MemberOrder(sequence = "13")
-	@NotPersistent
-	public String getEffortLength() {
-		if (getStartDateTime() != null && getEndDateTime() != null) {
-			Period per = new Period(getStartDateTime().toLocalDateTime(), getEndDateTime().toLocalDateTime());
-			Float hours = ((float) per.toStandardMinutes().getMinutes()) / 60;
-			return hoursFormat.format(hours);
-		} else
-			return null;
-	}
-
-	@Property()
-	@PropertyLayout(named = "Include As Participation")
-	@MemberOrder(sequence = "14")
-	@Column(allowsNull = "false")
-	public Boolean getIncludeAsParticipation() {
-		return includeAsParticipation;
-	}
-
-	public void setIncludeAsParticipation(Boolean includeAsParticipation) {
-		this.includeAsParticipation = includeAsParticipation;
 	}
 
 }

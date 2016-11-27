@@ -31,6 +31,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Period;
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
+import au.com.scds.chats.dom.StartAndFinishDateTime;
 import au.com.scds.chats.dom.participant.Participant;
 
 /**
@@ -41,14 +42,10 @@ import au.com.scds.chats.dom.participant.Participant;
 @PersistenceCapable(table = "telephonecall", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "classifier", value = "_CALL")
-public abstract class Call extends AbstractChatsDomainEntity {
+public abstract class Call extends StartAndFinishDateTime {
 
 	private Participant participant;
-	private DateTime startDateTime;
-	private DateTime endDateTime;
 	private String summaryNotes;
-
-	private static DecimalFormat hoursFormat = new DecimalFormat("#,##0.00");
 
 	public Call() {
 	}
@@ -71,46 +68,13 @@ public abstract class Call extends AbstractChatsDomainEntity {
 		this.participant = participant;
 	}
 
-	@Property(editing=Editing.DISABLED)
-	@Column(allowsNull = "true")
-	public DateTime getStartDateTime() {
-		return startDateTime;
-	}
-
-	public void setStartDateTime(final DateTime startDateTime) {
-		this.startDateTime = startDateTime;
-	}
-
-	@Property(editing=Editing.DISABLED)
-	@Column(allowsNull = "true")
-	public DateTime getEndDateTime() {
-		return endDateTime;
-	}
-
-	public void setEndDateTime(final DateTime endDateTime) {
-		this.endDateTime = endDateTime;
-	}
-
-	@NotPersistent
-	public String getCallLength() {
-		if (getStartDateTime() != null && getEndDateTime() != null) {
-			Duration duration = new Duration(getStartDateTime(), getEndDateTime());
-			Long hours = duration.getStandardHours();
-			Long minutes = duration.getStandardMinutes();
-			Long seconds = duration.getStandardSeconds();
-			if (hours > 0)
-				minutes = minutes - hours * 60;
-			if (seconds > 30)
-				minutes = minutes + 1;
-			return String.format("%01d:%02d", hours, minutes);
-			
-		} else
-			return null;
-	}
-
 	@Column(allowsNull = "true", jdbcType = "CLOB")
 	public String getSummaryNotes() {
 		return summaryNotes;
+	}
+	
+	public void setSummaryNotes(String notes) {
+		this.summaryNotes = notes;
 	}
 
 	@NotPersistent
@@ -142,47 +106,6 @@ public abstract class Call extends AbstractChatsDomainEntity {
 		} else {
 			return null;
 		}
-	}
-
-	@Action()
-	public Call updateTimes(
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Time") DateTime start,
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "End Time") DateTime end) {
-		setStartDateTime(start);
-		setEndDateTime(end);
-		return this;
-	}
-
-	public DateTime default0UpdateTimes() {
-		return getStartDateTime();
-	}
-
-	public DateTime default1UpdateTimes() {
-		return getEndDateTime();
-	}
-
-	public String validateUpdateTimes(DateTime start, DateTime end) {
-		if (start.isAfter(end)) {
-			return "End Time is before Start Time";
-		}
-		Duration duration = new Duration(getStartDateTime(), getEndDateTime());
-		if (duration.getStandardDays() > 0) {
-			return "End Time is not on the same date as Start Time";
-		}
-		return null;
-	}
-
-	public void setSummaryNotes(String notes) {
-		this.summaryNotes = notes;
-	}
-
-	@Programmatic
-	public Long getCallIntervalInMinutes() {
-		if (getStartDateTime() != null && getEndDateTime() != null) {
-			Duration duration = new Duration(getStartDateTime(), getEndDateTime());
-			return duration.getStandardMinutes();
-		} else
-			return null;
 	}
 
 	@Inject()

@@ -18,23 +18,33 @@
 								unreferencedProperties="true">
 								<ns2:property id="allocatedVolunteer" />
 								<ns2:property id="participant" />
-								<ns2:property id="callSchedule" hidden="ALL_TABLES"/>
-								<ns2:property id="summaryNotes" multiLine="10" hidden="ALL_TABLES"/>
-								<ns2:property id="trimmedSummaryNotes" hidden="OBJECT_FORMS"/>
-							</ns2:fieldSet>							
+								<ns2:property id="callSchedule" hidden="ALL_TABLES" />
+								<ns2:property id="summaryNotes" multiLine="10"
+									hidden="ALL_TABLES" />
+								<ns2:property id="trimmedSummaryNotes" hidden="OBJECT_FORMS" />
+							</ns2:fieldSet>
 						</col>
 						<col span="6">
 							<ns2:fieldSet name="Times" id="time">
 								<ns2:action id="startCall" position="RIGHT" />
 								<ns2:action id="endCall" position="RIGHT" />
-								<ns2:action id="changeEndTime" position="RIGHT" />
-								<ns2:action id="updateTimes" hidden="EVERYWHERE"/>
-								<ns2:property id="callLength" />
+								<ns2:property id="intervalLength">
+									<ns2:named>Call Length</ns2:named>
+									<ns2:describedAs>Calculated Call Length (HH:MM)</ns2:describedAs>
+								</ns2:property>
 								<ns2:property id="scheduledDateTime" />
-								<ns2:property id="startDateTime" hidden="ALL_TABLES"/>
-								<ns2:property id="endDateTime" hidden="ALL_TABLES"/>
-								<ns2:property id="isCompleted" hidden="EVERYWHERE" />
-								<ns2:property id="status" />
+								<ns2:property id="startDateTime" hidden="ALL_TABLES">
+									<ns2:action id="updateStartDateTime" position="BELOW" />
+								</ns2:property>
+								<ns2:property id="endDateTime" hidden="ALL_TABLES">
+									<ns2:action id="updateEndDateTime" position="BELOW" />
+									<ns2:action id="updateEndDateTimeOffStart" position="BELOW">
+										<ns2:named>Start Date Time + N</ns2:named>
+									</ns2:action>
+								</ns2:property>
+								<ns2:property id="status">
+									<ns2:action id="updateStatus" position="BELOW" />
+								</ns2:property>
 							</ns2:fieldSet>
 						</col>
 					</row>
@@ -42,7 +52,7 @@
 				<tab name="Calendar Notes">
 					<row>
 						<col span="6">
-							<ns2:collection id="notes"/>
+							<ns2:collection id="notes" />
 						</col>
 					</row>
 				</tab>
