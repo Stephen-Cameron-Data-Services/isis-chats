@@ -207,7 +207,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	@Action()
 	public ActivityEvent addVolunteeredTime(Volunteer volunteer) {
 		VolunteeredTimeForActivity time = volunteersRepo.createVolunteeredTimeForActivity(volunteer, this,
-				getStartDateTime(), getApproximateEndDateTime());
+				getStartDateTime(), getEndDateTime());
 		if (time != null) {
 			super.addVolunteeredTime(time);
 		}

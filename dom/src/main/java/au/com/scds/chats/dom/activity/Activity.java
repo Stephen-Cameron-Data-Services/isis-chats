@@ -42,6 +42,7 @@ import com.google.common.collect.ComparisonChain;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.RegexValidation;
+import au.com.scds.chats.dom.StartAndFinishDateTime;
 import au.com.scds.chats.dom.general.Address;
 import au.com.scds.chats.dom.general.Location;
 import au.com.scds.chats.dom.general.Locations;
@@ -67,19 +68,19 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 // @Unique(name = "Activity_UNQ", members = { "name", "startDateTime", "region"
 // })
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "classifier", value = "_ACTIVITY")
-public abstract class Activity extends AbstractChatsDomainEntity implements /*Locatable,*/ Comparable<Activity> {
+public abstract class Activity extends StartAndFinishDateTime implements /*Locatable,*/ Comparable<Activity> {
 
 	private Long oldId; // id copied from old system
 	protected String name;
 	protected String abbreviatedName;
 	// protected Provider provider;
 	protected ActivityType activityType;
-	protected DateTime approximateEndDateTime;
+	//protected DateTime approximateEndDateTime;
 	// protected Long copiedFromActivityId;
 	protected String costForParticipant;
 	protected Integer cutoffLimit;
 	protected String description;
-	protected DateTime startDateTime;
+	//protected DateTime startDateTime;
 	protected Address address;
 	// protected Boolean isRestricted;
 	// protected Long scheduleId;
@@ -198,7 +199,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements /*Lo
 		return activityTypesRepo.allNames();
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
+/*	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Approx. End Date & Time")
 	// @MemberOrder(sequence = "6")
 	@Column(allowsNull = "true")
@@ -209,7 +210,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements /*Lo
 	public void setApproximateEndDateTime(final DateTime approximateEndDateTime) {
 		this.approximateEndDateTime = approximateEndDateTime;
 	}
-
+*/
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Cost For Participant")
 	// @MemberOrder(sequence = "8")
@@ -250,7 +251,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements /*Lo
 		this.description = description;
 	}
 
-	@Property(hidden = Where.NOWHERE)
+	/*@Property(hidden = Where.NOWHERE)
 	@PropertyLayout()
 	// @MemberOrder(sequence = "10")
 	@Column(allowsNull = "false")
@@ -260,9 +261,9 @@ public abstract class Activity extends AbstractChatsDomainEntity implements /*Lo
 
 	public void setStartDateTime(DateTime startDateTime) {
 		this.startDateTime = startDateTime;
-	}
+	}*/
 
-	public void modifyStartDateTime(DateTime startDateTime) {
+/*	public void modifyStartDateTime(DateTime startDateTime) {
 		if (startDateTime == null)
 			return;
 		if (getApproximateEndDateTime() != null && getApproximateEndDateTime().isBefore(startDateTime)) {
@@ -270,23 +271,23 @@ public abstract class Activity extends AbstractChatsDomainEntity implements /*Lo
 		}
 		setStartDateTime(startDateTime);
 	}
-
+*/
 	@Action
 	public Activity updateGeneral(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Name") String name,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "DEX 'Case' Id", describedAs = "Gets used to build a DSS DEX Case name (Note: 5 digits get appended for region-month-year)") String abbreviatedName,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Description") String description,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Activity Type") String activityType,
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Date Time") DateTime startDateTime,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Approx End Date Time") DateTime approximateEndDateTime,
+			//@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Activity Type") String activityType,
+			//@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Date Time") DateTime startDateTime,
+			//@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Approx End Date Time") DateTime approximateEndDateTime,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Cost for Participant") String costForParticipant,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Cut-off Limit") Integer cutoffLimit) {
 		setName(name);
 		setAbbreviatedName(abbreviatedName);
 		setDescription(description);
-		setActivityType((activityType != null) ? activityTypesRepo.activityTypeForName(activityType) : null);
-		setStartDateTime(startDateTime);
-		setApproximateEndDateTime(approximateEndDateTime);
+		//setActivityType((activityType != null) ? activityTypesRepo.activityTypeForName(activityType) : null);
+		//setStartDateTime(startDateTime);
+		//setApproximateEndDateTime(approximateEndDateTime);
 		setCostForParticipant(costForParticipant);
 		setCutoffLimit(cutoffLimit);
 		return this;
@@ -303,7 +304,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements /*Lo
 	public String default2UpdateGeneral() {
 		return getDescription();
 	}
-
+/*
 	public String default3UpdateGeneral() {
 		return (getActivityType() != null) ? getActivityType().getName() : null;
 	}
@@ -322,18 +323,24 @@ public abstract class Activity extends AbstractChatsDomainEntity implements /*Lo
 		else
 			return getStartDateTime();
 	}
-
-	public String default6UpdateGeneral() {
+*/
+	public String default3UpdateGeneral() {
 		return getCostForParticipant();
 	}
 
-	public Integer default7UpdateGeneral() {
+	public Integer default4UpdateGeneral() {
 		return getCutoffLimit();
 	}
 
-	public String validateUpdateGeneral(String name, String abbreviatedName, String description, String activityType,
-			DateTime startDateTime, DateTime approximateEndDateTime, String costForParticipant, Integer cuffoffLimit) {
-		if (approximateEndDateTime != null) {
+	public String validateUpdateGeneral(String name, 
+			String abbreviatedName, 
+			String description, 
+			//String activityType,
+			//DateTime startDateTime, 
+			//DateTime approximateEndDateTime, 
+			String costForParticipant, 
+			Integer cuffoffLimit) {
+		/*if (approximateEndDateTime != null) {
 			if (approximateEndDateTime.isBefore(startDateTime))
 				return "Approximate End Date Time is before Start Date Time";
 			Duration dur = new Duration(startDateTime, approximateEndDateTime);
@@ -342,7 +349,7 @@ public abstract class Activity extends AbstractChatsDomainEntity implements /*Lo
 			} else {
 				return null;
 			}
-		} else if (cutoffLimit != null && cutoffLimit < 1) {
+		} else */ if (cutoffLimit != null && cutoffLimit < 1) {
 			return "Cut-off Limit must be greater than 0";
 		} else
 			return null;

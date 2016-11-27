@@ -70,7 +70,7 @@ public class ActivitiesTest {
             //assertThat(obj.getIsRestricted()).isNull();
             assertThat(obj.getCostForParticipant()).isNull();
             //assertThat(obj.getScheduleId()).isNull();
-            assertThat(obj.getApproximateEndDateTime()).isNull();
+            assertThat(obj.getEndDateTime()).isNull();
             assertThat(obj.getStartDateTime()).isEqualTo(dateTime);
         }
         

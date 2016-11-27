@@ -36,6 +36,7 @@ import org.apache.isis.applib.annotation.*;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import au.com.scds.chats.dom.StartAndFinishDateTime;
 import au.com.scds.chats.dom.activity.ActivityEvent;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.general.names.TransportType;
@@ -169,34 +170,30 @@ public class AttendanceList {
 		return this;
 	}
 
-	/*
-	 * TODO, this bulk-action didn't work as intended as only zero-arg actions
-	 * will show on the collection. Having the wrapper was done to not have the
-	 * bulk-action check-boxes appear on lists of Attends return from queries,
-	 * bummer
-	 * 
-	 * @ActionLayout(named = "Do Bulk Updates") public
-	 * List<AttendBulkActionWrapper> bulkAction() {
-	 * ArrayList<AttendBulkActionWrapper> wrappedAttends = new ArrayList<>();
-	 * for(Attend attend : getAttends()){ AttendBulkActionWrapper wrapper = new
-	 * AttendBulkActionWrapper(); wrapper.setAttend(attend);
-	 * wrappedAttends.add(wrapper); } return wrappedAttends; }
-	 */
-
 	@Action
-	public AttendanceList updateAllAttendsToDefaultValues() {
-		DateTime start = getParentActivity().getStartDateTime();
-		DateTime end = getParentActivity().getApproximateEndDateTime();
-		TransportType transport = transportTypes.transportTypeForName("Self Travel");
+	public AttendanceList updateAllAttendsToDefaultValues(
+			@Parameter(optionality=Optionality.OPTIONAL) @ParameterLayout(named="Start Date Time") DateTime start,
+			@Parameter(optionality=Optionality.OPTIONAL) @ParameterLayout(named="Finish Date Time") DateTime finish) {
 		for (Attend attend : getAttends()) {
 			attend.wasAttended();
-			attend.setDatesAndTimes(start, end);
-			attend.setArrivingTransportType(transport);
-			attend.setDepartingTransportType(transport);
+			attend.setDatesAndTimes(start, finish);
 		}
 		return this;
 	}
-
+	
+	public DateTime default0UpdateAllAttendsToDefaultValues(){
+		return getParentActivity().getStartDateTime();
+	}
+	
+	public DateTime default1UpdateAllAttendsToDefaultValues(){
+		return getParentActivity().getEndDateTime();
+	}
+	
+	public String validateUpdateAllAttendsToDefaultValues(DateTime start, DateTime finish) {
+		return StartAndFinishDateTime.validateStartAndFinishDateTimes(start, finish);
+	}
+	
+	
 	@Action
 	public AttendanceList removeAttend(Attend attend) {
 		if (attend != null)

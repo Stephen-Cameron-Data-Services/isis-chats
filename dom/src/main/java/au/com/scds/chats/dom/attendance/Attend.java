@@ -260,7 +260,7 @@ public class Attend extends StartAndFinishDateTime implements Comparable<Attend>
 	}
 	
 	public String validateUpdateDatesAndTimes( DateTime start, DateTime end) {
-		return validateStartAndEndDateTimes(start,end);
+		return validateStartAndFinishDateTimes(start,end);
 	}
 
 	public DateTime default0UpdateDatesAndTimes() {

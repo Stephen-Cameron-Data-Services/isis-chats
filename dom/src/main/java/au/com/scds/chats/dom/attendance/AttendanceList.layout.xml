@@ -5,7 +5,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<row>
 		<col span="12" unreferencedActions="true">
-			<ns2:domainObject bookmarking="AS_ROOT"/>
+			<ns2:domainObject bookmarking="AS_ROOT" />
 		</col>
 	</row>
 	<row>
@@ -27,18 +27,23 @@
 							<ns2:collection id="attends" name="Attendances">
 								<ns2:action id="addAllAttends">
 									<ns2:named>Add All Participants</ns2:named>
-								</ns2:action>
-								<ns2:action id="addNewParticipantAndAttend" >
-									<ns2:named>Add New</ns2:named>
+									<ns2:describedAs>Copies the Activity Participations list across to make an Attendance List.</ns2:describedAs>
 								</ns2:action>
 								<ns2:action id="addAttend">
 									<ns2:named>Add</ns2:named>
+									<ns2:describedAs>Adds an existing Participant (one not present as an Activity Participation) to the Attendance List.</ns2:describedAs>
+								</ns2:action>
+								<ns2:action id="addNewParticipantAndAttend">
+									<ns2:named>Add New</ns2:named>
+									<ns2:describedAs>Creates a completely new Participant and adds them to the Attendance List.</ns2:describedAs>
 								</ns2:action>
 								<ns2:action id="removeAttend">
 									<ns2:named>Remove</ns2:named>
+									<ns2:describedAs>Removes an Participant from the Attendance List.</ns2:describedAs>
 								</ns2:action>
 								<ns2:action id="updateAllAttendsToDefaultValues">
 									<ns2:named>Set All To Defaults</ns2:named>
+									<ns2:describedAs>Set all start and end date-times from off Activity start and approx. end date times</ns2:describedAs>
 								</ns2:action>
 							</ns2:collection>
 						</col>

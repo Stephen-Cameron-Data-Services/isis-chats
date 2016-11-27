@@ -23,19 +23,35 @@
 								<ns2:property id="abbreviatedName" hidden="ALL_TABLES">
 									<ns2:named>DEX 'Case' Id</ns2:named>
 								</ns2:property>
-								<ns2:property id="description" />
+								<ns2:property id="description" multiLine="3" hidden="ALL_TABLES"/>
 								<ns2:property id="activityTypeName" hidden="EVERYWHERE" />
-								<ns2:property id="startDateTime" />
-								<ns2:property id="approximateEndDateTime" />
+								<!--  ns2:property id="startDateTime" />
+								<ns2:property id="approximateEndDateTime" /-->
 								<ns2:property id="costForParticipant" />
 								<ns2:property id="cutoffLimit">
 									<ns2:named>Cut-off Limit</ns2:named>
 								</ns2:property>
 							</ns2:fieldSet>
-						</col>
-						<col span="6">
 							<ns2:fieldSet name="Scheduling" id="scheduling">
 								<ns2:property id="periodicity" />
+							</ns2:fieldSet>
+						</col>
+						<col span="6">
+							<ns2:fieldSet name="Times" id="time">
+								<ns2:property id="intervalLength" hidden="ALL_TABLES">
+									<ns2:named>Period Length</ns2:named>
+									<ns2:describedAs>Calculated Period Length (HH:MM)</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="startDateTime" hidden="ALL_TABLES">
+									<ns2:action id="updateStartDateTime" position="BELOW" />
+								</ns2:property>
+								<ns2:property id="endDateTime" hidden="ALL_TABLES">
+									<ns2:action id="updateEndDateTime" position="BELOW" />
+									<ns2:action id="updateEndDateTimeOffStart" position="BELOW">
+										<ns2:named>Start Date Time + N</ns2:named>
+									</ns2:action>
+									<ns2:named>Approximate End Date Time</ns2:named>
+								</ns2:property>
 							</ns2:fieldSet>
 							<ns2:fieldSet name="Location" id="location">
 								<ns2:action id="updateLocation">

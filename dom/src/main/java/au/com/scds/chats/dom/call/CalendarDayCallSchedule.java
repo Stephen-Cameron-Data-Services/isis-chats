@@ -182,7 +182,7 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	public String validateAddVolunteeredTime(Volunteer volunteer, 
 			 DateTime startDateTime, 
 			 DateTime endDateTime) {
-		return StartAndFinishDateTime.validateStartAndEndDateTimes(startDateTime, endDateTime);
+		return StartAndFinishDateTime.validateStartAndFinishDateTimes(startDateTime, endDateTime);
 	}
 	
 	@Action()

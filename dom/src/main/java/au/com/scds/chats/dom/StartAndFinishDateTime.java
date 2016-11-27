@@ -66,17 +66,17 @@ public abstract class StartAndFinishDateTime extends AbstractChatsDomainEntity {
 			return null;
 	}
 
-	public static String validateStartAndEndDateTimes(DateTime start, DateTime end) {
-		if (start != null && end != null) {
-			if (end.isBefore(start) || end.equals(start))
+	public static String validateStartAndFinishDateTimes(DateTime start, DateTime finish) {
+		if (start != null && finish != null) {
+			if (finish.isBefore(start) || finish.equals(start))
 				return "End is before or equal to Start";
 			else {
-				Duration duration = new Duration(start, end);
+				Duration duration = new Duration(start, finish);
 				if (duration.getStandardMinutes() == 0)
 					return "End is equal to Start";
 				if(duration.getStandardHours()>12)
 					return "End and Start are not in the same 12 hour period";
-				if (end.getDayOfWeek() != start.getDayOfWeek()) {
+				if (finish.getDayOfWeek() != start.getDayOfWeek()) {
 					return "End and Start are on different days of the week";
 				}
 			}
@@ -99,7 +99,7 @@ public abstract class StartAndFinishDateTime extends AbstractChatsDomainEntity {
 	}
 
 	public String validateUpdateStartDateTime(DateTime start) {
-		return validateStartAndEndDateTimes(start, getEndDateTime());
+		return validateStartAndFinishDateTimes(start, getEndDateTime());
 	}
 
 	@Action()
@@ -117,7 +117,7 @@ public abstract class StartAndFinishDateTime extends AbstractChatsDomainEntity {
 	}
 
 	public String validateUpdateEndDateTime(DateTime end) {
-		return validateStartAndEndDateTimes(getStartDateTime(), end);
+		return validateStartAndFinishDateTimes(getStartDateTime(), end);
 	}
 
 	@Action()
@@ -125,6 +125,11 @@ public abstract class StartAndFinishDateTime extends AbstractChatsDomainEntity {
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Add N Minutes to Start Date Time") Integer minutes) {
 		setEndDateTime(getStartDateTime().plusMinutes(minutes));
 		return this;
+	}
+	
+
+	public String validateUpdateEndDateTimeOffStart( Integer minutes) {
+		return validateStartAndFinishDateTimes(getStartDateTime(), getStartDateTime().plusMinutes(minutes));
 	}
 
 	public String disableUpdateEndDateTimeOffStart() {

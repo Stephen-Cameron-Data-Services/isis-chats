@@ -21,11 +21,15 @@
 				<ns2:property id="name" />
 				<ns2:property id="address" />
 				<ns2:property id="postcode" />
-				<ns2:property id="arrivingTransportType" hidden="EVERYWHERE"/>
-				<ns2:property id="arrivingTransportTypeName" />
+				<ns2:property id="arrivingTransportType" hidden="EVERYWHERE" />
+				<ns2:property id="arrivingTransportTypeName">
+					<ns2:named>Arriving Transport</ns2:named>
+				</ns2:property>
 				<ns2:property id="pickupTime" />
 				<ns2:property id="departingTransportType" hidden="EVERYWHERE" />
-				<ns2:property id="departingTransportTypeName" />
+				<ns2:property id="departingTransportTypeName">
+					<ns2:named>Departing Transport</ns2:named>
+				</ns2:property>
 				<ns2:property id="dropoffTime" />
 				<ns2:property id="mobilePhone" />
 				<ns2:property id="homePhone" />
