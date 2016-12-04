@@ -55,7 +55,7 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-@Unique(name = "Participant_UNQ", members = { "person" })
+@Unique(name = "Participant_UNQ", members = { "person", "region" })
 @Queries({
 		@Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.participant.Participant p WHERE status == :status"),
@@ -77,7 +77,8 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 				+ "FROM au.com.scds.chats.dom.participant.Participant "
 				+ "WHERE ((person.createdOn >= :startDate AND person.createdOn < :startDate) "
 				+ "OR (person.modifiedOn >= :startDate AND person.modifiedOn < :startDate)) AND region = :region"), })
-public class Participant extends AbstractChatsDomainEntity implements /*Locatable,*/ Notable, Comparable<Participant> {
+public class Participant extends AbstractChatsDomainEntity
+		implements /* Locatable, */ Notable, Comparable<Participant> {
 
 	// general
 	private Person person;
@@ -418,7 +419,7 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 	public void setLoneliness(String loneliness) {
 		this.loneliness = loneliness;
 	}
-	
+
 	@Column(allowsNull = "true")
 	public boolean isConsentToProvideDetails() {
 		return consentToProvideDetails;
@@ -635,7 +636,7 @@ public class Participant extends AbstractChatsDomainEntity implements /*Locatabl
 		else
 			setHouseholdComposition(dexRefData.getHouseholdCompositionForDescription(description));
 	}
-	
+
 	public List<String> choicesHouseholdCompositionDescription() {
 		return dexRefData.allHouseholdCompositionDescriptions();
 	}

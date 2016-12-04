@@ -41,7 +41,7 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 /**
  * 
  * An <code>Activity</code> that is used to schedule individual
- * <code>ActivityEvent</code> objects.
+ * <code>ParentedActivityEvent</code> objects.
  * 
  * The term 'activity' is used in this domain in both a generic and specific
  * way, the term 'event' is not used but is more descriptive of what is
@@ -61,16 +61,16 @@ public class RecurringActivity extends Activity /* implements Notable */ {
 
 	private Periodicity periodicity = Periodicity.WEEKLY;
 	@Persistent(mappedBy = "parentActivity")
-	private SortedSet<ActivityEvent> childActivities = new TreeSet<ActivityEvent>();
+	private SortedSet<ParentedActivityEvent> childActivities = new TreeSet<ParentedActivityEvent>();
 
 	public RecurringActivity() {
 		super();
 	}
 
 	// used for testing only
-	public RecurringActivity(DomainObjectContainer container, Participants participantsRepo, Volunteers volunteersRepo,
+	public RecurringActivity(DomainObjectContainer container, Activities activitiesRepo, Participants participantsRepo, Volunteers volunteersRepo,
 			ActivityTypes activityTypes, Locations locations) {
-		super(container, participantsRepo, volunteersRepo, activityTypes, locations);
+		super(container, activitiesRepo, participantsRepo, volunteersRepo, activityTypes, locations);
 	}
 
 	@Override
@@ -102,15 +102,15 @@ public class RecurringActivity extends Activity /* implements Notable */ {
 	 */
 
 	/**
-	 * ActivityEvents are displayed as two separate lists: Future and Completed,
+	 * ParentedActivityEvents are displayed as two separate lists: Future and Completed,
 	 * see below.
 	 */
 	@CollectionLayout(hidden = Where.EVERYWHERE)
-	SortedSet<ActivityEvent> getChildActivities() {
+	SortedSet<ParentedActivityEvent> getChildActivities() {
 		return childActivities;
 	}
 
-	void setChildActivities(final SortedSet<ActivityEvent> activityEvents) {
+	void setChildActivities(final SortedSet<ParentedActivityEvent> activityEvents) {
 		this.childActivities = activityEvents;
 	}
 
@@ -120,9 +120,9 @@ public class RecurringActivity extends Activity /* implements Notable */ {
 	 */
 	// @MemberOrder(sequence = "10")
 	@CollectionLayout(render = RenderType.EAGERLY)
-	public List<ActivityEvent> getFutureActivities() {
-		ArrayList<ActivityEvent> temp = new ArrayList<>();
-		for (ActivityEvent event : getChildActivities()) {
+	public List<ParentedActivityEvent> getFutureActivities() {
+		ArrayList<ParentedActivityEvent> temp = new ArrayList<>();
+		for (ParentedActivityEvent event : getChildActivities()) {
 			if (event.getStartDateTime().isAfterNow()) {
 				temp.add(event);
 			}
@@ -133,9 +133,9 @@ public class RecurringActivity extends Activity /* implements Notable */ {
 
 	// @MemberOrder(sequence = "20")
 	@CollectionLayout(render = RenderType.EAGERLY)
-	public List<ActivityEvent> getCompletedActivities() {
-		ArrayList<ActivityEvent> temp = new ArrayList<>();
-		for (ActivityEvent event : getChildActivities()) {
+	public List<ParentedActivityEvent> getCompletedActivities() {
+		ArrayList<ParentedActivityEvent> temp = new ArrayList<>();
+		for (ParentedActivityEvent event : getChildActivities()) {
 			if (event.getStartDateTime().isBeforeNow()) {
 				temp.add(event);
 			}
@@ -143,68 +143,11 @@ public class RecurringActivity extends Activity /* implements Notable */ {
 		return temp;
 	}
 
-	@Programmatic
-	// @ActionLayout(named = "Add Next")
-	// @MemberOrder(name = "futureActivities", sequence = "1")
-	public RecurringActivity addNextScheduledActivity() {
-		System.out.println("AddNextScheduledActivity start");
-		if (getChildActivities().size() == 0) {
-			System.out.println("AddNextScheduledActivity 1");
-			if (getStartDateTime() == null) {
-				container.warnUser(
-						"Please set 'Start date time' for this Recurring Activity (as starting time from which to schedule more activity events)");
-			} else {
-				System.out.println("AddNextScheduledActivity 2");
-				ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
-				obj.setParentActivity(this);
-				obj.setName(getName());
-				obj.setAbbreviatedName(getAbbreviatedName());
-				// set time one second ahead for comparison inequality
-				obj.setStartDateTime(getStartDateTime().plusSeconds(1));
-				getChildActivities().add(obj);
-				container.persistIfNotAlready(obj);
-				container.flush();
-				System.out.println("AddNextScheduledActivity 3");
-			}
-		} else {
-			System.out.println("AddNextScheduledActivity 4");
-			// find last event from which to schedule next
-			// first should be last in chronological order
-			DateTime origin = getChildActivities().first().getStartDateTime();
-			ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
-			obj.setParentActivity(this);
-			obj.setName(getName());
-			obj.setAbbreviatedName(getAbbreviatedName());
-			switch (getPeriodicity()) {
-			case DAILY:
-				obj.setStartDateTime(origin.plusDays(1));
-				break;
-			case WEEKLY:
-				obj.setStartDateTime(origin.plusDays(7));
-				break;
-			case FORTNIGHTLY:
-				obj.setStartDateTime(origin.plusDays(14));
-				break;
-			case MONTHLY:
-				obj.setStartDateTime(origin.plusDays(28));
-				break;
-			case BIMONTHLY:
-				obj.setStartDateTime(origin.plusDays(56));
-				break;
-			}
-			getChildActivities().add(obj);
-			container.persistIfNotAlready(obj);
-			container.flush();
-			System.out.println("AddNextScheduledActivity 5");
-		}
-		System.out.println("AddNextScheduledActivity end");
-		return this;
-	}
-
 	@Action
 	public RecurringActivity addNextScheduledActivity(DateTime startDateTime) {
-		System.out.println("AddNextScheduledActivity start");
-		ActivityEvent activity = activitiesRepo.createOneOffActivity(getName(), getAbbreviatedName(), startDateTime);
+		if(startDateTime == null)
+			startDateTime = default0AddNextScheduledActivity();
+		ParentedActivityEvent activity = activitiesRepo.createParentedActivity(getName(), getAbbreviatedName(), startDateTime);
 		activity.setParentActivity(this);
 		return this;
 	}
@@ -237,16 +180,8 @@ public class RecurringActivity extends Activity /* implements Notable */ {
 	}
 
 	@Programmatic
-	public RecurringActivity addManyScheduledActivities(Integer count) {
-		for (int i = 1; i <= count; i++) {
-			addNextScheduledActivity();
-		}
-		return this;
-	}
-
-	@Programmatic
-	public ActivityEvent createActivity(String name, DateTime startDateTime, Region region) {
-		ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
+	public ParentedActivityEvent createActivity(String name, DateTime startDateTime, Region region) {
+		ParentedActivityEvent obj = container.newTransientInstance(ParentedActivityEvent.class);
 		obj.setParentActivity(this);
 		obj.setName(name);
 		obj.setAbbreviatedName("TO-DO");

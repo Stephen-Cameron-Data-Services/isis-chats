@@ -30,6 +30,7 @@ import org.apache.isis.applib.annotation.Contributed;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
@@ -43,7 +44,7 @@ import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
 
-@DomainService(repositoryFor = Person.class)
+@DomainService(nature=NatureOfService.VIEW_MENU_ONLY, repositoryFor = Person.class)
 @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100")
 public class Persons {
 
@@ -56,28 +57,24 @@ public class Persons {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	public List<Person> listAllPersons() {
 		return container.allInstances(Person.class);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
 	public List<Person> findPersonBySurname(@ParameterLayout(named = "Surname") final String surname) {
 		return container.allMatches(new QueryDefault<>(Person.class, "findPersonsBySurname", "surname", surname));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "3")
 	public List<Person> findPersonBySLK(@ParameterLayout(named = "SLK") final String slk) {
 		return container.allMatches(new QueryDefault<>(Person.class, "findPersonBySLK", "slk", slk));
 	}
 
 	@Action(semantics = SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE)
-	@ActionLayout(contributed=Contributed.AS_NEITHER)
 	// Provide a means to change the identifying unique key properties
 	public Person changeRegionOfPerson(@Parameter(optionality = Optionality.MANDATORY) Person person,
 			@Parameter(optionality = Optionality.MANDATORY) Region region) throws Exception {
@@ -107,6 +104,22 @@ public class Persons {
 			}
 		}
 		return results;
+	}
+	
+	
+	@Action(semantics = SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE)
+	public Person resetPersonIdentity( 
+		final @Parameter(optionality=Optionality.MANDATORY) Person person,
+		final @Parameter(optionality=Optionality.MANDATORY,maxLength = 100) @ParameterLayout(named = "First name") String firstname,
+		final @Parameter(optionality=Optionality.MANDATORY,maxLength = 100) @ParameterLayout(named = "Family name") String surname,
+		final @ParameterLayout(named = "Date of Birth") LocalDate dob,
+		final @ParameterLayout(named = "Sex") Sex sex) throws Exception {
+		person.updateIdentity(firstname, surname, dob, sex);
+		return person;
+	}
+	
+	public List<Person> choices0ResetPersonIdentity(){
+		return listAllPersons();
 	}
 
 	@Programmatic

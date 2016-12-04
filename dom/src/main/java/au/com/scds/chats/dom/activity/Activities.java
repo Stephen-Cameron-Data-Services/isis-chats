@@ -119,6 +119,22 @@ public class Activities {
 		return obj;
 	}
 
+	@Programmatic
+	public ParentedActivityEvent createParentedActivity(final String name, final String abbreviatedName,
+			final DateTime startDateTime) {
+		final ParentedActivityEvent obj = container.newTransientInstance(ParentedActivityEvent.class);
+		obj.setName(name);
+		if (abbreviatedName != null) {
+			obj.setAbbreviatedName(abbreviatedName);
+		} else {
+			obj.setAbbreviatedName(name.replaceAll("\\s", ""));
+		}
+		obj.setStartDateTime(startDateTime);
+		container.persistIfNotAlready(obj);
+		container.flush();
+		return obj;
+	}
+
 	// used for data-migration
 	@Programmatic
 	public ActivityEvent createOneOffActivity(String name, DateTime startDateTime, Region region) {
@@ -141,7 +157,7 @@ public class Activities {
 		if (region == null)
 			return null;
 		for (ActivityEvent activity : findActivityByName(name)) {
-			if(activity.getStartDateTime().equals(time)){
+			if (activity.getStartDateTime().equals(time)) {
 				return activity;
 			}
 		}

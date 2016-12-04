@@ -43,10 +43,12 @@ public class RecurringActivityTest {
 
 	Persons personsRepo;
 	Participants participantsRepo;
+	Activities activitiesRepo;
 	
 
 	@Before
 	public void setUp() throws Exception {
+		activitiesRepo = new Activities(mockContainer);
 		personsRepo = new Persons(mockContainer);
 		participantsRepo = new Participants(mockContainer, personsRepo);
 	}
@@ -58,29 +60,29 @@ public class RecurringActivityTest {
 
 			// given
 			final RecurringActivity activity = new RecurringActivity();
-			final ActivityEvent event1 = new ActivityEvent();
-			final ActivityEvent event2 = new ActivityEvent();
-			final ActivityEvent event3 = new ActivityEvent();
-			final ActivityEvent event4 = new ActivityEvent();
+			final ParentedActivityEvent event1 = new ParentedActivityEvent();
+			final ParentedActivityEvent event2 = new ParentedActivityEvent();
+			final ParentedActivityEvent event3 = new ParentedActivityEvent();
+			final ParentedActivityEvent event4 = new ParentedActivityEvent();
 			//get seed date in the future
 			final DateTime dateTime = (new DateTime()).plusMinutes(1);
 			
 
 			context.checking(new Expectations() {
 				{
-					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					oneOf(mockContainer).newTransientInstance(ParentedActivityEvent.class);
 					will(returnValue(event1));
 					oneOf(mockContainer).persistIfNotAlready(event1);
 					oneOf(mockContainer).flush();
-					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					oneOf(mockContainer).newTransientInstance(ParentedActivityEvent.class);
 					will(returnValue(event2));
 					oneOf(mockContainer).persistIfNotAlready(event2);
 					oneOf(mockContainer).flush();
-					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					oneOf(mockContainer).newTransientInstance(ParentedActivityEvent.class);
 					will(returnValue(event3));
 					oneOf(mockContainer).persistIfNotAlready(event3);
 					oneOf(mockContainer).flush();
-					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					oneOf(mockContainer).newTransientInstance(ParentedActivityEvent.class);
 					will(returnValue(event4));
 					oneOf(mockContainer).persistIfNotAlready(event4);
 					oneOf(mockContainer).flush();
@@ -88,14 +90,14 @@ public class RecurringActivityTest {
 			});
 
 			// when
-			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
+			RecurringActivity obj = new RecurringActivity(mockContainer, activitiesRepo, participantsRepo,null,null,null);
 			obj.setName("Foobar");
 			obj.setPeriodicity(Periodicity.WEEKLY);
 			obj.setStartDateTime(dateTime);
-			obj.addNextScheduledActivity();
-			obj.addNextScheduledActivity();
-			obj.addNextScheduledActivity();
-			obj.addNextScheduledActivity();
+			obj.addNextScheduledActivity(null);
+			obj.addNextScheduledActivity(null);
+			obj.addNextScheduledActivity(null);
+			obj.addNextScheduledActivity(null);
 
 			// then
 			assertThat(event1.getStartDateTime()).isEqualTo(dateTime.plusSeconds(1));
@@ -117,7 +119,7 @@ public class RecurringActivityTest {
 		public void addNextScheduledActivityWithDifferentPeriodicity() throws Exception {
 
 			// given
-			final RecurringActivity activity = new RecurringActivity();
+			//final RecurringActivity activity = new RecurringActivity();
 			final ActivityEvent event1 = new ActivityEvent();
 			final ActivityEvent event2 = new ActivityEvent();
 			final ActivityEvent event3 = new ActivityEvent();
@@ -128,27 +130,27 @@ public class RecurringActivityTest {
 
 			context.checking(new Expectations() {
 				{
-					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					oneOf(mockContainer).newTransientInstance(ParentedActivityEvent.class);
 					will(returnValue(event1));
 					oneOf(mockContainer).persistIfNotAlready(event1);
 					oneOf(mockContainer).flush();
-					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					oneOf(mockContainer).newTransientInstance(ParentedActivityEvent.class);
 					will(returnValue(event2));
 					oneOf(mockContainer).persistIfNotAlready(event2);
 					oneOf(mockContainer).flush();
-					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					oneOf(mockContainer).newTransientInstance(ParentedActivityEvent.class);
 					will(returnValue(event3));
 					oneOf(mockContainer).persistIfNotAlready(event3);
 					oneOf(mockContainer).flush();
-					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					oneOf(mockContainer).newTransientInstance(ParentedActivityEvent.class);
 					will(returnValue(event4));
 					oneOf(mockContainer).persistIfNotAlready(event4);
 					oneOf(mockContainer).flush();
-					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					oneOf(mockContainer).newTransientInstance(ParentedActivityEvent.class);
 					will(returnValue(event5));
 					oneOf(mockContainer).persistIfNotAlready(event5);
 					oneOf(mockContainer).flush();
-					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					oneOf(mockContainer).newTransientInstance(ParentedActivityEvent.class);
 					will(returnValue(event6));
 					oneOf(mockContainer).persistIfNotAlready(event6);
 					oneOf(mockContainer).flush();
@@ -156,20 +158,20 @@ public class RecurringActivityTest {
 			});
 
 			// when
-			RecurringActivity obj = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
+			RecurringActivity obj = new RecurringActivity(mockContainer, activitiesRepo, participantsRepo,null,null,null);
 			obj.setName("Foobar");
 			obj.setStartDateTime(dateTime);
-			obj.addNextScheduledActivity();
+			obj.addNextScheduledActivity(null);
 			obj.setPeriodicity(Periodicity.DAILY);
-			obj.addNextScheduledActivity();
+			obj.addNextScheduledActivity(null);
 			obj.setPeriodicity(Periodicity.WEEKLY);
-			obj.addNextScheduledActivity();
+			obj.addNextScheduledActivity(null);
 			obj.setPeriodicity(Periodicity.FORTNIGHTLY);
-			obj.addNextScheduledActivity();
+			obj.addNextScheduledActivity(null);
 			obj.setPeriodicity(Periodicity.MONTHLY);
-			obj.addNextScheduledActivity();
+			obj.addNextScheduledActivity(null);
 			obj.setPeriodicity(Periodicity.BIMONTHLY);
-			obj.addNextScheduledActivity();
+			obj.addNextScheduledActivity(null);
 
 			// then
 			DateTime first = dateTime.plusSeconds(1);
@@ -186,7 +188,7 @@ public class RecurringActivityTest {
 		public void addParticipantToParent() throws Exception {
 
 			// given
-			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
+			final RecurringActivity parent = new RecurringActivity(mockContainer, activitiesRepo, participantsRepo,null,null,null);
 			final ActivityEvent event1 = new ActivityEvent(mockContainer,participantsRepo);
 			final ActivityEvent event2 = new ActivityEvent(mockContainer,participantsRepo);
 			// create Participant to register for parent RecurringActivity
@@ -211,11 +213,11 @@ public class RecurringActivityTest {
 					oneOf(mockContainer).persistIfNotAlready(participation1);
 					oneOf(mockContainer).flush();
 					// adding two child ActivityEvents
-					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					oneOf(mockContainer).newTransientInstance(ParentedActivityEvent.class);
 					will(returnValue(event1));
 					oneOf(mockContainer).persistIfNotAlready(event1);
 					oneOf(mockContainer).flush();
-					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					oneOf(mockContainer).newTransientInstance(ParentedActivityEvent.class);
 					will(returnValue(event2));
 					oneOf(mockContainer).persistIfNotAlready(event2);
 					oneOf(mockContainer).flush();
@@ -231,8 +233,8 @@ public class RecurringActivityTest {
 			// when
 			parent.setStartDateTime(new DateTime());
 			parent.addParticipant(participant1);
-			parent.addNextScheduledActivity();
-			parent.addNextScheduledActivity();
+			parent.addNextScheduledActivity(null);
+			parent.addNextScheduledActivity(null);
 			event2.addParticipant(participant2);
 			
 			//then
@@ -256,19 +258,19 @@ public class RecurringActivityTest {
 		public void allCascadedProperties() throws Exception {
 
 			// given
-			final RecurringActivity parent = new RecurringActivity(mockContainer, participantsRepo,null,null,null);
+			final RecurringActivity parent = new RecurringActivity(mockContainer, activitiesRepo, participantsRepo,null,null,null);
 			final ActivityEvent event1 = new ActivityEvent();
 			final ActivityEvent event2 = new ActivityEvent();
 
 			context.checking(new Expectations() {
 				{
 					// adding two child ActivityEvents
-					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					oneOf(mockContainer).newTransientInstance(ParentedActivityEvent.class);
 					will(returnValue(event1));
 					oneOf(mockContainer).persistIfNotAlready(event1);
 					oneOf(mockContainer).flush();
 					// adding two child ActivityEvents
-					oneOf(mockContainer).newTransientInstance(ActivityEvent.class);
+					oneOf(mockContainer).newTransientInstance(ParentedActivityEvent.class);
 					will(returnValue(event2));
 					oneOf(mockContainer).persistIfNotAlready(event2);
 					oneOf(mockContainer).flush();
@@ -277,8 +279,8 @@ public class RecurringActivityTest {
 
 			// when
 			parent.setStartDateTime(new DateTime());
-			parent.addNextScheduledActivity();
-			parent.addNextScheduledActivity();
+			parent.addNextScheduledActivity(null);
+			parent.addNextScheduledActivity(null);
 
 			assertThat(parent.getActivityType()).isNull(); 
 			//assertThat(parent.getApproximateEndDateTime()).isNull(); 

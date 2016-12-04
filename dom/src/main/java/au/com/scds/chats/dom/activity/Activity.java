@@ -54,6 +54,7 @@ import au.com.scds.chats.dom.general.names.ActivityType;
 import au.com.scds.chats.dom.general.names.ActivityTypes;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
+import au.com.scds.chats.dom.general.names.TransportTypes;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.ParticipantIdentity;
@@ -68,19 +69,19 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 // @Unique(name = "Activity_UNQ", members = { "name", "startDateTime", "region"
 // })
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "classifier", value = "_ACTIVITY")
-public abstract class Activity extends StartAndFinishDateTime implements /*Locatable,*/ Comparable<Activity> {
+public abstract class Activity extends StartAndFinishDateTime implements /* Locatable, */ Comparable<Activity> {
 
 	private Long oldId; // id copied from old system
 	protected String name;
 	protected String abbreviatedName;
 	// protected Provider provider;
 	protected ActivityType activityType;
-	//protected DateTime approximateEndDateTime;
+	// protected DateTime approximateEndDateTime;
 	// protected Long copiedFromActivityId;
 	protected String costForParticipant;
 	protected Integer cutoffLimit;
 	protected String description;
-	//protected DateTime startDateTime;
+	// protected DateTime startDateTime;
 	protected Address address;
 	// protected Boolean isRestricted;
 	// protected Long scheduleId;
@@ -98,9 +99,10 @@ public abstract class Activity extends StartAndFinishDateTime implements /*Locat
 	public Activity() {
 	}
 
-	public Activity(DomainObjectContainer container, Participants participants, Volunteers volunteers,
+	public Activity(DomainObjectContainer container, Activities activities, Participants participants, Volunteers volunteers,
 			ActivityTypes activityTypes, Locations locations) {
 		this.container = container;
+		this.activitiesRepo = activities;
 		this.participantsRepo = participants;
 		this.volunteersRepo = volunteers;
 		this.activityTypesRepo = activityTypes;
@@ -199,18 +201,19 @@ public abstract class Activity extends StartAndFinishDateTime implements /*Locat
 		return activityTypesRepo.allNames();
 	}
 
-/*	@Property(hidden = Where.ALL_TABLES)
-	@PropertyLayout(named = "Approx. End Date & Time")
-	// @MemberOrder(sequence = "6")
-	@Column(allowsNull = "true")
-	public DateTime getApproximateEndDateTime() {
-		return approximateEndDateTime;
-	}
-
-	public void setApproximateEndDateTime(final DateTime approximateEndDateTime) {
-		this.approximateEndDateTime = approximateEndDateTime;
-	}
-*/
+	/*
+	 * @Property(hidden = Where.ALL_TABLES)
+	 * 
+	 * @PropertyLayout(named = "Approx. End Date & Time")
+	 * // @MemberOrder(sequence = "6")
+	 * 
+	 * @Column(allowsNull = "true") public DateTime getApproximateEndDateTime()
+	 * { return approximateEndDateTime; }
+	 * 
+	 * public void setApproximateEndDateTime(final DateTime
+	 * approximateEndDateTime) { this.approximateEndDateTime =
+	 * approximateEndDateTime; }
+	 */
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Cost For Participant")
 	// @MemberOrder(sequence = "8")
@@ -251,43 +254,46 @@ public abstract class Activity extends StartAndFinishDateTime implements /*Locat
 		this.description = description;
 	}
 
-	/*@Property(hidden = Where.NOWHERE)
-	@PropertyLayout()
-	// @MemberOrder(sequence = "10")
-	@Column(allowsNull = "false")
-	public DateTime getStartDateTime() {
-		return this.startDateTime;
-	}
+	/*
+	 * @Property(hidden = Where.NOWHERE)
+	 * 
+	 * @PropertyLayout() // @MemberOrder(sequence = "10")
+	 * 
+	 * @Column(allowsNull = "false") public DateTime getStartDateTime() { return
+	 * this.startDateTime; }
+	 * 
+	 * public void setStartDateTime(DateTime startDateTime) { this.startDateTime
+	 * = startDateTime; }
+	 */
 
-	public void setStartDateTime(DateTime startDateTime) {
-		this.startDateTime = startDateTime;
-	}*/
-
-/*	public void modifyStartDateTime(DateTime startDateTime) {
-		if (startDateTime == null)
-			return;
-		if (getApproximateEndDateTime() != null && getApproximateEndDateTime().isBefore(startDateTime)) {
-			setApproximateEndDateTime(null);
-		}
-		setStartDateTime(startDateTime);
-	}
-*/
+	/*
+	 * public void modifyStartDateTime(DateTime startDateTime) { if
+	 * (startDateTime == null) return; if (getApproximateEndDateTime() != null
+	 * && getApproximateEndDateTime().isBefore(startDateTime)) {
+	 * setApproximateEndDateTime(null); } setStartDateTime(startDateTime); }
+	 */
 	@Action
 	public Activity updateGeneral(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Name") String name,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "DEX 'Case' Id", describedAs = "Gets used to build a DSS DEX Case name (Note: 5 digits get appended for region-month-year)") String abbreviatedName,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Description") String description,
-			//@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Activity Type") String activityType,
-			//@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Date Time") DateTime startDateTime,
-			//@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Approx End Date Time") DateTime approximateEndDateTime,
+			// @Parameter(optionality = Optionality.OPTIONAL)
+			// @ParameterLayout(named = "Activity Type") String activityType,
+			// @Parameter(optionality = Optionality.MANDATORY)
+			// @ParameterLayout(named = "Start Date Time") DateTime
+			// startDateTime,
+			// @Parameter(optionality = Optionality.OPTIONAL)
+			// @ParameterLayout(named = "Approx End Date Time") DateTime
+			// approximateEndDateTime,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Cost for Participant") String costForParticipant,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Cut-off Limit") Integer cutoffLimit) {
 		setName(name);
 		setAbbreviatedName(abbreviatedName);
 		setDescription(description);
-		//setActivityType((activityType != null) ? activityTypesRepo.activityTypeForName(activityType) : null);
-		//setStartDateTime(startDateTime);
-		//setApproximateEndDateTime(approximateEndDateTime);
+		// setActivityType((activityType != null) ?
+		// activityTypesRepo.activityTypeForName(activityType) : null);
+		// setStartDateTime(startDateTime);
+		// setApproximateEndDateTime(approximateEndDateTime);
 		setCostForParticipant(costForParticipant);
 		setCutoffLimit(cutoffLimit);
 		return this;
@@ -304,26 +310,20 @@ public abstract class Activity extends StartAndFinishDateTime implements /*Locat
 	public String default2UpdateGeneral() {
 		return getDescription();
 	}
-/*
-	public String default3UpdateGeneral() {
-		return (getActivityType() != null) ? getActivityType().getName() : null;
-	}
 
-	public List<String> choices3UpdateGeneral() {
-		return activityTypesRepo.allNames();
-	}
-
-	public DateTime default4UpdateGeneral() {
-		return getStartDateTime();
-	}
-
-	public DateTime default5UpdateGeneral() {
-		if (getApproximateEndDateTime() != null)
-			return getApproximateEndDateTime();
-		else
-			return getStartDateTime();
-	}
-*/
+	/*
+	 * public String default3UpdateGeneral() { return (getActivityType() !=
+	 * null) ? getActivityType().getName() : null; }
+	 * 
+	 * public List<String> choices3UpdateGeneral() { return
+	 * activityTypesRepo.allNames(); }
+	 * 
+	 * public DateTime default4UpdateGeneral() { return getStartDateTime(); }
+	 * 
+	 * public DateTime default5UpdateGeneral() { if (getApproximateEndDateTime()
+	 * != null) return getApproximateEndDateTime(); else return
+	 * getStartDateTime(); }
+	 */
 	public String default3UpdateGeneral() {
 		return getCostForParticipant();
 	}
@@ -332,24 +332,20 @@ public abstract class Activity extends StartAndFinishDateTime implements /*Locat
 		return getCutoffLimit();
 	}
 
-	public String validateUpdateGeneral(String name, 
-			String abbreviatedName, 
-			String description, 
-			//String activityType,
-			//DateTime startDateTime, 
-			//DateTime approximateEndDateTime, 
-			String costForParticipant, 
-			Integer cuffoffLimit) {
-		/*if (approximateEndDateTime != null) {
-			if (approximateEndDateTime.isBefore(startDateTime))
-				return "Approximate End Date Time is before Start Date Time";
-			Duration dur = new Duration(startDateTime, approximateEndDateTime);
-			if (dur.getStandardHours() > 12) {
-				return " Start Date Time and Approximate End Date Time are on different days";
-			} else {
-				return null;
-			}
-		} else */ if (cutoffLimit != null && cutoffLimit < 1) {
+	public String validateUpdateGeneral(String name, String abbreviatedName, String description,
+			// String activityType,
+			// DateTime startDateTime,
+			// DateTime approximateEndDateTime,
+			String costForParticipant, Integer cuffoffLimit) {
+		/*
+		 * if (approximateEndDateTime != null) { if
+		 * (approximateEndDateTime.isBefore(startDateTime)) return
+		 * "Approximate End Date Time is before Start Date Time"; Duration dur =
+		 * new Duration(startDateTime, approximateEndDateTime); if
+		 * (dur.getStandardHours() > 12) { return
+		 * " Start Date Time and Approximate End Date Time are on different days"
+		 * ; } else { return null; } } else
+		 */ if (cutoffLimit != null && cutoffLimit < 1) {
 			return "Cut-off Limit must be greater than 0";
 		} else
 			return null;
@@ -616,13 +612,19 @@ public abstract class Activity extends StartAndFinishDateTime implements /*Locat
 	@Action()
 	@ActionLayout(named = "Add")
 	// @MemberOrder(name = "participations", sequence = "1")
-	public Activity addParticipant(@ParameterLayout(named = "Participant") final ParticipantIdentity identity) {
+	public Activity addParticipant(@ParameterLayout(named = "Participant") final ParticipantIdentity identity,
+			@ParameterLayout(named = "Arriving Transport") @Parameter(optionality = Optionality.OPTIONAL) String arrivingTransportTypeName,
+			@ParameterLayout(named = "Departing Transport") @Parameter(optionality = Optionality.OPTIONAL) String departingTransportTypeName) {
 		if (identity == null)
 			return this;
 		Participant participant = participantsRepo.getParticipant(identity);
 		if (participant != null) {
 			if (!hasParticipant(participant)) {
-				participantsRepo.createParticipation(this, participant);
+				Participation participation = participantsRepo.createParticipation(this, participant);
+				if (arrivingTransportTypeName != null)
+					participation.setArrivingTransportTypeName(arrivingTransportTypeName);
+				if (departingTransportTypeName != null)
+					participation.setDepartingTransportTypeName(departingTransportTypeName);
 			} else {
 				container.informUser("A Participant (" + participant.getFullName()
 						+ ") is already participating or wait-listed in this Activity");
@@ -633,6 +635,14 @@ public abstract class Activity extends StartAndFinishDateTime implements /*Locat
 
 	public List<ParticipantIdentity> choices0AddParticipant() {
 		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
+	}
+	
+	public List<String> choices1AddParticipant() {
+		return transportTypes.allNames();
+	}
+	
+	public List<String> choices2AddParticipant() {
+		return transportTypes.allNames();
 	}
 
 	public String disableAddParticipant() {
@@ -793,7 +803,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /*Locat
 
 	@Inject
 	protected Locations locationsRepo;
-	
+
 	@Inject
 	protected Activities activitiesRepo;
 
@@ -802,5 +812,8 @@ public abstract class Activity extends StartAndFinishDateTime implements /*Locat
 
 	@Inject
 	protected Suburbs suburbs;
+	
+	@Inject
+	protected  TransportTypes transportTypes;
 
 }
