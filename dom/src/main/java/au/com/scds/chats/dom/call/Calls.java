@@ -70,7 +70,7 @@ public class Calls {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1.0")
 	public Call create(@Parameter(optionality = Optionality.MANDATORY) final CallType type,
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named="Participant") final ParticipantIdentity identity,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") final ParticipantIdentity identity,
 			@Parameter(optionality = Optionality.OPTIONAL) final Volunteer volunteer,
 			@Parameter(optionality = Optionality.OPTIONAL) final DateTime dateTime) throws Exception {
 		Call call = null;
@@ -130,7 +130,7 @@ public class Calls {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.1")
 	public List<CareCall> listCareCalls(
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named="Active Participant") final ParticipantIdentity identity) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Active Participant") final ParticipantIdentity identity) {
 		Participant activeParticipant = participantsRepo.getParticipant(identity);
 		if (activeParticipant != null) {
 			return container.allMatches(
@@ -148,7 +148,7 @@ public class Calls {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.2")
 	public List<ReconnectCall> listReconnectCalls(
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named="Participant") final ParticipantIdentity identity) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Participant") final ParticipantIdentity identity) {
 		Participant activeParticipant = participantsRepo.getParticipant(identity);
 		if (activeParticipant != null) {
 			return container.allMatches(new QueryDefault<>(ReconnectCall.class, "findReconnectCallsByParticipant",
@@ -166,7 +166,7 @@ public class Calls {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.3")
 	public List<SurveyCall> listSurveyCalls(
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named="Active Participant") final ParticipantIdentity identity) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Active Participant") final ParticipantIdentity identity) {
 		Participant activeParticipant = participantsRepo.getParticipant(identity);
 		if (activeParticipant != null) {
 			return container.allMatches(new QueryDefault<>(SurveyCall.class, "findSurveyCallsByParticipant",
@@ -185,7 +185,7 @@ public class Calls {
 	@MemberOrder(sequence = "10.4")
 	public List<ScheduledCall> listScheduledCalls(
 			@Parameter(optionality = Optionality.OPTIONAL) final Volunteer activeVolunteer,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named="Participant") final ParticipantIdentity identity) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Participant") final ParticipantIdentity identity) {
 		Participant activeParticipant = participantsRepo.getParticipant(identity);
 		if (activeVolunteer != null && activeParticipant != null) {
 			return container
@@ -221,6 +221,19 @@ public class Calls {
 
 	public List<Volunteer> choices0ListDailyCallSchedulesForVolunteer() {
 		return volunteersRepo.listActive();
+	}
+
+	@Action
+	public CalendarDayCallSchedule createCalendarDayCallSchedule(
+			final @Parameter(optionality = Optionality.MANDATORY) LocalDate date, final Volunteer volunteer,
+			final Boolean includeAllAllocatedCallParticipants) throws Exception {
+		CalendarDayCallSchedule schedule = createCalendarDayCallSchedule(date, volunteer);
+		if (includeAllAllocatedCallParticipants) {
+			for (RegularScheduledCallAllocation allocation : volunteer.getCallAllocations()) {
+				schedule.addNewCall(allocation.getParticipant(), allocation.approximateCallDateTime(date));
+			}
+		}
+		return schedule;
 	}
 
 	@Programmatic
@@ -298,6 +311,27 @@ public class Calls {
 		return call;
 	}
 
+	@Programmatic
+	public RegularScheduledCallAllocation createRegularScheduledCallAllocation(Volunteer volunteer,
+			Participant participant) {
+		if (volunteer == null || participant == null)
+			return null;
+		RegularScheduledCallAllocation allocation = container
+				.newTransientInstance(RegularScheduledCallAllocation.class);
+		allocation.setParticipant(participant);
+		allocation.setVolunteer(volunteer);
+		container.persistIfNotAlready(allocation);
+		container.flush();
+		volunteer.getCallAllocations().add(allocation);
+		participant.getCallAllocations().add(allocation);
+		return null;
+	}
+	
+	@Programmatic
+	public void deleteRegularScheduledCallAllocation(RegularScheduledCallAllocation allocation) {
+		container.removeIfNotAlready(allocation);
+	}
+
 	@Inject
 	public DomainObjectContainer container;
 
@@ -306,4 +340,5 @@ public class Calls {
 
 	@Inject
 	public Participants participantsRepo;
+
 }

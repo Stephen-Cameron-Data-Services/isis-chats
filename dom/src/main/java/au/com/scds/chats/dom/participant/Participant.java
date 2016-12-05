@@ -35,6 +35,8 @@ import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.activity.Activity;
+import au.com.scds.chats.dom.call.Calls;
+import au.com.scds.chats.dom.call.RegularScheduledCallAllocation;
 import au.com.scds.chats.dom.dex.DexReferenceData;
 import au.com.scds.chats.dom.dex.reference.AboriginalOrTorresStraitIslanderOrigin;
 import au.com.scds.chats.dom.dex.reference.AccommodationType;
@@ -91,7 +93,10 @@ public class Participant extends AbstractChatsDomainEntity
 	protected SortedSet<ParticipantNote> clientNotes = new TreeSet<>();
 	@Join
 	protected List<Disability> disabilities = new ArrayList<>();
-
+	@Persistent(mappedBy = "participant")
+	@Order(column = "p_idx")
+	protected List<RegularScheduledCallAllocation> callAllocations =  new ArrayList<>(); 
+	
 	// Social Factor Properties
 	private String limitingHealthIssues;
 	private String otherLimitingFactors;
@@ -846,14 +851,27 @@ public class Participant extends AbstractChatsDomainEntity
 		// ArrayList<ParticipantNote> temp = new ArrayList<>(getNotes());
 		return new ArrayList<ParticipantNote>(getClientNotes());
 	}
+	
+
+	public List<RegularScheduledCallAllocation> getCallAllocations() {
+		return callAllocations;
+	}
+
+	public void setCallAllocations(List<RegularScheduledCallAllocation> callAllocations) {
+		this.callAllocations = callAllocations;
+	}
+
 
 	@Inject
-	Participants participantsRepo;
+	protected Participants participantsRepo;
 
 	@Inject
-	Volunteers volunteersRepo;
+	protected Volunteers volunteersRepo;
+	
+	@Inject
+	protected Calls schedulesRepo;
 
 	@Inject
-	DexReferenceData dexRefData;
+	protected DexReferenceData dexRefData;
 
 }

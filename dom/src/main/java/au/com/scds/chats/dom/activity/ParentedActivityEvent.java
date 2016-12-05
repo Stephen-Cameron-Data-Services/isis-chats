@@ -30,7 +30,7 @@ import au.com.scds.chats.dom.participant.Participation;
 public class ParentedActivityEvent extends ActivityEvent {
 
 	protected RecurringActivity parentActivity;
-	@Join
+	@Join(table="ignoredparticipation")
 	private List<Participation> ignored = new ArrayList<>();
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "This Activity belongs to its parent Recurring Activity")

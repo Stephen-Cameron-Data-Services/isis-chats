@@ -70,7 +70,6 @@ import org.joda.time.LocalDate;
 //@Queries({
 //		@Query(name = "getAllParticipantIdentities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.participant.ParticipantIdentity") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-
 public class ParticipantIdentity implements WithApplicationTenancy {
 
 	private Long personId;

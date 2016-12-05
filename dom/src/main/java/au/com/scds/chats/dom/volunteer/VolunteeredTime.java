@@ -52,8 +52,6 @@ import au.com.scds.chats.dom.StartAndFinishDateTime;
 import au.com.scds.chats.dom.attendance.Attend;
 
 @DomainObject(objectType = "VOLUNTEERED_TIME")
-@DomainObjectLayout(bookmarking = BookmarkPolicy.NEVER)
-@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "role", value = "GENERAL")

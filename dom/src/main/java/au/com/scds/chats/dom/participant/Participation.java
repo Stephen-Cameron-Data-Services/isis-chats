@@ -141,8 +141,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	public Participation updateGeneral(
 			@ParameterLayout(named = "Arriving Transport Type") @Parameter(optionality = Optionality.MANDATORY) String arrivingTransportType,
 			@ParameterLayout(named = "Departing Transport Type") @Parameter(optionality = Optionality.MANDATORY) String departingTransportType,
-			@ParameterLayout(named = "Pickup Time") @Parameter(optionality = Optionality.OPTIONAL, regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM") String pickupTime,
-			@ParameterLayout(named = "Dropoff Time") @Parameter(optionality = Optionality.OPTIONAL, regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM") String dropoffTime) {
+			@ParameterLayout(named = "Pickup Time") @Parameter(optionality = Optionality.OPTIONAL, regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'HH:MM AM|PM e.g 10:30 AM or 4:30 PM") String pickupTime,
+			@ParameterLayout(named = "Dropoff Time") @Parameter(optionality = Optionality.OPTIONAL, regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'HH:MM AM|PM e.g 10:30 AM or 4:30 PM") String dropoffTime) {
 		setArrivingTransportTypeName(arrivingTransportType);
 		setDepartingTransportTypeName(departingTransportType);
 		setPickupTime(pickupTime);

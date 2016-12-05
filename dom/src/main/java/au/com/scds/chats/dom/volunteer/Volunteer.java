@@ -19,6 +19,7 @@
 package au.com.scds.chats.dom.volunteer;
 
 import java.util.ArrayList;
+import java.util.Date;
 //import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
@@ -49,10 +50,12 @@ import org.incode.module.note.dom.api.notable.Notable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.call.CalendarDayCallSchedule;
 import au.com.scds.chats.dom.call.Calls;
+import au.com.scds.chats.dom.call.RegularScheduledCallAllocation;
 import au.com.scds.chats.dom.call.ScheduledCall;
 import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Status;
@@ -66,11 +69,9 @@ import au.com.scds.chats.dom.participant.Participants;
 				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer " + "WHERE status == :status"),
 		@Query(name = "findVolunteersBySurname", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer " + "WHERE person.surname.indexOf(:surname) >= 0"), })
-// @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" },
-// middle = { "VolunteerRoles", "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-@Unique(name = "Volunteer_UNQ", members = { "person" })
-public class Volunteer extends AbstractChatsDomainEntity implements Notable, /*Locatable*/ Comparable<Volunteer> {
+@Unique(name = "Volunteer_UNQ", members = { "person", "region" })
+public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* Locatable */ Comparable<Volunteer> {
 
 	private Person person;
 	private Status status = Status.ACTIVE;
@@ -80,13 +81,79 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /*L
 	@Order(column = "v_idx")
 	private List<VolunteeredTime> volunteeredTimes = new ArrayList<>();
 	private List<VolunteerRole> volunteerRoles = new ArrayList<>();
+	@Persistent(mappedBy = "volunteer")
+	@Order(column = "v_idx")
+	protected List<RegularScheduledCallAllocation> callAllocations = new ArrayList<>();
 
 	public String title() {
 		return getPerson().getFullname();
 	}
 
-	// @CollectionLayout(named = "Call Schedules", paged = 20/*, render =
-	// RenderType.EAGERLY*/)
+	public List<RegularScheduledCallAllocation> getCallAllocations() {
+		return callAllocations;
+	}
+
+	public void setCallAllocations(List<RegularScheduledCallAllocation> callAllocations) {
+		this.callAllocations = callAllocations;
+	}
+
+	public Volunteer addAllocatedCallParticipant(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") ParticipantIdentity identity,
+			@Parameter(optionality = Optionality.OPTIONAL, regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternReplacement = "HH:MM AM|PM") @ParameterLayout(named = "Approx. Call Time") String time) {
+		Participant participant = participantsRepo.getParticipant(identity);
+		RegularScheduledCallAllocation allocation = schedulesRepo.createRegularScheduledCallAllocation(this,
+				participant);
+		if (time != null)
+			allocation.setApproximateCallTime(time);
+		return this;
+	}
+
+	public List<ParticipantIdentity> choices0AddAllocatedCallParticipant() {
+		List<ParticipantIdentity> list1 = participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
+		List<ParticipantIdentity> list2 = new ArrayList<>();
+		boolean allocated = false;
+		for (ParticipantIdentity identity : list1) {
+			allocated = false;
+			if (getCallAllocations().size() > 0) {
+				for (RegularScheduledCallAllocation allocation : getCallAllocations()) {
+					if (participantsRepo.isIdentityOfParticipant(identity, allocation.getParticipant())) {
+						allocated = true;
+					}
+				}
+			}
+			if (!allocated)
+				list2.add(identity);
+		}
+		return list2;
+	}
+
+	public Volunteer removeAllocatedCallParticipant(RegularScheduledCallAllocation allocation) {
+		schedulesRepo.deleteRegularScheduledCallAllocation(allocation);
+		return this;
+	}
+
+	public List<RegularScheduledCallAllocation> choices0RemoveAllocatedCallParticipant() {
+		return getCallAllocations();
+	}
+
+	@Action
+	public CalendarDayCallSchedule buildScheduleFromAllocated(LocalDate date) throws Exception {
+		CalendarDayCallSchedule schedule = findCallSchedule(date);
+		if (schedule == null) {
+			schedule = schedulesRepo.createCalendarDayCallSchedule(date, this, true);
+		}
+		return schedule;
+	}
+
+	@Programmatic
+	public CalendarDayCallSchedule findCallSchedule(LocalDate date) {
+		for (CalendarDayCallSchedule schedule : getScheduled()) {
+			if (schedule.getCalendarDate().equals(date))
+				return schedule;
+		}
+		return null;
+	}
+
 	public SortedSet<CalendarDayCallSchedule> getScheduled() {
 		return callSchedules;
 	}
@@ -94,22 +161,19 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /*L
 	public void setScheduledCalls(final SortedSet<CalendarDayCallSchedule> callSchedules) {
 		this.callSchedules = callSchedules;
 	}
-	
+
 	@Programmatic
-	public Volunteer addScheduledCall(
-			final Participant participant,
-			final DateTime dateTime) throws Exception {
+	public Volunteer addScheduledCall(final Participant participant, final DateTime dateTime) throws Exception {
 		ScheduledCall call = schedulesRepo.createScheduledCall(this, participant, dateTime);
 		return this;
 	}
 
 	@Action()
-	// @MemberOrder(name = "callschedules", sequence = "1")
 	public Volunteer addScheduledCall(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") final ParticipantIdentity identity,
 			@Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) {
 		try {
-			addScheduledCall(participantsRepo.getParticipant(identity),dateTime);
+			addScheduledCall(participantsRepo.getParticipant(identity), dateTime);
 		} catch (Exception e) {
 			container.warnUser(e.getMessage());
 		}
@@ -121,7 +185,6 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /*L
 	}
 
 	@Property(editing = Editing.DISABLED)
-	// @MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
 	public Person getPerson() {
 		return person;
@@ -133,43 +196,36 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /*L
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	// @MemberOrder(sequence = "1.1")
 	public String getFullName() {
 		return getPerson().getFullname();
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	// @MemberOrder(sequence = "2")
 	public String getHomePhoneNumber() {
 		return getPerson().getHomePhoneNumber();
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	// @MemberOrder(sequence = "3")
 	public String getMobilePhoneNumber() {
 		return getPerson().getMobilePhoneNumber();
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	// @MemberOrder(sequence = "4")
 	public String getStreetAddress() {
 		return getPerson().getFullStreetAddress();
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	// @MemberOrder(sequence = "5")
 	public String getMailAddress() {
 		return getPerson().getFullMailAddress();
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
-	// @MemberOrder(sequence = "6")
 	public String getEMailAddress() {
 		return getPerson().getEmailAddress();
 	}
 
 	@Column(allowsNull = "false")
-	@Property(hidden = Where.PARENTED_TABLES)
 	public Status getStatus() {
 		return status;
 	}
@@ -215,8 +271,6 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /*L
 	}
 
 	@Action()
-	@ActionLayout(named = "Add")
-	// @MemberOrder(name = "VolunteerRoles", sequence = "1")
 	public Volunteer addVolunteerRole(VolunteerRole role) {
 		if (role != null)
 			getVolunteerRoles().add(role);
@@ -228,8 +282,6 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /*L
 	}
 
 	@Action()
-	@ActionLayout(named = "Remove")
-	// @MemberOrder(name = "VolunteerRoles", sequence = "2")
 	public Volunteer removeVolunteerRole(VolunteerRole role) {
 		if (role != null)
 			getVolunteerRoles().remove(role);
@@ -239,7 +291,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /*L
 	public List<VolunteerRole> choices0RemoveVolunteerRole() {
 		return getVolunteerRoles();
 	}
-	
+
 	@Override
 	public int compareTo(final Volunteer o) {
 		return this.getPerson().compareTo(o.getPerson());
