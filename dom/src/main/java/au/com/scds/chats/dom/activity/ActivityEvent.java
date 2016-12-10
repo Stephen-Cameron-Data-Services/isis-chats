@@ -90,6 +90,13 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	public ActivityEvent() {
 		super();
 	}
+	
+	public String iconName(){
+		if(this instanceof ParentedActivityEvent)
+			return "Parented";
+		else
+			return "Oneoff";
+	}
 
 	// for mock testing
 	public ActivityEvent(DomainObjectContainer container, Participants participants) {

@@ -39,23 +39,27 @@
 				<tab name="Calls">
 					<row>
 						<col span="6">
-							<ns2:collection id="scheduled" name="Call Schedules" >
+							<ns2:collection id="scheduled" name="Call Schedules">
+								<ns2:named>Call Schedules</ns2:named>
+								<ns2:describedAs>Calls Schedules created for the Chats Volunteer</ns2:describedAs>
 								<ns2:action id="addScheduledCall" />
 							</ns2:collection>
 						</col>
 						<col span="6">
 							<ns2:collection id="callAllocations" name="Call Participants">
+								<ns2:named>Allocated Participants</ns2:named>
+								<ns2:describedAs>Participants allocated to this Volunteer for Calls</ns2:describedAs>
 								<ns2:action id="addAllocatedCallParticipant">
 									<ns2:named>Add</ns2:named>
 									<ns2:describedAs>Allocates a Participant (for calls scheduling) to this Volunteer</ns2:describedAs>
 								</ns2:action>
 								<ns2:action id="removeAllocatedCallParticipant">
 									<ns2:named>Remove</ns2:named>
-									<ns2:describedAs>Remove a previously allocated Participant (for calls scheduling) from this Volunteer</ns2:describedAs>									
+									<ns2:describedAs>Remove a previously allocated Participant (for calls scheduling) from this Volunteer</ns2:describedAs>
 								</ns2:action>
 								<ns2:action id="buildScheduleFromAllocated" position="BELOW">
 									<ns2:named>Create New Call Schedule</ns2:named>
-									<ns2:describedAs>Create a new Daily Call Schedule and include calls for each above Participant</ns2:describedAs>									
+									<ns2:describedAs>Create a new Daily Call Schedule and include calls for each allocated Participant</ns2:describedAs>
 								</ns2:action>
 							</ns2:collection>
 						</col>
@@ -93,7 +97,7 @@
 								<ns2:property id="lastModifiedOn" hidden="ALL_TABLES" />
 								<ns2:property id="region" hidden="EVERYWHERE" />
 								<ns2:property id="regionName" />
-								<ns2:property id="location" />
+								<ns2:property id="location" hidden="EVERYWHERE" />
 							</ns2:fieldSet>
 						</col>
 						<col span="8" unreferencedCollections="true">

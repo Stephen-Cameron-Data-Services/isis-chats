@@ -29,6 +29,10 @@ public class RegularScheduledCallAllocation extends AbstractChatsDomainEntity
 	private String approximateCallTime;
 	private static Pattern pattern = Pattern.compile("(\\d{1,2}):(\\d{2})\\s+(AM|PM)");
 
+	public String title(){
+		return getVolunteer().title() + "-to-" + getParticipant().title();
+	}
+	
 	@Property(editing = Editing.DISABLED)
 	@Column(allowsNull = "false")
 	public Participant getParticipant() {

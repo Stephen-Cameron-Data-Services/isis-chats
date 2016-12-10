@@ -14,13 +14,18 @@ import javax.jdo.annotations.Join;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 
+import org.apache.isis.applib.DomainObjectContainer;
+import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
+import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.annotation.Where;
 
 import au.com.scds.chats.dom.general.names.ActivityType;
 import au.com.scds.chats.dom.participant.Participant;
+import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.participant.Participation;
 
 @DomainObject(objectType = "PACTIVITY")
@@ -30,8 +35,16 @@ import au.com.scds.chats.dom.participant.Participation;
 public class ParentedActivityEvent extends ActivityEvent {
 
 	protected RecurringActivity parentActivity;
-	@Join(table="ignoredparticipation")
+	@Join
 	private List<Participation> ignored = new ArrayList<>();
+	
+	public ParentedActivityEvent() {
+		super();
+	}
+
+	public ParentedActivityEvent(DomainObjectContainer container, Participants participants) {
+		super(container, participants);
+	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "This Activity belongs to its parent Recurring Activity")
 	@Column(allowsNull = "true")
@@ -43,6 +56,7 @@ public class ParentedActivityEvent extends ActivityEvent {
 		this.parentActivity = activity;
 	}
 
+	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<Participation> getIgnored() {
 		return ignored;
 	}
@@ -83,6 +97,7 @@ public class ParentedActivityEvent extends ActivityEvent {
 	/**
 	 * Check if a Participation is ignored.
 	 */
+	@Programmatic
 	public boolean isIgnored(Participation participation) {
 		return getIgnored().contains(participation);
 	}

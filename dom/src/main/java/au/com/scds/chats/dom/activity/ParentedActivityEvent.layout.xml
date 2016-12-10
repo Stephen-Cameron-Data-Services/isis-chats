@@ -33,6 +33,7 @@
 								<ns2:property id="cutoffLimit" hidden="ALL_TABLES">
 									<ns2:named>Cut-off Limit</ns2:named>
 								</ns2:property>
+								<ns2:property id="attendances" hidden="EVERYWHERE" />
 							</ns2:fieldSet>
 						</col>
 						<col span="6">

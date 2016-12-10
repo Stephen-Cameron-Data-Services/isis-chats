@@ -324,7 +324,7 @@ public class Calls {
 		container.flush();
 		volunteer.getCallAllocations().add(allocation);
 		participant.getCallAllocations().add(allocation);
-		return null;
+		return allocation;
 	}
 	
 	@Programmatic

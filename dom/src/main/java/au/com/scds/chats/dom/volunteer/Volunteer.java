@@ -89,6 +89,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* 
 		return getPerson().getFullname();
 	}
 
+	@CollectionLayout(render=RenderType.EAGERLY)
 	public List<RegularScheduledCallAllocation> getCallAllocations() {
 		return callAllocations;
 	}
@@ -154,6 +155,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* 
 		return null;
 	}
 
+	@CollectionLayout(render=RenderType.EAGERLY)
 	public SortedSet<CalendarDayCallSchedule> getScheduled() {
 		return callSchedules;
 	}
