@@ -174,7 +174,7 @@ public class ActivityEventTest {
 					// Participation in this activity
 					oneOf(mockContainer).allMatches(with(aQueryDefault(Participant.class, "findParticipantsBySurname")));
 					will(returnValue(participants2));
-					oneOf(mockContainer).informUser(with("An existing Participant with same first-name, surname and date-of-birth properties has been found"));
+					oneOf(mockContainer).informUser(with("An existing Participant with same first-name, surname, date-of-birth and sex properties has been found"));
 					oneOf(mockContainer).informUser(with(CoreMatchers.endsWith("is already participating or wait-listed in this Activity")));
 				}
 			});

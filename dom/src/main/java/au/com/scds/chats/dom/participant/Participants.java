@@ -39,16 +39,22 @@ import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
+import org.apache.isis.applib.security.UserMemento;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
+import org.apache.isis.applib.services.user.UserService;
+import org.isisaddons.module.security.dom.user.ApplicationUser;
+import org.isisaddons.module.security.dom.user.ApplicationUserRepository;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.activity.Activity;
 import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Persons;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.dom.general.names.Region;
+import au.com.scds.chats.dom.general.names.Regions;
 
 @DomainService(repositoryFor = Participant.class)
 @DomainServiceLayout(named = "Participants", menuOrder = "20")
@@ -124,48 +130,51 @@ public class Participants {
 		return container
 				.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.EXITED));
 	}
-	
+
 	@Programmatic
-	public List<ParticipantIdentity> listActiveParticipantIdentities(@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup) {
+	public List<ParticipantIdentity> listActiveParticipantIdentities(
+			@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup) {
 		switch (ageGroup) {
 		case All:
-			return container.allMatches(
-					new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatus", "status", Status.ACTIVE.toString()));
+			return container.allMatches(new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatus",
+					"status", Status.ACTIVE.toString()));
 		case Under_Sixty_Five:
 			LocalDate lowerLimit = LocalDate.now().minusYears(65);
-			return container.allMatches(new QueryDefault<>(ParticipantIdentity.class,
-					"listParticipantsByStatusAndBirthdateAbove", "status", Status.ACTIVE.toString(), "lowerLimit", lowerLimit));
+			return container.allMatches(
+					new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatusAndBirthdateAbove", "status",
+							Status.ACTIVE.toString(), "lowerLimit", lowerLimit));
 		case Sixty_Five_and_Over:
 			LocalDate upperLimit = LocalDate.now().minusYears(65).plusDays(1);
-			return container.allMatches(new QueryDefault<>(ParticipantIdentity.class,
-					"listParticipantsByStatusAndBirthdateBelow", "status", Status.ACTIVE.toString(), "upperLimit", upperLimit));
+			return container.allMatches(
+					new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatusAndBirthdateBelow", "status",
+							Status.ACTIVE.toString(), "upperLimit", upperLimit));
 		default:
 			return null;
 		}
 	}
-	
+
 	@Programmatic
-	public List<ParticipantIdentity> listInactiveParticipantIdentities(@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup) {
-			return container.allMatches(
-					new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatus", "status", Status.ACTIVE.toString()));
+	public List<ParticipantIdentity> listInactiveParticipantIdentities(
+			@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup) {
+		return container.allMatches(new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatus", "status",
+				Status.ACTIVE.toString()));
 	}
-	
+
 	@Programmatic
 	public Participant getParticipant(ParticipantIdentity identity) {
-		if(identity == null)
+		if (identity == null)
 			return null;
-		return isisJdoSupport.getJdoPersistenceManager().getObjectById(Participant.class,
-				identity.getJdoObjectId());
+		return isisJdoSupport.getJdoPersistenceManager().getObjectById(Participant.class, identity.getJdoObjectId());
 	}
-	
+
 	@Programmatic
 	public Participant getParticipant(Person person) {
-		if(person == null)
+		if (person == null)
 			return null;
 		return container
 				.firstMatch(new QueryDefault<>(Participant.class, "findParticipantForPerson", "person", person));
 	}
-	
+
 	@Programmatic
 	public Boolean isIdentityOfParticipant(ParticipantIdentity identity, Participant participant) {
 		String id = isisJdoSupport.getJdoPersistenceManager().getObjectId(participant).toString();
@@ -175,27 +184,26 @@ public class Participants {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	// @MemberOrder(sequence = "4")
-	public List<Participant> findBySurname(
-			@ParameterLayout(named = "Surname") final String surname,
-			@Parameter(optionality=Optionality.OPTIONAL) @ParameterLayout(named = "Status") final Status status) {
+	public List<Participant> findBySurname(@ParameterLayout(named = "Surname") final String surname,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Status") final Status status) {
 		List<Participant> list1 = container
 				.allMatches(new QueryDefault<>(Participant.class, "findParticipantsBySurname", "surname", surname));
 		List<Participant> list2 = new ArrayList<>(list1);
-		if(status != null){
-			for(Participant p : list1){
-				if(!p.getStatus().equals(status)){
+		if (status != null) {
+			for (Participant p : list1) {
+				if (!p.getStatus().equals(status)) {
 					list2.remove(p);
 				}
 			}
 		}
 		return list2;
 	}
-	
-	public Status default1FindBySurname(){
+
+	public Status default1FindBySurname() {
 		return Status.ACTIVE;
 	}
-	
-	public List<Status> choices1FindBySurname(){
+
+	public List<Status> choices1FindBySurname() {
 		return Arrays.asList(Status.values());
 	}
 
@@ -204,28 +212,50 @@ public class Participants {
 			final @Parameter(maxLength = 100) @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob,
 			final @ParameterLayout(named = "Sex") Sex sex) {
-		return newParticipant(firstname, surname, dob, sex);
+		// find the region of the user
+		UserMemento user = userService.getUser();
+		Region region = null;
+		if (user != null) {
+			String name = user.getName();
+			ApplicationUser appUser = userRepository.findByUsername(name);
+			if (appUser != null) {
+				String regionName = AbstractChatsDomainEntity.regionNameOfApplicationUser(appUser);
+				region = regionsRepo.regionForName(regionName);
+			}
+		}
+		return newParticipant(firstname, surname, dob, sex, region);
 	}
 
 	@Programmatic
-	public Participant newParticipant(final String firstname, final String surname, final LocalDate dob,
-			final Sex sex) {
+	public Participant newParticipant(final String firstname, final String surname, final LocalDate dob, final Sex sex,
+			final Region region) {
+		String n1 = firstname.trim();
+		String n2 = surname.trim();
 		// check of existing Participant
 		List<Participant> participants = container
-				.allMatches(new QueryDefault<>(Participant.class, "findParticipantsBySurname", "surname", surname));
+				.allMatches(new QueryDefault<>(Participant.class, "findParticipantsBySurname", "surname", n2));
 		for (Participant participant : participants) {
-			if (participant.getPerson().getFirstname().equalsIgnoreCase(firstname)
-					&& participant.getPerson().getBirthdate().equals(dob)) {
-				container.informUser(
-						"An existing Participant with same first-name, surname and date-of-birth properties has been found");
-				return participant;
+			if (participant.getPerson().getFirstname().equalsIgnoreCase(n1)
+					&& participant.getPerson().getBirthdate().equals(dob)
+					&& participant.getPerson().getSex().equals(sex)) {
+				if (region != null) {
+					if (region.equals(participant.getRegion())) {
+						container.informUser(
+								"An existing Participant with same first-name, surname, date-of-birth, sex and region properties has been found");
+						return participant;
+					}
+				} else {
+					container.informUser(
+							"An existing Participant with same first-name, surname, date-of-birth and sex properties has been found");
+					return participant;
+				}
 			}
 		}
 		// find or create Person
-		Person person = persons.findPerson(firstname, surname, dob);
+		Person person = persons.findPerson(n1, n2, dob);
 		if (person == null) {
 			try {
-				person = persons.createPerson(firstname, surname, dob, sex);
+				person = persons.createPerson(n1, n2, dob, sex);
 			} catch (Exception e) {
 				System.out.print(e.getMessage());
 			}
@@ -236,23 +266,6 @@ public class Participants {
 		container.persistIfNotAlready(participant);
 		container.flush();
 		return participant;
-	}
-
-	@Programmatic
-	public Participant newParticipant(final String fullName, final String preferredName, final String mobilePhoneNumber,
-			final String homePhoneNumber, final String email, final LocalDate dob) {
-
-		final Participant p = container.newTransientInstance(Participant.class);
-		/*
-		 * p.setFullname(fullName); p.setPreferredName(preferredName);
-		 * p.setMobilePhoneNumber(mobilePhoneNumber);
-		 * p.setHomePhoneNumber(homePhoneNumber); p.setEmailAddress(email);
-		 * p.setDateOfBirth(dob);
-		 */
-
-		container.persist(p);
-		container.flush();
-		return p;
 	}
 
 	@Programmatic
@@ -316,7 +329,7 @@ public class Participants {
 		container.removeIfNotAlready(note);
 		container.flush();
 	}
-	
+
 	@Programmatic
 	public ParticipantNote createParticipantNote(Participant participant) {
 		ParticipantNote note = container.newTransientInstance(ParticipantNote.class);
@@ -333,16 +346,21 @@ public class Participants {
 	}
 
 	@Inject
-	Persons persons;
+	protected Persons persons;
 
 	@Inject
-	DomainObjectContainer container;
+	protected Regions regionsRepo;
 
 	@Inject
-	private IsisJdoSupport isisJdoSupport;
+	protected DomainObjectContainer container;
 
+	@Inject
+	protected IsisJdoSupport isisJdoSupport;
 
+	@Inject
+	protected ApplicationUserRepository userRepository;
 
-
+	@Inject
+	protected UserService userService;
 
 }

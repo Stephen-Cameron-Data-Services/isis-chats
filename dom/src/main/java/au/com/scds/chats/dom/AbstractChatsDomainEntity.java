@@ -60,7 +60,7 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 	private DateTime lastModifiedOn;
 	private Region region;
 	
-	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
+	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(named = "Created by")
 	@MemberOrder(name = "Admin", sequence = "1")
 	@Column(allowsNull = "true")
@@ -72,7 +72,7 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 		this.createdBy = createdBy;
 	}
 
-	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
+	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(named = "Created On")
 	@MemberOrder(name = "Admin", sequence = "2")
 	@Column(allowsNull = "true")
@@ -84,7 +84,7 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 		this.createdOn = createdOn;
 	}
 
-	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
+	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(named = "Modified By")
 	@MemberOrder(name = "Admin", sequence = "3")
 	@Column(allowsNull = "true")
@@ -96,7 +96,7 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 		this.lastModifiedBy = lastModifiedBy;
 	}
 
-	@Property(editing = Editing.DISABLED, hidden = Where.ALL_TABLES)
+	@Property(editing = Editing.DISABLED)
 	@PropertyLayout(named = "Last Modified")
 	@MemberOrder(name = "Admin", sequence = "4")
 	@Column(allowsNull = "true")
@@ -108,9 +108,7 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 		this.lastModifiedOn = lastModifiedOn;
 	}
 
-	@Property(editing = Editing.DISABLED, hidden = Where.EVERYWHERE)
-	// @PropertyLayout(named = "Region")
-	// @MemberOrder(name = "Admin", sequence = "5")
+	@Property(editing = Editing.DISABLED)
 	@Column(allowsNull = "false")
 	public Region getRegion() {
 		return region;
@@ -132,22 +130,14 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 	public void setUpdatedBy(String updatedBy) {
 		if (getCreatedBy() == null) {
 			setCreatedBy(updatedBy);
+			//always set the region of a new record off the user tenancy.
 			if (userRepository != null) {
 				ApplicationUser user = userRepository.findByUsername(updatedBy);
 				if (user != null && user.getTenancy() != null) {
-					String path = user.getTenancy().getPath();
-					String name = null;
-					if (path.equals("/")) {
-						name = "STATEWIDE";
-					} else if (path.matches("^\\/[_A-Za-z0-9-]+_$")) {
-						name = path.substring(1, path.length() - 1);
-					} else {
-						container.warnUser("Error: user tenancy path not correct (" + path + "), must match pattern /[_A-Za-z0-9-]+_$");
-						return;
-					}
+					String name = regionNameOfApplicationUser(user);
 					Region region = regions.regionForName(name);
 					if (region != null)
-						setRegion(regions.regionForName(name));
+						setRegion(region);
 					else
 						System.out.println("Error: user's region named " + name + " not found");
 				} else {
@@ -160,6 +150,18 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 		} else {
 			setLastModifiedBy(updatedBy);
 		}
+	}
+	
+	@Programmatic
+	public static String regionNameOfApplicationUser(ApplicationUser user){
+		String path = user.getTenancy().getPath();
+		String name = null;
+		if (path.equals("/")) {
+			name = "STATEWIDE";
+		} else if (path.matches("^\\/[_A-Za-z0-9-]+_$")) {
+			name = path.substring(1, path.length() - 1);
+		}
+		return name;
 	}
 
 	@Programmatic

@@ -660,7 +660,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 			final @ParameterLayout(named = "Surname") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob,
 			final @ParameterLayout(named = "Sex") Sex sex) {
-		addParticipant(participantsRepo.newParticipant(firstname, surname, dob, sex));
+		addParticipant(participantsRepo.newParticipant(firstname, surname, dob, sex, null));
 		return this;
 	}
 

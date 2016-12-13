@@ -38,9 +38,15 @@ import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
+import org.apache.isis.applib.security.UserMemento;
+import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
+import org.apache.isis.applib.services.user.UserService;
+import org.isisaddons.module.security.dom.user.ApplicationUser;
+import org.isisaddons.module.security.dom.user.ApplicationUserRepository;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.activity.Activity;
 import au.com.scds.chats.dom.call.CalendarDayCallSchedule;
 import au.com.scds.chats.dom.general.Person;
@@ -48,6 +54,7 @@ import au.com.scds.chats.dom.general.Persons;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.dom.general.names.Region;
+import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
@@ -73,48 +80,50 @@ public class Volunteers {
 	@MemberOrder(sequence = "3")
 	@SuppressWarnings("all")
 	public List<Volunteer> listActive() {
-		return container.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.ACTIVE));
+		return container
+				.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.ACTIVE));
 	}
-	
+
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "4")
 	@SuppressWarnings("all")
 	public List<Volunteer> listInactive() {
-		return container.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.INACTIVE));
+		return container
+				.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.INACTIVE));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "5")
 	public List<Volunteer> listToExit() {
-		return container.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.TO_EXIT));
+		return container
+				.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.TO_EXIT));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "2")
-	public List<Volunteer> findBySurname(
-			@ParameterLayout(named = "Surname") final String surname,
-			@Parameter(optionality=Optionality.OPTIONAL) @ParameterLayout(named = "Status") final Status status) {
+	public List<Volunteer> findBySurname(@ParameterLayout(named = "Surname") final String surname,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Status") final Status status) {
 		List<Volunteer> list1 = container
 				.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersBySurname", "surname", surname));
 		List<Volunteer> list2 = new ArrayList<>(list1);
-		if(status != null){
-			for(Volunteer p : list1){
-				if(!p.getStatus().equals(status)){
+		if (status != null) {
+			for (Volunteer p : list1) {
+				if (!p.getStatus().equals(status)) {
 					list2.remove(p);
 				}
 			}
 		}
 		return list2;
 	}
-	
-	public Status default1FindBySurname(){
+
+	public Status default1FindBySurname() {
 		return Status.ACTIVE;
 	}
-	
-	public List<Status> choices1FindBySurname(){
+
+	public List<Status> choices1FindBySurname() {
 		return Arrays.asList(Status.values());
 	}
 
@@ -123,45 +132,67 @@ public class Volunteers {
 	@MemberOrder(sequence = "1")
 	public Volunteer create(final @Parameter(maxLength = 100) @ParameterLayout(named = "First name") String firstname,
 			final @Parameter(maxLength = 100) @ParameterLayout(named = "Family name") String surname,
-			final @ParameterLayout(named = "Date of Birth") LocalDate dob, 
-			Sex sex) {
-		return newVolunteer(firstname, surname, dob, sex);
+			final @ParameterLayout(named = "Date of Birth") LocalDate dob, Sex sex) {
+		// find the region of the user
+		UserMemento user = userService.getUser();
+		Region region = null;
+		if (user != null) {
+			String name = user.getName();
+			ApplicationUser appUser = userRepository.findByUsername(name);
+			if (appUser != null) {
+				String regionName = AbstractChatsDomainEntity.regionNameOfApplicationUser(appUser);
+				region = regionsRepo.regionForName(regionName);
+			}
+		}
+		return newVolunteer(firstname, surname, dob, sex, region);
 	}
-	
-
 
 	@Programmatic
-	public Volunteer newVolunteer(final String firstname, final String surname, final LocalDate dob, Sex sex) {
+	public Volunteer newVolunteer(final String firstname, final String surname, final LocalDate dob, final Sex sex,
+			final Region region) {
+		String n1= firstname.trim();
+		String n2 = surname.trim();
 		// check of existing Volunteer
-		List<Volunteer> volunteers = container.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersBySurname", "surname", surname));
+		List<Volunteer> volunteers = container
+				.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersBySurname", "surname", n2));
 		for (Volunteer volunteer : volunteers) {
-			if (volunteer.getPerson().getFirstname().equalsIgnoreCase(firstname) && volunteer.getPerson().getBirthdate().equals(dob)) {
-				container.informUser("An existing Volunteer with same first-name, surname and date-of-birth properties has been found");
-				return volunteer;
+			if (volunteer.getPerson().getFirstname().equalsIgnoreCase(n1)
+					&& volunteer.getPerson().getBirthdate().equals(dob) && volunteer.getPerson().getSex().equals(sex)) {
+				if (region != null) {
+					if (region.equals(volunteer.getRegion())) {
+						container.informUser(
+								"An existing Volunteer with same first-name, surname, date-of-birth, sex and region properties has been found");
+						return volunteer;
+					}
+				} else {
+					container.informUser(
+							"An existing Volunteer with same first-name, surname, date-of-birth and sex properties has been found");
+					return volunteer;
+				}
 			}
 		}
 		// find or create Person (and find Participant for person)
 		Participant participant = null;
-		Person person = persons.findPerson(firstname, surname, dob);
+		Person person = persons.findPerson(n1, n2, dob);
 		if (person == null) {
-			try{
-			person = persons.createPerson(firstname, surname, dob, sex);
-			}catch(Exception e){
-				//discard as validating SLK inputs
+			try {
+				person = persons.createPerson(n1, n2, dob, sex);
+			} catch (Exception e) {
+				// discard as validating SLK inputs
 			}
-		}else{
-			//person so probably a Participant
+		} else {
+			// person so probably a Participant
 			participant = participantsRepo.getParticipant(person);
 		}
 		final Volunteer volunteer = container.newTransientInstance(Volunteer.class);
 		volunteer.setPerson(person);
 		container.persistIfNotAlready(volunteer);
 		container.flush();
-		if(participant != null)
+		if (participant != null)
 			participant.setVolunteer(volunteer);
 		return volunteer;
 	}
-	
+
 	@Programmatic
 	public Volunteer create(Person person) {
 		final Volunteer volunteer = container.newTransientInstance(Volunteer.class);
@@ -170,8 +201,8 @@ public class Volunteers {
 		container.flush();
 		return volunteer;
 	}
-	
-	//used for data migration
+
+	// used for data migration
 	@Programmatic
 	public Volunteer newVolunteer(Person person, Region region) {
 		final Volunteer volunteer = container.newTransientInstance(Volunteer.class);
@@ -197,14 +228,15 @@ public class Volunteers {
 	}
 
 	@Programmatic
-	public VolunteeredTimeForActivity createVolunteeredTimeForActivity(Volunteer volunteer, Activity activity, DateTime startDateTime, DateTime endDateTime) {
+	public VolunteeredTimeForActivity createVolunteeredTimeForActivity(Volunteer volunteer, Activity activity,
+			DateTime startDateTime, DateTime endDateTime) {
 		if (volunteer == null || activity == null)
 			return null;
 		VolunteeredTimeForActivity time = container.newTransientInstance(VolunteeredTimeForActivity.class);
 		time.setStartDateTime(startDateTime);
 		time.setEndDateTime(endDateTime);
 		time.setVolunteer(volunteer);
-		if(volunteer.getVolunteerRoles().size() == 1)
+		if (volunteer.getVolunteerRoles().size() == 1)
 			time.setVolunteerRole(volunteer.getVolunteerRoles().get(0));
 		volunteer.addVolunteeredTime(time);
 		activity.addVolunteeredTime(time);
@@ -212,7 +244,7 @@ public class Volunteers {
 		container.flush();
 		return time;
 	}
-	
+
 	@Programmatic
 	public void deleteVolunteeredTimeForActivity(VolunteeredTimeForActivity time) {
 		container.removeIfNotAlready(time);
@@ -220,7 +252,8 @@ public class Volunteers {
 	}
 
 	@Programmatic
-	public VolunteeredTimeForCalls createVolunteeredTimeForCalls(Volunteer volunteer, CalendarDayCallSchedule callSchedule, DateTime startDateTime, DateTime endDateTime) {
+	public VolunteeredTimeForCalls createVolunteeredTimeForCalls(Volunteer volunteer,
+			CalendarDayCallSchedule callSchedule, DateTime startDateTime, DateTime endDateTime) {
 		if (volunteer == null || callSchedule == null)
 			return null;
 		VolunteeredTimeForCalls time = container.newTransientInstance(VolunteeredTimeForCalls.class);
@@ -233,18 +266,18 @@ public class Volunteers {
 		container.flush();
 		return time;
 	}
-	
+
 	@Programmatic
 	public void deleteVolunteeredTimeForCalls(VolunteeredTimeForCalls time) {
 		container.removeIfNotAlready(time);
 		container.flush();
 	}
-	
+
 	@Programmatic
-	public List<VolunteerRole> listVolunteerRolesNotInList(List<VolunteerRole> current){
+	public List<VolunteerRole> listVolunteerRolesNotInList(List<VolunteerRole> current) {
 		List<VolunteerRole> newList = new ArrayList<>();
-		for(VolunteerRole role : volunteerRoles.listAllVolunteerRoles()){
-			if(!current.contains(role))
+		for (VolunteerRole role : volunteerRoles.listAllVolunteerRoles()) {
+			if (!current.contains(role))
 				newList.add(role);
 		}
 		return newList;
@@ -252,14 +285,23 @@ public class Volunteers {
 
 	@Inject
 	DomainObjectContainer container;
-	
+
 	@Inject
-	Persons persons;
-	
+	protected Persons persons;
+
 	@Inject
-	Participants participantsRepo;
-	
-	@Inject 
-	VolunteerRoles volunteerRoles;
+	protected Participants participantsRepo;
+
+	@Inject
+	protected VolunteerRoles volunteerRoles;
+
+	@Inject
+	protected Regions regionsRepo;
+
+	@Inject
+	protected ApplicationUserRepository userRepository;
+
+	@Inject
+	protected UserService userService;
 
 }

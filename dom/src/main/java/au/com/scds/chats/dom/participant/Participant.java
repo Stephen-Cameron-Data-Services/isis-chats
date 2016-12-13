@@ -142,7 +142,7 @@ public class Participant extends AbstractChatsDomainEntity
 		return getPerson().getFullname();
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
+	@Property(editing=Editing.DISABLED)
 	@Column(allowsNull = "false")
 	public Person getPerson() {
 		return person;

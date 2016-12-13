@@ -165,7 +165,7 @@ public class AttendanceList {
 			final @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob,
 			final @ParameterLayout(named = "Sex") Sex sex) {
-		Participant p = participantsRepo.newParticipant(firstname, surname, dob, sex);
+		Participant p = participantsRepo.newParticipant(firstname, surname, dob, sex, null);
 		addAttend(p);
 		return this;
 	}
