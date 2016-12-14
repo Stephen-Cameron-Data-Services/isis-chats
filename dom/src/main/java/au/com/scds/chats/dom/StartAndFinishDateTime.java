@@ -102,9 +102,10 @@ public abstract class StartAndFinishDateTime extends AbstractChatsDomainEntity {
 		return validateStartAndFinishDateTimes(start, getEndDateTime());
 	}
 
+	//NOTE Must keep end date time optional to be able to change start date time to anything
 	@Action()
 	public StartAndFinishDateTime updateEndDateTime(
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "End Time") DateTime end) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "End Time") DateTime end) {
 		setEndDateTime(trimSeconds(end));
 		return this;
 	}
@@ -140,6 +141,8 @@ public abstract class StartAndFinishDateTime extends AbstractChatsDomainEntity {
 	}
 	
 	protected DateTime trimSeconds(DateTime dateTime){
+		if(dateTime == null)
+			return null;
 		final DateTime hour = dateTime.hourOfDay().roundFloorCopy();
 	    final long millisSinceHour = new Duration(hour, dateTime).getMillis();
 	    final int roundedMinutes = ((int)Math.round(millisSinceHour / 60000.0 ));
