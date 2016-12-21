@@ -27,6 +27,8 @@ import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.util.TitleBuffer;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import au.com.scds.chats.dom.general.Address;
 import au.com.scds.chats.dom.general.names.TransportType;
@@ -47,6 +49,8 @@ public class ParticipantTransportView {
 	private String dropoffTime;
 	private TransportType arrivingTransportType;
 	private TransportType departingTransportType;
+	
+	private static DateTimeFormatter fmt = DateTimeFormat.forPattern("dd MMM yyyy HH:mm");
 
 	public ParticipantTransportView() {
 	}
@@ -56,7 +60,9 @@ public class ParticipantTransportView {
 			return;
 		Participant p = participation.getParticipant();
 		Activity a = participation.getActivity();
-		this.activityDetails = a.getName() + " -- " + a.getStreetAddress();
+		this.activityDetails = a.getName() + " -- "
+				+ ((a.getAddressLocationName() != null) ? a.getAddressLocationName() + ", " : "") + a.getStreetAddress()
+				+ " -- " + fmt.print(a.getStartDateTime());
 		this.name = p.getPerson().getKnownAsName();
 		if (p.getPerson().getStreetAddress() != null) {
 			Address address = p.getPerson().getStreetAddress();

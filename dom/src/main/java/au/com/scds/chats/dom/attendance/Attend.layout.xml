@@ -5,7 +5,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<row>
 		<col span="12" unreferencedActions="true">
-			<ns2:domainObject/>
+			<ns2:domainObject />
 		</col>
 	</row>
 	<row>
@@ -32,10 +32,11 @@
 									hidden="ALL_TABLES">
 									<ns2:named>Departing</ns2:named>
 								</ns2:property>
-								<!-- don't put hidden everywhere properties first or the actions will disappear -->
+								<!-- don't put hidden everywhere properties first or the actions 
+									will disappear -->
 								<ns2:property id="arrivingTransportType" hidden="EVERYWHERE" />
 								<ns2:property id="departingTransportType" hidden="EVERYWHERE" />
-							</ns2:fieldSet>	
+							</ns2:fieldSet>
 						</col>
 						<col span="6">
 							<ns2:fieldSet name="Attended" id="attend">
@@ -43,12 +44,22 @@
 								<ns2:action id="wasNotAttended" />
 								<ns2:property id="wasAttended" />
 							</ns2:fieldSet>
-							<ns2:fieldSet name="Times" id="times">
-								<ns2:action id="updateDatesAndTimes" />
-							<ns2:property id="startDateTime" />
-								<ns2:property id="endDateTime" />
-								<ns2:property id="attendanceInterval" />
-							</ns2:fieldSet>	
+							<ns2:fieldSet name="Times" id="time">
+								<ns2:property id="intervalLength" hidden="ALL_TABLES">
+									<ns2:named>Period Length</ns2:named>
+									<ns2:describedAs>Calculated Period Length (HH:MM)</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="startDateTime">
+									<ns2:action id="updateStartDateTime" position="BELOW" />
+								</ns2:property>
+								<ns2:property id="endDateTime" hidden="ALL_TABLES">
+									<ns2:action id="updateEndDateTime" position="BELOW" />
+									<ns2:action id="updateEndDateTimeOffStart" position="BELOW">
+										<ns2:named>Start Date Time + N</ns2:named>
+									</ns2:action>
+									<ns2:named>Approximate End Date Time</ns2:named>
+								</ns2:property>
+							</ns2:fieldSet>
 						</col>
 					</row>
 				</tab>

@@ -250,27 +250,6 @@ public class Attend extends StartAndFinishDateTime implements Comparable<Attend>
 		return this;
 	}
 
-	@Action()
-	public Attend updateDatesAndTimes(@ParameterLayout(named = "Start Date Time") DateTime start,
-			@ParameterLayout(named = "End Date Time") DateTime end) {
-		setStartDateTime(start);
-		setEndDateTime(end);
-		setAttended(true);
-		return this;
-	}
-	
-	public String validateUpdateDatesAndTimes( DateTime start, DateTime end) {
-		return validateStartAndFinishDateTimes(start,end);
-	}
-
-	public DateTime default0UpdateDatesAndTimes() {
-		return getStartDateTime();
-	}
-
-	public DateTime default1UpdateDatesAndTimes() {
-		return getEndDateTime();
-	}
-
 	// used for data-migration
 	@Programmatic
 	public void setDatesAndTimes(DateTime start, DateTime end) {

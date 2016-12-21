@@ -29,8 +29,7 @@
 								<ns2:property id="sex" typicalLength="5" />
 								<ns2:property id="status" typicalLength="5" />
 							</ns2:fieldSet>
-							<ns2:fieldSet name="Mobility" id="mobility"
-								unreferencedProperties="true">
+							<ns2:fieldSet name="Mobility" id="mobility">
 								<ns2:property id="mobility" hidden="ALL_TABLES"
 									multiLine="2" />
 							</ns2:fieldSet>
@@ -52,7 +51,8 @@
 				<tab name="Participation">
 					<row>
 						<col span="12">
-							<ns2:collection id="participations" />
+							<ns2:collection id="participations" hidden="EVERYWHERE"/>
+							<ns2:collection id="participationViews" />
 						</col>
 					</row>
 				</tab>

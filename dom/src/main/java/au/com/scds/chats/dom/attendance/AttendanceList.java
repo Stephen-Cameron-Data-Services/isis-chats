@@ -36,6 +36,7 @@ import org.apache.isis.applib.annotation.*;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.StartAndFinishDateTime;
 import au.com.scds.chats.dom.activity.ActivityEvent;
 import au.com.scds.chats.dom.general.Sex;
@@ -66,7 +67,7 @@ import au.com.scds.chats.dom.participant.Participation;
 @Queries({
 		@Query(name = "findAttendanceListsByActivityName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.AttendanceList WHERE parentActivity.name.indexOf(:name) >= 0 ORDER BY parentActivity.startDateTime DESC"),
 		@Query(name = "findAttendanceListsInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.AttendanceList WHERE parentActivity.startDateTime >= :startDateTime && parentActivity.startDateTime <= :endDateTime ORDER BY parentActivity.startDateTime DESC") })
-public class AttendanceList {
+public class AttendanceList extends AbstractChatsDomainEntity {
 
 	private ActivityEvent parentActivity;
 	private List<Attend> attends = new ArrayList<>();

@@ -20,6 +20,7 @@ package au.com.scds.chats.dom.participant;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -95,8 +96,8 @@ public class Participant extends AbstractChatsDomainEntity
 	protected List<Disability> disabilities = new ArrayList<>();
 	@Persistent(mappedBy = "participant")
 	@Order(column = "p_idx")
-	protected List<RegularScheduledCallAllocation> callAllocations =  new ArrayList<>(); 
-	
+	protected List<RegularScheduledCallAllocation> callAllocations = new ArrayList<>();
+
 	// Social Factor Properties
 	private String limitingHealthIssues;
 	private String otherLimitingFactors;
@@ -142,7 +143,7 @@ public class Participant extends AbstractChatsDomainEntity
 		return getPerson().getFullname();
 	}
 
-	@Property(editing=Editing.DISABLED)
+	@Property(editing = Editing.DISABLED)
 	@Column(allowsNull = "false")
 	public Person getPerson() {
 		return person;
@@ -152,7 +153,7 @@ public class Participant extends AbstractChatsDomainEntity
 		this.person = person;
 	}
 
-	@Property(editing=Editing.DISABLED)
+	@Property(editing = Editing.DISABLED)
 	@Column(allowsNull = "true")
 	public Volunteer getVolunteer() {
 		return volunteer;
@@ -179,17 +180,17 @@ public class Participant extends AbstractChatsDomainEntity
 			return "This Participant is already a Volunteer too!";
 	}
 
-	@Property(hidden = Where.OBJECT_FORMS, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
 	public String getFullName() {
 		return getPerson().getFullname();
 	}
 
-	@Property(hidden = Where.NOWHERE, editing = Editing.DISABLED, editingDisabledReason = "Calculated from Person record")
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Calculated from Person record")
 	public Integer getAge() {
 		return getPerson().getAge(null);
 	}
 
-	@Property(hidden = Where.NOWHERE, editing = Editing.DISABLED, editingDisabledReason = "Calculated from Person record")
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Calculated from Person record")
 
 	public String getSex() {
 		return getPerson().getSex().name();
@@ -207,23 +208,22 @@ public class Participant extends AbstractChatsDomainEntity
 		return getPerson().getMobilePhoneNumber();
 	}
 
-	@Property(hidden = Where.PARENTED_TABLES, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
 
 	public String getStreetAddress() {
 		return getPerson().getFullStreetAddress();
 	}
 
-	@Property(hidden = Where.PARENTED_TABLES, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
 	public String getMailAddress() {
 		return getPerson().getFullMailAddress();
 	}
 
-	@Property(hidden = Where.PARENTED_TABLES, editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
 	public String getEmailAddress() {
 		return getPerson().getEmailAddress();
 	}
 
-	@Property(hidden = Where.PARENTED_TABLES)
 	@Column(allowsNull = "false")
 	public Status getStatus() {
 		return status;
@@ -241,7 +241,6 @@ public class Participant extends AbstractChatsDomainEntity
 		return statuses;
 	}
 
-	@Property()
 	@Column(allowsNull = "true")
 	public String getMobility() {
 		return mobility;
@@ -251,8 +250,7 @@ public class Participant extends AbstractChatsDomainEntity
 		this.mobility = mobility;
 	}
 
-	@Property()
-	@CollectionLayout(named = "Participation", render = RenderType.EAGERLY)
+	@CollectionLayout(render = RenderType.LAZILY)
 	public SortedSet<Participation> getParticipations() {
 		return participations;
 	}
@@ -265,6 +263,19 @@ public class Participant extends AbstractChatsDomainEntity
 			}
 		}
 		return false;
+	}
+
+	@Collection
+	@CollectionLayout(render = RenderType.LAZILY)
+	public Set<ParticipationView> getParticipationViews() {
+		SortedSet<ParticipationView> views = new TreeSet<>();
+		for(Participation p : getParticipations()){
+			ParticipationView v = new ParticipationView();
+			v.setActivity(p.getActivity());
+			v.setStartDateTime(p.getActivity().getStartDateTime().toDate());
+			views.add(v);
+		}
+		return views;
 	}
 
 	@Programmatic
@@ -497,7 +508,6 @@ public class Participant extends AbstractChatsDomainEntity
 		return dexRefData.allLanguage();
 	}
 
-	@Property()
 	@NotPersistent()
 	public String getLanguageSpokenAtHomeDescription() {
 		if (getLanguageSpokenAtHome() == null)
@@ -527,7 +537,6 @@ public class Participant extends AbstractChatsDomainEntity
 		this.aboriginalOrTorresStraitIslanderOrigin = aboriginalOrTorresStraitIslanderOrigin;
 	}
 
-	@Property()
 	@NotPersistent()
 	public String getAboriginalOrTorresStraitIslanderOriginDescription() {
 		if (getAboriginalOrTorresStraitIslanderOrigin() == null)
@@ -548,7 +557,6 @@ public class Participant extends AbstractChatsDomainEntity
 		return dexRefData.allAboriginalOrTorresStraitIslanderOriginDescriptions();
 	}
 
-	@Property()
 	@Column(allowsNull = "true")
 	public AccommodationType getAccommodationType() {
 		return accommodationType;
@@ -562,7 +570,6 @@ public class Participant extends AbstractChatsDomainEntity
 		return dexRefData.allAccommodationType();
 	}
 
-	@Property()
 	@NotPersistent()
 	public String getAccommodationTypeDescription() {
 		if (getAccommodationType() == null)
@@ -582,7 +589,6 @@ public class Participant extends AbstractChatsDomainEntity
 		return dexRefData.allAccommodationTypeDescriptions();
 	}
 
-	@Property()
 	@Column(allowsNull = "true")
 	public DVACardStatus getDvaCardStatus() {
 		return dvaCardStatus;
@@ -596,7 +602,6 @@ public class Participant extends AbstractChatsDomainEntity
 		return dexRefData.allDVACardStatus();
 	}
 
-	@Property()
 	@NotPersistent()
 	public String getDvaCardStatusDescription() {
 		if (getDvaCardStatus() == null)
@@ -616,7 +621,6 @@ public class Participant extends AbstractChatsDomainEntity
 		return dexRefData.allDVACardStatusDescriptions();
 	}
 
-	@Property()
 	@Column(allowsNull = "true")
 	public HouseholdComposition getHouseholdComposition() {
 		return householdComposition;
@@ -626,7 +630,6 @@ public class Participant extends AbstractChatsDomainEntity
 		this.householdComposition = householdComposition;
 	}
 
-	@Property()
 	@NotPersistent()
 	public String getHouseholdCompositionDescription() {
 		if (getHouseholdComposition() == null)
@@ -646,8 +649,6 @@ public class Participant extends AbstractChatsDomainEntity
 		return dexRefData.allHouseholdCompositionDescriptions();
 	}
 
-	@Property()
-	// @PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP)
 	@Column(allowsNull = "true", length = 1000)
 	public String getLifeStory() {
 		return lifeStory;
@@ -657,8 +658,6 @@ public class Participant extends AbstractChatsDomainEntity
 		this.lifeStory = lifeStory;
 	}
 
-	@Property()
-	// @PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP)
 	@Column(allowsNull = "true", length = 1000)
 	public String getLifeExperiences() {
 		return lifeExperiences;
@@ -668,8 +667,6 @@ public class Participant extends AbstractChatsDomainEntity
 		this.lifeExperiences = experiences;
 	}
 
-	@Property()
-	// @PropertyLayout(multiLine = 2, labelPosition = LabelPosition.TOP)
 	@Column(allowsNull = "true")
 	public String getHobbies() {
 		return hobbies;
@@ -679,8 +676,6 @@ public class Participant extends AbstractChatsDomainEntity
 		this.hobbies = hobbies;
 	}
 
-	@Property()
-	// @PropertyLayout(multiLine = 2, labelPosition = LabelPosition.TOP)
 	@Column(allowsNull = "true")
 	public String getInterests() {
 		return interests;
@@ -851,7 +846,6 @@ public class Participant extends AbstractChatsDomainEntity
 		// ArrayList<ParticipantNote> temp = new ArrayList<>(getNotes());
 		return new ArrayList<ParticipantNote>(getClientNotes());
 	}
-	
 
 	public List<RegularScheduledCallAllocation> getCallAllocations() {
 		return callAllocations;
@@ -861,13 +855,12 @@ public class Participant extends AbstractChatsDomainEntity
 		this.callAllocations = callAllocations;
 	}
 
-
 	@Inject
 	protected Participants participantsRepo;
 
 	@Inject
 	protected Volunteers volunteersRepo;
-	
+
 	@Inject
 	protected Calls schedulesRepo;
 

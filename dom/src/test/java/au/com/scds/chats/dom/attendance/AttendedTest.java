@@ -59,7 +59,8 @@ public class AttendedTest {
 		@Test
 		public void getAttendanceInterval_Test() throws Exception {
 
-			attended.updateDatesAndTimes(new DateTime(2015, 10, 10, 12, 0, 0),new DateTime(2015, 10, 10, 13, 30, 0));
+			attended.setStartDateTime(new DateTime(2015, 10, 10, 12, 0, 0));
+			attended.setEndDateTime(new DateTime(2015, 10, 10, 13, 30, 0));
 			assertThat(attended.getIntervalLength()).isEqualTo("1:30");
 		}
 
