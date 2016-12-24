@@ -44,6 +44,7 @@ import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.participant.Participation;
 import au.com.scds.chats.dom.volunteer.Volunteer;
+import au.com.scds.chats.dom.volunteer.VolunteerRole;
 import au.com.scds.chats.dom.volunteer.VolunteeredTimeForActivity;
 import au.com.scds.chats.dom.volunteer.Volunteers;
 
@@ -90,9 +91,9 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	public ActivityEvent() {
 		super();
 	}
-	
-	public String iconName(){
-		if(this instanceof ParentedActivityEvent)
+
+	public String iconName() {
+		if (this instanceof ParentedActivityEvent)
 			return "Parented";
 		else
 			return "Oneoff";
@@ -107,14 +108,14 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	public ActivityEvent(DomainObjectContainer container, Volunteers volunteers) {
 		super(container, null, null, volunteers, null, null);
 	}
-	
+
 	public boolean getCancelled() {
 		return cancelled;
 	}
 
 	public void setCancelled(boolean cancelled) {
 		this.cancelled = cancelled;
-	}	
+	}
 
 	@Column(allowsNull = "true")
 	public AttendanceList getAttendances() {
@@ -126,18 +127,34 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	}
 
 	@Action()
-	public AttendanceList createAttendanceList() {
-		attendanceListsRepo.createActivityAttendanceList(this);
-		return getAttendances();
+	public ActivityEvent createAttendancesFromParticipants() {
+		if (getAttendances() == null)
+			createAttendanceList();
+		getAttendances().addAllAttends();
+		getAttendances().updateAllAttendsToDefaultValues(getStartDateTime(), getEndDateTime());
+		return this;
 	}
 
-	public String disableCreateAttendanceList() {
+	public String disableCreateAttendancesFromParticipants() {
 		if (getAttendances() == null) {
 			return null;
 		} else {
 			return "Attendance-List already created for this Activity";
 		}
 	}
+
+	@Programmatic
+	// @Action()
+	public AttendanceList createAttendanceList() {
+		attendanceListsRepo.createActivityAttendanceList(this);
+		return getAttendances();
+	}
+
+	/*
+	 * public String disableCreateAttendanceList() { if (getAttendances() ==
+	 * null) { return null; } else { return
+	 * "Attendance-List already created for this Activity"; } }
+	 */
 
 	@Action()
 	public AttendanceList showAttendanceList() {
@@ -165,11 +182,10 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	public List<VolunteeredTimeForActivity> getVolunteeredTimes() {
 		return super.getVolunteeredTimes();
 	}
-	
+
 	@Programmatic
 	public ActivityEvent addVolunteeredTime(Volunteer volunteer, DateTime start, DateTime end) {
-		VolunteeredTimeForActivity time = volunteersRepo.createVolunteeredTimeForActivity(volunteer, this,
-				start, end);
+		VolunteeredTimeForActivity time = volunteersRepo.createVolunteeredTimeForActivity(volunteer, this, start, end);
 		if (time != null) {
 			super.addVolunteeredTime(time);
 		}
@@ -177,37 +193,61 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	}
 
 	@Action()
-	public ActivityEvent addVolunteeredTime(Volunteer volunteer) {
+	public ActivityEvent addVolunteeredTime(Volunteer volunteer, VolunteerRole role) {
 		VolunteeredTimeForActivity time = volunteersRepo.createVolunteeredTimeForActivity(volunteer, this,
 				getStartDateTime(), getEndDateTime());
 		if (time != null) {
+			time.setVolunteerRole(role);
 			super.addVolunteeredTime(time);
 		}
 		return this;
 	}
 
 	public List<Volunteer> choices0AddVolunteeredTime() {
-		return volunteersRepo.listActive();
+		return volunteersRepo.listActiveVolunteers();
 	}
-	
+
+	public List<VolunteerRole> choices1AddVolunteeredTime() {
+		return volunteersRepo.listVolunteerRoles();
+	}
+
 	@Action()
 	public ActivityEvent removeVolunteeredTime(VolunteeredTimeForActivity time) {
 		getVolunteeredTimes().remove(time);
 		volunteersRepo.deleteVolunteeredTimeForActivity(time);
 		return this;
 	}
-	
+
 	public List<VolunteeredTimeForActivity> choices0RemoveVolunteeredTime() {
 		return getVolunteeredTimes();
 	}
 
 	@Action()
-	public List<ParticipantTransportView> showTransportList() {
-		List<ParticipantTransportView> list = new ArrayList<>();
+	public ActivityEvent updateAllVolunteeredTimesToDefaults() {
+		for (VolunteeredTimeForActivity time : getVolunteeredTimes()) {
+			time.setStartDateTime(getStartDateTime());
+			time.setEndDateTime(getEndDateTime());
+		}
+		return this;
+	}
+
+	@Action()
+	public List<TransportView> showTransportList() {
+		List<TransportView> list = new ArrayList<>();
 		for (Participation p : getParticipations()) {
-			list.add(new ParticipantTransportView(p));
+			list.add(new TransportView(p));
+		}
+		for (VolunteeredTimeForActivity v : getVolunteeredTimes()) {
+			list.add(new TransportView(v));
 		}
 		return list;
+	}
+
+	@Action()
+	public List<Attend> showAttendancesList() {
+		if (getAttendances() == null)
+			return null;
+		return getAttendances().getAttends();
 	}
 
 	@Programmatic

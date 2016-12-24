@@ -172,7 +172,7 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	}
 	
 	public List<Volunteer> choices0AddVolunteeredTime() {
-		return volunteersRepo.listActive();
+		return volunteersRepo.listActiveVolunteers();
 	}
 
 	public Volunteer default0AddVolunteeredTime() {

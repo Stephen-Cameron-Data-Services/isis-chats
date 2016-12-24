@@ -24,10 +24,11 @@
 									<ns2:named>DEX 'Case' Id</ns2:named>
 								</ns2:property>
 								<ns2:property id="parentActivity" hidden="ALL_TABLES" />
-								<ns2:property id="description" multiLine="3" hidden="ALL_TABLES" />
+								<ns2:property id="description" multiLine="3"
+									hidden="ALL_TABLES" />
 								<ns2:property id="activityTypeName" hidden="EVERYWHERE" />
-								<!-- ns2:property id="startDateTime" typicalLength="16" />
-								<ns2:property id="approximateEndDateTime" /-->
+								<!-- ns2:property id="startDateTime" typicalLength="16" /> <ns2:property 
+									id="approximateEndDateTime" / -->
 								<ns2:property id="costForParticipant" hidden="ALL_TABLES" />
 								<ns2:property id="cutoffLimit" hidden="ALL_TABLES">
 									<ns2:named>Cut-off Limit</ns2:named>
@@ -41,7 +42,7 @@
 									<ns2:named>Period Length</ns2:named>
 									<ns2:describedAs>Calculated Period Length (HH:MM)</ns2:describedAs>
 								</ns2:property>
-								<ns2:property id="startDateTime" >
+								<ns2:property id="startDateTime">
 									<ns2:action id="updateStartDateTime" position="BELOW" />
 								</ns2:property>
 								<ns2:property id="endDateTime" hidden="ALL_TABLES">
@@ -102,7 +103,13 @@
 					<row>
 						<col span="12">
 							<ns2:collection id="attends">
-								<ns2:action id="createAttendanceList" />
+								<ns2:named>Attendances</ns2:named>
+								<ns2:action id="createAttendancesFromParticipants">
+									<ns2:named>Create Attendances</ns2:named>
+								</ns2:action>
+								<ns2:action id="showAttendancesList">
+									<ns2:named>Do Bulk Actions</ns2:named>
+								</ns2:action>
 								<ns2:action id="showAttendanceList" />
 							</ns2:collection>
 						</col>
@@ -112,11 +119,18 @@
 					<row>
 						<col span="12">
 							<ns2:collection id="volunteeredTimes">
+								<ns2:named>Activity Volunteers</ns2:named>
 								<ns2:action id="addVolunteeredTime">
 									<ns2:named>Add</ns2:named>
+									<ns2:describedAs>Add (assign) a Volunteer to the Activity and define a Volunteer Role</ns2:describedAs>
 								</ns2:action>
 								<ns2:action id="removeVolunteeredTime">
 									<ns2:named>Remove</ns2:named>
+									<ns2:describedAs>Remove an assigned Volunteer from the Activity</ns2:describedAs>
+								</ns2:action>
+								<ns2:action id="updateAllVolunteeredTimesToDefaults">
+									<ns2:named>Set Period Lengths</ns2:named>
+									<ns2:describedAs>Sets the Start and End Date-times of each Volunteer, using the Activities Start and End Date-times</ns2:describedAs>
 								</ns2:action>
 							</ns2:collection>
 						</col>

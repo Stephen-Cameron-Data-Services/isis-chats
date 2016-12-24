@@ -79,7 +79,7 @@ public class Volunteers {
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "3")
 	@SuppressWarnings("all")
-	public List<Volunteer> listActive() {
+	public List<Volunteer> listActiveVolunteers() {
 		return container
 				.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.ACTIVE));
 	}
@@ -88,7 +88,7 @@ public class Volunteers {
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "4")
 	@SuppressWarnings("all")
-	public List<Volunteer> listInactive() {
+	public List<Volunteer> listInactiveVolunteers() {
 		return container
 				.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.INACTIVE));
 	}
@@ -96,7 +96,7 @@ public class Volunteers {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "5")
-	public List<Volunteer> listToExit() {
+	public List<Volunteer> listToExitVolunteers() {
 		return container
 				.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.TO_EXIT));
 	}
@@ -236,6 +236,7 @@ public class Volunteers {
 		time.setStartDateTime(startDateTime);
 		time.setEndDateTime(endDateTime);
 		time.setVolunteer(volunteer);
+		time.setActivity(activity);
 		if (volunteer.getVolunteerRoles().size() == 1)
 			time.setVolunteerRole(volunteer.getVolunteerRoles().get(0));
 		volunteer.addVolunteeredTime(time);
@@ -274,6 +275,11 @@ public class Volunteers {
 	}
 
 	@Programmatic
+	public List<VolunteerRole> listVolunteerRoles() {
+		return volunteerRoles.listAllVolunteerRoles();
+	}
+
+	@Programmatic
 	public List<VolunteerRole> listVolunteerRolesNotInList(List<VolunteerRole> current) {
 		List<VolunteerRole> newList = new ArrayList<>();
 		for (VolunteerRole role : volunteerRoles.listAllVolunteerRoles()) {
@@ -303,5 +309,7 @@ public class Volunteers {
 
 	@Inject
 	protected UserService userService;
+
+
 
 }

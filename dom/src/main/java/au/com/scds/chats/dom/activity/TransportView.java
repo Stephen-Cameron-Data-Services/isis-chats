@@ -34,11 +34,14 @@ import au.com.scds.chats.dom.general.Address;
 import au.com.scds.chats.dom.general.names.TransportType;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participation;
+import au.com.scds.chats.dom.volunteer.Volunteer;
+import au.com.scds.chats.dom.volunteer.VolunteeredTimeForActivity;
 
 @DomainObject(nature = Nature.VIEW_MODEL)
-public class ParticipantTransportView {
+public class TransportView {
 
 	private String activityDetails;
+	private String role;
 	private String name;
 	private String homePhone;
 	private String mobilePhone;
@@ -52,14 +55,15 @@ public class ParticipantTransportView {
 	
 	private static DateTimeFormatter fmt = DateTimeFormat.forPattern("dd MMM yyyy HH:mm");
 
-	public ParticipantTransportView() {
+	public TransportView() {
 	}
 
-	public ParticipantTransportView(Participation participation) {
+	public TransportView(Participation participation) {
 		if (participation == null)
 			return;
 		Participant p = participation.getParticipant();
 		Activity a = participation.getActivity();
+		this.role = "Participant";
 		this.activityDetails = a.getName() + " -- "
 				+ ((a.getAddressLocationName() != null) ? a.getAddressLocationName() + ", " : "") + a.getStreetAddress()
 				+ " -- " + fmt.print(a.getStartDateTime());
@@ -81,6 +85,37 @@ public class ParticipantTransportView {
 				+ ((participation.getTransportNotes() != null) ? participation.getTransportNotes() : "");
 		this.arrivingTransportType = participation.getArrivingTransportType();
 		this.departingTransportType = participation.getDepartingTransportType();
+	}
+	
+	public TransportView(VolunteeredTimeForActivity volunteeredTime) {
+		if (volunteeredTime == null)
+			return;
+		Volunteer v = volunteeredTime.getVolunteer();
+		Activity a = volunteeredTime.getActivity();
+		this.role = volunteeredTime.getVolunteerRoleName();
+		this.activityDetails = a.getName() + " -- "
+				+ ((a.getAddressLocationName() != null) ? a.getAddressLocationName() + ", " : "") + a.getStreetAddress()
+				+ " -- " + fmt.print(a.getStartDateTime());
+		this.name = v.getPerson().getKnownAsName();
+		if (v.getPerson().getStreetAddress() != null) {
+			Address address = v.getPerson().getStreetAddress();
+			final TitleBuffer buf = new TitleBuffer();
+			buf.append(address.getStreet1());
+			buf.append(", ", address.getStreet2());
+			buf.append(", ", address.getSuburb());
+			this.address = buf.toString();
+			this.postcode = address.getPostcode();
+		}
+		this.mobilePhone = v.getMobilePhoneNumber();
+		this.homePhone = v.getHomePhoneNumber();
+	}
+	
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	public String getName() {
@@ -178,4 +213,6 @@ public class ParticipantTransportView {
 	public void setPostcode(String postcode) {
 		this.postcode = postcode;
 	}
+
+
 }

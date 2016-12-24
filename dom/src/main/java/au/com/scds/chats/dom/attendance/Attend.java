@@ -59,7 +59,6 @@ import au.com.scds.chats.dom.general.names.TransportTypes;
 import au.com.scds.chats.dom.participant.Participant;
 
 @DomainObject()
-
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Queries({
 		@Query(name = "findAttendsByActivityName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.Attend WHERE activity.name.indexOf(:name) >= 0 ORDER BY activity.startDateTime DESC"),
@@ -67,12 +66,9 @@ import au.com.scds.chats.dom.participant.Participant;
 		@Query(name = "findAttendsByParticipant", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.Attend WHERE participant == :participant ORDER BY activity.startDateTime DESC") })
 public class Attend extends StartAndFinishDateTime implements Comparable<Attend> {
 
-	private static DecimalFormat hoursFormat = new DecimalFormat("#,##0.00");
 	private AttendanceList parentList;
 	private ActivityEvent activity;
 	private Participant participant;
-	protected DateTime endDateTime;
-	protected DateTime startDateTime;
 	protected Boolean attended;
 	private TransportType arrivingTransportType;
 	private TransportType departingTransportType;
@@ -116,7 +112,6 @@ public class Attend extends StartAndFinishDateTime implements Comparable<Attend>
 		this.activity = activity;
 	}
 
-	@Property()
 	@NotPersistent
 	public String getActivityName() {
 		return getActivity().getName();
@@ -148,7 +143,6 @@ public class Attend extends StartAndFinishDateTime implements Comparable<Attend>
 		this.attended = attended;
 	}
 
-	@Property()
 	@Column(allowsNull = "true")
 	public TransportType getArrivingTransportType() {
 		return arrivingTransportType;
@@ -172,7 +166,6 @@ public class Attend extends StartAndFinishDateTime implements Comparable<Attend>
 		return transportTypes.allNames();
 	}
 
-	@Property()
 	@Column(allowsNull = "true")
 	public TransportType getDepartingTransportType() {
 		return departingTransportType;
@@ -221,33 +214,33 @@ public class Attend extends StartAndFinishDateTime implements Comparable<Attend>
 		return transportTypes.allNames();
 	}
 
-	@Property()
 	@NotPersistent()
 	public String getWasAttended() {
 		return (getAttended() ? "YES" : "NO");
 	}
 
-	/*
-	 * TODO gives error @Action(invokeOn = InvokeOn.OBJECT_ONLY) public
-	 * AttendanceList Delete() { getParentList().removeAttend(this); return
-	 * getParentList(); }
-	 */
-
-	@Action()
-	public Attend wasAttended() {
+	@Action(invokeOn=InvokeOn.OBJECT_AND_COLLECTION)
+	public void wasAttended() {
 		if (!getAttended())
 			setAttended(true);
-		return this;
+		return;
 	}
 
-	@Action()
-	public Attend wasNotAttended() {
+	@Action(invokeOn=InvokeOn.OBJECT_AND_COLLECTION)
+	public void wasNotAttended() {
 		if (getAttended()) {
 			setAttended(false);
 			setStartDateTime(null);
 			setEndDateTime(null);
 		}
-		return this;
+		return;
+	}
+	
+	@Action(invokeOn=InvokeOn.COLLECTION_ONLY)
+	public void updateDatesAndTimesFromActivity() {
+		setStartDateTime(getActivity().getStartDateTime());
+		setEndDateTime(getActivity().getEndDateTime());
+		setAttended(true);
 	}
 
 	// used for data-migration

@@ -32,7 +32,7 @@ public class ParticipantBirthdays {
 			return null;
 		//reset start day to the day before the period of interest
 		periodStart = periodStart.minusDays(1);
-		List<Participant> actives = participantsRepo.listActive(AgeGroup.All);
+		List<Participant> actives = participantsRepo.listActiveParticipants(AgeGroup.All);
 		List<Participant> valids = new ArrayList<>();
 		for (Participant p : actives) {
 			if (p.getPerson().getAge(periodStart) < p.getPerson().getAge(periodEnd)) {

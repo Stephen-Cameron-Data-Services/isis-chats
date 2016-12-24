@@ -18,6 +18,7 @@
 				<ns2:property id="activityDetails">
 					<ns2:named>Activity</ns2:named>
 				</ns2:property>
+				<ns2:property id="role" />
 				<ns2:property id="name" />
 				<ns2:property id="address" />
 				<ns2:property id="postcode" />

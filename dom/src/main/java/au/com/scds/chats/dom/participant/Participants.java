@@ -74,10 +74,7 @@ public class Participants {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	// @MemberOrder(sequence = "1")
-	// @SuppressWarnings("all")
-	public List<Participant> listActive(@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup) {
+	public List<Participant> listActiveParticipants(@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup) {
 		switch (ageGroup) {
 		case All:
 			return container.allMatches(
@@ -93,40 +90,26 @@ public class Participants {
 		default:
 			return null;
 		}
-
-		/*
-		 * TODO replace all queries with typesafe final QParticipant p =
-		 * QParticipant.candidate(); return
-		 * isisJdoSupport.executeQuery(Participant.class,
-		 * p.status.eq(Status.ACTIVE));
-		 */
-
 	}
 
-	public AgeGroup default0ListActive() {
+	public AgeGroup default0ListActiveParticipants() {
 		return AgeGroup.All;
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	// @MemberOrder(sequence = "2")
-	public List<Participant> listInactive() {
+	public List<Participant> listInactiveParticipants() {
 		return container.allMatches(
 				new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.INACTIVE));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	// @MemberOrder(sequence = "3")
-	public List<Participant> listToExit() {
+	public List<Participant> listToExitParticipants() {
 		return container.allMatches(
 				new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.TO_EXIT));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	// @MemberOrder(sequence = "3")
-	public List<Participant> listExited() {
+	public List<Participant> listExitedParticipants() {
 		return container
 				.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.EXITED));
 	}

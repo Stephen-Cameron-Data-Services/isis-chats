@@ -19,8 +19,10 @@
 								<ns2:property id="activity" hidden="PARENTED_TABLES" />
 								<ns2:property id="volunteer" />
 								<ns2:property id="volunteerRole" hidden="EVERYWHERE" />
-								<ns2:property id="volunteerRoleName" />
-								<ns2:property id="description" hidden="ALL_TABLES"/>
+								<ns2:property id="volunteerRoleName">
+									<ns2:named>Volunteer Role</ns2:named>
+								</ns2:property>
+								<ns2:property id="description" hidden="ALL_TABLES" />
 								<ns2:property id="includeAsParticipation" />
 							</ns2:fieldSet>
 						</col>

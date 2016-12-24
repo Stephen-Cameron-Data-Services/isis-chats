@@ -114,7 +114,7 @@ public class Calls {
 	}
 
 	public List<Volunteer> choices2Create() {
-		return volunteersRepo.listActive();
+		return volunteersRepo.listActiveVolunteers();
 	}
 
 	public String validateCreate(final CallType type, final ParticipantIdentity identity, final Volunteer volunteer,
@@ -203,7 +203,7 @@ public class Calls {
 	}
 
 	public List<Volunteer> choices0ListScheduledCalls() {
-		return volunteersRepo.listActive();
+		return volunteersRepo.listActiveVolunteers();
 	}
 
 	public List<ParticipantIdentity> choices1ListScheduledCalls() {
@@ -220,7 +220,7 @@ public class Calls {
 	}
 
 	public List<Volunteer> choices0ListDailyCallSchedulesForVolunteer() {
-		return volunteersRepo.listActive();
+		return volunteersRepo.listActiveVolunteers();
 	}
 
 	@Action

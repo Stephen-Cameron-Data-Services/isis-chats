@@ -61,6 +61,7 @@ import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.participant.Participation;
 import au.com.scds.chats.dom.participant.WaitListedParticipant;
+import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.VolunteeredTimeForActivity;
 import au.com.scds.chats.dom.volunteer.Volunteers;
 
@@ -89,7 +90,6 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 	protected SortedSet<Participation> participations = new TreeSet<>();
 	@Persistent(mappedBy = "activity")
 	protected SortedSet<WaitListedParticipant> waitListed = new TreeSet<>();
-
 	@Persistent(mappedBy = "activity")
 	@Order(column = "a_idx")
 	protected List<VolunteeredTimeForActivity> volunteeredTimes = new ArrayList<>();
@@ -712,7 +712,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 	}
 
 	public List<Participant> choices0AddWaitListedParticipant() {
-		List<Participant> list = participantsRepo.listActive(AgeGroup.All);
+		List<Participant> list = participantsRepo.listActiveParticipants(AgeGroup.All);
 		ArrayList<Participant> temp = new ArrayList<>();
 		for (Participant participant : list) {
 			if (!this.hasParticipant(participant)) {
@@ -755,27 +755,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 		}
 	}
 
-	/*
-	 * TO-DO
-	 * 
-	 * @Action public Activity moveParticipantToWaitList(final Participation
-	 * participation) { if (getWaitListed().contains(waitListed)){ Participant
-	 * participant = waitListed.getParticipant();
-	 * getWaitListed().remove(waitListed); addParticipant(participant); } return
-	 * this; }
-	 * 
-	 * public Set<WaitListedParticipant> choices0MoveParticipantToWaitList() {
-	 * return getWaitListed(); }
-	 * 
-	 * public String disableMoveParticipantToWaitList() { if (getCutoffLimit()
-	 * != null && getParticipations().size() >= getCutoffLimit()) { return
-	 * "Participation count has reached Cut-off Limit"; } else { return null; }
-	 * }
-	 */
-
-	@Property()
-	// @MemberOrder(sequence = "100")
-	@CollectionLayout(named = "Volunteered Time", render = RenderType.EAGERLY)
+	@CollectionLayout(render = RenderType.EAGERLY)
 	protected List<VolunteeredTimeForActivity> getVolunteeredTimes() {
 		return volunteeredTimes;
 	}

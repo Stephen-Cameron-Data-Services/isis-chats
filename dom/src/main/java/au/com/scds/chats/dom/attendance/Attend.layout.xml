@@ -45,11 +45,11 @@
 								<ns2:property id="wasAttended" />
 							</ns2:fieldSet>
 							<ns2:fieldSet name="Times" id="time">
-								<ns2:property id="intervalLength" hidden="ALL_TABLES">
+								<ns2:property id="intervalLength">
 									<ns2:named>Period Length</ns2:named>
 									<ns2:describedAs>Calculated Period Length (HH:MM)</ns2:describedAs>
 								</ns2:property>
-								<ns2:property id="startDateTime">
+								<ns2:property id="startDateTime" hidden="ALL_TABLES">
 									<ns2:action id="updateStartDateTime" position="BELOW" />
 								</ns2:property>
 								<ns2:property id="endDateTime" hidden="ALL_TABLES">
