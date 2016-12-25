@@ -13,6 +13,8 @@ import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.Join;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Queries;
+import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.CollectionLayout;
@@ -32,6 +34,8 @@ import au.com.scds.chats.dom.participant.Participation;
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "PACTIVITY")
+@Queries({
+	@Query(name = "findParentedActivityByUpperCaseName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ParentedActivityEvent WHERE name.trim().toUpperCase() == :name")})
 public class ParentedActivityEvent extends ActivityEvent {
 
 	protected RecurringActivity parentActivity;

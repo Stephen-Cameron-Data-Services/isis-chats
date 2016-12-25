@@ -20,15 +20,25 @@ package au.com.scds.chats.dom.activity;
 
 import java.util.Date;
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.jdo.annotations.Query;
+
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
+import org.apache.isis.applib.security.UserMemento;
+import org.apache.isis.applib.services.user.UserService;
+import org.isisaddons.module.security.dom.user.ApplicationUser;
+import org.isisaddons.module.security.dom.user.ApplicationUserRepository;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
+import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.general.names.Region;
+import au.com.scds.chats.dom.general.names.Regions;
 
 /**
  * <user>
@@ -59,6 +69,10 @@ public class Activities {
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
 			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25) @ParameterLayout(named = "DEX 'Case' Name") final String abbreviatedName,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start date time") final DateTime startDateTime) {
+		if (findActivity(name, startDateTime) != null) {
+			container.informUser("Activity with same Name, Start Date Time and Region exists");
+			return null;
+		}
 		final RecurringActivity obj = container.newTransientInstance(RecurringActivity.class);
 		obj.setName(name);
 		if (abbreviatedName != null) {
@@ -106,6 +120,11 @@ public class Activities {
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
 			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25) @ParameterLayout(named = "DEX 'Case' Id") final String abbreviatedName,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start date time") final DateTime startDateTime) {
+		if (findActivity(name, startDateTime) != null) {
+			container.informUser("Activity with same Name, Start Date Time and Region exists");
+			return null;
+		}
+		// create the new ActivityEvent
 		final ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 		obj.setName(name);
 		if (abbreviatedName != null) {
@@ -119,16 +138,71 @@ public class Activities {
 		return obj;
 	}
 
+	// find any kind of Activity
 	@Programmatic
-	public ParentedActivityEvent createParentedActivity(final String name, final String abbreviatedName,
-			final DateTime startDateTime) {
-		final ParentedActivityEvent obj = container.newTransientInstance(ParentedActivityEvent.class);
-		obj.setName(name);
-		if (abbreviatedName != null) {
-			obj.setAbbreviatedName(abbreviatedName);
-		} else {
-			obj.setAbbreviatedName(name.replaceAll("\\s", ""));
+	public Activity findActivity(String name, DateTime startDateTime) {
+		// find the region of the current user
+		UserMemento user = userService.getUser();
+		Region region = null;
+		if (user != null) {
+			ApplicationUser appUser = userRepository.findByUsername(user.getName());
+			if (appUser != null) {
+				String regionName = AbstractChatsDomainEntity.regionNameOfApplicationUser(appUser);
+				region = regionsRepo.regionForName(regionName);
+			}
 		}
+		// see if there is already an existing Activity
+		List<Activity> activities = container.allMatches(
+				new QueryDefault<>(Activity.class, "findActivityByUpperCaseName", "name", name.trim().toUpperCase()));
+		for (Activity activity : activities) {
+			if (activity.getStartDateTime().equals(startDateTime) && activity.getRegion().equals(region)) {
+				return activity;
+			}
+		}
+		return null;
+	}
+
+	// find a specifically ParentedActivity
+	@Programmatic
+	public ParentedActivityEvent findParentedActivity(String name, DateTime startDateTime) {
+		// find the region of the current user
+		UserMemento user = userService.getUser();
+		Region region = null;
+		if (user != null) {
+			ApplicationUser appUser = userRepository.findByUsername(user.getName());
+			if (appUser != null) {
+				String regionName = AbstractChatsDomainEntity.regionNameOfApplicationUser(appUser);
+				region = regionsRepo.regionForName(regionName);
+			}
+		}
+		// see if there is already an existing ParentedActivityEvent
+		List<ParentedActivityEvent> activities = container.allMatches(new QueryDefault<>(ParentedActivityEvent.class,
+				"findParentedActivityByUpperCaseName", "name", name.trim().toUpperCase()));
+		for (ParentedActivityEvent activity : activities) {
+			if (activity.getStartDateTime().equals(startDateTime) && activity.getRegion().equals(region)) {
+				return activity;
+			}
+		}
+		return null;
+	}
+
+	@Programmatic
+	public ParentedActivityEvent createParentedActivity(RecurringActivity parent, final DateTime startDateTime) {
+		if (parent == null || startDateTime == null) {
+			return null;
+		}
+		if (findParentedActivity(parent.getName(), startDateTime) != null) {
+			container.informUser("Parented Activity with same Name, Start Date Time and Region exists");
+			return null;
+		}
+		final ParentedActivityEvent obj = container.newTransientInstance(ParentedActivityEvent.class);
+		obj.setName(parent.getName());
+		if (parent.getAbbreviatedName() != null) {
+			obj.setAbbreviatedName(parent.getAbbreviatedName());
+		} else {
+			obj.setAbbreviatedName(parent.getName().replaceAll("\\s", ""));
+		}
+		obj.setParentActivity(parent);
 		obj.setStartDateTime(startDateTime);
 		container.persistIfNotAlready(obj);
 		container.flush();
@@ -203,7 +277,16 @@ public class Activities {
 				start.toDateTimeAtStartOfDay(), "endDateTime", end.toDateTime(new LocalTime(23, 59))));
 	}
 
-	@javax.inject.Inject
+	@Inject
+	protected Regions regionsRepo;
+
+	@Inject
+	protected ApplicationUserRepository userRepository;
+
+	@Inject
+	protected UserService userService;
+
+	@Inject
 	DomainObjectContainer container;
 
 }

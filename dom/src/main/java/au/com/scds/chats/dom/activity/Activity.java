@@ -70,6 +70,8 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 // @Unique(name = "Activity_UNQ", members = { "name", "startDateTime", "region"
 // })
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "classifier", value = "_ACTIVITY")
+@Queries({
+	@Query(name = "findActivityByUpperCaseName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.Activity WHERE name.trim().toUpperCase() == :name")})
 public abstract class Activity extends StartAndFinishDateTime implements /* Locatable, */ Comparable<Activity> {
 
 	private Long oldId; // id copied from old system

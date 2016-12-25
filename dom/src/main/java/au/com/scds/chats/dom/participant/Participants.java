@@ -332,14 +332,14 @@ public class Participants {
 	protected Persons persons;
 
 	@Inject
-	protected Regions regionsRepo;
-
-	@Inject
 	protected DomainObjectContainer container;
 
 	@Inject
 	protected IsisJdoSupport isisJdoSupport;
 
+	@Inject
+	protected Regions regionsRepo;
+	
 	@Inject
 	protected ApplicationUserRepository userRepository;
 

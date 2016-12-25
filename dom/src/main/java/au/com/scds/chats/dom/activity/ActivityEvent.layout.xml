@@ -106,11 +106,15 @@
 								<ns2:named>Attendances</ns2:named>
 								<ns2:action id="createAttendancesFromParticipants">
 									<ns2:named>Create Attendances</ns2:named>
+									<ns2:describedAs>Copies the Participants list to create a list of Attendances</ns2:describedAs>
 								</ns2:action>
 								<ns2:action id="showAttendancesList">
 									<ns2:named>Do Bulk Actions</ns2:named>
+									<ns2:describedAs>Go to a view of this Attendances list that allows bulk actions</ns2:describedAs>
 								</ns2:action>
-								<ns2:action id="showAttendanceList" />
+								<ns2:action id="showAttendanceList" >
+									<ns2:describedAs>Go at an Atttendance List containing these Attendances, provides more options</ns2:describedAs>
+								</ns2:action>
 							</ns2:collection>
 						</col>
 					</row>

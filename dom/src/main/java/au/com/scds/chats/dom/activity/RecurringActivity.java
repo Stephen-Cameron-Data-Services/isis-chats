@@ -49,15 +49,14 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
  * 
  */
 @DomainObject(objectType = "RECURRING_ACTIVITY")
-@DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Location", "Scheduling", "Admin" })
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "RECURRING_ACTIVITY")
 @Queries({
 		@Query(name = "findRecurringActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.RecurringActivity "),
 		@Query(name = "findRecurringActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.RecurringActivity WHERE name.indexOf(:name) >= 0 ") })
-public class RecurringActivity extends Activity /* implements Notable */ {
+//@Unique(name = "RecurringActivity_UNQ", members = { "name", "region" })
+public class RecurringActivity extends Activity {
 
 	private Periodicity periodicity = Periodicity.WEEKLY;
 	@Persistent(mappedBy = "parentActivity")
@@ -147,8 +146,7 @@ public class RecurringActivity extends Activity /* implements Notable */ {
 	public RecurringActivity addNextScheduledActivity(DateTime startDateTime) {
 		if(startDateTime == null)
 			startDateTime = default0AddNextScheduledActivity();
-		ParentedActivityEvent activity = activitiesRepo.createParentedActivity(getName(), getAbbreviatedName(), startDateTime);
-		activity.setParentActivity(this);
+		ParentedActivityEvent activity = activitiesRepo.createParentedActivity(this, startDateTime);
 		return this;
 	}
 

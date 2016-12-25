@@ -73,6 +73,7 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "ACTIVITY")
+//@Unique(name = "ActivityEvent_UNQ", members = { "name", "startdatetime", "region" })
 @Queries({
 		@Query(name = "findActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent "),
 		@Query(name = "findActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent WHERE name.indexOf(:name) >= 0 "),
@@ -149,12 +150,6 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		attendanceListsRepo.createActivityAttendanceList(this);
 		return getAttendances();
 	}
-
-	/*
-	 * public String disableCreateAttendanceList() { if (getAttendances() ==
-	 * null) { return null; } else { return
-	 * "Attendance-List already created for this Activity"; } }
-	 */
 
 	@Action()
 	public AttendanceList showAttendanceList() {
