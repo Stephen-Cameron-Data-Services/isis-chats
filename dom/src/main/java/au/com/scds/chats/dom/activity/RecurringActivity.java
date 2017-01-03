@@ -78,8 +78,6 @@ public class RecurringActivity extends Activity {
 	}
 
 	@Property()
-	// @PropertyLayout()
-	// @MemberOrder(name = "Scheduling", sequence = "1")
 	@Column(allowsNull = "true")
 	public Periodicity getPeriodicity() {
 		return periodicity;
@@ -88,17 +86,6 @@ public class RecurringActivity extends Activity {
 	public void setPeriodicity(final Periodicity periodicity) {
 		this.periodicity = periodicity;
 	}
-
-	/*
-	 * @Property()
-	 * 
-	 * @PropertyLayout()
-	 * 
-	 * @MemberOrder(name = "Scheduling", sequence = "2")
-	 * 
-	 * @Override public DateTime getStartDateTime() { return
-	 * super.getStartDateTime(); }
-	 */
 
 	/**
 	 * ParentedActivityEvents are displayed as two separate lists: Future and Completed,
@@ -117,7 +104,6 @@ public class RecurringActivity extends Activity {
 	 * Provides a list of currently scheduled activities sorted soonest to
 	 * latest
 	 */
-	// @MemberOrder(sequence = "10")
 	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<ParentedActivityEvent> getFutureActivities() {
 		ArrayList<ParentedActivityEvent> temp = new ArrayList<>();
@@ -130,7 +116,6 @@ public class RecurringActivity extends Activity {
 		return temp;
 	}
 
-	// @MemberOrder(sequence = "20")
 	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<ParentedActivityEvent> getCompletedActivities() {
 		ArrayList<ParentedActivityEvent> temp = new ArrayList<>();

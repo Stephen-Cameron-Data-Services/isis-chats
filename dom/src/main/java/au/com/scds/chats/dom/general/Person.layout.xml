@@ -16,15 +16,30 @@
 						<col span="6">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
-								<ns2:property id="salutationName" hidden="ALL_TABLES" />
-								<ns2:property id="firstname" />
-								<ns2:property id="surname" />
-								<ns2:property id="preferredname"><ns2:named>Preferred Name</ns2:named></ns2:property>
-								<ns2:property id="middlename" ><ns2:named>Middle Name</ns2:named></ns2:property>
-								<ns2:property id="birthdate" ><ns2:named>Birth Date</ns2:named></ns2:property>
+								<ns2:property id="salutationName" hidden="ALL_TABLES">
+									<ns2:named>Salutation</ns2:named>
+								</ns2:property>
+								<ns2:property id="firstname">
+									<ns2:named>First Name</ns2:named>
+								</ns2:property>
+								<ns2:property id="surname">
+									<ns2:named>Surname</ns2:named>
+								</ns2:property>
+								<ns2:property id="preferredname">
+									<ns2:named>Preferred Name</ns2:named>
+								</ns2:property>
+								<ns2:property id="middlename">
+									<ns2:named>Middle Name</ns2:named>
+								</ns2:property>
+								<ns2:property id="birthdate">
+									<ns2:named>Birth Date</ns2:named>
+								</ns2:property>
 								<ns2:property id="sex" />
-								<ns2:property id="slk" />
-								<ns2:property id="contactTypeName" hidden="EVERYWHERE"/>
+								<ns2:property id="slk">
+									<ns2:named>SLK</ns2:named>
+									<ns2:describedAs>Statistical Linkage Key (DSS DEX Client Identifier)</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="contactTypeName" hidden="EVERYWHERE" />
 								<ns2:property id="salutation" hidden="EVERYWHERE" />
 								<ns2:property id="englishSkill" hidden="EVERYWHERE" />
 								<ns2:property id="contactType" hidden="EVERYWHERE" />

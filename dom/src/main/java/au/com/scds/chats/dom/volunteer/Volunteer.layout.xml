@@ -19,19 +19,35 @@
 								<ns2:property id="person" hidden="ALL_TABLES" />
 								<ns2:property id="fullName" typicalLength="30"
 									hidden="OBJECT_FORMS" />
-								<ns2:property id="homePhoneNumber" typicalLength="10" />
-								<ns2:property id="mobilePhoneNumber" typicalLength="10" />
-								<ns2:property id="emailAddress" typicalLength="20" />
-								<ns2:property id="streetAddress" typicalLength="40" />
-								<ns2:property id="mailAddress" hidden="ALL_TABLES" />
+								<ns2:property id="homePhoneNumber" typicalLength="10">
+									<ns2:describedAs>Home phone number of the underlying Person (update on the Person record).</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="mobilePhoneNumber" typicalLength="10">
+									<ns2:describedAs>Mobile phone number of the underlying Person (update on the Person record).</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="emailAddress" typicalLength="20">
+									<ns2:describedAs>Email address of the underlying Person (update on the Person record).</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="streetAddress" typicalLength="40">
+									<ns2:describedAs>Street address of the underlying Person (update on the Person record).</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="mailAddress" hidden="ALL_TABLES">
+									<ns2:describedAs>Mailing address of the underlying Person (update on the Person record).</ns2:describedAs>
+								</ns2:property>
 								<ns2:property id="age" typicalLength="2" />
 								<ns2:property id="status" typicalLength="5" />
 							</ns2:fieldSet>
 						</col>
 						<col span="6">
 							<ns2:collection id="volunteerRoles">
-								<ns2:action id="addVolunteerRole" />
-								<ns2:action id="removeVolunteerRole" />
+								<ns2:action id="addVolunteerRole">
+									<ns2:named>Add</ns2:named>
+									<ns2:describedAs>Add a Volunteer Role to the Volunteer</ns2:describedAs>
+								</ns2:action>
+								<ns2:action id="removeVolunteerRole">
+									<ns2:named>Remove</ns2:named>
+									<ns2:describedAs>Remove a Volunteer Role from the Volunteer</ns2:describedAs>
+								</ns2:action>
 							</ns2:collection>
 						</col>
 					</row>
@@ -42,13 +58,21 @@
 							<ns2:collection id="scheduled" name="Call Schedules">
 								<ns2:named>Call Schedules</ns2:named>
 								<ns2:describedAs>Calls Schedules created for the Chats Volunteer</ns2:describedAs>
-								<ns2:action id="addScheduledCall" />
+								<ns2:action id="addScheduledCall">
+									<ns2:named>Add Call</ns2:named>
+									<ns2:describedAs>Add a Scheduled Call by this Volunteer to a Participant, also add it to a daily schedule (new or existing).</ns2:describedAs>
+								</ns2:action>
+								<ns2:action id="buildScheduleFromAllocated" position="BELOW">
+									<ns2:named>Create Schedule</ns2:named>
+									<ns2:describedAs>Create a new Daily Call Schedule and include calls for each allocated Participant</ns2:describedAs>
+								</ns2:action>
 							</ns2:collection>
 						</col>
 						<col span="6">
 							<ns2:collection id="callAllocations" name="Call Participants">
-								<ns2:named>Allocated Participants</ns2:named>
-								<ns2:describedAs>Participants allocated to this Volunteer for Calls</ns2:describedAs>
+								<ns2:named>Participants Allocated</ns2:named>
+								<ns2:describedAs>Participants allocated to this Volunteer for
+									Calls</ns2:describedAs>
 								<ns2:action id="addAllocatedCallParticipant">
 									<ns2:named>Add</ns2:named>
 									<ns2:describedAs>Allocates a Participant (for calls scheduling) to this Volunteer</ns2:describedAs>
@@ -56,10 +80,6 @@
 								<ns2:action id="removeAllocatedCallParticipant">
 									<ns2:named>Remove</ns2:named>
 									<ns2:describedAs>Remove a previously allocated Participant (for calls scheduling) from this Volunteer</ns2:describedAs>
-								</ns2:action>
-								<ns2:action id="buildScheduleFromAllocated" position="BELOW">
-									<ns2:named>Create New Call Schedule</ns2:named>
-									<ns2:describedAs>Create a new Daily Call Schedule and include calls for each allocated Participant</ns2:describedAs>
 								</ns2:action>
 							</ns2:collection>
 						</col>
@@ -75,7 +95,9 @@
 				<tab name="Calendar Notes">
 					<row>
 						<col span="8">
-							<ns2:collection id="notes" />
+							<ns2:collection id="notes">
+								<ns2:named>Calendar Notes</ns2:named>
+							</ns2:collection>
 						</col>
 					</row>
 				</tab>

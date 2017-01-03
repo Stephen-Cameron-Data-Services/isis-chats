@@ -18,20 +18,29 @@
 								unreferencedProperties="true">
 								<ns2:action id="updateGeneral">
 									<ns2:named>Update</ns2:named>
+									<ns2:describedAs>Set or Update all 'General' Properties at once</ns2:describedAs>
 								</ns2:action>
-								<ns2:property id="name" />
+								<ns2:property id="name">
+									<ns2:describedAs>The generally used name of the Activity</ns2:describedAs>
+								</ns2:property>
 								<ns2:property id="abbreviatedName" hidden="ALL_TABLES">
 									<ns2:named>DEX 'Case' Id</ns2:named>
+									<ns2:describedAs>The start of the DSS DEX 'Case' Identifier used for the Activity (25 Character limit).</ns2:describedAs>
 								</ns2:property>
-								<ns2:property id="parentActivity" hidden="ALL_TABLES" />
 								<ns2:property id="description" multiLine="3"
-									hidden="ALL_TABLES" />
+									hidden="ALL_TABLES">
+									<ns2:describedAs>The description of the Activity</ns2:describedAs>
+								</ns2:property>
 								<ns2:property id="activityTypeName" hidden="EVERYWHERE" />
-								<!-- ns2:property id="startDateTime" typicalLength="16" /> <ns2:property 
-									id="approximateEndDateTime" / -->
-								<ns2:property id="costForParticipant" hidden="ALL_TABLES" />
+								<ns2:property id="costForParticipant" hidden="ALL_TABLES">
+									<ns2:describedAs>Any costs payable by a Participant for the Activity.</ns2:describedAs>
+								</ns2:property>
 								<ns2:property id="cutoffLimit" hidden="ALL_TABLES">
 									<ns2:named>Cut-off Limit</ns2:named>
+									<ns2:describedAs>Maximum number of Participants that can participate (add any more to the Wait List).</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="cancelled">
+									<ns2:describedAs>If an Activity is flagged as 'cancelled' it will be ignored in reporting</ns2:describedAs>
 								</ns2:property>
 								<ns2:property id="attendances" hidden="EVERYWHERE" />
 							</ns2:fieldSet>
@@ -40,32 +49,45 @@
 							<ns2:fieldSet name="Times" id="time">
 								<ns2:property id="intervalLength" hidden="ALL_TABLES">
 									<ns2:named>Period Length</ns2:named>
-									<ns2:describedAs>Calculated Period Length (HH:MM)</ns2:describedAs>
+									<ns2:describedAs>Calculated Period Length (HH:MM).</ns2:describedAs>
 								</ns2:property>
 								<ns2:property id="startDateTime">
-									<ns2:action id="updateStartDateTime" position="BELOW" />
+									<ns2:named>Start Date-time</ns2:named>
+									<ns2:describedAs>Start Date-time of the Activity.</ns2:describedAs>
+									<ns2:action id="updateStartDateTime" position="BELOW">
+										<ns2:describedAs>Change the Start Date Time.</ns2:describedAs>
+									</ns2:action>
 								</ns2:property>
 								<ns2:property id="endDateTime" hidden="ALL_TABLES">
-									<ns2:action id="updateEndDateTime" position="BELOW" />
+									<ns2:named>End Date-time</ns2:named>
+									<ns2:describedAs>End Date-time of the Activity.</ns2:describedAs>
+									<ns2:action id="updateEndDateTime" position="BELOW">
+										<ns2:describedAs>Set, change or delete the End Date-time of the Activity.</ns2:describedAs>
+									</ns2:action>
 									<ns2:action id="updateEndDateTimeOffStart" position="BELOW">
 										<ns2:named>Start Date Time + N</ns2:named>
+										<ns2:describedAs>Set or Change the End Date-time as Start Date-time plus N minutes (N an integer).</ns2:describedAs>
 									</ns2:action>
-									<ns2:named>Approximate End Date Time</ns2:named>
 								</ns2:property>
 							</ns2:fieldSet>
 							<ns2:fieldSet name="Location" id="location">
 								<ns2:action id="updateLocation">
 									<ns2:named>Update</ns2:named>
+									<ns2:describedAs>Set or change the Activity address/location (select (or create) a named Location or just enter the address)</ns2:describedAs>
 								</ns2:action>
 								<ns2:action id="removeLocation">
 									<ns2:named>Clear</ns2:named>
+									<ns2:describedAs>Clear the Activity address/location.</ns2:describedAs>
 								</ns2:action>
 								<ns2:property id="addressLocationName">
+									<ns2:describedAs>The name of the 'named' address/location of the Activity</ns2:describedAs>
 									<ns2:action id="updateNamedLocation">
 										<ns2:named>Modify Named Location</ns2:named>
 									</ns2:action>
 								</ns2:property>
-								<ns2:property id="streetAddress" />
+								<ns2:property id="streetAddress">
+									<ns2:describedAs>The street address (or street address of the 'named' address/location) of the Activity </ns2:describedAs>
+								</ns2:property>
 							</ns2:fieldSet>
 						</col>
 					</row>
@@ -74,10 +96,20 @@
 					<row>
 						<col span="12">
 							<ns2:collection id="participations">
-								<ns2:action id="addParticipant" />
-								<ns2:action id="addNewParticipant" />
-								<ns2:action id="removeParticipant" />
-								<ns2:action id="showTransportList" />
+								<ns2:describedAs>Participations link a Participant to the
+									Activity and hold Activity specific participation information</ns2:describedAs>
+								<ns2:action id="addParticipant">
+									<ns2:describedAs>Add a Participation (with existing Chats Participant) to the Activity</ns2:describedAs>
+								</ns2:action>
+								<ns2:action id="addNewParticipant">
+									<ns2:describedAs>Add a Participation (and create a new Chats Participant) to the Activity</ns2:describedAs>
+								</ns2:action>
+								<ns2:action id="removeParticipant">
+									<ns2:describedAs>Remove a Participation (unlink a Participant) from the Activity</ns2:describedAs>
+								</ns2:action>
+								<ns2:action id="showTransportList">
+									<ns2:describedAs>Show the 'transport list' of Participants (and Volunteers), participating in the Activity. Click, then from display options on right, select 'Excel' to download.</ns2:describedAs>
+								</ns2:action>
 							</ns2:collection>
 						</col>
 					</row>
@@ -88,12 +120,15 @@
 							<ns2:collection id="waitListed">
 								<ns2:action id="addWaitListedParticipant">
 									<ns2:named>Add</ns2:named>
+									<ns2:describedAs>Add a Participant to a the wait-list for the Activity.</ns2:describedAs>
 								</ns2:action>
 								<ns2:action id="removeWaitListedParticipant">
 									<ns2:named>Remove</ns2:named>
+									<ns2:describedAs>Remove a Participant from the wait-list for the Activity.</ns2:describedAs>
 								</ns2:action>
 								<ns2:action id="moveWaitListedParticipant">
 									<ns2:named>Move Across</ns2:named>
+									<ns2:describedAs>Transfer a Participant selected from those wait-listed to the Participations list for the Activity.</ns2:describedAs>
 								</ns2:action>
 							</ns2:collection>
 						</col>
@@ -106,16 +141,17 @@
 								<ns2:named>Attendances</ns2:named>
 								<ns2:action id="createAttendancesFromParticipants">
 									<ns2:named>Create Attendances</ns2:named>
-									<ns2:describedAs>Copies the Participants list to create a list of Attendances</ns2:describedAs>
+									<ns2:describedAs>Copies the Participants list to create a list of Attendances (setting their Start and End Date-times off the Activity Start and End Date-times).</ns2:describedAs>
 								</ns2:action>
 								<ns2:action id="showAttendancesList">
 									<ns2:named>Do Bulk Actions</ns2:named>
 									<ns2:describedAs>Go to a view of this Attendances list that allows bulk actions</ns2:describedAs>
 								</ns2:action>
-								<ns2:action id="showAttendanceList" >
-									<ns2:describedAs>Go at an Atttendance List containing these Attendances, provides more options</ns2:describedAs>
+								<ns2:action id="showAttendanceList">
+									<ns2:describedAs>Go at an Attendance List containing these Attendances, provides more options (such as adding other Participants than those with Participations)</ns2:describedAs>
 								</ns2:action>
 							</ns2:collection>
+
 						</col>
 					</row>
 				</tab>
@@ -143,7 +179,10 @@
 				<tab name="Calendar Notes">
 					<row>
 						<col span="12">
-							<ns2:collection id="notes" />
+							<ns2:collection id="notes">
+								<ns2:describedAs>Generic Notes linked to this Activity (and
+									optionally visible within a Calendar display)</ns2:describedAs>
+							</ns2:collection>
 						</col>
 					</row>
 				</tab>

@@ -140,7 +140,7 @@ public class DEXBulkUploadReportSinglePass {
 	}
 
 	public DEXFileUploadWrapper build() throws Exception {
-
+		
 		if (fileUploadWrapper.hasAttendanceErrors(this.startDateTime, this.endDateTime, this.regionName)) {
 			return fileUploadWrapper;
 		}

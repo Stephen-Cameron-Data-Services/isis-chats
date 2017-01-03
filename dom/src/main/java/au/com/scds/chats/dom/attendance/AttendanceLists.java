@@ -134,20 +134,34 @@ public class AttendanceLists {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named = "Find Attendances By Activity Name")
 	@MemberOrder(sequence = "4.0")
-	public List<Attend> findAttendsByActivity(
+	public List<AttendView> findAttendsByActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity Name") String name) {
-		return container.allMatches(new QueryDefault<>(Attend.class, "findAttendsByActivityName", "name", name));
+		List<Attend> attends = container.allMatches(new QueryDefault<>(Attend.class, "findAttendsByActivityName", "name", name));
+		List<AttendView> views = new ArrayList<>();
+		for(Attend attend : attends){
+			AttendView v = new AttendView();
+			v.setAttend(attend);
+			views.add(v);
+		}
+		return views;
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named = "Find Attendances By Participant")
 	@MemberOrder(sequence = "5.0")
-	public List<Attend> findAttendsByParticipant(
+	public List<AttendView> findAttendsByParticipant(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") ParticipantIdentity identity) {
 		if (identity == null)
 			return null;
-		return container.allMatches(new QueryDefault<>(Attend.class, "findAttendsByParticipant", "participant",
+		List<Attend> attends = container.allMatches(new QueryDefault<>(Attend.class, "findAttendsByParticipant", "participant",
 				participants.getParticipant(identity)));
+		List<AttendView> views = new ArrayList<>();
+		for(Attend attend : attends){
+			AttendView v = new AttendView();
+			v.setAttend(attend);
+			views.add(v);
+		}
+		return views;
 	}
 
 	public List<ParticipantIdentity> choices0FindAttendsByParticipant() {

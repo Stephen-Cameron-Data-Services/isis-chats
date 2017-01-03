@@ -16,11 +16,15 @@
 						<col span="6">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
-								<ns2:property id="person" hidden="ALL_TABLES" />
+								<ns2:property id="person" hidden="ALL_TABLES">
+									<ns2:describedAs>A Chats Participant is a role of a person in this App., this is the underlying Person record</ns2:describedAs>
+								</ns2:property>
 								<ns2:property id="volunteer" hidden="ALL_TABLES">
+									<ns2:describedAs>A Chats Volunteer is a role of a person in this App., this is the related Volunteer record if a dual role person.</ns2:describedAs>
 									<ns2:action id="makeParticipantIntoVolunteer"
 										position="BELOW">
 										<ns2:named>Make a Volunteer too</ns2:named>
+										<ns2:describedAs>Make this Chats Participant (person) have a Chats Volunteer role too.</ns2:describedAs>
 									</ns2:action>
 								</ns2:property>
 								<ns2:property id="fullName" typicalLength="30"
@@ -31,27 +35,41 @@
 							</ns2:fieldSet>
 							<ns2:fieldSet name="Mobility" id="mobility">
 								<ns2:property id="mobility" hidden="ALL_TABLES"
-									multiLine="2" />
+									multiLine="2">
+									<ns2:describedAs>Notes on the mobility of the Participant. Any text added here is placed onto Activity Transport List (joined with Activity specific notes in Participation records)</ns2:describedAs>
+								</ns2:property>
 							</ns2:fieldSet>
 						</col>
 						<col span="6">
 							<ns2:fieldSet name="Contact" id="contact">
-								<ns2:property id="homePhoneNumber" typicalLength="10" />
-								<ns2:property id="mobilePhoneNumber" typicalLength="10" />
-								<ns2:property id="emailAddress" typicalLength="20" />
+								<ns2:property id="homePhoneNumber" typicalLength="10">
+									<ns2:describedAs>Home phone number of the underlying Person (update on the Person record).</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="mobilePhoneNumber" typicalLength="10">
+									<ns2:describedAs>Mobile phone number of the underlying Person (update on the Person record).</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="emailAddress" typicalLength="20">
+									<ns2:describedAs>Email address of the underlying Person (update on the Person record).</ns2:describedAs>
+								</ns2:property>
 							</ns2:fieldSet>
 							<ns2:fieldSet name="Address" id="address">
-								<ns2:property id="streetAddress" typicalLength="40" />
-								<ns2:property id="mailAddress" hidden="ALL_TABLES" />
+								<ns2:property id="streetAddress" typicalLength="40">
+									<ns2:describedAs>Street address of the underlying Person (update on the Person record).</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="mailAddress" hidden="ALL_TABLES">
+									<ns2:describedAs>Mail address of the underlying Person (update on the Person record).</ns2:describedAs>
+								</ns2:property>
 							</ns2:fieldSet>
-							<ns2:collection id="callAllocations"/>
+							<ns2:collection id="callAllocations">
+								<ns2:named>Call Volunteers allocated</ns2:named>
+							</ns2:collection>
 						</col>
 					</row>
 				</tab>
 				<tab name="Participation">
 					<row>
 						<col span="12">
-							<ns2:collection id="participations" hidden="EVERYWHERE"/>
+							<ns2:collection id="participations" hidden="EVERYWHERE" />
 							<ns2:collection id="participationViews" />
 						</col>
 					</row>
@@ -130,6 +148,7 @@
 							<ns2:fieldSet id="DSS" name="DSS (DEX) Data">
 								<ns2:action id="updateDexData">
 									<ns2:named>Update</ns2:named>
+									<ns2:describedAs>Set or Update all DSS (DEX) Data properties at once</ns2:describedAs>		
 								</ns2:action>
 								<ns2:property id="consentToProvideDetails" hidden="ALL_TABLES" />
 								<ns2:property id="consentedForFutureContacts"
@@ -174,9 +193,11 @@
 								<ns2:named>Disabilities</ns2:named>
 								<ns2:action id="addDisability">
 									<ns2:named>Add</ns2:named>
+									<ns2:describedAs>Add a disability type code to the list.</ns2:describedAs>
 								</ns2:action>
 								<ns2:action id="removeDisability">
 									<ns2:named>Remove</ns2:named>
+									<ns2:describedAs>Remove a disability type code to the list.</ns2:describedAs>
 								</ns2:action>
 							</ns2:collection>
 						</col>
@@ -187,10 +208,12 @@
 						<col span="12">
 							<ns2:collection id="clientNotes">
 								<ns2:action id="addClientNote">
-									<ns2:named>Add Note</ns2:named>
+									<ns2:named>Add</ns2:named>
+									<ns2:describedAs>Add a Client Note for this Participant client.</ns2:describedAs>
 								</ns2:action>
 								<ns2:action id="removeClientNote">
-									<ns2:named>Remove Note</ns2:named>
+									<ns2:named>Remove</ns2:named>
+									<ns2:describedAs>Remove a Client Note for this Participant client.</ns2:describedAs>
 								</ns2:action>
 							</ns2:collection>
 						</col>
@@ -199,7 +222,9 @@
 				<tab name="Calendar Notes">
 					<row>
 						<col span="12">
-							<ns2:collection id="notes" />
+							<ns2:collection id="notes">
+								<ns2:named>Calendar Notes</ns2:named>
+							</ns2:collection>
 						</col>
 					</row>
 				</tab>

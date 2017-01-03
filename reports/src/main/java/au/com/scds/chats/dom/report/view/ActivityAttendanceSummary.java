@@ -13,26 +13,36 @@ import javax.jdo.annotations.Query;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.ViewModel;
-import org.joda.time.DateTime;
 
 @ViewModel
-@DomainObject(editing = Editing.DISABLED)
+//@DomainObject(editing = Editing.DISABLED)
 @PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "ActivityAttendanceSummary", extensions = {
 		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW ActivityAttendanceSummary "
-				+ "( " + "  {this.activityId}, " + "  {this.activityName}, " + "  {this.regionName}, "
-				+ "  {this.startDateTime}, " + "  {this.cancelled}, " + "  {this.attendedCount}, "
-				+ "  {this.notAttendedCount}, " + "  {this.hasStartAndEndDateTimesCount}, "
-				+ "  {this.minStartDateTime}, " + "  {this.maxStartDateTime}, " + "  {this.minEndDateTime}, "
-				+ "  {this.maxEndDateTime} " + ") AS " + "SELECT " + "  activity.activity_id as activityId, "
-				+ "  activity.name AS activityName, " + "  activity.region_name AS regionName, "
-				+ "  activity.startdatetime AS startDateTime, " + "  activity.cancelled, "
+				+ "( " + "  {this.activityId}, "
+				+ "  {this.activityName}, "
+				+ "  {this.regionName}, "
+				+ "  {this.startDateTime}, "
+				+ "  {this.cancelled}, "
+				+ "  {this.attendedCount}, "
+				+ "  {this.notAttendedCount}, "
+				+ "  {this.hasStartAndEndDateTimesCount}, "
+				+ "  {this.minTimeDiff}, "
+				+ "  {this.maxTimeDiff} "
+				+ ") AS "
+				+ "SELECT "
+				+ "  activity.activity_id as activityId, "
+				+ "  activity.name AS activityName, "
+				+ "  activity.region_name AS regionName, "
+				+ "  activity.startdatetime AS startDateTime, "
+				+ "  activity.cancelled, "
 				+ "  sum(case when attend.attended = TRUE then 1 else 0 end) as attendedCount, "
 				+ "  sum(case when attend.attended = FALSE then 1 else 0 end) as notAttendedCount, "
 				+ "  sum(case when attend.attended = TRUE AND not isnull(attend.startdatetime) AND not isnull(attend.enddatetime) then 1 else 0 end) as hasStartAndEndDateTimesCount, "
-				+ "  min(attend.startdatetime) as minStartDateTime, "
-				+ "  max(attend.startdatetime) as maxStartDateTime, " + "  min(attend.enddatetime) as minEndDateTime, "
-				+ "  max(attend.enddatetime) as maxEndDateTime " + "FROM " + "  activity " + "LEFT OUTER JOIN"
-				+ "  attend " + "ON " + "  attend.activity_activity_id = activity.activity_id " + "GROUP BY"
+				+ "  MIN((TO_SECONDS(attend.enddatetime) - TO_SECONDS(attend.startdatetime))) AS minTimeDiff,"
+				+ "  MAX((TO_SECONDS(attend.enddatetime) - TO_SECONDS(attend.startdatetime))) AS maxTimeDiff"
+				+ "FROM " + "  activity " + "LEFT OUTER JOIN"
+				+ "  attend " + "ON " + "  attend.activity_activity_id = activity.activity_id "
+				+ "GROUP BY"
 				+ "  activity.activity_id") })
 @Queries({
 		@Query(name = "allActivityAttendanceSummary", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityAttendanceSummary"),
@@ -41,18 +51,16 @@ import org.joda.time.DateTime;
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ActivityAttendanceSummary implements Comparable<ActivityAttendanceSummary> {
 
-	private Long activityId;
-	private String activityName;
-	private String regionName;
-	private Date startDateTime;
-	private Boolean cancelled;
-	private Integer attendedCount;
-	private Integer notAttendedCount;
-	private Integer hasStartAndEndDateTimesCount;
-	private Date minStartDateTime;
-	private Date maxStartDateTime;
-	private Date minEndDateTime;
-	private Date maxEndDateTime;
+	public Long activityId;
+	public String activityName;
+	public String regionName;
+	public Date startDateTime;
+	public Boolean cancelled;
+	public Integer attendedCount;
+	public Integer notAttendedCount;
+	public Integer hasStartAndEndDateTimesCount;
+	public Integer minTimeDiff;
+	public Integer maxTimeDiff;
 
 	public Long getActivityId() {
 		return activityId;
@@ -118,65 +126,22 @@ public class ActivityAttendanceSummary implements Comparable<ActivityAttendanceS
 		this.hasStartAndEndDateTimesCount = hasStartAndEndDateTimesCount;
 	}
 
-	public Date getMinStartDateTime() {
-		return minStartDateTime;
+	public Integer getMinTimeDiff() {
+		return minTimeDiff;
 	}
 
-	public void setMinStartDateTime(Date minStartDateTime) {
-		this.minStartDateTime = minStartDateTime;
+	public void setMinTimeDiff(Integer minTimeDiff) {
+		this.minTimeDiff = minTimeDiff;
 	}
 
-	public Date getMaxStartDateTime() {
-		return maxStartDateTime;
+	public Integer getMaxTimeDiff() {
+		return maxTimeDiff;
 	}
 
-	public void setMaxStartDateTime(Date maxStartDateTime) {
-		this.maxStartDateTime = maxStartDateTime;
-	}
-
-	public Date getMinEndDateTime() {
-		return minEndDateTime;
-	}
-
-	public void setMinEndDateTime(Date minEndDateTime) {
-		this.minEndDateTime = minEndDateTime;
-	}
-
-	public Date getMaxEndDateTime() {
-		return maxEndDateTime;
-	}
-
-	public void setMaxEndDateTime(Date maxEndDateTime) {
-		this.maxEndDateTime = maxEndDateTime;
-	}
-
-	public String getMinStartDateTimeName() {
-		if (getMinStartDateTime() == null)
-			return null;
-		else
-			return getMinStartDateTime().toString();
-	}
-
-	public String getMaxStartDateTimeName() {
-		if (getMaxStartDateTime() == null)
-			return null;
-		else
-			return getMaxStartDateTime().toString();
-	}
-
-	public String getMinEndDateTimeName() {
-		if (getMinEndDateTime() == null)
-			return null;
-		else
-			return getMinEndDateTime().toString();
-	}
-
-	public String getMaxEndDateTimeName() {
-		if (getMaxEndDateTime() == null)
-			return null;
-		else
-			return getMaxEndDateTime().toString();
-	}
+	public void setMaxTimeDiff(Integer maxTimeDiff) {
+		this.maxTimeDiff = maxTimeDiff;
+	}	
+	
 
 	@Override
 	public int compareTo(ActivityAttendanceSummary o) {
@@ -205,5 +170,7 @@ public class ActivityAttendanceSummary implements Comparable<ActivityAttendanceS
 		} else
 			return 0;
 	}
+
+
 
 }

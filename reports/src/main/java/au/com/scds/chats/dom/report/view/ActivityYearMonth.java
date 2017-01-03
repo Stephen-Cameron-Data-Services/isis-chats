@@ -44,7 +44,7 @@ import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 						+ "FROM "
 						+ "  activity "
 						+ "WHERE "
-						+ "  activity.classifier = 'ACTIVITY' "
+						+ "  activity.classifier in ('ACTIVITY','PACTIVITY')"
 						+ "GROUP BY "
 						+ "  activity.name, "
 						+ "  activity.region_name, "

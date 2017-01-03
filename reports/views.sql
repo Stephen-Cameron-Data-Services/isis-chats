@@ -1,3 +1,27 @@
+DROP VIEW ActivityAttendanceSummary;
+CREATE VIEW ActivityAttendanceSummary 
+AS 
+SELECT 
+  activity.activity_id as activityId, 
+  activity.name AS activityName, 
+  activity.region_name AS regionName, 
+  activity.startdatetime AS startDateTime, 
+  activity.cancelled, 
+  sum(case when attend.attended = TRUE then 1 else 0 end) as attendedCount, 
+  sum(case when attend.attended = FALSE then 1 else 0 end) as notAttendedCount, 
+  sum(case when attend.attended = TRUE AND not isnull(attend.startdatetime) AND not isnull(attend.enddatetime) then 1 else 0 end) as hasStartAndEndDateTimesCount, 
+  MIN((TO_SECONDS(attend.enddatetime) - TO_SECONDS(attend.startdatetime))) AS minTimeDiff,
+  MAX((TO_SECONDS(attend.enddatetime) - TO_SECONDS(attend.startdatetime))) AS maxTimeDiff
+FROM  
+  activity  
+LEFT OUTER JOIN
+  attend
+ON
+   attend.activity_activity_id = activity.activity_id 
+GROUP BY
+  activity.activity_id;
+
+
 #DROP VIEW ActivityYearMonth;
 CREATE VIEW ActivityYearMonth AS
 SELECT
@@ -7,7 +31,7 @@ SELECT
 FROM
   activity
 WHERE
-  activity.classifier = 'ACTIVITY'
+  activity.classifier in ('ACTIVITY','PACTIVITY')
 GROUP BY
   activity.name,
   activity.region_name,

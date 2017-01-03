@@ -18,6 +18,7 @@ import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
+import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
 import org.apache.isis.applib.services.jaxb.JaxbService;
@@ -40,13 +41,15 @@ import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
 @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "200")
 public class DEXReporting {
 
+	@Programmatic
 	public List<ParticipantActivityByMonthForDEX> listAttendanceByYearMonthAndRegion(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Year-Month (YYYYMM)") Integer yearMonth,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Region") String region) {
 		return container.allMatches(new QueryDefault<>(ParticipantActivityByMonthForDEX.class,
 				"allParticipantActivityByMonthForDEXForMonthAndRegion", "yearMonth", yearMonth, "region", region));
 	}
-
+	
+	@Programmatic
 	public List<String> choices1ListAttendanceByYearMonthAndRegion() {
 		return regions.allNames();
 	}
@@ -91,36 +94,6 @@ public class DEXReporting {
 		return container.allMatches(
 				new QueryDefault<>(ActivityAttendanceSummary.class, "allActivityAttendanceSummaryForPeriodAndRegion",
 						"startDateTime", start.toDate(), "endDateTime", end.toDate(), "region", regionName));
-	}
-	
-	public List<ActivityAttendanceSummary> listAttendanceData() {
-		ArrayList<ActivityAttendanceSummary> list = new ArrayList<>();
-		Calendar calendar1 = new GregorianCalendar(2015,0,29);
-		ActivityAttendanceSummary temp1 = new ActivityAttendanceSummary();
-		temp1.setActivityId(1000L);
-		temp1.setActivityName("Activity 1");
-		temp1.setAttendedCount(10);
-		temp1.setCancelled(false);
-		temp1.setRegionName("SOUTH");
-		temp1.setMaxEndDateTime(calendar1.getTime());
-		temp1.setMinEndDateTime(calendar1.getTime());
-		temp1.setMaxStartDateTime(calendar1.getTime());
-		temp1.setMinStartDateTime(calendar1.getTime());
-		list.add(temp1);
-
-		Calendar calendar2 = new GregorianCalendar(2015,0,30);
-		ActivityAttendanceSummary temp2 = new ActivityAttendanceSummary();
-		temp2.setActivityId(1001L);
-		temp2.setActivityName("Activity 2");
-		temp2.setAttendedCount(20);
-		temp2.setCancelled(true);
-		temp2.setRegionName("NORTH");
-		temp2.setMaxEndDateTime(calendar2.getTime());
-		temp2.setMinEndDateTime(calendar2.getTime());
-		temp2.setMaxStartDateTime(calendar2.getTime());
-		temp2.setMinStartDateTime(calendar2.getTime());
-		list.add(temp2);
-		return list;
 	}
 
 	public List<String> choices2CheckAttendanceDataForMonth() {

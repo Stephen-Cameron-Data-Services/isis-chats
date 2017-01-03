@@ -16,10 +16,18 @@
 						<col span="6">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
-								<ns2:property id="allocatedVolunteer" />
-								<ns2:property id="calendarDate" />
-								<ns2:property id="totalCalls" />
-								<ns2:property id="completedCalls" />
+								<ns2:property id="allocatedVolunteer">
+									<ns2:describedAs>The Volunteer to whom this set of calls to Chats Participants has been allocated.</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="calendarDate">
+									<ns2:describedAs>The date on which the set of calls to Chats Participants are to be made.</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="totalCalls">
+									<ns2:describedAs>The total number of calls in the set.</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="completedCalls">
+									<ns2:describedAs>The number of calls in the set that have been completed.</ns2:describedAs>
+								</ns2:property>
 							</ns2:fieldSet>
 						</col>
 					</row>
@@ -28,7 +36,10 @@
 					<row>
 						<col span="12">
 							<ns2:collection id="scheduledCalls">
-								<ns2:action id="addNewCall" />
+								<ns2:action id="addNewCall">
+									<ns2:named>Add</ns2:named>
+									<ns2:describedAs>Create a new Call to a Participant record and add the set of calls listed</ns2:describedAs>
+								</ns2:action>
 							</ns2:collection>
 						</col>
 					</row>
@@ -39,9 +50,11 @@
 							<ns2:collection id="volunteeredTimes">
 								<ns2:action id="addVolunteeredTime">
 									<ns2:named>Add</ns2:named>
+									<ns2:describedAs>Create an Volunteered Time record and add to the list.</ns2:describedAs>
 								</ns2:action>
 								<ns2:action id="removeVolunteeredTime">
 									<ns2:named>Remove</ns2:named>
+									<ns2:describedAs>Remove an Volunteered Time record from the list and delete it.</ns2:describedAs>
 								</ns2:action>
 							</ns2:collection>
 						</col>
@@ -56,7 +69,8 @@
 								<ns2:action id="downloadJdoMetadata" position="PANEL_DROPDOWN" />
 								<ns2:action id="rebuildMetamodel" position="PANEL_DROPDOWN" />
 								<ns2:property id="datanucleusIdLong" hidden="ALL_TABLES" />
-								<ns2:property id="datanucleusVersionTimestamp" hidden="ALL_TABLES" />
+								<ns2:property id="datanucleusVersionTimestamp"
+									hidden="ALL_TABLES" />
 								<ns2:property id="datanucleusVersionLong" hidden="ALL_TABLES" />
 								<ns2:property id="createdBy" hidden="ALL_TABLES" />
 								<ns2:property id="createdOn" hidden="ALL_TABLES" />

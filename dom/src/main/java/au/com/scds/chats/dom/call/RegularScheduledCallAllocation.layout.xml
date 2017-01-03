@@ -16,9 +16,15 @@
 						<col span="6">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
-								<ns2:property id="volunteer" hidden="PARENTED_TABLES"/>
-								<ns2:property id="participant" />
-								<ns2:property id="approximateCallTime" />
+								<ns2:property id="volunteer" hidden="PARENTED_TABLES">
+									<ns2:describedAs>Chats Calls Volunteer making the calls</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="participant">
+									<ns2:describedAs>Chats Participant receiving calls from the allocated Chats Calls Volunteer.</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="approximateCallTime">
+									<ns2:describedAs>Approximate time of day at which calls will be made to the Participant by the Calls Volunteer</ns2:describedAs>
+								</ns2:property>
 							</ns2:fieldSet>
 						</col>
 					</row>
@@ -32,7 +38,8 @@
 								<ns2:action id="downloadJdoMetadata" position="PANEL_DROPDOWN" />
 								<ns2:action id="rebuildMetamodel" position="PANEL_DROPDOWN" />
 								<ns2:property id="datanucleusIdLong" hidden="ALL_TABLES" />
-								<ns2:property id="datanucleusVersionTimestamp" hidden="ALL_TABLES" />
+								<ns2:property id="datanucleusVersionTimestamp"
+									hidden="ALL_TABLES" />
 								<ns2:property id="datanucleusVersionLong" hidden="ALL_TABLES" />
 								<ns2:property id="createdBy" hidden="ALL_TABLES" />
 								<ns2:property id="createdOn" hidden="ALL_TABLES" />

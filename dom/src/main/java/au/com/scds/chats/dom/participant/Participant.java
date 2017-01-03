@@ -55,8 +55,6 @@ import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.Volunteers;
 
 @DomainObject(objectType = "PARTICIPANT")
-@DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Unique(name = "Participant_UNQ", members = { "person", "region" })
 @Queries({

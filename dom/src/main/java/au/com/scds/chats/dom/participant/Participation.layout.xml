@@ -18,19 +18,26 @@
 								unreferencedProperties="true">
 								<ns2:action id="updateGeneral">
 									<ns2:named>Update</ns2:named>
+									<ns2:describedAs>Set or Update all General properties at once.</ns2:describedAs>
 								</ns2:action>
-								<ns2:property id="activity" hidden="PARENTED_TABLES" />
-								<ns2:property id="participant" />
+								<ns2:property id="activity" hidden="PARENTED_TABLES">
+									<ns2:describedAs>Activity to which this Participation relates.</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="participant">
+									<ns2:describedAs>Participant to which this Participation relates.</ns2:describedAs>
+								</ns2:property>
 								<ns2:property id="roleId" hidden="EVERYWHERE" />
 								<ns2:property id="oldId" hidden="EVERYWHERE" />
 								<ns2:property id="arrivingTransportType" hidden="EVERYWHERE" />
 								<ns2:property id="arrivingTransportTypeName">
 									<ns2:named>Arriving Transport</ns2:named>
+									<ns2:describedAs>The transport used to transport the Participant to the Activity.</ns2:describedAs>
 								</ns2:property>
 								<ns2:property id="pickupTime" hidden="PARENTED_TABLES" />
 								<ns2:property id="departingTransportType" hidden="EVERYWHERE" />
 								<ns2:property id="departingTransportTypeName">
 									<ns2:named>Departing Transport</ns2:named>
+									<ns2:describedAs>The transport used to transport the Participant from the Activity.</ns2:describedAs>
 								</ns2:property>
 								<ns2:property id="dropoffTime" hidden="PARENTED_TABLES" />
 							</ns2:fieldSet>
@@ -39,16 +46,19 @@
 							<ns2:fieldSet name="Transport Hub" id="hub">
 								<ns2:action id="updateTransportHub">
 									<ns2:named>Update</ns2:named>
+									<ns2:describedAs>Set or change the Transport Hub.</ns2:describedAs>
 								</ns2:action>
-								<ns2:property id="transportHub" hidden="EVERYWHERE" />
-								<ns2:property id="transportHubName" >
+								<ns2:property id="transportHubName">
 									<ns2:named>Transport Hub</ns2:named>
+									<ns2:describedAs>The Transport Hub via which the Participant is transported to the Activity.</ns2:describedAs>
 								</ns2:property>
+								<ns2:property id="transportHub" hidden="EVERYWHERE" />
 							</ns2:fieldSet>
-							<ns2:property id="transportTime" />
 							<ns2:fieldSet name="Transport Notes" id="notes">
 								<ns2:property id="transportNotes" multiLine="5"
-									labelPosition="NONE" />
+									labelPosition="NONE">
+									<ns2:describedAs>Note</ns2:describedAs>
+								</ns2:property>
 							</ns2:fieldSet>
 						</col>
 					</row>

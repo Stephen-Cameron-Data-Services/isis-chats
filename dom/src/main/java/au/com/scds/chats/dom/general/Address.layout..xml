@@ -15,12 +15,11 @@
 					<row>
 						<col span="6">
 							<ns2:fieldSet name="General" id="general">
-								<ns2:property id="name" />
-								<ns2:property id="street1" />
-								<ns2:property id="street2" />
-								<ns2:property id="suburb" />
-								<ns2:property id="postcode" />
-								<ns2:property id="location" />
+								<ns2:property id="name"></ns2:property>
+								<ns2:property id="street1"></ns2:property>
+								<ns2:property id="street2"></ns2:property>
+								<ns2:property id="suburb"></ns2:property>
+								<ns2:property id="postcode"></ns2:property>
 								<ns2:property id="latitude" hidden="EVERYWHERE" />
 								<ns2:property id="longitude" hidden="EVERYWHERE" />
 							</ns2:fieldSet>
@@ -43,6 +42,7 @@
 								<ns2:property id="createdOn" hidden="ALL_TABLES" />
 								<ns2:property id="lastModifiedBy" hidden="ALL_TABLES" />
 								<ns2:property id="lastModifiedOn" hidden="ALL_TABLES" />
+								<ns2:property id="location" />
 								<ns2:property id="region" hidden="EVERYWHERE" />
 								<ns2:property id="regionName" />
 							</ns2:fieldSet>
@@ -50,6 +50,6 @@
 					</row>
 				</tab>
 			</tabGroup>
-		<col span="8" unreferencedCollections="true" />
+			<col span="8" unreferencedCollections="true" />
 	</row>
 </grid>

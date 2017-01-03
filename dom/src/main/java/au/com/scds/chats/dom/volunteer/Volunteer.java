@@ -33,6 +33,7 @@ import javax.jdo.annotations.*;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.CollectionLayout;
+import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
@@ -64,12 +65,14 @@ import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 
+@DomainObject(objectType = "VOLUNTEER")
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Queries({
 		@Query(name = "listVolunteersByStatus", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer " + "WHERE status == :status"),
 		@Query(name = "findVolunteersBySurname", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer " + "WHERE person.surname.indexOf(:surname) >= 0"), })
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
+
 @Unique(name = "Volunteer_UNQ", members = { "person", "region" })
 public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* Locatable */ Comparable<Volunteer> {
 
@@ -89,7 +92,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* 
 		return getPerson().getFullname();
 	}
 
-	@CollectionLayout(render=RenderType.EAGERLY)
+	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<RegularScheduledCallAllocation> getCallAllocations() {
 		return callAllocations;
 	}
@@ -155,7 +158,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* 
 		return null;
 	}
 
-	@CollectionLayout(render=RenderType.EAGERLY)
+	@CollectionLayout(render = RenderType.EAGERLY)
 	public SortedSet<CalendarDayCallSchedule> getScheduled() {
 		return callSchedules;
 	}

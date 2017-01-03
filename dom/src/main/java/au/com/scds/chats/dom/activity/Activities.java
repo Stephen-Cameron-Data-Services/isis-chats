@@ -142,21 +142,23 @@ public class Activities {
 	@Programmatic
 	public Activity findActivity(String name, DateTime startDateTime) {
 		// find the region of the current user
-		UserMemento user = userService.getUser();
-		Region region = null;
-		if (user != null) {
-			ApplicationUser appUser = userRepository.findByUsername(user.getName());
-			if (appUser != null) {
-				String regionName = AbstractChatsDomainEntity.regionNameOfApplicationUser(appUser);
-				region = regionsRepo.regionForName(regionName);
+		if (userService != null) {
+			UserMemento user = userService.getUser();
+			Region region = null;
+			if (user != null) {
+				ApplicationUser appUser = userRepository.findByUsername(user.getName());
+				if (appUser != null) {
+					String regionName = AbstractChatsDomainEntity.regionNameOfApplicationUser(appUser);
+					region = regionsRepo.regionForName(regionName);
+				}
 			}
-		}
-		// see if there is already an existing Activity
-		List<Activity> activities = container.allMatches(
-				new QueryDefault<>(Activity.class, "findActivityByUpperCaseName", "name", name.trim().toUpperCase()));
-		for (Activity activity : activities) {
-			if (activity.getStartDateTime().equals(startDateTime) && activity.getRegion().equals(region)) {
-				return activity;
+			// see if there is already an existing Activity
+			List<Activity> activities = container.allMatches(new QueryDefault<>(Activity.class,
+					"findActivityByUpperCaseName", "name", name.trim().toUpperCase()));
+			for (Activity activity : activities) {
+				if (activity.getStartDateTime().equals(startDateTime) && activity.getRegion().equals(region)) {
+					return activity;
+				}
 			}
 		}
 		return null;
