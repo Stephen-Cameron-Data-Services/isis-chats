@@ -434,7 +434,7 @@ public class Participant extends AbstractChatsDomainEntity
 		this.loneliness = loneliness;
 	}
 
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "false")
 	public boolean isConsentToProvideDetails() {
 		return consentToProvideDetails;
 	}
@@ -443,7 +443,7 @@ public class Participant extends AbstractChatsDomainEntity
 		this.consentToProvideDetails = consentToProvideDetails;
 	}
 
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "false")
 	public boolean isConsentedForFutureContacts() {
 		return consentedForFutureContacts;
 	}
@@ -452,7 +452,7 @@ public class Participant extends AbstractChatsDomainEntity
 		this.consentedForFutureContacts = consentedForFutureContacts;
 	}
 
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "false")
 	public boolean isHasCarer() {
 		return hasCarer;
 	}
