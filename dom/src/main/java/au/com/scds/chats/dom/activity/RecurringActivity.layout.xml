@@ -41,7 +41,9 @@
 								</ns2:property>
 							</ns2:fieldSet>
 							<ns2:fieldSet name="Scheduling" id="scheduling">
-								<ns2:property id="periodicity" />
+								<ns2:property id="periodicity" >
+									<ns2:describedAs>Interval to set the (approx.) Start Date-time for each child Activity added (via the Add button on Scheduled Tab).</ns2:describedAs>
+								</ns2:property>
 							</ns2:fieldSet>
 						</col>
 						<col span="6">

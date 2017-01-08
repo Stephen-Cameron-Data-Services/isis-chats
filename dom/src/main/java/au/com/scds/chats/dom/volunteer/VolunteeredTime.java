@@ -46,6 +46,8 @@ import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.util.ObjectContracts;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.StartAndFinishDateTime;
@@ -62,9 +64,10 @@ public class VolunteeredTime extends StartAndFinishDateTime implements Comparabl
 	private Boolean includeAsParticipation;
 
 	private static DecimalFormat hoursFormat = new DecimalFormat("#,##0.00");
+	private static DateTimeFormatter titleFormatter = DateTimeFormat.forPattern("dd-MMM-yyyy");
 
 	public String title() {
-		return "Volunteered Time";
+		return getVolunteer().getFullName() + " on " + titleFormatter.print(getStartDateTime());
 	}
 	
 	@Property(editing=Editing.DISABLED)
