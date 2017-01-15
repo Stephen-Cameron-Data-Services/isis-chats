@@ -76,25 +76,23 @@ public class Volunteers {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "3")
-	@SuppressWarnings("all")
 	public List<Volunteer> listActiveVolunteers() {
 		return container
 				.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.ACTIVE));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "4")
-	@SuppressWarnings("all")
 	public List<Volunteer> listInactiveVolunteers() {
 		return container
 				.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.INACTIVE));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "5")
 	public List<Volunteer> listToExitVolunteers() {
 		return container
@@ -102,7 +100,7 @@ public class Volunteers {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
 	public List<Volunteer> findBySurname(@ParameterLayout(named = "Surname") final String surname,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Status") final Status status) {
@@ -289,8 +287,9 @@ public class Volunteers {
 		return newList;
 	}
 
+
 	@Inject
-	DomainObjectContainer container;
+	protected DomainObjectContainer container;
 
 	@Inject
 	protected Persons persons;
@@ -309,6 +308,8 @@ public class Volunteers {
 
 	@Inject
 	protected UserService userService;
+
+
 
 
 

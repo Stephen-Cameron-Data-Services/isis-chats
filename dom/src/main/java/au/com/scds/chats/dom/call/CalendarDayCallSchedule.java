@@ -75,18 +75,20 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 @DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 @MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
-@Queries({ @Query(name = "findCallSchedule", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.call.CalendarDayCallSchedule "),
-		@Query(name = "findCallScheduleByVolunteer", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.call.CalendarDayCallSchedule WHERE allocatedVolunteer == :volunteer ") })
-public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implements CalendarEventable, Comparable<CalendarDayCallSchedule> {
+@Queries({
+		@Query(name = "findCallSchedule", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.call.CalendarDayCallSchedule "),
+		@Query(name = "findCallScheduleByVolunteer", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.call.CalendarDayCallSchedule WHERE allocatedVolunteer == :volunteer ") })
+public class CalendarDayCallSchedule extends AbstractChatsDomainEntity
+		implements CalendarEventable, Comparable<CalendarDayCallSchedule> {
 
 	private LocalDate calendarDate;
 	private Volunteer allocatedVolunteer;
-	private Integer totalCalls = 0;
-	private Integer completedCalls = 0;
 	@Persistent(mappedBy = "callSchedule")
 	private SortedSet<ScheduledCall> scheduledCalls = new TreeSet<>();
 	@Persistent(mappedBy = "callSchedule")
-	@Order(column="cs_idx")
+	@Order(column = "cs_idx")
 	protected List<VolunteeredTimeForCalls> volunteeredTimes = new ArrayList<>();
 
 	public CalendarDayCallSchedule() {
@@ -94,7 +96,8 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	}
 
 	// for mock testing
-	public CalendarDayCallSchedule(DomainObjectContainer container, Calls schedules, Participants participants, Volunteers volunteers) {
+	public CalendarDayCallSchedule(DomainObjectContainer container, Calls schedules, Participants participants,
+			Volunteers volunteers) {
 		this.container = container;
 		this.callsRepo = schedules;
 		this.participantsRepo = participants;
@@ -123,23 +126,26 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 		this.allocatedVolunteer = volunteer;
 	}
 
-	@Column(allowsNull = "false")
+	@Programmatic
 	public Integer getTotalCalls() {
-		return totalCalls;
+		return getScheduledCalls().size();
 	}
 
-	private void setTotalCalls(Integer total) {
-		this.totalCalls = total;
-	}
-
-	@Column(allowsNull = "false")
+	// @Column(allowsNull = "false")
 	public Integer getCompletedCalls() {
-		return completedCalls;
+		int i = 0;
+		for (ScheduledCall call : getScheduledCalls()) {
+			if (call.getStatus() != null && call.getStatus().equals(ScheduledCallStatus.Completed)) {
+				i++;
+			}
+		}
+		return i;
 	}
 
-	private void setCompletedCalls(Integer completed) {
-		this.completedCalls = completed;
-	}
+	/*
+	 * private void setCompletedCalls(Integer completed) { this.completedCalls =
+	 * completed; }
+	 */
 
 	@CollectionLayout(paged = 20, render = RenderType.EAGERLY)
 	public SortedSet<ScheduledCall> getScheduledCalls() {
@@ -154,7 +160,7 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	public void setVolunteeredTimes(List<VolunteeredTimeForCalls> volunteeredTimes) {
 		this.volunteeredTimes = volunteeredTimes;
 	}
-	
+
 	// used by public addVolunteerdTime actions in extending classes
 	@Programmatic
 	public void addVolunteeredTime(VolunteeredTimeForCalls time) {
@@ -162,15 +168,16 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 			return;
 		getVolunteeredTimes().add(time);
 	}
-	
+
 	@Action()
-	public CalendarDayCallSchedule addVolunteeredTime(Volunteer volunteer, 
-			@ParameterLayout(named = "Started At") DateTime startDateTime, 
+	public CalendarDayCallSchedule addVolunteeredTime(Volunteer volunteer,
+			@ParameterLayout(named = "Started At") DateTime startDateTime,
 			@ParameterLayout(named = "Finished At") DateTime endDateTime) {
-		VolunteeredTimeForCalls time = volunteersRepo.createVolunteeredTimeForCalls(volunteer, this, startDateTime, endDateTime);
+		VolunteeredTimeForCalls time = volunteersRepo.createVolunteeredTimeForCalls(volunteer, this, startDateTime,
+				endDateTime);
 		return this;
 	}
-	
+
 	public List<Volunteer> choices0AddVolunteeredTime() {
 		return volunteersRepo.listActiveVolunteers();
 	}
@@ -178,41 +185,38 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	public Volunteer default0AddVolunteeredTime() {
 		return getAllocatedVolunteer();
 	}
-	
-	public String validateAddVolunteeredTime(Volunteer volunteer, 
-			 DateTime startDateTime, 
-			 DateTime endDateTime) {
+
+	public String validateAddVolunteeredTime(Volunteer volunteer, DateTime startDateTime, DateTime endDateTime) {
 		return StartAndFinishDateTime.validateStartAndFinishDateTimes(startDateTime, endDateTime);
 	}
-	
+
 	@Action()
-	public CalendarDayCallSchedule removeVolunteeredTime(
-			VolunteeredTimeForCalls time) {
-		if(time != null){
+	public CalendarDayCallSchedule removeVolunteeredTime(VolunteeredTimeForCalls time) {
+		if (time != null) {
 			getVolunteeredTimes().remove(time);
 			volunteersRepo.deleteVolunteeredTimeForCalls(time);
 		}
 		return this;
 	}
-	
-	public List<VolunteeredTimeForCalls> choices0RemoveVolunteeredTime(){
+
+	public List<VolunteeredTimeForCalls> choices0RemoveVolunteeredTime() {
 		return getVolunteeredTimes();
 	}
-	
+
 	@Programmatic
-	public CalendarDayCallSchedule addNewCall(final Participant participant,  final DateTime dateTime) throws Exception {
-		ScheduledCall call = scheduleCall(participant, dateTime.toLocalTime());
-		return this;
+	public ScheduledCall addNewCall(final Participant participant, final DateTime dateTime) {
+		return callsRepo.createScheduledCall(this, participant, dateTime.toLocalTime());
 	}
 
 	@Action()
-	public CalendarDayCallSchedule addNewCall(@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named="Participant") final ParticipantIdentity identity, 
+	public CalendarDayCallSchedule addNewCall(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") final ParticipantIdentity identity,
 			@Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) throws Exception {
 		Participant participant = participantsRepo.getParticipant(identity);
 		addNewCall(participant, dateTime);
 		return this;
 	}
-	
+
 	public List<ParticipantIdentity> choices0AddNewCall() {
 		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
@@ -220,49 +224,44 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity implement
 	public DateTime default1AddNewCall() {
 		return new DateTime(getCalendarDate().toDateTimeAtCurrentTime());
 	}
-
+	
 	@Programmatic
-	public synchronized ScheduledCall scheduleCall(final Participant participant, final LocalTime time) throws Exception {
-		if (time == null) {
-			return null;
+	public synchronized void addCall(final ScheduledCall call) {
+		if (call != null && !getScheduledCalls().contains(call)) {
+			getScheduledCalls().add(call);	
+			call.setCallSchedule(this);
 		}
-		ScheduledCall call = callsRepo.createScheduledCall(this, participant, time);
-		call.setAllocatedVolunteer(getAllocatedVolunteer());
-		return call;
+		return;
 	}
-
-	// call-back for CallSchedules.createScheduledCall, see scheduleCall above.
-	@Programmatic
-	public void addCall(ScheduledCall call) throws Exception {
-		setTotalCalls(getTotalCalls() + 1);
-		getScheduledCalls().add(call);
-	}
-
-	@Programmatic
-	public synchronized ScheduledCall completeCall(final ScheduledCall call, final Boolean isComplete) throws Exception {
-		if (call == null)
-			return null;
-		if (isComplete == null)
-			return null;
-		if (getScheduledCalls().contains(call)) {
-			if (!call.getIsCompleted() && isComplete) {
-				call.setIsCompletedViaSchedule(this, true);
-				setCompletedCalls(getCompletedCalls() + 1);
-			} else if (call.getIsCompleted() && !isComplete) {
-				call.setIsCompletedViaSchedule(this, false);
-				setCompletedCalls(getCompletedCalls() - 1);
-			}
-		}
-		return call;
-	}
-
-	@Programmatic
-	public synchronized void removeCall(final ScheduledCall call) {
+	
+	@Action
+	public CalendarDayCallSchedule removeAndDeleteCall(final ScheduledCall call) {
 		if (call != null && getScheduledCalls().contains(call)) {
 			if (call.getIsCompleted()) {
-				container.informUser("call is completed and cannot be removed");
+				container.informUser("call is completed and cannot be deleted");
 			} else {
-				setTotalCalls(getTotalCalls() - 1);
+				callsRepo.deleteCall(call);
+			}
+		}
+		return this;
+	}
+	
+	public List<ScheduledCall> choices0RemoveAndDeleteCall(){
+		List<ScheduledCall> calls = new ArrayList<>();
+		for(ScheduledCall call : getScheduledCalls()){
+			if(!call.getIsCompleted()){
+				calls.add(call);
+			}
+		}
+		return calls;
+	}
+	
+	@Programmatic
+	public synchronized void releaseCall(final ScheduledCall call) {
+		if (call != null && getScheduledCalls().contains(call)) {
+			if (call.getIsCompleted()) {
+				container.informUser("call is Completed and cannot be released from schedule");
+			} else {
 				getScheduledCalls().remove(call);
 			}
 		}

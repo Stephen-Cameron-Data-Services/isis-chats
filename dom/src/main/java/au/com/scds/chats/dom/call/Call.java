@@ -20,6 +20,8 @@
 package au.com.scds.chats.dom.call;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.jdo.annotations.*;
@@ -33,6 +35,9 @@ import org.joda.time.Period;
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.StartAndFinishDateTime;
 import au.com.scds.chats.dom.participant.Participant;
+import au.com.scds.chats.dom.volunteer.Volunteer;
+import au.com.scds.chats.dom.volunteer.VolunteerRole;
+import au.com.scds.chats.dom.volunteer.Volunteers;
 
 /**
  * A Call is a logged call to a Participant.
@@ -107,11 +112,16 @@ public abstract class Call extends StartAndFinishDateTime {
 			return null;
 		}
 	}
+	
+	@Inject()
+	DomainObjectContainer container;
 
 	@Inject()
 	ClockService clockService;
-
+	
 	@Inject()
-	DomainObjectContainer container;
+	Volunteers volunteersRepo;
+
+
 
 }

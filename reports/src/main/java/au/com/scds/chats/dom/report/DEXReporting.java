@@ -90,7 +90,7 @@ public class DEXReporting {
 	public List<ActivityAttendanceSummary> checkAttendanceDataForMonth(@ParameterLayout(named = "Year") Integer year,
 			@ParameterLayout(named = "Month") Month month, @ParameterLayout(named = "Region") String regionName) {
 		DateTime start =  new DateTime(year,month.getValue(),1,0,0).withTimeAtStartOfDay();
-		DateTime end = start.plusDays(start.dayOfMonth().getMaximumValue()).withTime(23, 59, 59, 999);
+		DateTime end = start.plusDays(start.dayOfMonth().getMaximumValue()-1).withTime(23, 59, 59, 999);
 		return container.allMatches(
 				new QueryDefault<>(ActivityAttendanceSummary.class, "allActivityAttendanceSummaryForPeriodAndRegion",
 						"startDateTime", start.toDate(), "endDateTime", end.toDate(), "region", regionName));

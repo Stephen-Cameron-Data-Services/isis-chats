@@ -202,6 +202,14 @@ public class Calls {
 		}
 	}
 
+	@Programmatic
+	public List<ScheduledCall> findScheduledCallsForParticipant(final Participant participant) {
+		if (participant == null)
+			return null;
+		return container.allMatches(
+				new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipant", "participant", participant));
+	}
+
 	public List<Volunteer> choices0ListScheduledCalls() {
 		return volunteersRepo.listActiveVolunteers();
 	}
@@ -226,7 +234,7 @@ public class Calls {
 	@Action
 	public CalendarDayCallSchedule createCalendarDayCallSchedule(
 			final @Parameter(optionality = Optionality.MANDATORY) LocalDate date, final Volunteer volunteer,
-			final Boolean includeAllAllocatedCallParticipants) throws Exception {
+			final Boolean includeAllAllocatedCallParticipants) {
 		CalendarDayCallSchedule schedule = createCalendarDayCallSchedule(date, volunteer);
 		if (includeAllAllocatedCallParticipants) {
 			for (RegularScheduledCallAllocation allocation : volunteer.getCallAllocations()) {
@@ -270,33 +278,66 @@ public class Calls {
 		if (sched == null) {
 			sched = createCalendarDayCallSchedule(dateTime.toLocalDate(), volunteer);
 		}
-		// add a new call
-		// TODO should an exception be trapped here?
-		ScheduledCall call = sched.scheduleCall(participant, dateTime.toLocalTime());
-		// call.setParticipant(participant);
+		ScheduledCall call = createScheduledCallWithoutSchedule(participant, volunteer);
+		call.setScheduledDateTime(dateTime);
 		call.setRegion(participant.getRegion());
-		call.setIsCompleted(false);
+		call.setStatus(ScheduledCallStatus.Scheduled);
 		return call;
 	}
 
 	@Programmatic
-	// Probably should have made callSchedule responsible for creating calls
-	// as its now a divided operation (if we make use of DN to maintain
-	// bidirectional)
-	ScheduledCall createScheduledCall(CalendarDayCallSchedule callSchedule, Participant participant, LocalTime time)
+	public ScheduledCall moveScheduledCall(final ScheduledCall call, final Volunteer volunteer, final DateTime dateTime)
 			throws Exception {
+		if (call == null) {
+			throw new IllegalArgumentException("call is a mandatory argument");
+		} else if (call.getIsCompleted()) {
+			throw new IllegalArgumentException("A completed call cannot be moved");
+		}
+		// see if there is a Schedule for this Volunteer on this day
+		if (dateTime == null) {
+			throw new IllegalArgumentException("dateTime is a mandatory argument");
+		}
+		CalendarDayCallSchedule sched = null;
+		if (volunteer != null) {
+			List<CalendarDayCallSchedule> schedules = listDailyCallSchedulesForVolunteer(volunteer);
+			for (CalendarDayCallSchedule s : schedules) {
+				if (s.getCalendarDate().equals(dateTime.toLocalDate())) {
+					sched = s;
+					break;
+				}
+			}
+		} else {
+			throw new IllegalArgumentException("volunteer is a mandatory argument");
+		}
+		if (sched == null) {
+			sched = createCalendarDayCallSchedule(dateTime.toLocalDate(), volunteer);
+		}
+		call.setAllocatedVolunteer(volunteer);
+		call.setScheduledDateTime(dateTime);
+		call.setStatus(ScheduledCallStatus.Scheduled);
+		if (call.getCallSchedule() != null) {
+			call.getCallSchedule().releaseCall(call);
+		}
+		sched.addCall(call);
+		return call;
+	}
+
+	@Programmatic
+	ScheduledCall createScheduledCall(CalendarDayCallSchedule callSchedule, Participant participant, LocalTime time) {
 		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
 		call.setParticipant(participant);
 		call.setStatus(ScheduledCallStatus.Scheduled);
-		// TODO
-		// call.setRegion(region);
-		// set the scheduled date-time for comparable to work in the call-back
 		call.setScheduledDateTime(callSchedule.getCalendarDate().toDateTime(time));
-		// call back to the schedule to increment total calls
 		callSchedule.addCall(call);
 		container.persistIfNotAlready(call);
 		container.flush();
 		return call;
+	}
+
+	@Programmatic
+	public void deleteCall(Call call) {
+		container.removeIfNotAlready(call);
+		container.flush();
 	}
 
 	@Programmatic
@@ -326,7 +367,7 @@ public class Calls {
 		participant.getCallAllocations().add(allocation);
 		return allocation;
 	}
-	
+
 	@Programmatic
 	public void deleteRegularScheduledCallAllocation(RegularScheduledCallAllocation allocation) {
 		container.removeIfNotAlready(allocation);

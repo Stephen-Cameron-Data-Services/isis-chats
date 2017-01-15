@@ -28,6 +28,7 @@ import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.jdo.annotations.*;
 
+import org.apache.isis.applib.Identifier;
 //import org.apache.isis.applib.DomainObjectContainer;
 //import org.apache.isis.applib.Identifier;
 import org.apache.isis.applib.annotation.Action;
@@ -69,15 +70,18 @@ import au.com.scds.chats.dom.participant.Participants;
 @PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Queries({
 		@Query(name = "listVolunteersByStatus", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer " + "WHERE status == :status"),
+				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer WHERE status == :status"),
 		@Query(name = "findVolunteersBySurname", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer " + "WHERE person.surname.indexOf(:surname) >= 0"), })
+				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer WHERE person.surname.indexOf(:surname) >= 0"),
+		@Query(name = "findVolunteerByApplicationUsername", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer WHERE username == :username"), })
 
 @Unique(name = "Volunteer_UNQ", members = { "person", "region" })
 public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* Locatable */ Comparable<Volunteer> {
 
 	private Person person;
 	private Status status = Status.ACTIVE;
+	private String username;
 	@Persistent(mappedBy = "allocatedVolunteer")
 	private SortedSet<CalendarDayCallSchedule> callSchedules = new TreeSet<>();
 	@Persistent(mappedBy = "volunteer")
@@ -90,6 +94,19 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* 
 
 	public String title() {
 		return getPerson().getFullname();
+	}
+
+	public String disabled(Identifier.Type identifierType) {
+		return (!getStatus().equals(Status.ACTIVE)) ? "Only ACTIVE Volunteers can be edited" : null;
+	}
+
+	@Column(allowsNull = "true", length = 20)
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	@CollectionLayout(render = RenderType.EAGERLY)
@@ -141,7 +158,13 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* 
 	}
 
 	@Action
-	public CalendarDayCallSchedule buildScheduleFromAllocated(LocalDate date) throws Exception {
+	public Volunteer buildScheduleFromAllocated(LocalDate date){
+		buildSchedule(date);
+		return this;
+	}
+	
+	@Programmatic
+	public CalendarDayCallSchedule buildSchedule(LocalDate date){
 		CalendarDayCallSchedule schedule = findCallSchedule(date);
 		if (schedule == null) {
 			schedule = schedulesRepo.createCalendarDayCallSchedule(date, this, true);

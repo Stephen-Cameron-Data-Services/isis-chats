@@ -305,22 +305,12 @@ SELECT
   CDCS.calendardaycallschedule_id,
   CDCS.allocatedvolunteer_volunteer_id,
   CDCS.calendardate,
-  CDCS.totalcalls,
-  CDCS.completedcalls,
-  ROUND(SUM(TIMESTAMPDIFF(MINUTE,VT.startdatetime,VT.enddatetime))/60,1) AS totalVolunteeredHours,  
-  ROUND(SUM(TIMESTAMPDIFF(MINUTE,SC.startdatetime,SC.enddatetime))/60,1) AS totalCallHours  
+  (select count(*) from telephonecall AS SC where SC.callschedule_calendardaycallschedule_id = CDCS.calendardaycallschedule_id) AS totalCalls,
+  (select count(*) from telephonecall AS SC where SC.callschedule_calendardaycallschedule_id = CDCS.calendardaycallschedule_id AND SC.status = 'Completed') AS completedCalls,
+  (select ROUND(SUM(TIMESTAMPDIFF(MINUTE,VT.startdatetime,VT.enddatetime))/60,1) FROM volunteeredtime AS VT WHERE VT.callschedule_calendardaycallschedule_id = CDCS.calendardaycallschedule_id) AS totalVolunteeredHours,  
+  (select ROUND(SUM(TIMESTAMPDIFF(MINUTE,SC.startdatetime,SC.enddatetime))/60,1) FROM telephonecall AS SC WHERE SC.callschedule_calendardaycallschedule_id = CDCS.calendardaycallschedule_id AND SC.status = 'Completed') AS totalCallHours  
 FROM 
-  calendardaycallschedule AS CDCS
-LEFT OUTER JOIN
-  telephonecall AS SC
-ON
-  SC.callschedule_calendardaycallschedule_id = CDCS.calendardaycallschedule_id
-LEFT OUTER JOIN
-  volunteeredtime AS VT
-ON
-  VT.callschedule_calendardaycallschedule_id = CDCS.calendardaycallschedule_id
-GROUP BY 
-  CDCS.calendardaycallschedule_id;
+  calendardaycallschedule AS CDCS;
 
 #DROP VIEW VolunteeredTimeForCallsByVolunteerAndYearMonth;
 CREATE VIEW VolunteeredTimeForCallsByVolunteerAndYearMonth AS 

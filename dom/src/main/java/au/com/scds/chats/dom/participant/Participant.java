@@ -27,6 +27,7 @@ import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.jdo.annotations.*;
 
+import org.apache.isis.applib.Identifier;
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.services.i18n.TranslatableString;
 import org.incode.module.note.dom.api.notable.Notable;
@@ -139,6 +140,12 @@ public class Participant extends AbstractChatsDomainEntity
 
 	public String title() {
 		return getPerson().getFullname();
+	}
+	
+	public String disabled(Identifier.Type identifierType) {
+	    return (!getStatus().equals(Status.ACTIVE))
+	            ? "Only ACTIVE Participants can be edited"
+	            : null;
 	}
 
 	@Property(editing = Editing.DISABLED)

@@ -68,6 +68,7 @@ public class CalendarDayCallScheduleTest {
                     oneOf(mockContainer).persistIfNotAlready(call);
                     oneOf(mockContainer).flush();
                     oneOf(mockContainer).informUser("call is completed and cannot be removed");
+                    oneOf(mockContainer).removeIfNotAlready(call);
                 }
             });
 
@@ -81,24 +82,24 @@ public class CalendarDayCallScheduleTest {
             assertThat(_schedule.getTotalCalls()).isEqualTo(0);
             assertThat(_schedule.getCalendarDate()).isEqualTo(date);
             
-            ScheduledCall _call = _schedule.scheduleCall(participant, new LocalTime());
+            ScheduledCall _call = _schedule.addNewCall(participant, new DateTime());
             assertThat(_call).isEqualTo(call);
             assertThat(_schedule.getCompletedCalls()).isEqualTo(0);
             assertThat(_schedule.getTotalCalls()).isEqualTo(1);
             
-            _schedule.completeCall(_call,true);
+            call.setStatus(ScheduledCallStatus.Completed);
             assertThat(_call.getIsCompleted()).isEqualTo(true);
             assertThat(_schedule.getCompletedCalls()).isEqualTo(1);
             assertThat(_schedule.getTotalCalls()).isEqualTo(1);
  
             //cannot remove a completed call
-            _schedule.removeCall(_call);
+            _schedule.releaseCall(_call);
             assertThat(_schedule.getCompletedCalls()).isEqualTo(1);
             assertThat(_schedule.getTotalCalls()).isEqualTo(1);
             
-            _schedule.completeCall(_call,false);
+            call.setStatus(ScheduledCallStatus.Incomplete);
             assertThat(_call.getIsCompleted()).isEqualTo(false);
-            _schedule.removeCall(_call);
+            _schedule.releaseCall(_call);
             assertThat(_schedule.getCompletedCalls()).isEqualTo(0);
             assertThat(_schedule.getTotalCalls()).isEqualTo(0);
             

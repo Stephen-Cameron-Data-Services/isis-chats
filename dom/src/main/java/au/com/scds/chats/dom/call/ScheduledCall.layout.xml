@@ -51,16 +51,16 @@
 								</ns2:property>
 								<ns2:property id="startDateTime">
 									<ns2:named>Start Date-time</ns2:named>
-									<ns2:describedAs>Start Date-time of the Activity.</ns2:describedAs>
+									<ns2:describedAs>Start Date-time of the Call.</ns2:describedAs>
 									<ns2:action id="updateStartDateTime" position="BELOW">
 										<ns2:describedAs>Change the Start Date Time.</ns2:describedAs>
 									</ns2:action>
 								</ns2:property>
 								<ns2:property id="endDateTime" hidden="ALL_TABLES">
 									<ns2:named>End Date-time</ns2:named>
-									<ns2:describedAs>End Date-time of the Activity.</ns2:describedAs>
+									<ns2:describedAs>End Date-time of the Call.</ns2:describedAs>
 									<ns2:action id="updateEndDateTime" position="BELOW">
-										<ns2:describedAs>Set, change or delete the End Date-time of the Activity.</ns2:describedAs>
+										<ns2:describedAs>Set, change or delete the End Date-time of the Call.</ns2:describedAs>
 									</ns2:action>
 									<ns2:action id="updateEndDateTimeOffStart" position="BELOW">
 										<ns2:named>Start Date Time + N</ns2:named>
@@ -73,6 +73,13 @@
 									</ns2:action>
 								</ns2:property>
 							</ns2:fieldSet>
+						</col>
+					</row>
+					<row>
+						<col span="12">
+							<ns2:collection id="previousCallsToParticipantViews">
+								<ns2:describedAs></ns2:describedAs>
+							</ns2:collection>
 						</col>
 					</row>
 				</tab>
