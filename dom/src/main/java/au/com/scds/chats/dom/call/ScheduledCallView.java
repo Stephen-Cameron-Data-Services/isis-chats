@@ -21,13 +21,11 @@ package au.com.scds.chats.dom.call;
 import java.util.Date;
 
 import org.apache.isis.applib.annotation.ViewModel;
+import org.joda.time.DateTime;
 
 @ViewModel()
 public class ScheduledCallView {
 
-	private String summaryNotes;
-	private Date startDateTime;
-	private String intervalLength;
 	private ScheduledCall call;
 
 	public ScheduledCall getScheduledCall() {
@@ -43,7 +41,8 @@ public class ScheduledCallView {
 	}
 
 	public Date getStartDateTime() {
-		return getScheduledCall().getStartDateTime().toDate();
+		DateTime start = getScheduledCall().getStartDateTime();
+		return (start != null) ? start.toDate() : null;
 	}
 
 	public String getIntervalLength() {

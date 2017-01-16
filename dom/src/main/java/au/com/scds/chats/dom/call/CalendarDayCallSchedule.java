@@ -228,7 +228,7 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity
 	@Programmatic
 	public synchronized void addCall(final ScheduledCall call) {
 		if (call != null && !getScheduledCalls().contains(call)) {
-			getScheduledCalls().add(call);	
+			//getScheduledCalls().add(call);	
 			call.setCallSchedule(this);
 		}
 		return;
@@ -262,7 +262,8 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity
 			if (call.getIsCompleted()) {
 				container.informUser("call is Completed and cannot be released from schedule");
 			} else {
-				getScheduledCalls().remove(call);
+				//getScheduledCalls().remove(call);
+				call.setCallSchedule(null);
 			}
 		}
 		return;

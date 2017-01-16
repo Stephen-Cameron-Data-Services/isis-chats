@@ -99,6 +99,7 @@ import au.com.scds.chats.dom.report.dex.model.generated.ResidentialAddress;
     "languageSpokenAtHomeCode",
     "aboriginalOrTorresStraitIslanderOriginCode",
     "hasDisabilities",
+    "disabilities",
     "accommodationTypeCode",
     "dvaCardStatusCode",
     "hasCarer",

@@ -230,8 +230,6 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall>, No
 	@Override
 	public int compareTo(ScheduledCall other) {
 		return ObjectContracts.compare(this, other, "scheduledDateTime", "participant");
-		// return
-		// this.getScheduledDateTime().compareTo(other.getScheduledDateTime());
 	}
 
 	@Inject()

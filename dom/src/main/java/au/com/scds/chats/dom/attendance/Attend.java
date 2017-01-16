@@ -106,9 +106,6 @@ public class Attend extends StartAndFinishDateTime implements Comparable<Attend>
 	}
 
 	void setActivity(final ActivityEvent activity) {
-		// only set once
-		if (activity == null || this.activity != null)
-			return;
 		this.activity = activity;
 	}
 
@@ -219,14 +216,14 @@ public class Attend extends StartAndFinishDateTime implements Comparable<Attend>
 		return (getAttended() ? "YES" : "NO");
 	}
 
-	@Action(invokeOn=InvokeOn.OBJECT_AND_COLLECTION)
+	@Action()
 	public void wasAttended() {
 		if (!getAttended())
 			setAttended(true);
 		return;
 	}
 
-	@Action(invokeOn=InvokeOn.OBJECT_AND_COLLECTION)
+	@Action()
 	public void wasNotAttended() {
 		if (getAttended()) {
 			setAttended(false);
@@ -236,14 +233,13 @@ public class Attend extends StartAndFinishDateTime implements Comparable<Attend>
 		return;
 	}
 	
-	@Action(invokeOn=InvokeOn.COLLECTION_ONLY)
+	@Programmatic
 	public void updateDatesAndTimesFromActivity() {
 		setStartDateTime(getActivity().getStartDateTime());
 		setEndDateTime(getActivity().getEndDateTime());
 		setAttended(true);
 	}
 
-	// used for data-migration
 	@Programmatic
 	public void setDatesAndTimes(DateTime start, DateTime end) {
 		setStartDateTime(start);

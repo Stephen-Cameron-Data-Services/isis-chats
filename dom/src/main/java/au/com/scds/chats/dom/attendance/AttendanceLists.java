@@ -100,6 +100,7 @@ public class AttendanceLists {
 	public void deleteAttend(Attend attend) {
 		if (attend != null)
 			container.removeIfNotAlready(attend);
+			container.flush();
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)

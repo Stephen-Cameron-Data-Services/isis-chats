@@ -91,7 +91,7 @@
 				</tab>
 				<tab name="Volunteering">
 					<row>
-						<col span="6">
+						<col span="12">
 							<ns2:collection id="volunteeredTimes" />
 						</col>
 					</row>

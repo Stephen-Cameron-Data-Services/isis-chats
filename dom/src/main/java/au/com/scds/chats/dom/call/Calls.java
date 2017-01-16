@@ -41,6 +41,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
+import au.com.scds.chats.dom.attendance.Attend;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
@@ -201,6 +202,16 @@ public class Calls {
 			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCalls"));
 		}
 	}
+	
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named = "List Calls In Period")
+	@MemberOrder(sequence = "10.5")
+	public List<Call> listCallsInPeriod(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Period") LocalDate start,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "End Period") LocalDate end) {
+		return container.allMatches(new QueryDefault<>(Call.class, "findCallsInPeriod", "startDateTime",
+				start.toDateTimeAtStartOfDay(), "endDateTime", end.toDateTime(new LocalTime(23, 59))));
+	}
 
 	@Programmatic
 	public List<ScheduledCall> findScheduledCallsForParticipant(final Participant participant) {
@@ -237,8 +248,10 @@ public class Calls {
 			final Boolean includeAllAllocatedCallParticipants) {
 		CalendarDayCallSchedule schedule = createCalendarDayCallSchedule(date, volunteer);
 		if (includeAllAllocatedCallParticipants) {
+			ScheduledCall call = null;
 			for (RegularScheduledCallAllocation allocation : volunteer.getCallAllocations()) {
-				schedule.addNewCall(allocation.getParticipant(), allocation.approximateCallDateTime(date));
+				call = schedule.addNewCall(allocation.getParticipant(), allocation.approximateCallDateTime(date));
+				call.setAllocatedVolunteer(volunteer);
 			}
 		}
 		return schedule;

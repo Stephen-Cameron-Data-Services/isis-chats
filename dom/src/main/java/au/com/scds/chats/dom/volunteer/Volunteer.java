@@ -87,6 +87,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* 
 	@Persistent(mappedBy = "volunteer")
 	@Order(column = "v_idx")
 	private List<VolunteeredTime> volunteeredTimes = new ArrayList<>();
+	@Join()
 	private List<VolunteerRole> volunteerRoles = new ArrayList<>();
 	@Persistent(mappedBy = "volunteer")
 	@Order(column = "v_idx")

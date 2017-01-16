@@ -19,24 +19,13 @@
 */
 package au.com.scds.chats.dom.call;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.jdo.annotations.*;
-
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.services.clock.ClockService;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.Period;
-import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.StartAndFinishDateTime;
 import au.com.scds.chats.dom.participant.Participant;
-import au.com.scds.chats.dom.volunteer.Volunteer;
-import au.com.scds.chats.dom.volunteer.VolunteerRole;
 import au.com.scds.chats.dom.volunteer.Volunteers;
 
 /**
@@ -47,6 +36,9 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 @PersistenceCapable(table = "telephonecall", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "classifier", value = "_CALL")
+@Queries({
+	@Query(name = "findCallsInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.Call WHERE startDateTime >= :startDateTime && startDateTime <= :endDateTime ORDER BY startDateTime DESC"),
+	@Query(name = "findCallsByParticipant", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.Call WHERE participant == :participant ORDER BY startDateTime DESC") })
 public abstract class Call extends StartAndFinishDateTime {
 
 	private Participant participant;

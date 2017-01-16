@@ -37,6 +37,7 @@ import org.joda.time.DateTime;
 import au.com.scds.chats.dom.attendance.AttendanceList;
 import au.com.scds.chats.dom.attendance.AttendanceLists;
 import au.com.scds.chats.dom.attendance.Attend;
+import au.com.scds.chats.dom.attendance.AttendBulkUpdatesWrapper;
 import au.com.scds.chats.dom.general.Address;
 import au.com.scds.chats.dom.general.Suburb;
 import au.com.scds.chats.dom.general.names.ActivityType;
@@ -145,7 +146,6 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	}
 
 	@Programmatic
-	// @Action()
 	public AttendanceList createAttendanceList() {
 		attendanceListsRepo.createActivityAttendanceList(this);
 		return getAttendances();
@@ -239,10 +239,16 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	}
 
 	@Action()
-	public List<Attend> showAttendancesList() {
+	public List<AttendBulkUpdatesWrapper> showAttendancesList() {
 		if (getAttendances() == null)
 			return null;
-		return getAttendances().getAttends();
+		List<AttendBulkUpdatesWrapper> temp = new ArrayList<>();
+		for(Attend attend : getAttendances().getAttends()){
+			AttendBulkUpdatesWrapper wrapper = new AttendBulkUpdatesWrapper();
+			wrapper.setWrapped(attend);
+			temp.add(wrapper);
+		}
+		return temp;
 	}
 
 	@Programmatic
