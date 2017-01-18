@@ -695,12 +695,12 @@ public class Participant extends AbstractChatsDomainEntity
 			@ParameterLayout(named = "Consent To Provide Details") final boolean consentToProvideDetails,
 			@ParameterLayout(named = "Consented For Future Contacts") final boolean consentedForFutureContacts,
 			@ParameterLayout(named = "Has Carer") final boolean hasCarer,
-			@Parameter(optionality = Optionality.MANDATORY) final Country countryOfBirth,
-			@Parameter(optionality = Optionality.MANDATORY) final Language languageSpokenAtHome,
-			@Parameter(optionality = Optionality.MANDATORY) final AboriginalOrTorresStraitIslanderOrigin aboriginalOrTorresStraitIslanderOrigin,
-			@Parameter(optionality = Optionality.MANDATORY) final AccommodationType accommodationType,
-			@Parameter(optionality = Optionality.MANDATORY) final HouseholdComposition householdComposition,
-			@Parameter(optionality = Optionality.MANDATORY) final DVACardStatus dvaCardStatus) {
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Country Of Birth") final Country countryOfBirth,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Language Spoken At Home") final Language languageSpokenAtHome,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Aboriginal Or Torres Strait Islander Origin") final AboriginalOrTorresStraitIslanderOrigin aboriginalOrTorresStraitIslanderOrigin,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Household Composition") final HouseholdComposition householdComposition,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Accommodation Type") final AccommodationType accommodationType,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "DVA Card Status") final DVACardStatus dvaCardStatus) {
 
 		setConsentToProvideDetails(consentToProvideDetails);
 		setConsentedForFutureContacts(consentedForFutureContacts);
@@ -750,21 +750,20 @@ public class Participant extends AbstractChatsDomainEntity
 	public List<AboriginalOrTorresStraitIslanderOrigin> choices5UpdateDexData() {
 		return dexRefData.allAboriginalOrTorresStraitIslanderOrigin();
 	}
-
-	public AccommodationType default6UpdateDexData() {
-		return getAccommodationType();
-	}
-
-	public List<AccommodationType> choices6UpdateDexData() {
-		return dexRefData.allAccommodationType();
-	}
-
-	public HouseholdComposition default7UpdateDexData() {
+	public HouseholdComposition default6UpdateDexData() {
 		return getHouseholdComposition();
 	}
 
-	public List<HouseholdComposition> choices7UpdateDexData() {
+	public List<HouseholdComposition> choices6UpdateDexData() {
 		return dexRefData.allHouseholdComposition();
+	}
+	
+	public AccommodationType default7UpdateDexData() {
+		return getAccommodationType();
+	}
+
+	public List<AccommodationType> choices7UpdateDexData() {
+		return dexRefData.allAccommodationType();
 	}
 
 	public DVACardStatus default8UpdateDexData() {

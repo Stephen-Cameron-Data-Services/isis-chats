@@ -9,7 +9,8 @@ SELECT
   activity.cancelled, 
   sum(case when attend.attended = TRUE then 1 else 0 end) as attendedCount, 
   sum(case when attend.attended = FALSE then 1 else 0 end) as notAttendedCount, 
-  sum(case when attend.attended = TRUE AND not isnull(attend.startdatetime) AND not isnull(attend.enddatetime) then 1 else 0 end) as hasStartAndEndDateTimesCount, 
+  sum(case when attend.attended = TRUE AND not isnull(attend.startdatetime) AND not isnull(attend.enddatetime) then 1 else 0 end) as hasStartAndEndDateTimesCount,
+  sum(case when attend.attended = TRUE AND not isnull(attend.arrivingtransporttype_name) AND not isnull(attend.departingtransporttype_name) then 1 else 0 end) as hasArrivingAndDepartingTransportCount,
   MIN((TO_SECONDS(attend.enddatetime) - TO_SECONDS(attend.startdatetime))) AS minTimeDiff,
   MAX((TO_SECONDS(attend.enddatetime) - TO_SECONDS(attend.startdatetime))) AS maxTimeDiff
 FROM  
@@ -400,6 +401,36 @@ WHERE
 ORDER BY
   activity.startdatetime, activity.abbreviatedname, activity.region_name;
  
+#DROP VIEW ActivityVolunteerVolunteeredTime;
+CREATE VIEW ActivityVolunteerVolunteeredTime AS 
+SELECT 
+  person.person_id as personId,
+  person.surname, 
+  person.firstname AS firstName, 
+  person.birthdate AS birthDate,
+  person.slk,
+  activity.activity_id AS activityId,
+  activity.name AS activityName, 
+  activity.abbreviatedName AS activityAbbreviatedName,  
+  activity.region_name AS regionName, 
+  activity.startdatetime AS startDateTime,
+  volunteer.volunteer_id AS volunteerId,
+  volunteer.status AS volunteerStatus,
+  volunteeredtime.volunteeredtime_id AS volunteeredtimeId,
+  volunteeredtime.includeasparticipation as includeAsParticipation,  
+  TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime) as minutesattended 
+FROM 
+  activity, 
+  volunteeredtime, 						
+  volunteer, 
+  person 
+WHERE 
+  volunteeredtime.activity_activity_id = activity.activity_id AND 
+  volunteer.volunteer_id = volunteeredtime.volunteer_volunteer_id AND 
+  person.person_id = volunteer.person_person_id
+ORDER BY
+  activity.startdatetime, activity.abbreviatedname, activity.region_name; 
+  
 #DROP VIEW CallsDurationByParticipantAndDayForDEX; 
 CREATE VIEW CallsDurationByParticipantAndDayForDEX 
 AS 

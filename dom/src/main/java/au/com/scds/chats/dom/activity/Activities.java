@@ -278,6 +278,13 @@ public class Activities {
 		return container.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivitiesInPeriod", "startDateTime",
 				start.toDateTimeAtStartOfDay(), "endDateTime", end.toDateTime(new LocalTime(23, 59))));
 	}
+	
+	public String validateListActivitiesInPeriod( LocalDate start, LocalDate end) {
+		if(end.isBefore(start))
+			return "End Date is before Start Date";
+		else
+			return null;
+	}
 
 	@Inject
 	protected Regions regionsRepo;

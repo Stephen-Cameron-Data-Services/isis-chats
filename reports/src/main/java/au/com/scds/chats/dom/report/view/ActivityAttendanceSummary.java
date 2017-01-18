@@ -26,6 +26,7 @@ import org.apache.isis.applib.annotation.ViewModel;
 				+ "  {this.attendedCount}, "
 				+ "  {this.notAttendedCount}, "
 				+ "  {this.hasStartAndEndDateTimesCount}, "
+				+ "  {this.hasArrivingAndDepartingTransportCount}, "				
 				+ "  {this.minTimeDiff}, "
 				+ "  {this.maxTimeDiff} "
 				+ ") AS "
@@ -38,6 +39,7 @@ import org.apache.isis.applib.annotation.ViewModel;
 				+ "  sum(case when attend.attended = TRUE then 1 else 0 end) as attendedCount, "
 				+ "  sum(case when attend.attended = FALSE then 1 else 0 end) as notAttendedCount, "
 				+ "  sum(case when attend.attended = TRUE AND not isnull(attend.startdatetime) AND not isnull(attend.enddatetime) then 1 else 0 end) as hasStartAndEndDateTimesCount, "
+				+ "  sum(case when attend.attended = TRUE AND not isnull(attend.arrivingtransporttype_name) AND not isnull(attend.departingtransporttype_name) then 1 else 0 end) as hasArrivingAndDepartingTransportCount, "
 				+ "  MIN((TO_SECONDS(attend.enddatetime) - TO_SECONDS(attend.startdatetime))) AS minTimeDiff,"
 				+ "  MAX((TO_SECONDS(attend.enddatetime) - TO_SECONDS(attend.startdatetime))) AS maxTimeDiff"
 				+ "FROM " + "  activity " + "LEFT OUTER JOIN"
@@ -59,8 +61,11 @@ public class ActivityAttendanceSummary implements Comparable<ActivityAttendanceS
 	public Integer attendedCount;
 	public Integer notAttendedCount;
 	public Integer hasStartAndEndDateTimesCount;
+	public Integer hasArrivingAndDepartingTransportCount;
 	public Integer minTimeDiff;
 	public Integer maxTimeDiff;
+
+
 
 	public Long getActivityId() {
 		return activityId;
@@ -124,6 +129,14 @@ public class ActivityAttendanceSummary implements Comparable<ActivityAttendanceS
 
 	public void setHasStartAndEndDateTimesCount(Integer hasStartAndEndDateTimesCount) {
 		this.hasStartAndEndDateTimesCount = hasStartAndEndDateTimesCount;
+	}
+	
+	public Integer getHasArrivingAndDepartingTransportCount() {
+		return hasArrivingAndDepartingTransportCount;
+	}
+
+	public void setHasArrivingAndDepartingTransportCount(Integer hasArrivingAndDepartingTransportCount) {
+		this.hasArrivingAndDepartingTransportCount = hasArrivingAndDepartingTransportCount;
 	}
 
 	public Integer getMinTimeDiff() {

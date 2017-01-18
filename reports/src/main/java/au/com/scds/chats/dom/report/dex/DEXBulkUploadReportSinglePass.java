@@ -33,6 +33,7 @@ import au.com.scds.chats.dom.report.dex.model.generated.SessionClients;
 import au.com.scds.chats.dom.report.dex.model.generated.Sessions;
 import au.com.scds.chats.dom.report.view.ActivityAttendanceSummary;
 import au.com.scds.chats.dom.report.view.ActivityParticipantAttendance;
+import au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
 
@@ -181,7 +182,7 @@ public class DEXBulkUploadReportSinglePass {
 				// System.out.println(sessionKey);
 				// find or make a client
 				if (!clientsMap.containsKey(clientKey)) {
-					clientsMap.put(clientKey, buildNewClient(clientKey, attend.getParticipantId()));
+					clientsMap.put(clientKey, buildNewClientFromParticipantId(clientKey, attend.getParticipantId()));
 				}
 				// find or make a case
 				Case case_ = null;
@@ -214,6 +215,71 @@ public class DEXBulkUploadReportSinglePass {
 				sessionWrapper.addClient(client);
 				sessionWrapper.addMinutes(adjustTimeForTransport(attend.getMinutesAttended(),
 						attend.getArrivingTransportType(), attend.getDepartingTransportType()));
+			}
+		}
+		//do same for VolunteeredTimes on Activities
+		List<ActivityVolunteerVolunteeredTime> volunteeredTimes = repository.allMatches(new QueryDefault(
+				ActivityVolunteerVolunteeredTime.class, "allActivityVolunteerVolunteeredTimeForPeriodAndRegion", "startDateTime",
+				this.startDateTime.toDate(), "endDateTime",
+				this.endDateTime.toDate(), "includeAsParticipation", true, "region",
+				this.regionName));
+		for (ActivityVolunteerVolunteeredTime time : volunteeredTimes) {
+			if (true 
+						 //* attend.getBirthDate().isBefore(this.bornBeforeDate)
+						// * && !attend.getSurname().contains("STAFF")
+						 ) {
+				System.out.print(time.getActivityAbbreviatedName() + "," + time.getStartDateTime() + ",");
+				System.out.print(time.getSurname() + "," + time.getFirstName() + "," + time.getBirthDate() + ",");
+				System.out.println(time.getMinutesAttended());
+				switch (this.mode) {
+				case NAME_KEY:
+					clientKey = time.getFirstName().trim() + "_" + time.getSurname().trim() + "_"
+							+ time.getBirthDate().toString("dd-MM-YYYY");
+					break;
+				case SLK_KEY:
+					clientKey = time.getSlk();
+				}
+				caseKey = time.getActivityAbbreviatedName().trim();
+				sessionKey = time.getActivityAbbreviatedName().trim()
+						+ time.getStartDateTime();
+				// System.out.println(clientKey);
+				// System.out.println(caseKey);
+				// System.out.println(sessionKey);
+				// find or make a client
+				if (!clientsMap.containsKey(clientKey)) {
+					clientsMap.put(clientKey, buildNewClientFromVolunteerId(clientKey, time.getVolunteerId()));
+				}
+				// find or make a case
+				Case case_ = null;
+				if (!casesMap.containsKey(caseKey)) {
+					case_ = buildNewCase(time);
+					casesMap.put(caseKey, case_);
+				} else {
+					case_ = casesMap.get(caseKey);
+				}
+				// add client to case if not already present
+				if (!clientsInCaseMap.containsKey(caseKey + clientKey)) {
+					CaseClient cc = new CaseClient();
+					cc.setClientId(clientKey);
+					case_.getCaseClients().getCaseClient().add(cc);
+					clientsInCaseMap.put(caseKey + clientKey, null);
+				}
+
+				// find or make a session
+				SessionWrapper sessionWrapper = null;
+				if (!sessionsMap.containsKey(sessionKey)) {
+					sessionWrapper = buildNewSession(sessionKey, time);
+
+					sessionsMap.put(sessionKey, sessionWrapper);
+				} else {
+					sessionWrapper = sessionsMap.get(sessionKey);
+				}
+				SessionClient client = new SessionClient();
+				client.setClientId(clientKey);
+				client.setParticipationCode("CLIENT");
+				sessionWrapper.addClient(client);
+				//sessionWrapper.addMinutes(adjustTimeForTransport(attend.getMinutesAttended(),
+				//		attend.getArrivingTransportType(), attend.getDepartingTransportType()));
 			}
 		}
 		// set the times on all the Sessions
@@ -250,7 +316,7 @@ public class DEXBulkUploadReportSinglePass {
 				sessionKey = "To_" + clientKey + "_on_" + c.getDate().toString("dd-MM-YYYY");
 				// find or make a client
 				if (!clientsMap.containsKey(clientKey)) {
-					clientsMap.put(clientKey, buildNewClient(clientKey, c.getParticipantId()));
+					clientsMap.put(clientKey, buildNewClientFromParticipantId(clientKey, c.getParticipantId()));
 				}
 				// add client to calls case if not already present
 				if (!callsCaseClientsMap.containsKey(clientKey)) {
@@ -361,6 +427,28 @@ public class DEXBulkUploadReportSinglePass {
 		session.setSessionClients(clients);
 		return new SessionWrapper(session);
 	}
+	
+	private SessionWrapper buildNewSession(String sessionKey, ActivityVolunteerVolunteeredTime v) {
+		Session session = new Session();
+		this.sessions.getSession().add(session);
+		if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
+			session.setSessionId(
+					(String.format("%1$-12s", Math.abs(sessionKey.hashCode())) + formatter.format(v.getStartDateTime()))
+							.replace(" ", "0"));
+		} else {
+			session.setSessionId(sessionKey);
+		}
+		if (v.getActivityAbbreviatedName().equals("ChatsSocialCall")) {
+			session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
+		} else {
+			session.setServiceTypeId(this.SOCIAL_SUPPORT_INDIVIDUAL);
+		}
+		SessionClients clients = new SessionClients();
+		session.setCaseId(createCaseId(v.getActivityAbbreviatedName()));
+		session.setSessionDate(new LocalDate(v.getStartDateTime()));
+		session.setSessionClients(clients);
+		return new SessionWrapper(session);
+	}
 
 	private Case buildNewCase(ActivityParticipantAttendance a) {
 		Case case_ = new Case();
@@ -371,8 +459,18 @@ public class DEXBulkUploadReportSinglePass {
 		this.cases.getCase().add(case_);
 		return case_;
 	}
-
-	private ClientWrapper buildNewClient(String clientKey, Long participantId) {
+	
+	private Case buildNewCase(ActivityVolunteerVolunteeredTime v) {
+		Case case_ = new Case();
+		case_.setCaseClients(new CaseClients());
+		case_.setCaseId(createCaseId(v.getActivityAbbreviatedName()));
+		case_.setOutletActivityId(this.outletActivityId);
+		case_.setTotalNumberOfUnidentifiedClients(0);
+		this.cases.getCase().add(case_);
+		return case_;
+	}
+	
+	private ClientWrapper buildNewClientFromParticipantId(String clientKey, Long participantId) {
 		Participant participant = persistenceManager.getObjectById(Participant.class,
 				participantId + "[OID]au.com.scds.chats.dom.participant.Participant");
 
@@ -434,6 +532,11 @@ public class DEXBulkUploadReportSinglePass {
 		// add wrapper for final check for errors
 		this.fileUploadWrapper.addClientWrapper(wrapper);
 		return wrapper;
+	}
+	
+	private ClientWrapper buildNewClientFromVolunteerId(String clientKey, Long volunteerId) {
+		//find the corresponding Participant for this Volunteer
+		return null;
 	}
 
 	private String createCaseId(String activityName) {
@@ -527,8 +630,8 @@ public class DEXBulkUploadReportSinglePass {
 						errors.add("'Aboriginal Or Torres Strait Islander Origin' is NULL for Participant "
 								+ participant.getFullName() + "\r\n");
 					/*if (participant.isHasDisabilities() == null)
-						errors.add("'Has Disabilities' is NULL for Participant " + participant.getFullName() + "\r\n");
-					if (participant.getDvaCardStatus() == null)*/
+						errors.add("'Has Disabilities' is NULL for Participant " + participant.getFullName() + "\r\n");*/
+					if (participant.getDvaCardStatus() == null)
 						errors.add("'DVA Card Status' is NULL for Participant " + participant.getFullName() + "\r\n");
 					/*if (participant.isHasCarer() == null)
 						errors.add("'Has Carer' is NULL for Participant " + participant.getFullName() + "\r\n");
@@ -621,6 +724,11 @@ public class DEXBulkUploadReportSinglePass {
 					if (attendance.getHasStartAndEndDateTimesCount() < attendance.getAttendedCount()) {
 						this.errors.add("Activity '" + attendance.getActivityName()
 								+ "' has missing date-time(s) for some attendees.\r\n");
+						hasErrors = true;
+					}
+					if (attendance.getHasArrivingAndDepartingTransportCount() < attendance.getAttendedCount()) {
+						this.errors.add("Activity '" + attendance.getActivityName()
+								+ "' has missing transport(s) for some attendees.\r\n");
 						hasErrors = true;
 					}
 				}

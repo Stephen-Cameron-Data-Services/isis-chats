@@ -563,6 +563,7 @@ public class Client {
      * 
      * 
      */
+	@XmlRootElement()
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "disabilityCode"

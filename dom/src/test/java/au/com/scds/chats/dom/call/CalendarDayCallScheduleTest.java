@@ -67,8 +67,8 @@ public class CalendarDayCallScheduleTest {
                     will(returnValue(call));
                     oneOf(mockContainer).persistIfNotAlready(call);
                     oneOf(mockContainer).flush();
-                    oneOf(mockContainer).informUser("call is completed and cannot be removed");
-                    oneOf(mockContainer).removeIfNotAlready(call);
+                    oneOf(mockContainer).informUser("call is Completed and cannot be released from schedule");
+                    //oneOf(mockContainer).removeIfNotAlready(call);
                 }
             });
 

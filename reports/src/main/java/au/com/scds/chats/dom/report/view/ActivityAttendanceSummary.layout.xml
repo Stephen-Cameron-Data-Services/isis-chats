@@ -26,6 +26,10 @@
 					<ns2:named>Both Date-times</ns2:named>
 					<ns2:describedAs></ns2:describedAs>
 				</ns2:property>
+				<ns2:property id="hasArrivingAndDepartingTransportCount">
+					<ns2:named>Both Transports</ns2:named>
+					<ns2:describedAs></ns2:describedAs>
+				</ns2:property>
 				<ns2:property id="minStartDateTime" />
 				<ns2:property id="maxStartDateTime" />
 				<ns2:property id="minEndDateTime" />
