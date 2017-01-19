@@ -47,7 +47,7 @@ public class DEXBulkUploadReportSinglePass {
 	private final int OUTLET_ACTIVITY_ID_NORTHWEST = 10263;
 	private final int OUTLET_ACTIVITY_ID_SOUTH = 10260;
 	
-	private final boolean TEST_MODE = true;
+	private final boolean IGNORE_AGE = false;
 
 	// flag for client id generation
 	public enum ClientIdGenerationMode {
@@ -92,7 +92,7 @@ public class DEXBulkUploadReportSinglePass {
 	}
 
 	public DEXBulkUploadReportSinglePass(RepositoryService repository, IsisJdoSupport isisJdoSupport,
-			Participants participants, Integer year, Integer month, String regionName) {
+			Participants participants, Integer year, Integer month, String regionName, ClientIdGenerationMode nameMode) {
 
 		this.fileUpload = new DEXFileUpload();
 		this.fileUploadWrapper = new DEXFileUploadWrapper();
@@ -135,9 +135,7 @@ public class DEXBulkUploadReportSinglePass {
 		}
 
 		// what clientId generation mode, production is SLK_KEY?
-		this.mode = ClientIdGenerationMode.NAME_KEY;
-		// see if data is valid and report results
-		this.validationMode = false;
+		this.mode = nameMode;
 
 		formatter = new SimpleDateFormat("ddMMYYYY");
 
@@ -162,7 +160,7 @@ public class DEXBulkUploadReportSinglePass {
 				this.endDateTime.toDate() /* new DateTime("2016-01-14") */, "attended", true, "region",
 				this.regionName));
 		for (ActivityParticipantAttendance attend : attendances) {
-			if (TEST_MODE || attend.getBirthDate().isBefore(this.bornBeforeDate)) {
+			if (IGNORE_AGE || attend.getBirthDate().isBefore(this.bornBeforeDate)) {
 				System.out.print(attend.getActivityAbbreviatedName() + "," + attend.getStartDateTime() + ",");
 				System.out.print(attend.getSurname() + "," + attend.getFirstName() + "," + attend.getBirthDate() + ",");
 				System.out.println(attend.getMinutesAttended());
@@ -222,7 +220,7 @@ public class DEXBulkUploadReportSinglePass {
 				"startDateTime", this.startDateTime.toDate(), "endDateTime", this.endDateTime.toDate(),
 				"includeAsParticipation", true, "region", this.regionName));
 		for (ActivityVolunteerVolunteeredTime time : volunteeredTimes) {
-			if (TEST_MODE || time.getBirthDate().isBefore(this.bornBeforeDate)
+			if (IGNORE_AGE || time.getBirthDate().isBefore(this.bornBeforeDate)
 			) {
 				System.out.print(time.getActivityAbbreviatedName() + "," + time.getStartDateTime() + ",");
 				System.out.print(time.getSurname() + "," + time.getFirstName() + "," + time.getBirthDate() + ",");
@@ -304,7 +302,7 @@ public class DEXBulkUploadReportSinglePass {
 						"endDate", this.endDateTime.toLocalDate(), "region", this.regionName));
 		Map<String, CaseClient> callsCaseClientsMap = new HashMap<>();
 		for (CallsDurationByParticipantAndDayForDEX c : durations) {
-			if (TEST_MODE || c.getBirthDate().isBefore(this.bornBeforeDate)) {
+			if (IGNORE_AGE || c.getBirthDate().isBefore(this.bornBeforeDate)) {
 				switch (this.mode) {
 				case NAME_KEY:
 					clientKey = c.getFirstName().trim() + "_" + c.getSurname().trim() + "_"
@@ -347,7 +345,7 @@ public class DEXBulkUploadReportSinglePass {
 						"allVolunteeredTimeForCallsByVolunteerAndDayAndRegion", "startDate", this.startDateTime.toLocalDate(),
 						"endDate", this.endDateTime.toLocalDate(), "region", this.regionName));
 		for (VolunteeredTimeForCallsByVolunteerAndDayForDEX c : volDurations) {
-			if (TEST_MODE || c.getBirthDate().isBefore(this.bornBeforeDate)) {
+			if (IGNORE_AGE || c.getBirthDate().isBefore(this.bornBeforeDate)) {
 				switch (this.mode) {
 				case NAME_KEY:
 					clientKey = c.getFirstName().trim() + "_" + c.getSurname().trim() + "_"

@@ -32,6 +32,7 @@ import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportSinglePass;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportSinglePass.ClientIdGenerationMode;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportSinglePass.DEXFileUploadWrapper;
 import au.com.scds.chats.dom.report.view.ActivityAttendanceSummary;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth;
@@ -60,12 +61,13 @@ public class DEXReporting {
 	}
 
 	public Clob createDexReportForMonth(@ParameterLayout(named = "Year") Integer year,
-			@ParameterLayout(named = "Month") Month month, @ParameterLayout(named = "Region") String regionName)
+			@ParameterLayout(named = "Month") Month month, @ParameterLayout(named = "Region") String regionName,
+			@ParameterLayout(named = "Client Id Generation") ClientIdGenerationMode nameMode)
 			throws Exception {
 		System.out
 				.println("Starting DEX report: Year=" + year + ",Month=" + month.getValue() + ",region=" + regionName);
 		DEXBulkUploadReportSinglePass report1 = new DEXBulkUploadReportSinglePass(repository, isisJdoSupport,
-				participants, year, month.getValue(), regionName);
+				participants, year, month.getValue(), regionName, nameMode);
 
 		DEXFileUploadWrapper wrapped = report1.build();
 		if (wrapped.hasErrors()) {
@@ -85,6 +87,10 @@ public class DEXReporting {
 
 	public List<String> choices2CreateDexReportForMonth() {
 		return Arrays.asList("SOUTH", "NORTH", "NORTH-WEST");
+	}
+	
+	public ClientIdGenerationMode default3CreateDexReportForMonth() {
+		return ClientIdGenerationMode.SLK_KEY;
 	}
 
 	public List<ActivityAttendanceSummary> checkAttendanceDataForMonth(@ParameterLayout(named = "Year") Integer year,
