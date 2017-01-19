@@ -30,6 +30,10 @@ public class ParticipationView implements Comparable<ParticipationView>{
 	private Activity activity;
 	private Date startDateTime;
 	
+	public String title(){
+		return getActivity().title();
+	}
+	
 	public Activity getActivity() {
 		return activity;
 	}

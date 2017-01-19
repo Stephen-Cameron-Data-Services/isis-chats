@@ -415,19 +415,31 @@ SELECT
   activity.region_name AS regionName, 
   activity.startdatetime AS startDateTime,
   volunteer.volunteer_id AS volunteerId,
+  participant.participant_id AS participantId,
   volunteer.status AS volunteerStatus,
   volunteeredtime.volunteeredtime_id AS volunteeredtimeId,
   volunteeredtime.includeasparticipation as includeAsParticipation,  
   TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime) as minutesattended 
 FROM 
-  activity, 
-  volunteeredtime, 						
-  volunteer, 
-  person 
-WHERE 
-  volunteeredtime.activity_activity_id = activity.activity_id AND 
-  volunteer.volunteer_id = volunteeredtime.volunteer_volunteer_id AND 
+  volunteeredtime
+JOIN  
+  activity
+ON
+  activity.activity_id = volunteeredtime.activity_activity_id
+JOIN
+  volunteer
+ON
+  volunteer.volunteer_id = volunteeredtime.volunteer_volunteer_id
+JOIN
+  person
+ON
   person.person_id = volunteer.person_person_id
+LEFT OUTER JOIN
+  participant
+ON
+  participant.volunteer_volunteer_id = volunteeredtime.volunteer_volunteer_id
+WHERE
+  volunteeredtime.role = 'VTACTIVITY'
 ORDER BY
   activity.startdatetime, activity.abbreviatedname, activity.region_name; 
   
@@ -452,11 +464,47 @@ FROM
   person 
 WHERE 
   participant.participant_id = telephonecall.participant_participant_id AND 
-  person.person_id = participant.person_person_id AND 	
-  telephonecall.iscompleted = true 						
+  person.person_id = participant.person_person_id 						
 GROUP BY 
   participant.participant_id, 
   DATE(telephonecall.startdatetime);
+  
+#DROP VIEW VolunteeredTimeForCallsByVolunteerAndDayForDEX; 
+CREATE VIEW VolunteeredTimeForCallsByVolunteerAndDayForDEX 
+AS 
+SELECT 
+  person.person_id AS personId, 						
+  person.surname, 
+  person.firstname AS firstName, 
+  person.birthdate AS birthDate, 
+  person.slk, 
+  timestampdiff(year,person.birthdate,curdate()) AS age, 						
+  volunteer.volunteer_id AS volunteerId, 						
+  volunteer.region_name AS regionName, 
+  volunteer.status AS volunteerStatus,
+  participant.participant_id AS participantId,
+  DATE(volunteeredtime.startdatetime) as date, 	
+  volunteeredTime.includeasparticipation AS includeAsParticipation, 
+  CAST(SUM(TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime)) AS UNSIGNED) as minutesTotal 
+FROM 
+  volunteeredtime
+JOIN
+  volunteer
+ON
+  volunteer.volunteer_id = volunteeredtime.volunteer_volunteer_id
+JOIN
+  person
+ON
+  person.person_id = volunteer.person_person_id
+LEFT OUTER JOIN
+  participant
+ON
+  participant.volunteer_volunteer_id = volunteeredtime.volunteer_volunteer_id
+WHERE
+  volunteeredtime.role = 'CALLS' 						
+GROUP BY 
+  volunteer.volunteer_id, 
+  DATE(volunteeredtime.startdatetime);
   
 #DROP VIEW ParticipantIdentity; 
 CREATE VIEW ParticipantIdentity 
@@ -478,3 +526,24 @@ LEFT JOIN
    `participant` 
 ON
    `participant`.`person_person_id` = `person`.`person_id`;
+   
+#DROP VIEW VolunteerIdentity; 
+CREATE VIEW VolunteerIdentity 
+AS 
+SELECT 
+   `person`.`person_id` AS `personId`,
+   `volunteer`.`volunteer_id` AS `volunteerId`,
+   `person`.`surname` AS `surname`,
+   `person`.`firstname` AS `firstName`,
+   `person`.`middlename` AS `middleName`,
+   `person`.`preferredname` AS `preferredName`,
+   `person`.`birthdate` AS `birthDate`,
+   TIMESTAMPDIFF(YEAR,`person`.`birthdate`,CURDATE()) AS `age`,
+   `volunteer`.`status` AS `status`,
+   `volunteer`.`region_name` AS `region`
+FROM
+   `person`
+LEFT JOIN 
+   `volunteer` 
+ON
+   `volunteer`.`person_person_id` = `person`.`person_id`;

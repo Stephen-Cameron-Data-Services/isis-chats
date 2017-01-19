@@ -36,6 +36,7 @@ import au.com.scds.chats.dom.report.view.ActivityParticipantAttendance;
 import au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
+import au.com.scds.chats.dom.report.view.VolunteeredTimeForCallsByVolunteerAndDayForDEX;
 
 public class DEXBulkUploadReportSinglePass {
 
@@ -45,6 +46,8 @@ public class DEXBulkUploadReportSinglePass {
 	private final int OUTLET_ACTIVITY_ID_NORTH = 10262;
 	private final int OUTLET_ACTIVITY_ID_NORTHWEST = 10263;
 	private final int OUTLET_ACTIVITY_ID_SOUTH = 10260;
+	
+	private final boolean TEST_MODE = true;
 
 	// flag for client id generation
 	public enum ClientIdGenerationMode {
@@ -141,7 +144,7 @@ public class DEXBulkUploadReportSinglePass {
 	}
 
 	public DEXFileUploadWrapper build() throws Exception {
-		
+
 		if (fileUploadWrapper.hasAttendanceErrors(this.startDateTime, this.endDateTime, this.regionName)) {
 			return fileUploadWrapper;
 		}
@@ -159,10 +162,7 @@ public class DEXBulkUploadReportSinglePass {
 				this.endDateTime.toDate() /* new DateTime("2016-01-14") */, "attended", true, "region",
 				this.regionName));
 		for (ActivityParticipantAttendance attend : attendances) {
-			if (true /*
-						 * attend.getBirthDate().isBefore(this.bornBeforeDate)
-						 * && !attend.getSurname().contains("STAFF")
-						 */) {
+			if (TEST_MODE || attend.getBirthDate().isBefore(this.bornBeforeDate)) {
 				System.out.print(attend.getActivityAbbreviatedName() + "," + attend.getStartDateTime() + ",");
 				System.out.print(attend.getSurname() + "," + attend.getFirstName() + "," + attend.getBirthDate() + ",");
 				System.out.println(attend.getMinutesAttended());
@@ -182,7 +182,7 @@ public class DEXBulkUploadReportSinglePass {
 				// System.out.println(sessionKey);
 				// find or make a client
 				if (!clientsMap.containsKey(clientKey)) {
-					clientsMap.put(clientKey, buildNewClientFromParticipantId(clientKey, attend.getParticipantId()));
+					clientsMap.put(clientKey, buildNewClient(clientKey, attend.getParticipantId()));
 				}
 				// find or make a case
 				Case case_ = null;
@@ -199,7 +199,6 @@ public class DEXBulkUploadReportSinglePass {
 					case_.getCaseClients().getCaseClient().add(cc);
 					clientsInCaseMap.put(caseKey + clientKey, null);
 				}
-
 				// find or make a session
 				SessionWrapper sessionWrapper = null;
 				if (!sessionsMap.containsKey(sessionKey)) {
@@ -217,17 +216,14 @@ public class DEXBulkUploadReportSinglePass {
 						attend.getArrivingTransportType(), attend.getDepartingTransportType()));
 			}
 		}
-		//do same for VolunteeredTimes on Activities
+		// do same for VolunteeredTimes on Activities
 		List<ActivityVolunteerVolunteeredTime> volunteeredTimes = repository.allMatches(new QueryDefault(
-				ActivityVolunteerVolunteeredTime.class, "allActivityVolunteerVolunteeredTimeForPeriodAndRegion", "startDateTime",
-				this.startDateTime.toDate(), "endDateTime",
-				this.endDateTime.toDate(), "includeAsParticipation", true, "region",
-				this.regionName));
+				ActivityVolunteerVolunteeredTime.class, "allActivityVolunteerVolunteeredTimeForPeriodAndRegion",
+				"startDateTime", this.startDateTime.toDate(), "endDateTime", this.endDateTime.toDate(),
+				"includeAsParticipation", true, "region", this.regionName));
 		for (ActivityVolunteerVolunteeredTime time : volunteeredTimes) {
-			if (true 
-						 //* attend.getBirthDate().isBefore(this.bornBeforeDate)
-						// * && !attend.getSurname().contains("STAFF")
-						 ) {
+			if (TEST_MODE || time.getBirthDate().isBefore(this.bornBeforeDate)
+			) {
 				System.out.print(time.getActivityAbbreviatedName() + "," + time.getStartDateTime() + ",");
 				System.out.print(time.getSurname() + "," + time.getFirstName() + "," + time.getBirthDate() + ",");
 				System.out.println(time.getMinutesAttended());
@@ -240,14 +236,18 @@ public class DEXBulkUploadReportSinglePass {
 					clientKey = time.getSlk();
 				}
 				caseKey = time.getActivityAbbreviatedName().trim();
-				sessionKey = time.getActivityAbbreviatedName().trim()
-						+ time.getStartDateTime();
+				sessionKey = time.getActivityAbbreviatedName().trim() + time.getStartDateTime();
 				// System.out.println(clientKey);
 				// System.out.println(caseKey);
 				// System.out.println(sessionKey);
 				// find or make a client
 				if (!clientsMap.containsKey(clientKey)) {
-					clientsMap.put(clientKey, buildNewClientFromVolunteerId(clientKey, time.getVolunteerId()));
+					if (time.getParticipantId() == null) {
+						System.out.println("ERROR: No Participant Id for " + clientKey + " (Volunteer Id = "
+								+ time.getVolunteerId() + ")");
+					} else {
+						clientsMap.put(clientKey, buildNewClient(clientKey, time.getParticipantId()));
+					}
 				}
 				// find or make a case
 				Case case_ = null;
@@ -278,8 +278,9 @@ public class DEXBulkUploadReportSinglePass {
 				client.setClientId(clientKey);
 				client.setParticipationCode("CLIENT");
 				sessionWrapper.addClient(client);
-				//sessionWrapper.addMinutes(adjustTimeForTransport(attend.getMinutesAttended(),
-				//		attend.getArrivingTransportType(), attend.getDepartingTransportType()));
+				// sessionWrapper.addMinutes(adjustTimeForTransport(attend.getMinutesAttended(),
+				// attend.getArrivingTransportType(),
+				// attend.getDepartingTransportType()));
 			}
 		}
 		// set the times on all the Sessions
@@ -303,8 +304,7 @@ public class DEXBulkUploadReportSinglePass {
 						"endDate", this.endDateTime.toLocalDate(), "region", this.regionName));
 		Map<String, CaseClient> callsCaseClientsMap = new HashMap<>();
 		for (CallsDurationByParticipantAndDayForDEX c : durations) {
-			if (c.getBirthDate().isBefore(this.bornBeforeDate) && !c.getSurname().contains("STAFF")
-					&& !c.getFirstName().equals("UNKNOWN")) {
+			if (TEST_MODE || c.getBirthDate().isBefore(this.bornBeforeDate)) {
 				switch (this.mode) {
 				case NAME_KEY:
 					clientKey = c.getFirstName().trim() + "_" + c.getSurname().trim() + "_"
@@ -316,7 +316,7 @@ public class DEXBulkUploadReportSinglePass {
 				sessionKey = "To_" + clientKey + "_on_" + c.getDate().toString("dd-MM-YYYY");
 				// find or make a client
 				if (!clientsMap.containsKey(clientKey)) {
-					clientsMap.put(clientKey, buildNewClientFromParticipantId(clientKey, c.getParticipantId()));
+					clientsMap.put(clientKey, buildNewClient(clientKey, c.getParticipantId()));
 				}
 				// add client to calls case if not already present
 				if (!callsCaseClientsMap.containsKey(clientKey)) {
@@ -339,6 +339,49 @@ public class DEXBulkUploadReportSinglePass {
 				client.setClientId(clientKey);
 				client.setParticipationCode("CLIENT");
 				session.setTimeMinutes(c.getCallMinutesTotal());
+			}
+		}
+		//add the volunteered time for calls
+		List<VolunteeredTimeForCallsByVolunteerAndDayForDEX> volDurations = repository
+				.allMatches(new QueryDefault(VolunteeredTimeForCallsByVolunteerAndDayForDEX.class,
+						"allVolunteeredTimeForCallsByVolunteerAndDayAndRegion", "startDate", this.startDateTime.toLocalDate(),
+						"endDate", this.endDateTime.toLocalDate(), "region", this.regionName));
+		for (VolunteeredTimeForCallsByVolunteerAndDayForDEX c : volDurations) {
+			if (TEST_MODE || c.getBirthDate().isBefore(this.bornBeforeDate)) {
+				switch (this.mode) {
+				case NAME_KEY:
+					clientKey = c.getFirstName().trim() + "_" + c.getSurname().trim() + "_"
+							+ c.getBirthDate().toString("dd-MM-YYYY");
+					break;
+				case SLK_KEY:
+					clientKey = c.getSlk();
+				}
+				sessionKey = "By_" + clientKey + "_on_" + c.getDate().toString("dd-MM-YYYY");
+				// find or make a client
+				if (!clientsMap.containsKey(clientKey)) {
+					clientsMap.put(clientKey, buildNewClient(clientKey, c.getParticipantId()));
+				}
+				// add client to calls case if not already present
+				if (!callsCaseClientsMap.containsKey(clientKey)) {
+					CaseClient cc = new CaseClient();
+					cc.setClientId(clientKey);
+					callsCase.getCaseClients().getCaseClient().add(cc);
+					callsCaseClientsMap.put(clientKey, cc);
+				}
+				// make a session with one session client
+				Session session = new Session();
+				this.sessions.getSession().add(session);
+				session.setCaseId(createCaseId("ChatsSocialCalls"));
+				session.setSessionId(sessionKey);
+				session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
+				session.setTimeMinutes(Integer.valueOf(c.getMinutesTotal()));
+				SessionClients clients = new SessionClients();
+				session.setSessionClients(clients);
+				SessionClient client = new SessionClient();
+				clients.getSessionClient().add(client);
+				client.setClientId(clientKey);
+				client.setParticipationCode("CLIENT");
+				session.setTimeMinutes(c.getMinutesTotal());
 			}
 		}
 		// only add calls case if calls found
@@ -427,7 +470,7 @@ public class DEXBulkUploadReportSinglePass {
 		session.setSessionClients(clients);
 		return new SessionWrapper(session);
 	}
-	
+
 	private SessionWrapper buildNewSession(String sessionKey, ActivityVolunteerVolunteeredTime v) {
 		Session session = new Session();
 		this.sessions.getSession().add(session);
@@ -459,7 +502,7 @@ public class DEXBulkUploadReportSinglePass {
 		this.cases.getCase().add(case_);
 		return case_;
 	}
-	
+
 	private Case buildNewCase(ActivityVolunteerVolunteeredTime v) {
 		Case case_ = new Case();
 		case_.setCaseClients(new CaseClients());
@@ -469,8 +512,8 @@ public class DEXBulkUploadReportSinglePass {
 		this.cases.getCase().add(case_);
 		return case_;
 	}
-	
-	private ClientWrapper buildNewClientFromParticipantId(String clientKey, Long participantId) {
+
+	private ClientWrapper buildNewClient(String clientKey, Long participantId) {
 		Participant participant = persistenceManager.getObjectById(Participant.class,
 				participantId + "[OID]au.com.scds.chats.dom.participant.Participant");
 
@@ -502,19 +545,19 @@ public class DEXBulkUploadReportSinglePass {
 			client.setLanguageSpokenAtHomeCode(participant.getLanguageSpokenAtHome().getName().substring(10));
 			client.setAboriginalOrTorresStraitIslanderOriginCode(
 					participant.getAboriginalOrTorresStraitIslanderOrigin().getName().substring(40));
-			
+
 			List<Disability> disabilities = participant.getDisabilities();
-			if(disabilities.size() > 0){
+			if (disabilities.size() > 0) {
 				client.setHasDisabilities(true);
 				Client.Disabilities d = new Client.Disabilities();
 				client.setDisabilities(d);
-				for(Disability dis : disabilities){
+				for (Disability dis : disabilities) {
 					d.getDisabilityCode().add(dis.getName());
 				}
-			}else{
+			} else {
 				client.setHasDisabilities(false);
 			}
-			
+
 			client.setAccommodationTypeCode(participant.getAccommodationType().getName().substring(19));
 			client.setDvaCardStatusCode(participant.getDvaCardStatus().getName().substring(15));
 			client.setHasCarer(participant.isHasCarer());
@@ -532,11 +575,6 @@ public class DEXBulkUploadReportSinglePass {
 		// add wrapper for final check for errors
 		this.fileUploadWrapper.addClientWrapper(wrapper);
 		return wrapper;
-	}
-	
-	private ClientWrapper buildNewClientFromVolunteerId(String clientKey, Long volunteerId) {
-		//find the corresponding Participant for this Volunteer
-		return null;
 	}
 
 	private String createCaseId(String activityName) {
@@ -611,12 +649,16 @@ public class DEXBulkUploadReportSinglePass {
 						errors.add("No SLK found for Person " + participant.getPerson().getFullname() + "\r\n");
 					if (participant.getPerson().getSlk() == null)
 						errors.add("No SLK found for Person " + participant.getPerson().getFullname() + "\r\n");
-					/*if (participant.isConsentToProvideDetails() == null)
-						errors.add("'Consent To Provide Details' is NULL for Participant " + participant.getFullName()
-								+ "\r\n");
-					if (participant.isConsentedForFutureContacts() == null)
-						errors.add("'Consent To Future Contacts' is NULL for Participant " + participant.getFullName()
-								+ "\r\n");*/
+					/*
+					 * if (participant.isConsentToProvideDetails() == null)
+					 * errors.add(
+					 * "'Consent To Provide Details' is NULL for Participant " +
+					 * participant.getFullName() + "\r\n"); if
+					 * (participant.isConsentedForFutureContacts() == null)
+					 * errors.add(
+					 * "'Consent To Future Contacts' is NULL for Participant " +
+					 * participant.getFullName() + "\r\n");
+					 */
 					if (participant.getPerson().getBirthdate() == null)
 						errors.add("Birthdate is NULL for Person " + participant.getPerson().getFullname() + "\r\n");
 					if (participant.getPerson().getSex() == null)
@@ -629,14 +671,21 @@ public class DEXBulkUploadReportSinglePass {
 					if (participant.getAboriginalOrTorresStraitIslanderOrigin() == null)
 						errors.add("'Aboriginal Or Torres Strait Islander Origin' is NULL for Participant "
 								+ participant.getFullName() + "\r\n");
-					/*if (participant.isHasDisabilities() == null)
-						errors.add("'Has Disabilities' is NULL for Participant " + participant.getFullName() + "\r\n");*/
+					/*
+					 * if (participant.isHasDisabilities() == null) errors.add(
+					 * "'Has Disabilities' is NULL for Participant " +
+					 * participant.getFullName() + "\r\n");
+					 */
 					if (participant.getDvaCardStatus() == null)
 						errors.add("'DVA Card Status' is NULL for Participant " + participant.getFullName() + "\r\n");
-					/*if (participant.isHasCarer() == null)
-						errors.add("'Has Carer' is NULL for Participant " + participant.getFullName() + "\r\n");
-					if (participant.isHasDisabilities() == null)
-						errors.add("'Has Disabilities' is NULL for Participant " + participant.getFullName() + "\r\n");*/
+					/*
+					 * if (participant.isHasCarer() == null) errors.add(
+					 * "'Has Carer' is NULL for Participant " +
+					 * participant.getFullName() + "\r\n"); if
+					 * (participant.isHasDisabilities() == null) errors.add(
+					 * "'Has Disabilities' is NULL for Participant " +
+					 * participant.getFullName() + "\r\n");
+					 */
 					if (participant.getHouseholdComposition() == null)
 						errors.add("'Household Composition Code' is NULL for Participant " + participant.getFullName()
 								+ "\r\n");

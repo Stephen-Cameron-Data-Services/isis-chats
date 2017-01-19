@@ -55,7 +55,9 @@ import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
+import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
+import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 
@@ -101,7 +103,7 @@ public class Volunteers {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "2")
+	@MemberOrder(sequence = "2.2")
 	public List<Volunteer> findBySurname(@ParameterLayout(named = "Surname") final String surname,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Status") final Status status) {
 		List<Volunteer> list1 = container
@@ -123,6 +125,30 @@ public class Volunteers {
 
 	public List<Status> choices1FindBySurname() {
 		return Arrays.asList(Status.values());
+	}
+
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "2.1")
+	public Volunteer findActiveVolunteer(VolunteerIdentity identity) {
+		return getVolunteer(identity);
+	}
+
+	public List<VolunteerIdentity> choices0FindActiveVolunteer() {
+		return listActiveVolunteerIdentities();
+	}
+
+	@Programmatic
+	public Volunteer getVolunteer(VolunteerIdentity identity) {
+		if (identity == null)
+			return null;
+		return isisJdoSupport.getJdoPersistenceManager().getObjectById(Volunteer.class, identity.getJdoObjectId());
+	}
+
+	@Programmatic
+	public List<VolunteerIdentity> listActiveVolunteerIdentities() {
+		return container.allMatches(new QueryDefault<>(VolunteerIdentity.class, "listVolunteersByStatus", "status",
+				Status.ACTIVE.toString()));
 	}
 
 	@Action()
@@ -148,7 +174,7 @@ public class Volunteers {
 	@Programmatic
 	public Volunteer newVolunteer(final String firstname, final String surname, final LocalDate dob, final Sex sex,
 			final Region region) {
-		String n1= firstname.trim();
+		String n1 = firstname.trim();
 		String n2 = surname.trim();
 		// check of existing Volunteer
 		List<Volunteer> volunteers = container
@@ -287,7 +313,6 @@ public class Volunteers {
 		return newList;
 	}
 
-
 	@Inject
 	protected DomainObjectContainer container;
 
@@ -309,8 +334,7 @@ public class Volunteers {
 	@Inject
 	protected UserService userService;
 
-
-
-
+	@Inject
+	protected IsisJdoSupport isisJdoSupport;
 
 }

@@ -245,7 +245,7 @@ public class Calls {
 	@Action
 	public CalendarDayCallSchedule createCalendarDayCallSchedule(
 			final @Parameter(optionality = Optionality.MANDATORY) LocalDate date, final Volunteer volunteer,
-			final Boolean includeAllAllocatedCallParticipants) {
+			final @ParameterLayout(named="Include All Allocated Participants") Boolean includeAllAllocatedCallParticipants) {
 		CalendarDayCallSchedule schedule = createCalendarDayCallSchedule(date, volunteer);
 		if (includeAllAllocatedCallParticipants) {
 			ScheduledCall call = null;
@@ -255,6 +255,10 @@ public class Calls {
 			}
 		}
 		return schedule;
+	}
+	
+	public List<Volunteer> choices1CreateCalendarDayCallSchedule(){
+		return volunteersRepo.listActiveVolunteers();
 	}
 
 	@Programmatic

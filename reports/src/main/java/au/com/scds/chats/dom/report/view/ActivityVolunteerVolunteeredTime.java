@@ -44,12 +44,13 @@ import org.joda.time.LocalDate;
 						+ "  {this.regionName}, "
 						+ "  {this.startDateTime}, "
 						+ "  {this.volunteerId}, "
+						+ "  {this.participantId}, "						
 						+ "  {this.volunteerStatus}, "
 						+ "  {this.volunteeredTimeId}, "							
 						+ "  {this.includeAsParticipation}, "	
 						+ "  {this.minutesAttended} "
 						+ ") AS "
-						+ "SELECT  "
+						+ "SELECT " 
 						+ "  person.person_id as personId, "
 						+ "  person.surname, "
 						+ "  person.firstname AS firstName, "
@@ -57,25 +58,37 @@ import org.joda.time.LocalDate;
 						+ "  person.slk, "
 						+ "  activity.activity_id AS activityId, "
 						+ "  activity.name AS activityName, "
-						+ "  activity.abbreviatedName AS activityAbbreviatedName, "
+						+ "  activity.abbreviatedName AS activityAbbreviatedName, " 
 						+ "  activity.region_name AS regionName, "
 						+ "  activity.startdatetime AS startDateTime, "
 						+ "  volunteer.volunteer_id AS volunteerId, "
+						+ "  participant.participant_id AS participantId, "
 						+ "  volunteer.status AS volunteerStatus, "
-						+ "  volunteeredtime.volunteeredtime_id AS volunteeredTimeId, "
-						+ "  volunteeredtime.includeasparticipation as includeAsParticipation, "  
-						+ "  TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime) as minutesAttended " 
-						+ "FROM " 
-						+ "  activity, " 
-						+ "  volunteeredtime, "						
-						+ "  volunteer, "
+						+ "  volunteeredtime.volunteeredtime_id AS volunteeredtimeId, "
+						+ "  volunteeredtime.includeasparticipation as includeAsParticipation, "
+						+ "  TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime) as minutesattended "
+						+ "FROM "
+						+ "  volunteeredtime "
+						+ "JOIN "
+						+ "  activity "
+						+ "ON "
+						+ "  activity.activity_id = volunteeredtime.activity_activity_id "
+						+ "JOIN "
+						+ "  volunteer "
+						+ "ON "
+						+ "  volunteer.volunteer_id = volunteeredtime.volunteer_volunteer_id "
+						+ "JOIN "
 						+ "  person "
-						+ "WHERE "
-						+ "  volunteeredtime.activity_activity_id = activity.activity_id AND "
-						+ "  volunteer.volunteer_id = volunteeredtime.volunteer_volunteer_id AND "
+						+ "ON "
 						+ "  person.person_id = volunteer.person_person_id "
+						+ "LEFT OUTER JOIN "
+						+ "  participant "
+						+ "ON "
+						+ "  participant.volunteer_volunteer_id = volunteeredtime.volunteer_volunteer_id "
+						+ "WHERE "
+						+ "  volunteeredtime.role = 'VTACTIVITY' "			
 						+ "ORDER BY "
-						+ "  activity.startdatetime, activity.abbreviatedname, activity.region_name; ") })
+						+ "  activity.startdatetime, activity.abbreviatedname, activity.region_name; " ) })
 @Queries({
 	@Query(name = "allActivityVolunteerVolunteeredTime",
 			language = "JDOQL",
@@ -99,6 +112,7 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 	private String regionName;
 	private Date startDateTime;
 	private Long volunteerId;
+	private Long participantId;
 	private String volunteerStatus;
 	private Long volunteeredTimeId;							
 	private Boolean includeAsParticipation;	
@@ -306,6 +320,16 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 	@Override
 	public int compareTo(ActivityVolunteerVolunteeredTime o) {
 		return (int)(this.getVolunteeredTimeId() - o.getVolunteeredTimeId());
+	}
+
+	@Property()
+	@MemberOrder(sequence = "18")
+	public Long getParticipantId() {
+		return participantId;
+	}
+
+	public void setParticipantId(Long participantId) {
+		this.participantId = participantId;
 	}
 	
 

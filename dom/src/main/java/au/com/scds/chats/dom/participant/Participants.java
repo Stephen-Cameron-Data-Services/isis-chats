@@ -20,6 +20,9 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -28,6 +31,8 @@ import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.BookmarkPolicy;
+import org.apache.isis.applib.annotation.Collection;
+import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
@@ -35,6 +40,7 @@ import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
+import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
@@ -49,6 +55,7 @@ import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.activity.Activity;
+import au.com.scds.chats.dom.activity.RecurringActivity;
 import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Persons;
 import au.com.scds.chats.dom.general.Sex;
@@ -74,6 +81,7 @@ public class Participants {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
+	@MemberOrder(sequence = "10.1")
 	public List<Participant> listActiveParticipants(@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup) {
 		switch (ageGroup) {
 		case All:
@@ -97,18 +105,21 @@ public class Participants {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
+	@MemberOrder(sequence = "10.3")
 	public List<Participant> listInactiveParticipants() {
 		return container.allMatches(
 				new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.INACTIVE));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
+	@MemberOrder(sequence = "10.4")
 	public List<Participant> listToExitParticipants() {
 		return container.allMatches(
 				new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.TO_EXIT));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
+	@MemberOrder(sequence = "10.2")
 	public List<Participant> listExitedParticipants() {
 		return container
 				.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.EXITED));
@@ -166,7 +177,7 @@ public class Participants {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	// @MemberOrder(sequence = "4")
+	@MemberOrder(sequence = "3")
 	public List<Participant> findBySurname(@ParameterLayout(named = "Surname") final String surname,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Status") final Status status) {
 		List<Participant> list1 = container
@@ -190,7 +201,40 @@ public class Participants {
 		return Arrays.asList(Status.values());
 	}
 
-	// @MemberOrder(sequence = "5")
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "2")
+	public Participant findActiveParticipant(ParticipantIdentity identity) {
+		return getParticipant(identity);
+	}
+
+	public List<ParticipantIdentity> choices0FindActiveParticipant() {
+		return listActiveParticipantIdentities(AgeGroup.All);
+	}
+
+	@Action(semantics = SemanticsOf.SAFE)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "4")
+	public List<ParticipationView> findFutureParticipation(ParticipantIdentity identity) {
+		Participant participant = getParticipant(identity);
+		List<ParticipationView> views = new ArrayList<>();
+		for (Participation p : participant.getParticipations()) {
+			Activity a = p.getActivity();
+			if (a.getStartDateTime().isAfterNow() && !(a instanceof RecurringActivity)) {
+				ParticipationView v = new ParticipationView();
+				v.setActivity(a);
+				v.setStartDateTime(p.getActivity().getStartDateTime().toDate());
+				views.add(v);
+			}
+		}
+		return views;
+	}
+
+	public List<ParticipantIdentity> choices0FindFutureParticipation() {
+		return listActiveParticipantIdentities(AgeGroup.All);
+	}
+
+	@MemberOrder(sequence = "1")
 	public Participant create(final @Parameter(maxLength = 100) @ParameterLayout(named = "First name") String firstname,
 			final @Parameter(maxLength = 100) @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob,
@@ -339,7 +383,7 @@ public class Participants {
 
 	@Inject
 	protected Regions regionsRepo;
-	
+
 	@Inject
 	protected ApplicationUserRepository userRepository;
 
