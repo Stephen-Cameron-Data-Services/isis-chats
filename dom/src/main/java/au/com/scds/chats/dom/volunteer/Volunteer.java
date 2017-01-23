@@ -159,13 +159,13 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* 
 	}
 
 	@Action
-	public Volunteer buildScheduleFromAllocated(LocalDate date){
+	public Volunteer buildScheduleFromAllocated(LocalDate date) {
 		buildSchedule(date);
 		return this;
 	}
-	
+
 	@Programmatic
-	public CalendarDayCallSchedule buildSchedule(LocalDate date){
+	public CalendarDayCallSchedule buildSchedule(LocalDate date) {
 		CalendarDayCallSchedule schedule = findCallSchedule(date);
 		if (schedule == null) {
 			schedule = schedulesRepo.createCalendarDayCallSchedule(date, this, true);
@@ -236,7 +236,14 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* 
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
 	public String getMobilePhoneNumber() {
-		return getPerson().getMobilePhoneNumber();
+		String tmp = "";
+		if (getPerson().getMobilePhoneNumber() != null) {
+			tmp = tmp.concat(getPerson().getMobilePhoneNumber() + "(pers.) ");
+		}
+		if (getPerson().getMobilePhoneNumber2() != null) {
+			tmp = tmp.concat(getPerson().getMobilePhoneNumber2() + "(work) ");
+		}
+		return tmp;
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")

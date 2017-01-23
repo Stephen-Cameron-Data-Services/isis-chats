@@ -18,6 +18,7 @@
  */
 package au.com.scds.chats.dom.general;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -27,7 +28,9 @@ import javax.inject.Inject;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.DatastoreIdentity;
 import javax.jdo.annotations.NotPersistent;
+import javax.jdo.annotations.Order;
 import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
 import javax.jdo.annotations.IdentityType;
@@ -85,6 +88,7 @@ public class Person extends AbstractChatsDomainEntity implements /* Locatable, *
 	private Address mailAddress;
 	private String homePhoneNumber;
 	private String mobilePhoneNumber;
+	private String mobilePhoneNumber2;
 	private String fixedPhoneNumber;
 	private String silentNumber;
 	private String emailAddress;
@@ -93,6 +97,9 @@ public class Person extends AbstractChatsDomainEntity implements /* Locatable, *
 	private String emergencyContactPhone;
 	private String emergencyContactRelationship;
 	private Sex sex;
+	//@Persistent(mappedBy="person")
+	//@Order(column = "idx")
+	//private List<EmergencyContact> emergencyContacts = new ArrayList<>();
 
 	public Person() {
 		super();
@@ -469,8 +476,6 @@ public class Person extends AbstractChatsDomainEntity implements /* Locatable, *
 	}
 
 	@Property(regexPattern = RegexValidation.CommunicationChannel.MOBILENUMBER)
-	// @PropertyLayout(named = "Mobile Phone Number")
-	// @MemberOrder(name = "Contact Details", sequence = "4")
 	@Column(allowsNull = "true")
 	public String getMobilePhoneNumber() {
 		return mobilePhoneNumber;
@@ -478,6 +483,16 @@ public class Person extends AbstractChatsDomainEntity implements /* Locatable, *
 
 	public void setMobilePhoneNumber(final String mobilePhoneNumber) {
 		this.mobilePhoneNumber = mobilePhoneNumber;
+	}
+
+	@Property(regexPattern = RegexValidation.CommunicationChannel.MOBILENUMBER)
+	@Column(allowsNull = "true")
+	public String getMobilePhoneNumber2() {
+		return mobilePhoneNumber2;
+	}
+
+	public void setMobilePhoneNumber2(String mobilePhoneNumber2) {
+		this.mobilePhoneNumber2 = mobilePhoneNumber2;
 	}
 
 	@Property(regexPattern = RegexValidation.CommunicationChannel.PHONENUMBER)
@@ -592,6 +607,39 @@ public class Person extends AbstractChatsDomainEntity implements /* Locatable, *
 		else
 			return null;
 	}
+	
+	/*@CollectionLayout(render=RenderType.EAGERLY)
+	public List<EmergencyContact> getEmergencyContacts() {
+		return emergencyContacts;
+	}
+
+	public void setEmergencyContacts(List<EmergencyContact> emergencyContacts) {
+		this.emergencyContacts = emergencyContacts;
+	}
+	
+	@Action()
+	public Person addEmergencyContact(@Parameter(optionality=Optionality.OPTIONAL) String name,
+			@Parameter(optionality=Optionality.OPTIONAL)String address,
+			@Parameter(optionality=Optionality.OPTIONAL) String phone,
+			 @Parameter(optionality=Optionality.OPTIONAL) String relationship){
+		EmergencyContact contact = persons.createEmergencyContact(this);
+		contact.setName(name);
+		contact.setAddress(address);
+		contact.setPhone(phone);
+		contact.setRelationship(relationship);
+		getEmergencyContacts().add(contact);
+		return this;
+	}
+	
+	@Action()
+	public Person removeEmergencyContact(EmergencyContact contact){
+		persons.deleteEmergencyContact(contact);
+		return this;
+	}
+	
+	public List<EmergencyContact> choices0RemoveEmergencyContact(){
+		return getEmergencyContacts();
+	}*/
 
 	@Column(allowsNull = "true")
 	public String getEmergencyContactName() {

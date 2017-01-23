@@ -55,7 +55,12 @@
 						<col span="6">
 							<ns2:fieldSet name="Contact" id="contactDetails">
 								<ns2:property id="homePhoneNumber" />
-								<ns2:property id="mobilePhoneNumber" />
+								<ns2:property id="mobilePhoneNumber">
+									<ns2:named>Mobile (personal)</ns2:named>
+								</ns2:property>
+								<ns2:property id="mobilePhoneNumber2">
+									<ns2:named>Mobile (work)</ns2:named>
+								</ns2:property>
 								<ns2:property id="emailAddress" />
 								<ns2:property id="fixedPhoneNumber" />
 								<ns2:property id="silentNumber" />
@@ -73,7 +78,7 @@
 				</tab>
 				<tab name="Emergency">
 					<row>
-						<col span="6">
+						<col span="12">
 							<ns2:fieldSet name="Emergency Contact" id="emergencyContactDetails">
 								<ns2:property id="emergencyContactName">
 									<ns2:named>Full Name</ns2:named>
@@ -88,6 +93,16 @@
 									<ns2:named>Relationship</ns2:named>
 								</ns2:property>
 							</ns2:fieldSet>
+							<ns2:collection id="emergencyContacts">
+								<ns2:action id="addEmergencyContact">
+									<ns2:named>Add</ns2:named>
+									<ns2:describedAs>Add a new Emergency Contact to the list</ns2:describedAs>
+								</ns2:action>
+								<ns2:action id="removeEmergencyContact">
+									<ns2:named>Remove</ns2:named>
+									<ns2:describedAs>Remove an Emergency Contact from the list</ns2:describedAs>
+								</ns2:action>
+							</ns2:collection>
 						</col>
 					</row>
 				</tab>

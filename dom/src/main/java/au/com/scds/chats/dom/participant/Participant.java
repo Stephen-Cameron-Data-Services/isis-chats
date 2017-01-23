@@ -842,6 +842,7 @@ public class Participant extends AbstractChatsDomainEntity
 	public Participant removeClientNote(@Parameter() ParticipantNote note) {
 		if (note != null && getClientNotes().contains(note)) {
 			getClientNotes().remove(note);
+			participantsRepo.deleteParticipantNote(note);
 		}
 		return this;
 	}

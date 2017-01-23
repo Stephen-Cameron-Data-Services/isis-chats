@@ -47,12 +47,14 @@ import org.joda.time.LocalDate;
 				+ "  participant.status as status, "
 				+ "  participant.region_name as region " 
 				+ "FROM " 
-				+ "  person " 
-				+ "LEFT OUTER JOIN " 
-				+ "  participant "
+				+ "  participant " 
+				+ "JOIN " 
+				+ "  person "
 				+ "ON " 
-				+ "  participant.person_person_id = person.person_id  ") })
+				+ "  = person.person_id = participant.person_person_id ") })
 @Queries({
+	@Query(name = "listParticipants", language = "JDOQL", value = "SELECT "
+			+ "FROM au.com.scds.chats.dom.participant.ParticipantIdentity p"),	
 	@Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT "
 			+ "FROM au.com.scds.chats.dom.participant.ParticipantIdentity p WHERE status == :status"),
 	@Query(name = "listParticipantsByStatusAndBirthdateBelow", language = "JDOQL", value = "SELECT "

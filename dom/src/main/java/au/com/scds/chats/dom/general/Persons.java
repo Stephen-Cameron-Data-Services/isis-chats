@@ -179,11 +179,25 @@ public class Persons {
 	public Person findPersonByOldId(BigInteger personId) {
 		return container.firstMatch(new QueryDefault<>(Person.class, "findPersonByOldId", "oldid", personId));
 	}
+	
+	public EmergencyContact createEmergencyContact(Person person) {
+		EmergencyContact contact = container.newTransientInstance(EmergencyContact.class);
+		contact.setPerson(person);
+		container.persistIfNotAlready(contact);
+		container.flush();
+		return contact;
+	}
+
+	public void deleteEmergencyContact(EmergencyContact contact) {
+		container.removeIfNotAlready(contact);
+		container.flush();
+	}
 
 	@javax.inject.Inject
 	DomainObjectContainer container;
 	
 	@javax.inject.Inject
 	Regions regions;
+
 
 }

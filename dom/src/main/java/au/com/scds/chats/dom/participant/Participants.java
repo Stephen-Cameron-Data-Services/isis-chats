@@ -153,6 +153,11 @@ public class Participants {
 		return container.allMatches(new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatus", "status",
 				Status.ACTIVE.toString()));
 	}
+	
+	@Programmatic
+	public List<ParticipantIdentity> listAllParticipantIdentities() {
+		return container.allMatches(new QueryDefault<>(ParticipantIdentity.class, "listParticipants"));
+	}
 
 	@Programmatic
 	public Participant getParticipant(ParticipantIdentity identity) {
@@ -389,5 +394,7 @@ public class Participants {
 
 	@Inject
 	protected UserService userService;
+
+
 
 }

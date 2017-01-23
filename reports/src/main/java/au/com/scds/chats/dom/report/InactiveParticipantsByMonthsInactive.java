@@ -38,6 +38,7 @@ import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.report.view.InactiveParticipant;
+import au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance;
 
 @DomainService(nature = NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.5")
@@ -61,6 +62,14 @@ public class InactiveParticipantsByMonthsInactive {
 
 	public List<ParticipantIdentity> choices0FindParticipantActivity() {
 		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
+	}
+	
+	public List<ParticipantCallOrAttendance> findParticipantCallsAndAttendances(ParticipantIdentity identity) {
+		return container.allMatches(new QueryDefault<>(ParticipantCallOrAttendance.class, "allCallOrAttendanceForParticipant", "participantId", identity.getParticipantId()));
+	}
+	
+	public List<ParticipantIdentity> choices0FindParticipantCallsAndAttendances() {
+		return participantsRepo.listAllParticipantIdentities();
 	}
 
 	@Inject

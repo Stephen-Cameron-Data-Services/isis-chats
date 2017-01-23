@@ -442,6 +442,29 @@ WHERE
   volunteeredtime.role = 'VTACTIVITY'
 ORDER BY
   activity.startdatetime, activity.abbreviatedname, activity.region_name; 
+
+#DROP VIEW CallDurationParticipant; 
+CREATE VIEW CallDurationParticipant 
+AS 
+SELECT 
+  person.person_id AS personId, 						
+  person.surname, 
+  person.firstname AS firstName, 
+  person.birthdate AS birthDate, 
+  person.slk, 
+  TIMESTAMPDIFF(YEAR,person.birthdate,curdate()) AS age, 						
+  participant.participant_id AS participantId, 						
+  participant.region_name AS regionName, 
+  participant.status AS participantStatus, 
+  telephonecall.startdatetime AS startdatetime, 
+  CAST(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime)) AS UNSIGNED) as callMinutesTotal 
+FROM 
+  telephonecall, 						
+  participant, 
+  person 
+WHERE 
+  participant.participant_id = telephonecall.participant_participant_id AND 
+  person.person_id = participant.person_person_id;  
   
 #DROP VIEW CallsDurationByParticipantAndDayForDEX; 
 CREATE VIEW CallsDurationByParticipantAndDayForDEX 
@@ -521,11 +544,11 @@ SELECT
    `participant`.`status` AS `status`,
    `participant`.`region_name` AS `region`
 FROM
-   `person`
-LEFT JOIN 
-   `participant` 
+   `participant`
+JOIN 
+   `person` 
 ON
-   `participant`.`person_person_id` = `person`.`person_id`;
+   `person`.`person_id` = `participant`.`person_person_id`;
    
 #DROP VIEW VolunteerIdentity; 
 CREATE VIEW VolunteerIdentity 
@@ -547,3 +570,34 @@ LEFT JOIN
    `volunteer` 
 ON
    `volunteer`.`person_person_id` = `person`.`person_id`;
+   
+CREATE VIEW `combinedcallandattendance` AS
+    (SELECT 
+        `calldurationparticipant`.`personId` AS `personId`,
+        `calldurationparticipant`.`surname` AS `surname`,
+        `calldurationparticipant`.`firstName` AS `firstName`,
+        `calldurationparticipant`.`birthDate` AS `birthDate`,
+        `calldurationparticipant`.`slk` AS `slk`,
+        `calldurationparticipant`.`participantId` AS `participantId`,
+        `calldurationparticipant`.`regionName` AS `regionName`,
+        `calldurationparticipant`.`participantStatus` AS `participantStatus`,
+        'CALL' AS `name`,
+        `calldurationparticipant`.`startDateTime` AS `startDateTime`,
+        `calldurationparticipant`.`callMinutesTotal` AS `minutes`
+    FROM
+        `calldurationparticipant`) UNION (SELECT 
+        `activityparticipantattendance`.`personId` AS `personId`,
+        `activityparticipantattendance`.`surname` AS `surname`,
+        `activityparticipantattendance`.`firstName` AS `firstName`,
+        `activityparticipantattendance`.`birthDate` AS `birthDate`,
+        `activityparticipantattendance`.`slk` AS `slk`,
+        `activityparticipantattendance`.`participantId` AS `participantId`,
+        `activityparticipantattendance`.`regionName` AS `regionName`,
+        `activityparticipantattendance`.`participantStatus` AS `participantStatus`,
+        `activityparticipantattendance`.`activityName` AS `as name`,
+        `activityparticipantattendance`.`startDateTime` AS `startDateTime`,
+        `activityparticipantattendance`.`minutesattended` AS `minutes`
+    FROM
+        `activityparticipantattendance`
+    WHERE
+        (`activityparticipantattendance`.`attended` = 1))
