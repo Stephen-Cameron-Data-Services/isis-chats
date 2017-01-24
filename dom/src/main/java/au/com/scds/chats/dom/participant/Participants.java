@@ -160,7 +160,7 @@ public class Participants {
 	}
 
 	@Programmatic
-	public Participant getParticipant(ParticipantIdentity identity) {
+	public Participant getParticipant(@ParameterLayout(named="Participant") ParticipantIdentity identity) {
 		if (identity == null)
 			return null;
 		return isisJdoSupport.getJdoPersistenceManager().getObjectById(Participant.class, identity.getJdoObjectId());

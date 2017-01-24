@@ -19,6 +19,8 @@ LEFT OUTER JOIN
   attend
 ON
    attend.activity_activity_id = activity.activity_id 
+WHERE 
+  activity.classifier <> 'RECURRING_ACTIVITY'
 GROUP BY
   activity.activity_id;
 
@@ -565,11 +567,11 @@ SELECT
    `volunteer`.`status` AS `status`,
    `volunteer`.`region_name` AS `region`
 FROM
-   `person`
-LEFT JOIN 
-   `volunteer` 
+   `volunteer`
+JOIN 
+   `person` 
 ON
-   `volunteer`.`person_person_id` = `person`.`person_id`;
+   `person`.`person_id` = `volunteer`.`person_person_id`;
    
 CREATE VIEW `combinedcallandattendance` AS
     (SELECT 

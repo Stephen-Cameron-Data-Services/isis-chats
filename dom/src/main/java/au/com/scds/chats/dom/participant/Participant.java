@@ -432,7 +432,7 @@ public class Participant extends AbstractChatsDomainEntity
 		this.involvementIH = involvmentInInterestsHobbies;
 	}
 
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "true", length=1000)
 	public String getLoneliness() {
 		return loneliness;
 	}
@@ -672,7 +672,7 @@ public class Participant extends AbstractChatsDomainEntity
 		this.lifeExperiences = experiences;
 	}
 
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "true", length=1000)
 	public String getHobbies() {
 		return hobbies;
 	}
@@ -681,7 +681,7 @@ public class Participant extends AbstractChatsDomainEntity
 		this.hobbies = hobbies;
 	}
 
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "true", length=1000)
 	public String getInterests() {
 		return interests;
 	}

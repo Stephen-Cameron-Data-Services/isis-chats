@@ -238,10 +238,10 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* 
 	public String getMobilePhoneNumber() {
 		String tmp = "";
 		if (getPerson().getMobilePhoneNumber() != null) {
-			tmp = tmp.concat(getPerson().getMobilePhoneNumber() + "(pers.) ");
+			tmp = tmp.concat(getPerson().getMobilePhoneNumber() + " (pers.) ");
 		}
 		if (getPerson().getMobilePhoneNumber2() != null) {
-			tmp = tmp.concat(getPerson().getMobilePhoneNumber2() + "(work) ");
+			tmp = tmp.concat(getPerson().getMobilePhoneNumber2() + " (work) ");
 		}
 		return tmp;
 	}

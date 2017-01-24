@@ -44,7 +44,9 @@ import org.apache.isis.applib.annotation.ViewModel;
 				+ "  MAX((TO_SECONDS(attend.enddatetime) - TO_SECONDS(attend.startdatetime))) AS maxTimeDiff"
 				+ "FROM " + "  activity " + "LEFT OUTER JOIN"
 				+ "  attend " + "ON " + "  attend.activity_activity_id = activity.activity_id "
-				+ "GROUP BY"
+				+ "WHERE "				
+				+ "  activity.classifier <> 'RECURRING_ACTIVITY' "
+				+ "GROUP BY "
 				+ "  activity.activity_id") })
 @Queries({
 		@Query(name = "allActivityAttendanceSummary", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityAttendanceSummary"),

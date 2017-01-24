@@ -51,7 +51,7 @@ import org.joda.time.LocalDate;
 				+ "JOIN " 
 				+ "  person "
 				+ "ON " 
-				+ "  = person.person_id = participant.person_person_id ") })
+				+ "  person.person_id = participant.person_person_id ") })
 @Queries({
 	@Query(name = "listParticipants", language = "JDOQL", value = "SELECT "
 			+ "FROM au.com.scds.chats.dom.participant.ParticipantIdentity p"),	

@@ -130,7 +130,7 @@ public class Volunteers {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2.1")
-	public Volunteer findActiveVolunteer(VolunteerIdentity identity) {
+	public Volunteer findActiveVolunteer(@ParameterLayout(named="Volunteer") VolunteerIdentity identity) {
 		return getVolunteer(identity);
 	}
 

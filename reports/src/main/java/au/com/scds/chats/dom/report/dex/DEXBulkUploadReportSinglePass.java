@@ -13,6 +13,8 @@ import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
 import org.apache.isis.applib.services.repository.RepositoryService;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import au.com.scds.chats.dom.dex.reference.Disability;
 import au.com.scds.chats.dom.general.Address;
@@ -755,26 +757,27 @@ public class DEXBulkUploadReportSinglePass {
 					new QueryDefault(ActivityAttendanceSummary.class, "allActivityAttendanceSummaryForPeriodAndRegion",
 							"startDateTime", start.toDate(), "endDateTime", end.toDate(), "region", regionName));
 			boolean hasErrors = false;
+			SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy HH:mm");
 			for (ActivityAttendanceSummary attendance : attendances) {
 				if (attendance.getCancelled()) {
 					if (attendance.getAttendedCount() > 0 || attendance.getNotAttendedCount() > 0) {
-						this.errors.add("Activity '" + attendance.getActivityName()
-								+ "' is cancelled but still has entries in its attendance list.\r\n");
+						this.errors.add("Activity '" + attendance.getActivityName() + "' on "  + fmt.format(attendance.getStartDateTime())
+								+ " is cancelled but still has entries in its attendance list.\r\n");
 						hasErrors = true;
 					}
 				} else {
 					if (attendance.getAttendedCount() == 0) {
-						this.errors.add("Activity '" + attendance.getActivityName()
+						this.errors.add("Activity '" + attendance.getActivityName() + "' on "  + fmt.format(attendance.getStartDateTime())
 								+ "' is not cancelled but has no attendees.\r\n");
 						hasErrors = true;
 					}
 					if (attendance.getHasStartAndEndDateTimesCount() < attendance.getAttendedCount()) {
-						this.errors.add("Activity '" + attendance.getActivityName()
+						this.errors.add("Activity '" + attendance.getActivityName() + "' on "  + fmt.format(attendance.getStartDateTime())
 								+ "' has missing date-time(s) for some attendees.\r\n");
 						hasErrors = true;
 					}
 					if (attendance.getHasArrivingAndDepartingTransportCount() < attendance.getAttendedCount()) {
-						this.errors.add("Activity '" + attendance.getActivityName()
+						this.errors.add("Activity '" + attendance.getActivityName() + "' on "  + fmt.format(attendance.getStartDateTime())
 								+ "' has missing transport(s) for some attendees.\r\n");
 						hasErrors = true;
 					}

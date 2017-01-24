@@ -47,11 +47,11 @@ import org.joda.time.LocalDate;
 				+ "  volunteer.status as status, "
 				+ "  volunteer.region_name as region " 
 				+ "FROM " 
-				+ "  person " 
-				+ "LEFT OUTER JOIN " 
-				+ "  volunteer "
+				+ "  volunteer " 
+				+ "JOIN " 
+				+ "  person "
 				+ "ON " 
-				+ "  volunteer.person_person_id = person.person_id  ") })
+				+ "  person.person_id = volunteer.person_person_id  ") })
 @Queries({
 	@Query(name = "listVolunteersByStatus", language = "JDOQL", value = "SELECT "
 			+ "FROM au.com.scds.chats.dom.volunteer.VolunteerIdentity p WHERE status == :status"),
