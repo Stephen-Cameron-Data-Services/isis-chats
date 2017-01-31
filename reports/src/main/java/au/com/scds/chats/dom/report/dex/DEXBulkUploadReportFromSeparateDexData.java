@@ -39,6 +39,7 @@ import au.com.scds.chats.dom.report.dex.model.generated.Sessions;
 import au.com.scds.chats.dom.report.view.ActivityAttendanceSummary;
 import au.com.scds.chats.dom.report.view.ActivityParticipantAttendance;
 import au.com.scds.chats.dom.report.view.ActivityParticipantAttendanceFromDexData;
+import au.com.scds.chats.dom.report.view.ActivityParticipantAttendanceFromDexDataGrouped;
 import au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
@@ -155,7 +156,7 @@ public class DEXBulkUploadReportFromSeparateDexData {
 				ActivityParticipantAttendanceFromDexData.class, "allParticipantActivityForPeriodAndRegion", "startDate",
 				this.startDate, "endDate", this.endDate, "region", this.regionName));
 		for (ActivityParticipantAttendanceFromDexData attend : attendances) {
-			if (IGNORE_AGE) {
+			if (IGNORE_AGE && !attend.getActivity().equals("chatsphonecall")) {
 				System.out.print(attend.getActivity() + "," + attend.getDate() + ",");
 				System.out.print(attend.getSurname() + "," + attend.getFirstName() + "," + attend.getBirthDate() + ",");
 				System.out.println(attend.getMinutes());
@@ -167,7 +168,7 @@ public class DEXBulkUploadReportFromSeparateDexData {
 				case SLK_KEY:
 					clientKey = attend.getSlk();
 				}
-				caseKey = attend.getActivity().trim();
+				caseKey = attend.getActivity();
 				sessionKey = attend.getActivity().trim() + attend.getDate();
 				// System.out.println(clientKey);
 				// System.out.println(caseKey);
@@ -204,11 +205,66 @@ public class DEXBulkUploadReportFromSeparateDexData {
 				client.setClientId(clientKey);
 				client.setParticipationCode("CLIENT");
 				sessionWrapper.addClient(client);
+				sessionWrapper.addMinutes(attend.getMinutes());
 			}
 		}
 		// set the times on all the Sessions
 		for (SessionWrapper wrapper : sessionsMap.values()) {
+			System.out.println(wrapper.getMinutes() + "(" + wrapper.getCount() + ")");
 			wrapper.getSession().setTimeMinutes(wrapper.getAverageTimeInMinutes());
+		}
+		// make a single case for calls
+		Case callsCase = new Case();
+		callsCase.setCaseClients(new CaseClients());
+		callsCase.setCaseId(createCaseId("ChatsSocialCalls"));
+		callsCase.setOutletActivityId(this.outletActivityId);
+		callsCase.setTotalNumberOfUnidentifiedClients(0);
+		// get calls data
+		List<ActivityParticipantAttendanceFromDexDataGrouped> calls = repository.allMatches(new QueryDefault(
+				ActivityParticipantAttendanceFromDexDataGrouped.class, "allParticipantActivityForPeriodAndRegion", "startDate",
+				this.startDate, "endDate", this.endDate, "region", this.regionName));	
+		Map<String, CaseClient> callsCaseClientsMap = new HashMap<>();
+		for (ActivityParticipantAttendanceFromDexDataGrouped c : calls) {
+			if (IGNORE_AGE && c.getActivity().equals("chatsphonecall")) {
+				switch (this.mode) {
+				case NAME_KEY:
+					clientKey = c.getFirstName().trim() + "_" + c.getSurname().trim() + "_"
+							+ sdf.format(c.getBirthDate());
+					break;
+				case SLK_KEY:
+					clientKey = c.getSlk();
+				}
+				sessionKey = "To_" + clientKey + "_on_" + sdf.format(c.getDate());
+				// find or make a client
+				if (!clientsMap.containsKey(clientKey)) {
+					clientsMap.put(clientKey, buildNewClient(clientKey, c.getParticipantId()));
+				}
+				// add client to calls case if not already present
+				if (!callsCaseClientsMap.containsKey(clientKey)) {
+					CaseClient cc = new CaseClient();
+					cc.setClientId(clientKey);
+					callsCase.getCaseClients().getCaseClient().add(cc);
+					callsCaseClientsMap.put(clientKey, cc);
+				}
+				// make a session with one session client
+				Session session = new Session();
+				this.sessions.getSession().add(session);
+				session.setCaseId(createCaseId("ChatsSocialCalls"));
+				session.setSessionId(sessionKey);
+				session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
+				session.setTimeMinutes(Integer.valueOf(c.getMinutes()));
+				SessionClients clients = new SessionClients();
+				session.setSessionClients(clients);
+				SessionClient client = new SessionClient();
+				clients.getSessionClient().add(client);
+				client.setClientId(clientKey);
+				client.setParticipationCode("CLIENT");
+				session.setTimeMinutes(c.getMinutes());
+			}
+		}
+		// only add calls case if calls found
+		if (callsCaseClientsMap.size() > 0) {
+			this.cases.getCase().add(callsCase);
 		}
 		return fileUploadWrapper;
 	}
@@ -290,8 +346,8 @@ public class DEXBulkUploadReportFromSeparateDexData {
 			wrapper.setClient(client);
 			client.setClientId(clientKey);
 			client.setSlk(participant.getPerson().getSlk());
-			client.setConsentToProvideDetails(participant.isConsentToProvideDetails());
-			client.setConsentedForFutureContacts(participant.isConsentedForFutureContacts());
+			client.setConsentToProvideDetails(false/*participant.isConsentToProvideDetails()*/);
+			client.setConsentedForFutureContacts(false /*participant.isConsentedForFutureContacts()*/);
 			switch (this.mode) {
 			case NAME_KEY:
 				client.setGivenName(participant.getPerson().getFirstname());
@@ -368,6 +424,10 @@ public class DEXBulkUploadReportFromSeparateDexData {
 
 		public SessionWrapper(Session session) {
 			this.session = session;
+		}
+
+		public Integer getCount() {
+			return count;
 		}
 
 		public int getAverageTimeInMinutes() {

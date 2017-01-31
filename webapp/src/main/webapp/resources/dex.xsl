@@ -15,8 +15,9 @@
 			</head>
 			<body>
 				<xsl:apply-templates select="DEXFileUpload/*" />
-				<xsl:call-template name="ClientSessionTotals" />
-				<xsl:call-template name="CaseSessionTotals" />
+				<xsl:call-template name="ClientInSessions" />
+				<xsl:call-template name="CaseTotalSessionTimeByClientCount"/>
+				<xsl:call-template name="ChatsSocialCalls"/>
 			</body>
 		</html>
 	</xsl:template>
@@ -123,11 +124,11 @@
 		</xsl:copy>
 	</xsl:template>
 
-	<xsl:template name="ClientSessionTotals">
+	<xsl:template name="ClientInSessions">
 		<table>
 			<thead>
 				<tr>
-					<th colspan="2">Client Total Session Time (Minutes)</th>
+					<th colspan="2">Client in Session Lists</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -140,8 +141,11 @@
 							<xsl:value-of select="$clientId" />
 						</td>
 						<td>
-							<xsl:value-of
-								select="sum(/DEXFileUpload/Sessions/Session[SessionClients/SessionClient/ClientId=$clientId]/TimeMinutes)" />
+							<xsl:for-each
+								select="/DEXFileUpload/Sessions/Session[SessionClients/SessionClient/ClientId=$clientId]">
+								<xsl:value-of select="SessionId" />
+								<br />
+							</xsl:for-each>
 						</td>
 					</tr>
 				</xsl:for-each>
@@ -149,29 +153,114 @@
 		</table>
 	</xsl:template>
 
-	<xsl:template name="CaseSessionTotals">
+	<xsl:template name="CaseTotalSessionTimeByClientCount">
 		<table>
 			<thead>
 				<tr>
-					<th colspan="2">Case Total Session Time (Minutes)</th>
+					<th colspan="2">Summed Case Session TimeMinutes * Count of SessionClients</th>
 				</tr>
 			</thead>
 			<tbody>
-				<xsl:for-each select="DEXFileUpload/Cases/Case/CaseId">
+				<xsl:for-each select="DEXFileUpload/Cases/Case">
 					<tr>
-						<xsl:variable name="caseId">
-							<xsl:value-of select="." />
-						</xsl:variable>
 						<td>
-							<xsl:value-of select="$caseId" />
+							<xsl:value-of select="CaseId" />
 						</td>
 						<td>
-							<xsl:value-of
-								select="sum(/DEXFileUpload/Sessions/Session[CaseId=$caseId]/TimeMinutes)" />
+							<xsl:call-template name="findcasesum">
+								<xsl:with-param name="caseId" select="./CaseId" />
+								<xsl:with-param name="posn" select="1" />
+								<xsl:with-param name="sum" select="0" />
+							</xsl:call-template>
 						</td>
 					</tr>
 				</xsl:for-each>
+					<tr>
+						<td>
+							TOTAL
+						</td>
+						<td>
+							<xsl:call-template name="findtotalsum">
+								<xsl:with-param name="posn" select="1" />
+								<xsl:with-param name="sum" select="0" />
+							</xsl:call-template>
+						</td>
+					</tr>
 			</tbody>
 		</table>
 	</xsl:template>
+
+	<xsl:template name="ChatsSocialCalls">
+		<table>
+			<thead>
+				<tr>
+					<th colspan="2">Calls</th>
+				</tr>
+			</thead>
+			<tbody>
+				<xsl:for-each select="DEXFileUpload/Sessions/Session[CaseId='ChatsSocialCall10616']">
+					<tr>
+						<td>
+							<xsl:value-of select="SessionId" />
+						</td>
+						<td>
+							<xsl:value-of select="SessionClients/SessionClient/ClientId" />
+						</td>
+						<td>
+							<xsl:value-of select="TimeMinutes" />
+						</td>
+					</tr>
+				</xsl:for-each>
+					<tr>
+						<td>
+							TOTAL
+						</td>
+						<td>
+							<xsl:call-template name="findtotalsum">
+								<xsl:with-param name="posn" select="1" />
+								<xsl:with-param name="sum" select="0" />
+							</xsl:call-template>
+						</td>
+					</tr>
+			</tbody>
+		</table>
+	</xsl:template>
+
+
+	<xsl:template name="findcasesum">
+		<xsl:param name="caseId" />
+		<xsl:param name="posn" />
+		<xsl:param name="sum" />
+		<xsl:variable name="running-total" select="$sum + (/DEXFileUpload/Sessions/Session[CaseId=$caseId][$posn]/TimeMinutes * count(/DEXFileUpload/Sessions/Session[CaseId=$caseId][$posn]/SessionClients/SessionClient))"/>
+		<xsl:choose>
+			<xsl:when test="$posn = count(/DEXFileUpload/Sessions/Session[CaseId=$caseId])">
+				<xsl:value-of select="$running-total"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="findcasesum">
+					<xsl:with-param name="caseId" select="$caseId" />
+					<xsl:with-param name="posn" select="$posn + 1" />
+					<xsl:with-param name="sum" select="$running-total" />
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="findtotalsum">
+		<xsl:param name="posn" />
+		<xsl:param name="sum" />
+		<xsl:variable name="running-total" select="$sum + (/DEXFileUpload/Sessions/Session[$posn]/TimeMinutes * count(/DEXFileUpload/Sessions/Session[$posn]/SessionClients/SessionClient))"/>
+		<xsl:choose>
+			<xsl:when test="$posn = count(/DEXFileUpload/Sessions/Session)">
+				<xsl:value-of select="$running-total"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="findtotalsum">
+					<xsl:with-param name="posn" select="$posn + 1" />
+					<xsl:with-param name="sum" select="$running-total" />
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
 </xsl:stylesheet>
