@@ -1,4 +1,4 @@
-DROP VIEW ActivityAttendanceSummary;
+#DROP VIEW ActivityAttendanceSummary;
 CREATE VIEW ActivityAttendanceSummary 
 AS 
 SELECT 
@@ -384,6 +384,7 @@ SELECT
   activity.abbreviatedName AS activityAbbreviatedName,  
   activity.region_name AS regionName, 
   activity.startdatetime AS startDateTime,
+  activity.oldid AS oldId,
   participant.participant_id AS participantId,
   participant.status AS participantStatus,
   attend.attend_id AS attendId,
@@ -572,7 +573,8 @@ JOIN
    `person` 
 ON
    `person`.`person_id` = `volunteer`.`person_person_id`;
-   
+ 
+#DROP VIEW `combinedcallandattendance` 
 CREATE VIEW `combinedcallandattendance` AS
     (SELECT 
         `calldurationparticipant`.`personId` AS `personId`,

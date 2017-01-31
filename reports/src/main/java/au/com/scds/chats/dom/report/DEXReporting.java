@@ -7,7 +7,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -31,9 +33,11 @@ import org.joda.time.DateTime;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.participant.Participants;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportFromSeparateDexData;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportSinglePass;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportSinglePass.ClientIdGenerationMode;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportSinglePass.DEXFileUploadWrapper;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportFromSeparateDexData.DEXFileUploadWrapper2;
 import au.com.scds.chats.dom.report.view.ActivityAttendanceSummary;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
@@ -77,7 +81,9 @@ public class DEXReporting {
 			System.out.println("Ending DEX report.");
 			return clob;
 		} else {
-			String report = jaxbService.toXml(wrapped.getFileUpload());
+			Map<String, Object> map = new HashMap();
+			map.put("com.sun.xml.bind.xmlHeaders","<?xml-stylesheet type='text/xsl' href='dex.xsl' ?>");
+			String report = jaxbService.toXml(wrapped.getFileUpload(), map);
 			Clob clob = new Clob("DexReportFor" + regionName + "_" + month + "_" + year + ".xml", "text/xml", report);
 			System.out.println("Ending DEX report.");
 			return clob;
@@ -90,6 +96,41 @@ public class DEXReporting {
 	}
 	
 	public ClientIdGenerationMode default3CreateDexReportForMonth() {
+		return ClientIdGenerationMode.SLK_KEY;
+	}
+	
+	public Clob createDexReportForMonth2(@ParameterLayout(named = "Year") Integer year,
+			@ParameterLayout(named = "Month") Month month, @ParameterLayout(named = "Region") String regionName,
+			@ParameterLayout(named = "Client Id Generation") ClientIdGenerationMode nameMode)
+			throws Exception {
+		System.out
+				.println("Starting DEX report: Year=" + year + ",Month=" + month.getValue() + ",region=" + regionName);
+		DEXBulkUploadReportFromSeparateDexData report1 = new DEXBulkUploadReportFromSeparateDexData(repository, isisJdoSupport,
+				participants, year, month.getValue(), regionName, nameMode);
+
+		DEXFileUploadWrapper2 wrapped = report1.build();
+		if (wrapped.hasErrors()) {
+			String report = wrapped.getErrors();
+			Clob clob = new Clob("DexReportingERRORSFor" + regionName + "_" + month + "_" + year + ".txt", "text/plain",
+					report);
+			System.out.println("Ending DEX report.");
+			return clob;
+		} else {
+			Map<String, Object> map = new HashMap();
+			map.put("com.sun.xml.bind.xmlHeaders","<?xml-stylesheet type='text/xsl' href='dex.xsl' ?>");
+			String report = jaxbService.toXml(wrapped.getFileUpload(), map);
+			Clob clob = new Clob("DexReportFor" + regionName + "_" + month + "_" + year + ".xml", "text/xml", report);
+			System.out.println("Ending DEX report.");
+			return clob;
+		}
+
+	}
+
+	public List<String> choices2CreateDexReportForMonth2() {
+		return Arrays.asList("SOUTH", "NORTH", "NORTH-WEST");
+	}
+	
+	public ClientIdGenerationMode default3CreateDexReportForMonth2() {
 		return ClientIdGenerationMode.SLK_KEY;
 	}
 

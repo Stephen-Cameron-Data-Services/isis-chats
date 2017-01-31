@@ -61,6 +61,7 @@ import org.joda.time.LocalDate;
 						+ "  {this.activityAbbreviatedName}, "						
 						+ "  {this.regionName}, "
 						+ "  {this.startDateTime}, "
+						+ "  {this.oldId}, "						
 						+ "  {this.participantId}, "
 						+ "  {this.participantStatus}, "
 						+ "  {this.attendId}, "							
@@ -80,6 +81,7 @@ import org.joda.time.LocalDate;
 						+ "  activity.abbreviatedName AS activityAbbreviatedName, "
 						+ "  activity.region_name AS regionName, "
 						+ "  activity.startdatetime AS startDateTime, "
+						+ "  activity.oldid AS oldId, "
 						+ "  participant.participant_id AS participantId, "						
 						+ "  participant.status AS participantStatus, "
 						+ "  attend.attend_id as attendId, "	
@@ -120,6 +122,7 @@ public class ActivityParticipantAttendance /*implements WithApplicationTenancy*/
 	private String activityAbbreviatedName;
 	private String regionName;
 	private Date startDateTime;
+	private Long oldId;
 	private String participantStatus;
 	private Integer minutesAttended;
 	private Boolean attended;
@@ -196,14 +199,25 @@ public class ActivityParticipantAttendance /*implements WithApplicationTenancy*/
 	}
 
 	@Property()
-	@MemberOrder(sequence = "6")
+	@MemberOrder(sequence = "6.1")
 	public Date getStartDateTime() {
 		return startDateTime;
 	}
 
 	public void setStartDateTime(Date startDateTime) {
 		this.startDateTime = startDateTime;
-	}	
+	}
+
+	@Property()
+	@MemberOrder(sequence = "6.2")
+	public Long getOldId() {
+		return oldId;
+	}
+
+	public void setOldId(Long oldId) {
+		this.oldId = oldId;
+	}
+
 	
 	@Property()
 	@MemberOrder(sequence = "7")

@@ -142,11 +142,11 @@ public class Participant extends AbstractChatsDomainEntity
 		return getPerson().getFullname();
 	}
 	
-	public String disabled(Identifier.Type identifierType) {
+	/*public String disabled(Identifier.Type identifierType) {
 	    return (!getStatus().equals(Status.ACTIVE))
 	            ? "Only ACTIVE Participants can be edited"
 	            : null;
-	}
+	}*/
 
 	@Property(editing = Editing.DISABLED)
 	@Column(allowsNull = "false")
