@@ -378,7 +378,13 @@ public class DEXBulkUploadReportSinglePass {
 				Session session = new Session();
 				this.sessions.getSession().add(session);
 				session.setCaseId(createCaseId("ChatsSocialCalls"));
-				session.setSessionId(sessionKey);
+				if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
+					session.setSessionId(
+							(String.format("%1$-12s", Math.abs(sessionKey.hashCode())) + formatter.format(c.getDate()))
+									.replace(" ", "0"));
+				} else {
+					session.setSessionId(sessionKey);
+				}
 				session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
 				session.setTimeMinutes(Integer.valueOf(c.getMinutesTotal()));
 				SessionClients clients = new SessionClients();

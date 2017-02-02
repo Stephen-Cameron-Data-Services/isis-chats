@@ -148,10 +148,14 @@ public class Participants {
 	}
 
 	@Programmatic
-	public List<ParticipantIdentity> listInactiveParticipantIdentities(
-			@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup) {
+	public List<ParticipantIdentity> listInactiveParticipantIdentities() {
 		return container.allMatches(new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatus", "status",
-				Status.ACTIVE.toString()));
+				Status.INACTIVE.toString()));
+	}
+	
+	public List<ParticipantIdentity> listAllExitedParticipantIdentities() {
+		return container.allMatches(new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatus", "status",
+				Status.EXITED.toString()));
 	}
 	
 	@Programmatic
@@ -394,6 +398,8 @@ public class Participants {
 
 	@Inject
 	protected UserService userService;
+
+
 
 
 

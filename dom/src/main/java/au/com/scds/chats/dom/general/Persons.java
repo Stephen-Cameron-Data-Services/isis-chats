@@ -180,6 +180,7 @@ public class Persons {
 		return container.firstMatch(new QueryDefault<>(Person.class, "findPersonByOldId", "oldid", personId));
 	}
 	
+	@Programmatic
 	public EmergencyContact createEmergencyContact(Person person) {
 		EmergencyContact contact = container.newTransientInstance(EmergencyContact.class);
 		contact.setPerson(person);
@@ -188,6 +189,7 @@ public class Persons {
 		return contact;
 	}
 
+	@Programmatic
 	public void deleteEmergencyContact(EmergencyContact contact) {
 		container.removeIfNotAlready(contact);
 		container.flush();

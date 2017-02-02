@@ -94,11 +94,14 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* 
 	protected List<RegularScheduledCallAllocation> callAllocations = new ArrayList<>();
 
 	public String title() {
-		return getPerson().getFullname();
+		String title = getPerson().getFullname();
+		if(getStatus() != Status.ACTIVE)
+			title.concat(" (" + getStatus() + ")");
+		return title;
 	}
 
 	public String disabled(Identifier.Type identifierType) {
-		return (!getStatus().equals(Status.ACTIVE)) ? "Only ACTIVE Volunteers can be edited" : null;
+		return (getStatus().equals(Status.EXITED)) ? "EXITED Volunteers cannot be changed" : null;
 	}
 
 	@Column(allowsNull = "true", length = 20)

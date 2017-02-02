@@ -150,6 +150,16 @@ public class Volunteers {
 		return container.allMatches(new QueryDefault<>(VolunteerIdentity.class, "listVolunteersByStatus", "status",
 				Status.ACTIVE.toString()));
 	}
+	
+	public List<VolunteerIdentity> listAllInactiveVolunteerIdentities() {
+		return container.allMatches(new QueryDefault<>(VolunteerIdentity.class, "listVolunteersByStatus", "status",
+				Status.INACTIVE.toString()));
+	}
+	
+	public List<VolunteerIdentity> listAllExitedVolunteerIdentities() {
+		return container.allMatches(new QueryDefault<>(VolunteerIdentity.class, "listVolunteersByStatus", "status",
+				Status.EXITED.toString()));
+	}
 
 	@Action()
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
@@ -336,5 +346,7 @@ public class Volunteers {
 
 	@Inject
 	protected IsisJdoSupport isisJdoSupport;
+
+
 
 }

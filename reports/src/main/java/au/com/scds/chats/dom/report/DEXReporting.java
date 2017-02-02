@@ -99,7 +99,8 @@ public class DEXReporting {
 		return ClientIdGenerationMode.SLK_KEY;
 	}
 	
-	public Clob createDexReportForMonth2(@ParameterLayout(named = "Year") Integer year,
+	
+	/*public Clob createDexReportForMonth2(@ParameterLayout(named = "Year") Integer year,
 			@ParameterLayout(named = "Month") Month month, @ParameterLayout(named = "Region") String regionName,
 			@ParameterLayout(named = "Client Id Generation") ClientIdGenerationMode nameMode)
 			throws Exception {
@@ -132,7 +133,7 @@ public class DEXReporting {
 	
 	public ClientIdGenerationMode default3CreateDexReportForMonth2() {
 		return ClientIdGenerationMode.SLK_KEY;
-	}
+	}*/
 
 	public List<ActivityAttendanceSummary> checkAttendanceDataForMonth(@ParameterLayout(named = "Year") Integer year,
 			@ParameterLayout(named = "Month") Month month, @ParameterLayout(named = "Region") String regionName) {

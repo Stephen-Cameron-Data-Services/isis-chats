@@ -17,7 +17,7 @@
 				<xsl:apply-templates select="DEXFileUpload/*" />
 				<xsl:call-template name="ClientInSessions" />
 				<xsl:call-template name="CaseTotalSessionTimeByClientCount"/>
-				<xsl:call-template name="ChatsSocialCalls"/>
+
 			</body>
 		</html>
 	</xsl:template>
@@ -189,43 +189,6 @@
 			</tbody>
 		</table>
 	</xsl:template>
-
-	<xsl:template name="ChatsSocialCalls">
-		<table>
-			<thead>
-				<tr>
-					<th colspan="2">Calls</th>
-				</tr>
-			</thead>
-			<tbody>
-				<xsl:for-each select="DEXFileUpload/Sessions/Session[CaseId='ChatsSocialCall10616']">
-					<tr>
-						<td>
-							<xsl:value-of select="SessionId" />
-						</td>
-						<td>
-							<xsl:value-of select="SessionClients/SessionClient/ClientId" />
-						</td>
-						<td>
-							<xsl:value-of select="TimeMinutes" />
-						</td>
-					</tr>
-				</xsl:for-each>
-					<tr>
-						<td>
-							TOTAL
-						</td>
-						<td>
-							<xsl:call-template name="findtotalsum">
-								<xsl:with-param name="posn" select="1" />
-								<xsl:with-param name="sum" select="0" />
-							</xsl:call-template>
-						</td>
-					</tr>
-			</tbody>
-		</table>
-	</xsl:template>
-
 
 	<xsl:template name="findcasesum">
 		<xsl:param name="caseId" />
