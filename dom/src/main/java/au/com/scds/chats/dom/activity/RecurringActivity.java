@@ -35,6 +35,7 @@ import au.com.scds.chats.dom.general.Locations;
 import au.com.scds.chats.dom.general.names.ActivityTypes;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.participant.Participants;
+import au.com.scds.chats.dom.participant.Participation;
 import au.com.scds.chats.dom.volunteer.VolunteeredTimeForActivity;
 import au.com.scds.chats.dom.volunteer.Volunteers;
 
@@ -160,6 +161,23 @@ public class RecurringActivity extends Activity {
 			}
 		}
 		return null;
+	}
+	
+	/*
+	 * To remove a participation we need to see if its been ignored
+	 * by any of the children and remove that link 
+	 */
+	@Programmatic
+	@Override
+	public void removeParticipation(Participation participation) {
+		if(participation == null)
+			return;
+		for(ParentedActivityEvent activity : getChildActivities()){
+			if(activity.getIgnored().contains(participation)){
+				activity.getIgnored().remove(participation);
+			}
+		}
+		super.removeParticipation(participation);
 	}
 
 	@Programmatic

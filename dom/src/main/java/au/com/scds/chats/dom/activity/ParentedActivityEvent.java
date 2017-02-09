@@ -35,13 +35,13 @@ import au.com.scds.chats.dom.participant.Participation;
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "PACTIVITY")
 @Queries({
-	@Query(name = "findParentedActivityByUpperCaseName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ParentedActivityEvent WHERE name.trim().toUpperCase() == :name")})
+		@Query(name = "findParentedActivityByUpperCaseName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ParentedActivityEvent WHERE name.trim().toUpperCase() == :name") })
 public class ParentedActivityEvent extends ActivityEvent {
 
 	protected RecurringActivity parentActivity;
 	@Join
 	private List<Participation> ignored = new ArrayList<>();
-	
+
 	public ParentedActivityEvent() {
 		super();
 	}
@@ -145,6 +145,8 @@ public class ParentedActivityEvent extends ActivityEvent {
 	 */
 	@Override
 	public void removeParticipation(Participation participation) {
+		if (getIgnored().contains(participation))
+			getIgnored().remove(participation);
 		if (super.getParticipations().contains(participation))
 			super.getParticipations().remove(participation);
 	}

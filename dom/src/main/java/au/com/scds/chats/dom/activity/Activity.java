@@ -71,7 +71,7 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 // })
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "classifier", value = "_ACTIVITY")
 @Queries({
-	@Query(name = "findActivityByUpperCaseName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.Activity WHERE name.trim().toUpperCase() == :name")})
+		@Query(name = "findActivityByUpperCaseName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.Activity WHERE name.trim().toUpperCase() == :name") })
 public abstract class Activity extends StartAndFinishDateTime implements /* Locatable, */ Comparable<Activity> {
 
 	private Long oldId; // id copied from old system
@@ -101,8 +101,8 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 	public Activity() {
 	}
 
-	public Activity(DomainObjectContainer container, Activities activities, Participants participants, Volunteers volunteers,
-			ActivityTypes activityTypes, Locations locations) {
+	public Activity(DomainObjectContainer container, Activities activities, Participants participants,
+			Volunteers volunteers, ActivityTypes activityTypes, Locations locations) {
 		this.container = container;
 		this.activitiesRepo = activities;
 		this.participantsRepo = participants;
@@ -587,6 +587,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 	public void removeParticipation(Participation participation) {
 		if (getParticipations().contains(participation))
 			getParticipations().remove(participation);
+		participantsRepo.deleteParticipation(participation);
 	}
 
 	@Programmatic
@@ -638,11 +639,11 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 	public List<ParticipantIdentity> choices0AddParticipant() {
 		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
-	
+
 	public List<String> choices1AddParticipant() {
 		return transportTypes.allNames();
 	}
-	
+
 	public List<String> choices2AddParticipant() {
 		return transportTypes.allNames();
 	}
@@ -682,7 +683,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 			return this;
 		Participation participation = findParticipation(participant);
 		if (participation != null)
-			participantsRepo.deleteParticipation(participation);
+			removeParticipation(participation);
 		return this;
 	}
 
@@ -794,8 +795,8 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 
 	@Inject
 	protected Suburbs suburbs;
-	
+
 	@Inject
-	protected  TransportTypes transportTypes;
+	protected TransportTypes transportTypes;
 
 }
