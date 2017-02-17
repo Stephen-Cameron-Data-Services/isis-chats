@@ -10,7 +10,7 @@ import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Persons;
 import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.participant.Participants;
-import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportSinglePass.ClientIdGenerationMode;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport.ClientIdGenerationMode;
 import domainapp.app.DomainAppAppManifest;
 
 //import org.incode.note.fixture.dom.notedemoobject.NoteDemoObject;
@@ -91,7 +91,7 @@ public class DexReportTests extends IntegrationTestAbstract {
 		
 		String DIR = new String("C:/Users/stevec/Desktop/dex/");
 		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadSOUTH-JAN2016.xml"));
-		DEXBulkUploadReportSinglePass report1 = new DEXBulkUploadReportSinglePass( repository, isisJdoSupport,  participants, 2016, 1, "SOUTH", ClientIdGenerationMode.NAME_KEY);
+		DEXBulkUploadReport report1 = new DEXBulkUploadReport( repository, isisJdoSupport,  participants, 2016, 1, "SOUTH", ClientIdGenerationMode.NAME_KEY);
 		file1.write(jaxbService.toXml(report1.build()).getBytes());
 	}
 	

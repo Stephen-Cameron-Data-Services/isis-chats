@@ -67,11 +67,11 @@
 										<ns2:describedAs>Set or Change the End Date-time as Start Date-time plus N minutes (N an integer).</ns2:describedAs>
 									</ns2:action>
 								</ns2:property>
-								<ns2:property id="status">
+								<!-- ns2:property id="status">
 									<ns2:action id="updateStatus" position="BELOW">
 										<ns2:describedAs>Change the status of the call to one of those listed</ns2:describedAs>
 									</ns2:action>
-								</ns2:property>
+								</ns2:property-->
 							</ns2:fieldSet>
 						</col>
 					</row>

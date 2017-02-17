@@ -12,17 +12,13 @@
 		<col span="12">
 			<ns2:fieldSet id="general" name="Participant Calls and Attendances"
 				unreferencedProperties="true">
-				<ns2:property id="personId" hidden="EVERYWHERE"/>
+				<ns2:property id="participantId" hidden="EVERYWHERE"/>
 				<ns2:property id="surname" />
 				<ns2:property id="firstName" />
-				<ns2:property id="birthDate" />
 				<ns2:property id="age" />
-				<ns2:property id="slk" />
-				<ns2:property id="participantId" hidden="EVERYWHERE"/>
 				<ns2:property id="participantStatus" />
-				<ns2:property id="name" />
-				<ns2:property id="startDateTime" />
-				<ns2:property id="minutes" />
+				<ns2:property id="totalMinutes" />
+				<ns2:property id="totalAdjustedMinutes" />
 				<ns2:property id="regionName" />
 			</ns2:fieldSet>
 		</col>

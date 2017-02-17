@@ -135,7 +135,8 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity
 	public Integer getCompletedCalls() {
 		int i = 0;
 		for (ScheduledCall call : getScheduledCalls()) {
-			if (call.getStatus() != null && call.getStatus().equals(ScheduledCallStatus.Completed)) {
+			//if (call.getStatus() != null && call.getStatus().equals(ScheduledCallStatus.Completed)) {
+			if(call.getIsCompleted()){
 				i++;
 			}
 		}

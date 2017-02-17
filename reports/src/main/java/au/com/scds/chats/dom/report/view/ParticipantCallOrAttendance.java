@@ -55,26 +55,32 @@ import org.joda.time.LocalDate;
 						+ "  {this.surname}, "
 						+ "  {this.firstName}, "
 						+ "  {this.birthDate}, "
+						+ "  {this.age}, "
 						+ "  {this.slk}, "						
 						+ "  {this.participantId}, "
 						+ "  {this.regionName}, "			
 						+ "  {this.participantStatus}, "
 						+ "  {this.name}, "						
 						+ "  {this.startDateTime}, "			
-						+ "  {this.minutes} "
+						+ "  {this.minutes}, "
+						+ "  {this.arrivingTransport}, "
+						+ "  {this.departingTransport} "
 						+ ") AS "
 						+ "(SELECT "
 						+ "  personId AS personId, "
 						+ "  surname AS surname, "
 						+ "  firstName AS firstName, "
 						+ "  birthDate AS birthDate, "
+						+ "  ageAtDayOfCall AS age, "
 						+ "  slk AS slk, "
 						+ "  participantId AS participantId, "
 						+ "  regionName AS regionName, "
 						+ "  participantStatus AS participantStatus, "
 						+ "  'CALL' AS name, "
 						+ "  startDateTime AS startDateTime, "
-						+ "  callMinutesTotal AS minutes "
+						+ "  callMinutesTotal AS minutes, "
+						+ "  'N/A' AS arrivingTransport, "
+						+ "  'N/A' AS departingTransport "
 						+ "FROM "
 						+ "  calldurationparticipant) "
 						+ "UNION "
@@ -83,33 +89,37 @@ import org.joda.time.LocalDate;
 						+ "  surname AS surname, "
 						+ "  firstName AS firstName, "
 						+ "  birthDate AS birthDate, "
+						+ "  ageAtDayOfActivity AS age, "						
 						+ "  slk AS slk, "
 						+ "  participantId AS participantId, "
 						+ "  regionName AS regionName, "
 						+ "  participantStatus AS participantStatus, "
 						+ "  activityName AS as name, "
 						+ "  startDateTime AS startDateTime, "
-						+ "  minutesAttended AS minutes "
+						+ "  minutesAttended AS minutes, "
+						+ "  arrivingTransportType AS arrivingTransport, "
+						+ "  departingTransportType AS departingTransport "						
 						+ "FROM "
 						+ "  activityparticipantattendance "
 						+ "WHERE "
-						+ "  (attended = 1))") })
+						+ "  (attended = TRUE))") })
 @Queries({
-	@Query(name = "allCallOrAttendanceForParticipant",
-			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance pca "
-			+ "WHERE pca.participantId == :participantId"),
-	@Query(name = "allParticipantCallOrAttendanceForPeriodAndRegion",
-			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance pa "
-					+ "WHERE pca.startDateTime >= :startDateTime && pca.startDateTime <= :endDateTime && pca.regionName == :region"), })
+		@Query(name = "allCallOrAttendanceForParticipant", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
+				+ "WHERE participantId == :participantId"),
+		@Query(name = "allParticipantCallOrAttendanceForPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
+				+ "WHERE startDateTime >= :startDate && startDateTime <= :endDate"),
+		@Query(name = "allParticipantCallOrAttendanceForPeriodAgedUnder", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
+				+ "WHERE startDateTime >= :startDate && startDateTime <= :endDate && age < :lessThanAge"),
+		@Query(name = "allParticipantCallOrAttendanceForPeriodAgedOver", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
+				+ "WHERE startDateTime >= :startDate && startDateTime <= :endDate && age > :greaterThanAge"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class ParticipantCallOrAttendance {
+public class ParticipantCallOrAttendance implements WithApplicationTenancy{
 
 	private Long personId;
 	private String surname;
 	private String firstName;
-	private LocalDate birthDate;
+	private Date birthDate;
+	private Integer age;
 	private String slk;
 	private Long participantId;
 	private String regionName;
@@ -117,6 +127,8 @@ public class ParticipantCallOrAttendance {
 	private String name;
 	private Date startDateTime;
 	private Integer minutes;
+	private String arrivingTransport;
+	private String departingTransport;
 
 	public String getName() {
 		return name;
@@ -150,12 +162,20 @@ public class ParticipantCallOrAttendance {
 		this.firstName = firstName;
 	}
 
-	public LocalDate getBirthDate() {
+	public Date getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(LocalDate birthDate) {
+	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;
+	}
+	
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
 	}
 	
 	public String getSlk() {
@@ -204,6 +224,34 @@ public class ParticipantCallOrAttendance {
 	
 	public void setParticipantId(Long participantId) {
 		this.participantId = participantId;
+	}
+
+	public String getArrivingTransport() {
+		return arrivingTransport;
+	}
+
+	public void setArrivingTransport(String arrivingTransport) {
+		this.arrivingTransport = arrivingTransport;
+	}
+
+	public String getDepartingTransport() {
+		return departingTransport;
+	}
+
+	public void setDepartingTransport(String departingTransport) {
+		this.departingTransport = departingTransport;
+	}
+	
+	@Override
+	@Programmatic
+	public ApplicationTenancy getApplicationTenancy() {
+		ApplicationTenancy tenancy = new ApplicationTenancy();
+		if (getRegionName().equals("STATEWIDE"))
+			tenancy.setPath("/");
+		else {
+			tenancy.setPath("/" + getRegionName() + "_");
+		}
+		return tenancy;
 	}
 
 }

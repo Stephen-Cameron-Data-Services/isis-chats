@@ -40,7 +40,7 @@ import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
 import au.com.scds.chats.dom.report.view.VolunteeredTimeForCallsByVolunteerAndDayForDEX;
 
-public class DEXBulkUploadReportSinglePass {
+public class DEXBulkUploadReport {
 
 	// constants
 	private final int TELEPHONE_WEB_CONTACT = 65;
@@ -91,10 +91,10 @@ public class DEXBulkUploadReportSinglePass {
 	// utility
 	private SimpleDateFormat formatter;
 
-	private DEXBulkUploadReportSinglePass() {
+	private DEXBulkUploadReport() {
 	}
 
-	public DEXBulkUploadReportSinglePass(RepositoryService repository, IsisJdoSupport isisJdoSupport,
+	public DEXBulkUploadReport(RepositoryService repository, IsisJdoSupport isisJdoSupport,
 			Participants participants, Integer year, Integer month, String regionName,
 			ClientIdGenerationMode nameMode) {
 
@@ -403,8 +403,8 @@ public class DEXBulkUploadReportSinglePass {
 		return fileUploadWrapper;
 	}
 
-	private Integer adjustTimeForTransport(Integer minutesAttended, String arrivingTransportType,
-			String departingTransportType) {
+	public static Integer adjustTimeForTransport(final Integer minutesAttended, final String arrivingTransportType,
+			final String departingTransportType) {
 		Integer arrive, depart;
 		switch (arrivingTransportType) {
 		case "Chats Share":

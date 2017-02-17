@@ -366,7 +366,8 @@ FROM
 WHERE
   participant.participant_id = telephonecall.participant_participant_id AND
   person.person_id = participant.person_person_id AND
-  telephonecall.iscompleted = true
+  not isNull(telephonecall.startdatetime) AND 
+  not isNull(telephonecall.enddatetime)  	
 GROUP BY
   participant.participant_id,
   EXTRACT(YEAR_MONTH FROM telephonecall.startdatetime);
@@ -490,7 +491,9 @@ FROM
   person 
 WHERE 
   participant.participant_id = telephonecall.participant_participant_id AND 
-  person.person_id = participant.person_person_id 						
+  person.person_id = participant.person_person_id AND
+  NOT isNull(telephonecall.startdatetime) AND 
+  NOT isNull(telephonecall.enddatetime)  
 GROUP BY 
   participant.participant_id, 
   DATE(telephonecall.startdatetime);

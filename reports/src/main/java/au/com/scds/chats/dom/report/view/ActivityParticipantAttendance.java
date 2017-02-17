@@ -55,6 +55,7 @@ import org.joda.time.LocalDate;
 						+ "  {this.surname}, "
 						+ "  {this.firstName}, "
 						+ "  {this.birthDate}, "
+						+ "  {this.ageAtDayOfActivity}, "
 						+ "  {this.slk}, "
 						+ "  {this.activityId}, "						
 						+ "  {this.activityName}, "
@@ -75,6 +76,7 @@ import org.joda.time.LocalDate;
 						+ "  person.surname, "
 						+ "  person.firstname AS firstName, "
 						+ "  person.birthdate AS birthDate, "
+						+ "  TIMESTAMPDIFF(YEAR,person.birthdate, activity.startdatetime) AS ageAtDayOfActivity, "
 						+ "  person.slk, "
 						+ "  activity.activity_id as activityId, "						
 						+ "  activity.name AS activityName, "
@@ -117,6 +119,7 @@ public class ActivityParticipantAttendance /*implements WithApplicationTenancy*/
 	private String surname;
 	private String firstName;
 	private LocalDate birthDate;
+	private Integer ageAtDayOfActivity;
 	private String slk;
 	private String activityName;
 	private String activityAbbreviatedName;
@@ -162,6 +165,16 @@ public class ActivityParticipantAttendance /*implements WithApplicationTenancy*/
 	
 	@Property()
 	@MemberOrder(sequence = "3.2")
+	public Integer getAgeAtDayOfActivity() {
+		return ageAtDayOfActivity;
+	}
+
+	public void setAgeAtDayOfActivity(Integer ageAtDayOfActivity) {
+		this.ageAtDayOfActivity = ageAtDayOfActivity;
+	}
+
+	@Property()
+	@MemberOrder(sequence = "3.3")
 	public String getSlk() {
 		return slk;
 	}

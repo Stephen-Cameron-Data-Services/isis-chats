@@ -65,11 +65,11 @@ import au.com.scds.chats.dom.volunteer.VolunteerRole;
 public class ScheduledCall extends Call implements Comparable<ScheduledCall>, Notable {
 
 	private static final String CALLS_VOLUNTEER = "Calls Volunteer";
-	
+
 	private Volunteer allocatedVolunteer;
 	private CalendarDayCallSchedule callSchedule;
 	private DateTime scheduledDateTime;
-	private ScheduledCallStatus status;
+	// private ScheduledCallStatus status; //not needed
 
 	public ScheduledCall() {
 	}
@@ -106,7 +106,8 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall>, No
 	@Programmatic
 	@NotPersistent()
 	public Boolean getIsCompleted() {
-		return getStatus().equals(ScheduledCallStatus.Completed);
+		return (getStartDateTime() != null && getEndDateTime() != null);
+		// return getStatus().equals(ScheduledCallStatus.Completed);
 	}
 
 	@Property(editing = Editing.DISABLED)
@@ -119,35 +120,28 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall>, No
 		this.callSchedule = callSchedule;
 	}
 
-	@Property(editing = Editing.DISABLED)
-	@Column(allowsNull = "false")
-	public ScheduledCallStatus getStatus() {
-		return status;
-	}
+	/*
+	 * @Property(editing = Editing.DISABLED)
+	 * 
+	 * @Column(allowsNull = "false") public ScheduledCallStatus getStatus() {
+	 * return status; }
+	 * 
+	 * public void setStatus(ScheduledCallStatus status) { this.status = status;
+	 * }
+	 */
 
-	public void setStatus(ScheduledCallStatus status) {
-		this.status = status;
-	}
-
-	@Action()
-	public ScheduledCall updateStatus(@Parameter(optionality=Optionality.MANDATORY) ScheduledCallStatus status) {
-		if (status != null)
-			setStatus(status);
-		return this;
-	}
-
-	public List<ScheduledCallStatus> choices0UpdateStatus() {
-		List<ScheduledCallStatus> list = new ArrayList<>();
-		for (ScheduledCallStatus status : ScheduledCallStatus.values()) {
-			if (getStatus() != null) {
-				if (getStatus() != status)
-					list.add(status);
-			} else {
-				list.add(status);
-			}
-		}
-		return list;
-	}
+	/*
+	 * @Action() public ScheduledCall
+	 * updateStatus(@Parameter(optionality=Optionality.MANDATORY)
+	 * ScheduledCallStatus status) { if (status != null) setStatus(status);
+	 * return this; }
+	 * 
+	 * public List<ScheduledCallStatus> choices0UpdateStatus() {
+	 * List<ScheduledCallStatus> list = new ArrayList<>(); for
+	 * (ScheduledCallStatus status : ScheduledCallStatus.values()) { if
+	 * (getStatus() != null) { if (getStatus() != status) list.add(status); }
+	 * else { list.add(status); } } return list; }
+	 */
 
 	@Action()
 	public ScheduledCall startCall() {
@@ -167,7 +161,7 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall>, No
 	public ScheduledCall endCall() {
 		if (getStartDateTime() != null && getEndDateTime() == null) {
 			setEndDateTime(trimSeconds(clockService.nowAsDateTime()));
-			updateStatus(ScheduledCallStatus.Completed);
+			// updateStatus(ScheduledCallStatus.Completed);
 		}
 		return this;
 	}
@@ -185,29 +179,30 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall>, No
 		super.updateEndDateTime(end);
 		return this;
 	}
-	
+
 	@Action()
-	public ScheduledCall moveCall(Volunteer volunteer,
-			DateTime dateTime) throws Exception{
+	public ScheduledCall moveCall(Volunteer volunteer, DateTime dateTime) throws Exception {
 		callsRepo.moveScheduledCall(this, volunteer, dateTime);
 		return this;
 	}
-	
-	public List<Volunteer> choices0MoveCall(){
+
+	public List<Volunteer> choices0MoveCall() {
 		List<Volunteer> volunteers = volunteersRepo.listActiveVolunteers();
 		List<Volunteer> temp = new ArrayList<>();
-		for(Volunteer volunteer : volunteers){
-			for(VolunteerRole role : volunteer.getVolunteerRoles()){
-				if(role.getName().equals(CALLS_VOLUNTEER)){
+		for (Volunteer volunteer : volunteers) {
+			for (VolunteerRole role : volunteer.getVolunteerRoles()) {
+				if (role.getName().equals(CALLS_VOLUNTEER)) {
 					temp.add(volunteer);
 				}
 			}
 		}
 		return temp;
 	}
-	
-	public String disableMoveCall(){
-		if(getStatus() != null && getStatus().equals(ScheduledCallStatus.Completed))
+
+	public String disableMoveCall() {
+		// if(getStatus() != null &&
+		// getStatus().equals(ScheduledCallStatus.Completed))
+		if (getIsCompleted())
 			return "Cannot move a Scheduled Call with status of Completed ";
 		else
 			return null;

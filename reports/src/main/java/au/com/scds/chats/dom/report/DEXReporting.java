@@ -34,9 +34,9 @@ import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportFromSeparateDexData;
-import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportSinglePass;
-import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportSinglePass.ClientIdGenerationMode;
-import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportSinglePass.DEXFileUploadWrapper;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport.ClientIdGenerationMode;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport.DEXFileUploadWrapper;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportFromSeparateDexData.DEXFileUploadWrapper2;
 import au.com.scds.chats.dom.report.view.ActivityAttendanceSummary;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth;
@@ -70,7 +70,7 @@ public class DEXReporting {
 			throws Exception {
 		System.out
 				.println("Starting DEX report: Year=" + year + ",Month=" + month.getValue() + ",region=" + regionName);
-		DEXBulkUploadReportSinglePass report1 = new DEXBulkUploadReportSinglePass(repository, isisJdoSupport,
+		DEXBulkUploadReport report1 = new DEXBulkUploadReport(repository, isisJdoSupport,
 				participants, year, month.getValue(), regionName, nameMode);
 
 		DEXFileUploadWrapper wrapped = report1.build();

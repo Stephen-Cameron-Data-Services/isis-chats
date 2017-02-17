@@ -298,7 +298,7 @@ public class Calls {
 		ScheduledCall call = createScheduledCallWithoutSchedule(participant, volunteer);
 		call.setScheduledDateTime(dateTime);
 		call.setRegion(participant.getRegion());
-		call.setStatus(ScheduledCallStatus.Scheduled);
+		//call.setStatus(ScheduledCallStatus.Scheduled);
 		return call;
 	}
 
@@ -331,7 +331,7 @@ public class Calls {
 		}
 		call.setAllocatedVolunteer(volunteer);
 		call.setScheduledDateTime(dateTime);
-		call.setStatus(ScheduledCallStatus.Scheduled);
+		//call.setStatus(ScheduledCallStatus.Scheduled);
 		if (call.getCallSchedule() != null) {
 			call.getCallSchedule().releaseCall(call);
 		}
@@ -341,9 +341,12 @@ public class Calls {
 
 	@Programmatic
 	ScheduledCall createScheduledCall(CalendarDayCallSchedule callSchedule, Participant participant, LocalTime time) {
+		if(callSchedule == null || participant == null || time == null)
+			return null;
 		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
 		call.setParticipant(participant);
-		call.setStatus(ScheduledCallStatus.Scheduled);
+		call.setAllocatedVolunteer(callSchedule.getAllocatedVolunteer());
+		//call.setStatus(ScheduledCallStatus.Scheduled);
 		call.setScheduledDateTime(callSchedule.getCalendarDate().toDateTime(time));
 		callSchedule.addCall(call);
 		container.persistIfNotAlready(call);
@@ -362,7 +365,7 @@ public class Calls {
 		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
 		call.setParticipant(participant);
 		call.setAllocatedVolunteer(volunteer);
-		call.setStatus(ScheduledCallStatus.Scheduled);
+		//call.setStatus(ScheduledCallStatus.Scheduled);
 		call.setRegion(participant.getRegion());
 		container.persistIfNotAlready(call);
 		container.flush();
