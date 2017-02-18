@@ -130,7 +130,7 @@ public class Calls {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.1")
-	public List<CareCall> listCareCalls(
+	public List<CareCall> findCareCalls(
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Active Participant") final ParticipantIdentity identity) {
 		Participant activeParticipant = participantsRepo.getParticipant(identity);
 		if (activeParticipant != null) {
@@ -141,14 +141,14 @@ public class Calls {
 		}
 	}
 
-	public List<ParticipantIdentity> choices0ListCareCalls() {
+	public List<ParticipantIdentity> choices0FindCareCalls() {
 		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.2")
-	public List<ReconnectCall> listReconnectCalls(
+	public List<ReconnectCall> findReconnectCalls(
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Participant") final ParticipantIdentity identity) {
 		Participant activeParticipant = participantsRepo.getParticipant(identity);
 		if (activeParticipant != null) {
@@ -159,14 +159,14 @@ public class Calls {
 		}
 	}
 
-	public List<ParticipantIdentity> choices0ListReconnectCalls() {
+	public List<ParticipantIdentity> choices0FindReconnectCalls() {
 		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.3")
-	public List<SurveyCall> listSurveyCalls(
+	public List<SurveyCall> findSurveyCalls(
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Active Participant") final ParticipantIdentity identity) {
 		Participant activeParticipant = participantsRepo.getParticipant(identity);
 		if (activeParticipant != null) {
@@ -177,14 +177,14 @@ public class Calls {
 		}
 	}
 
-	public List<ParticipantIdentity> choices0ListSurveyCalls() {
+	public List<ParticipantIdentity> choices0FindSurveyCalls() {
 		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.4")
-	public List<ScheduledCall> listScheduledCalls(
+	public List<ScheduledCall> findScheduledCalls(
 			@Parameter(optionality = Optionality.OPTIONAL) final Volunteer activeVolunteer,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Participant") final ParticipantIdentity identity) {
 		Participant activeParticipant = participantsRepo.getParticipant(identity);
@@ -201,6 +201,14 @@ public class Calls {
 		} else {
 			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCalls"));
 		}
+	}
+	
+	public List<Volunteer> choices0FindScheduledCalls() {
+		return volunteersRepo.listActiveVolunteers();
+	}
+
+	public List<ParticipantIdentity> choices1FindScheduledCalls() {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
 	
 	@Action(semantics = SemanticsOf.SAFE)
@@ -221,13 +229,7 @@ public class Calls {
 				new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipant", "participant", participant));
 	}
 
-	public List<Volunteer> choices0ListScheduledCalls() {
-		return volunteersRepo.listActiveVolunteers();
-	}
 
-	public List<ParticipantIdentity> choices1ListScheduledCalls() {
-		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
-	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)

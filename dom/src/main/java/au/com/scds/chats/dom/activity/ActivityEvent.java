@@ -96,9 +96,9 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	public String iconName() {
 		if (this instanceof ParentedActivityEvent)
-			return "Parented";
+			return "Parented" + (getCancelled() ? "Cancelled" : "");
 		else
-			return "Oneoff";
+			return "Oneoff" + (getCancelled() ? "Cancelled" : "");
 	}
 
 	// for mock testing

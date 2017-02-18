@@ -19,7 +19,9 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -152,19 +154,19 @@ public class Participants {
 		return container.allMatches(new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatus", "status",
 				Status.INACTIVE.toString()));
 	}
-	
+
 	public List<ParticipantIdentity> listAllExitedParticipantIdentities() {
 		return container.allMatches(new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatus", "status",
 				Status.EXITED.toString()));
 	}
-	
+
 	@Programmatic
 	public List<ParticipantIdentity> listAllParticipantIdentities() {
 		return container.allMatches(new QueryDefault<>(ParticipantIdentity.class, "listParticipants"));
 	}
 
 	@Programmatic
-	public Participant getParticipant(@ParameterLayout(named="Participant") ParticipantIdentity identity) {
+	public Participant getParticipant(@ParameterLayout(named = "Participant") ParticipantIdentity identity) {
 		if (identity == null)
 			return null;
 		return isisJdoSupport.getJdoPersistenceManager().getObjectById(Participant.class, identity.getJdoObjectId());
@@ -398,9 +400,5 @@ public class Participants {
 
 	@Inject
 	protected UserService userService;
-
-
-
-
 
 }

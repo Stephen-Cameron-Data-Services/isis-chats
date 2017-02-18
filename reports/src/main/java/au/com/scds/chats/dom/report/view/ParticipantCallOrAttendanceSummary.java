@@ -67,6 +67,10 @@ public class ParticipantCallOrAttendanceSummary implements WithApplicationTenanc
 		setRegionName(time.getRegionName());
 		setParticipantStatus(time.getParticipantStatus());
 	}
+	
+	public String title(){
+		return getFirstName() + " " + getSurname() + " (" + getAge() + ")" ;
+	}
 
 	public Long getParticipantId() {
 		return participantId;
@@ -144,6 +148,7 @@ public class ParticipantCallOrAttendanceSummary implements WithApplicationTenanc
 		return tenancy;
 	}
 
+	@Programmatic
 	public void addTime(ParticipantCallOrAttendance time) {
 		if (time != null) {
 			setTotalMinutes(getTotalMinutes() + time.getMinutes());

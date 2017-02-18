@@ -772,10 +772,10 @@ public class DEXBulkUploadReport {
 			SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy HH:mm");
 			for (ActivityAttendanceSummary attendance : attendances) {
 				if (attendance.getCancelled()) {
-					if (attendance.getAttendedCount() > 0 || attendance.getNotAttendedCount() > 0) {
+					if (attendance.getAttendedCount() > 0) {
 						this.errors.add("Activity '" + attendance.getActivityName() + "' on "
 								+ fmt.format(attendance.getStartDateTime())
-								+ " is cancelled but still has entries in its attendance list.\r\n");
+								+ " is cancelled but still has attended = YES entries in its attendance list.\r\n");
 						hasErrors = true;
 					}
 				} else {

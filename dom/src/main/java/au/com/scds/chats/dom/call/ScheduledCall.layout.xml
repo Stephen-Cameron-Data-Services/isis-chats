@@ -16,6 +16,9 @@
 						<col span="6">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
+								<ns2:action id="moveCall" position="RIGHT">
+									<ns2:describedAs>Assign the call to another Calls Volunteer and Date</ns2:describedAs>
+								</ns2:action>
 								<ns2:property id="allocatedVolunteer">
 									<ns2:describedAs>The Chats Volunteer allocated to make this scheduled call.</ns2:describedAs>
 								</ns2:property>
@@ -77,9 +80,7 @@
 					</row>
 					<row>
 						<col span="12">
-							<ns2:collection id="previousCallsToParticipantViews">
-								<ns2:describedAs></ns2:describedAs>
-							</ns2:collection>
+							<ns2:collection id="previousCallsToParticipantViews" name="All Calls To Participant"/>
 						</col>
 					</row>
 				</tab>

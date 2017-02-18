@@ -64,13 +64,6 @@ public class InactiveParticipantsByMonthsInactive {
 		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
 	
-	public List<ParticipantCallOrAttendance> findParticipantCallsAndAttendances(ParticipantIdentity identity) {
-		return container.allMatches(new QueryDefault<>(ParticipantCallOrAttendance.class, "allCallOrAttendanceForParticipant", "participantId", identity.getParticipantId()));
-	}
-	
-	public List<ParticipantIdentity> choices0FindParticipantCallsAndAttendances() {
-		return participantsRepo.listAllParticipantIdentities();
-	}
 
 	@Inject
 	DomainObjectContainer container;

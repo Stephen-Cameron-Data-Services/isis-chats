@@ -50,6 +50,10 @@ public class ParentedActivityEvent extends ActivityEvent {
 		super(container, participants);
 	}
 
+	public String iconName() {
+		return (getCancelled() ? "Cancelled" : "");
+	}
+
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "This Activity belongs to its parent Recurring Activity")
 	@Column(allowsNull = "true")
 	public final RecurringActivity getParentActivity() {

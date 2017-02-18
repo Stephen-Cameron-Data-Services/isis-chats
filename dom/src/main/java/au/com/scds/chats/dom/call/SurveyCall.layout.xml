@@ -22,6 +22,12 @@
 						</col>
 						<col span="6">
 							<ns2:fieldSet name="Times" id="time">
+								<ns2:action id="startCall" position="RIGHT">
+									<ns2:describedAs>Click to set the Start Date-time of the call as Date-time for 'now'.</ns2:describedAs>
+								</ns2:action>
+								<ns2:action id="endCall" position="RIGHT">
+									<ns2:describedAs>Click to set the End Date-time of the call as Date-time for 'now'.</ns2:describedAs>
+								</ns2:action>
 								<ns2:property id="intervalLength">
 									<ns2:named>Call Length</ns2:named>
 									<ns2:describedAs>Calculated Call Length (HH:MM)</ns2:describedAs>
@@ -43,8 +49,9 @@
 					<row>
 						<col span="6">
 							<ns2:fieldSet name="Summary" id="summary">
-								<ns2:property id="summaryNotes" multiLine="10" hidden="ALL_TABLES"/>
-								<ns2:property id="trimmedSummaryNotes" hidden="OBJECT_FORMS"/>
+								<ns2:property id="summaryNotes" multiLine="10"
+									hidden="ALL_TABLES" />
+								<ns2:property id="trimmedSummaryNotes" hidden="OBJECT_FORMS" />
 							</ns2:fieldSet>
 						</col>
 					</row>

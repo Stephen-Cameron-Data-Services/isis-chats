@@ -16,7 +16,25 @@
 						<col span="6">
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
-								<ns2:property id="participant" />
+								<ns2:action id="moveCall" position="RIGHT">
+									<ns2:describedAs>Assign the call to another Calls Volunteer and Date</ns2:describedAs>
+								</ns2:action>
+								<ns2:property id="allocatedVolunteer">
+									<ns2:describedAs>The Chats Volunteer allocated to make this scheduled call.</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="participant">
+									<ns2:describedAs>The Chats Participant to whom the scheduled call is to be made.</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="callSchedule" hidden="ALL_TABLES">
+									<ns2:describedAs>The list of calls scheduled for a Volunteer to make on a specific day</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="summaryNotes" multiLine="10"
+									hidden="ALL_TABLES">
+									<ns2:describedAs>Notes made about the call conversation.</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="trimmedSummaryNotes" hidden="OBJECT_FORMS">
+									<ns2:describedAs>Notes made about the call conversation.</ns2:describedAs>
+								</ns2:property>
 							</ns2:fieldSet>
 						</col>
 						<col span="6">
@@ -31,13 +49,25 @@
 									<ns2:named>Call Length</ns2:named>
 									<ns2:describedAs>Calculated Call Length (HH:MM)</ns2:describedAs>
 								</ns2:property>
-								<ns2:property id="startDateTime" hidden="ALL_TABLES">
-									<ns2:action id="updateStartDateTime" position="BELOW" />
+								<ns2:property id="scheduledDateTime">
+									<ns2:describedAs>The Date-time for which the call is scheduled to occur.</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="startDateTime">
+									<ns2:named>Start Date-time</ns2:named>
+									<ns2:describedAs>Start Date-time of the Call.</ns2:describedAs>
+									<ns2:action id="updateStartDateTime" position="BELOW">
+										<ns2:describedAs>Change the Start Date Time.</ns2:describedAs>
+									</ns2:action>
 								</ns2:property>
 								<ns2:property id="endDateTime" hidden="ALL_TABLES">
-									<ns2:action id="updateEndDateTime" position="BELOW" />
+									<ns2:named>End Date-time</ns2:named>
+									<ns2:describedAs>End Date-time of the Call.</ns2:describedAs>
+									<ns2:action id="updateEndDateTime" position="BELOW">
+										<ns2:describedAs>Set, change or delete the End Date-time of the Call.</ns2:describedAs>
+									</ns2:action>
 									<ns2:action id="updateEndDateTimeOffStart" position="BELOW">
 										<ns2:named>Start Date Time + N</ns2:named>
+										<ns2:describedAs>Set or Change the End Date-time as Start Date-time plus N minutes (N an integer).</ns2:describedAs>
 									</ns2:action>
 								</ns2:property>
 							</ns2:fieldSet>
@@ -47,10 +77,10 @@
 				<tab name="Calendar Notes">
 					<row>
 						<col span="6">
-							<ns2:fieldSet name="Summary" id="summary">
-								<ns2:property id="summaryNotes" multiLine="10"
-									hidden="ALL_TABLES" />
-							</ns2:fieldSet>
+							<ns2:collection id="notes">
+								<ns2:describedAs>Generic Notes linked to this call (and
+									optionally visible within a Calendar display)</ns2:describedAs>
+							</ns2:collection>
 						</col>
 					</row>
 				</tab>

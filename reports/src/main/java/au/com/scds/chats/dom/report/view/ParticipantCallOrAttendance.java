@@ -104,14 +104,14 @@ import org.joda.time.LocalDate;
 						+ "WHERE "
 						+ "  (attended = TRUE))") })
 @Queries({
-		@Query(name = "allCallOrAttendanceForParticipant", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
-				+ "WHERE participantId == :participantId"),
-		@Query(name = "allParticipantCallOrAttendanceForPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
-				+ "WHERE startDateTime >= :startDate && startDateTime <= :endDate"),
-		@Query(name = "allParticipantCallOrAttendanceForPeriodAgedUnder", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
-				+ "WHERE startDateTime >= :startDate && startDateTime <= :endDate && age < :lessThanAge"),
-		@Query(name = "allParticipantCallOrAttendanceForPeriodAgedOver", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
-				+ "WHERE startDateTime >= :startDate && startDateTime <= :endDate && age > :greaterThanAge"), })
+		@Query(name = "allCallOrAttendanceForParticipantInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
+				+ "WHERE participantId == :participantId && startDateTime >= :startDate && startDateTime < :endDate"),
+		@Query(name = "allParticipantCallOrAttendanceInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
+				+ "WHERE startDateTime >= :startDate && startDateTime < :endDate"),
+		@Query(name = "allParticipantCallOrAttendanceInPeriodAgedUnder", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
+				+ "WHERE startDateTime >= :startDate && startDateTime < :endDate && age < :lessThanAge"),
+		@Query(name = "allParticipantCallOrAttendanceInPeriodAgedOver", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
+				+ "WHERE startDateTime >= :startDate && startDateTime < :endDate && age > :greaterThanAge"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ParticipantCallOrAttendance implements WithApplicationTenancy{
 
@@ -129,6 +129,10 @@ public class ParticipantCallOrAttendance implements WithApplicationTenancy{
 	private Integer minutes;
 	private String arrivingTransport;
 	private String departingTransport;
+	
+	public String title(){
+		return getFirstName() + " " + getSurname() + " (" + getAge() + ") - " + getName();
+	}
 
 	public String getName() {
 		return name;
