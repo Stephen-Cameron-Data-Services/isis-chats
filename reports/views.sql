@@ -576,34 +576,70 @@ JOIN
    `person` 
 ON
    `person`.`person_id` = `volunteer`.`person_person_id`;
- 
+
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `calldurationparticipant` AS
+    SELECT 
+        `person`.`person_id` AS `personId`,
+        `person`.`surname` AS `surname`,
+        `person`.`firstname` AS `firstName`,
+        `person`.`birthdate` AS `birthDate`,
+        TIMESTAMPDIFF(YEAR,
+            `person`.`birthdate`,
+            `telephonecall`.`startdatetime`) AS `ageAtDayOfCall`,
+        `person`.`slk` AS `slk`,
+        `participant`.`participant_id` AS `participantId`,
+        `participant`.`region_name` AS `regionName`,
+        `participant`.`status` AS `participantStatus`,
+        `telephonecall`.`startdatetime` AS `startdatetime`,
+        TIMESTAMPDIFF(MINUTE,
+            `telephonecall`.`startdatetime`,
+            `telephonecall`.`enddatetime`) AS `callMinutesTotal`
+    FROM
+        ((`telephonecall`
+        JOIN `participant`)
+        JOIN `person`)
+    WHERE
+        ((`participant`.`participant_id` = `telephonecall`.`participant_participant_id`)
+            AND (`person`.`person_id` = `participant`.`person_person_id`))   
+   
 #DROP VIEW `combinedcallandattendance` 
-CREATE VIEW `combinedcallandattendance` AS
+CREATE 
+VIEW `combinedcallandattendance` AS
     (SELECT 
         `calldurationparticipant`.`personId` AS `personId`,
         `calldurationparticipant`.`surname` AS `surname`,
         `calldurationparticipant`.`firstName` AS `firstName`,
         `calldurationparticipant`.`birthDate` AS `birthDate`,
+        `calldurationparticipant`.`ageAtDayOfCall` AS `age`,
         `calldurationparticipant`.`slk` AS `slk`,
         `calldurationparticipant`.`participantId` AS `participantId`,
         `calldurationparticipant`.`regionName` AS `regionName`,
         `calldurationparticipant`.`participantStatus` AS `participantStatus`,
         'CALL' AS `name`,
-        `calldurationparticipant`.`startDateTime` AS `startDateTime`,
-        `calldurationparticipant`.`callMinutesTotal` AS `minutes`
+        `calldurationparticipant`.`startdatetime` AS `startDateTime`,
+        `calldurationparticipant`.`callMinutesTotal` AS `minutes`,
+        'N/A' AS `arrivingTransport`,
+        'N/A' AS `departingTransport`
     FROM
         `calldurationparticipant`) UNION (SELECT 
         `activityparticipantattendance`.`personId` AS `personId`,
         `activityparticipantattendance`.`surname` AS `surname`,
         `activityparticipantattendance`.`firstName` AS `firstName`,
         `activityparticipantattendance`.`birthDate` AS `birthDate`,
+        `activityparticipantattendance`.`ageAtDayOfActivity` AS `age`,
         `activityparticipantattendance`.`slk` AS `slk`,
         `activityparticipantattendance`.`participantId` AS `participantId`,
         `activityparticipantattendance`.`regionName` AS `regionName`,
         `activityparticipantattendance`.`participantStatus` AS `participantStatus`,
         `activityparticipantattendance`.`activityName` AS `as name`,
         `activityparticipantattendance`.`startDateTime` AS `startDateTime`,
-        `activityparticipantattendance`.`minutesattended` AS `minutes`
+        `activityparticipantattendance`.`minutesattended` AS `minutes`,
+        `activityparticipantattendance`.`arrivingTransportType` AS `arrivingTransport`,
+        `activityparticipantattendance`.`departingTransporttype` AS `departingTransport`
     FROM
         `activityparticipantattendance`
     WHERE

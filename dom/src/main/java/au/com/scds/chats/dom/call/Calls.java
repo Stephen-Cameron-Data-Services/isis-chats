@@ -318,13 +318,7 @@ public class Calls {
 		}
 		CalendarDayCallSchedule sched = null;
 		if (volunteer != null) {
-			List<CalendarDayCallSchedule> schedules = listDailyCallSchedulesForVolunteer(volunteer);
-			for (CalendarDayCallSchedule s : schedules) {
-				if (s.getCalendarDate().equals(dateTime.toLocalDate())) {
-					sched = s;
-					break;
-				}
-			}
+			sched = findVolunteerScheduleOnDate(volunteer, dateTime.toLocalDate());
 		} else {
 			throw new IllegalArgumentException("volunteer is a mandatory argument");
 		}
@@ -339,6 +333,17 @@ public class Calls {
 		}
 		sched.addCall(call);
 		return call;
+	}
+	
+	@Programmatic
+	public CalendarDayCallSchedule findVolunteerScheduleOnDate(Volunteer volunteer, LocalDate calendarDate) {
+		List<CalendarDayCallSchedule> schedules = listDailyCallSchedulesForVolunteer(volunteer);
+		for (CalendarDayCallSchedule s : schedules) {
+			if (s.getCalendarDate().equals(calendarDate)) {
+				return s;
+			}
+		}
+		return null;
 	}
 
 	@Programmatic
@@ -403,5 +408,9 @@ public class Calls {
 
 	@Inject
 	public Participants participantsRepo;
+
+
+
+
 
 }

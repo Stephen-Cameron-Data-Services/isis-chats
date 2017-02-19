@@ -78,9 +78,7 @@ import org.joda.time.LocalDate;
 						+ "  person "
 						+ "WHERE "
 						+ "  participant.participant_id = telephonecall.participant_participant_id AND "
-						+ "  person.person_id = participant.person_person_id AND "							
-						+ "  not isNull(telephonecall.startdatetime) AND "
-						+ "  not isNull(telephonecall.enddatetime)  "							
+						+ "  person.person_id = participant.person_person_id "							
 						+ "GROUP BY "
 						+ "  participant.participant_id, "
 						+ "  EXTRACT(YEAR_MONTH FROM telephonecall.startdatetime);") })

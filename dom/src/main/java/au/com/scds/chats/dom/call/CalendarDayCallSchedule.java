@@ -116,6 +116,19 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity
 	public void setCalendarDate(final LocalDate calendarDate) {
 		this.calendarDate = calendarDate;
 	}
+	
+	@Action
+	public CalendarDayCallSchedule changeDate(final LocalDate calendarDate){
+		setCalendarDate(calendarDate);
+		return this;
+	}
+	
+	public String validateChangeDate(final LocalDate calendarDate){
+		if(callsRepo.findVolunteerScheduleOnDate(this.getAllocatedVolunteer(), calendarDate) != null)
+			return "A Call Schedule for the Volunteer already exists on that date";
+		else
+			return null;
+	}
 
 	@Column(allowsNull = "true")
 	public Volunteer getAllocatedVolunteer() {

@@ -88,6 +88,8 @@ public class CalendarDayCallScheduleTest {
             assertThat(_schedule.getTotalCalls()).isEqualTo(1);
             
             //call.setStatus(ScheduledCallStatus.Completed);
+            _call.setStartDateTime(new DateTime());
+            _call.updateEndDateTimeOffStart(10);
             assertThat(_call.getIsCompleted()).isEqualTo(true);
             assertThat(_schedule.getCompletedCalls()).isEqualTo(1);
             assertThat(_schedule.getTotalCalls()).isEqualTo(1);
@@ -98,6 +100,7 @@ public class CalendarDayCallScheduleTest {
             assertThat(_schedule.getTotalCalls()).isEqualTo(1);
             
             //call.setStatus(ScheduledCallStatus.Incomplete);
+            _call.setEndDateTime(null);
             assertThat(_call.getIsCompleted()).isEqualTo(false);
             _schedule.releaseCall(_call);
             assertThat(_schedule.getCompletedCalls()).isEqualTo(0);
