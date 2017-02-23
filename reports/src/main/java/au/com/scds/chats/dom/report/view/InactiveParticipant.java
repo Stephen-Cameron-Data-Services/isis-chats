@@ -18,6 +18,8 @@
  */
 package au.com.scds.chats.dom.report.view;
 
+import java.util.Date;
+
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Inheritance;
@@ -50,18 +52,24 @@ import org.joda.time.LocalDate;
 				key = "view-definition",
 				value = "CREATE VIEW InactiveParticipant "
 						+ "( "
+						+ "  {this.personId}, "						
 						+ "  {this.surname}, "
 						+ "  {this.firstName}, "
 						+ "  {this.birthDate}, "
+						+ "  {this.activityId}, "						
 						+ "  {this.activityName}, "
+						+ "  {this.startDateTime}, "						
 						+ "  {this.regionName}, "
 						+ "  {this.daysSinceLastAttended} "
 						+ ") AS "
 						+ "SELECT "
+						+ "	 person.person_id as personId, "						
 						+ "	 person.surname, "
 						+ "	 person.firstname AS firstName, "
 						+ "	 person.birthdate AS birthDate, "
+						+ "	 activity.activity_id as activityId, "						
 						+ "	 activity.name AS activityName, "
+						+ "	 activity.startdatetime AS startDateTime, "
 						+ "	 activity.region_name AS regionName, "
 						+ "	 datediff(now(),attended.startdatetime) AS daysSinceLastAttended "
 						+ "FROM "
@@ -73,31 +81,45 @@ import org.joda.time.LocalDate;
 						+ "	 participant.participant_id = attended.participant_participant_id AND "
 						+ "	 activity.activity_id = attended.activity_activity_id AND "
 						+ "	 participant.person_person_id = person.person_id AND "
-						+ "  participant.status = 'ACTIVE'"
-						+ "GROUP BY "
-						+ "	 participant.participant_id, "
-						+ "	 activity.activity_id "
+						+ "  participant.status = 'ACTIVE' "
 						+ "ORDER BY "
-						+ " daysSinceLastAttended DESC;") })
+						+ "  daysSinceLastAttended ASC;") })
 @Queries({
 		@Query(name = "findInactiveParticipants", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.InactiveParticipant "),
 		@Query(name = "getParticipantActivity", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.InactiveParticipant WHERE firstName == :firstname && surname == :surname && birthDate == :birthdate") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class InactiveParticipant implements WithApplicationTenancy {
 
+	private Long personId;
+	private Long activityId;	
 	private String surname;
 	private String firstName;
 	private LocalDate birthDate;
 	private String regionName;
 	private String activityName;
+	private Date startDateTime;
 	private Integer daysSinceLastAttended;
 
 	public String title() {
-		return "Last Attendance by " + getFirstname() + " " + getSurname() + " at " + getActivity() + " was " + getDaysSinceLastAttended() + " days previous";
+		return "Most Recent Attendance by " + getFirstname() + " " + getSurname() + " at " + getActivity() + " was " + getDaysSinceLastAttended() + " days previous";
 	}
 
-	@Property()
-	@MemberOrder(sequence = "1")
+	public Long getPersonId() {
+		return personId;
+	}
+
+	public void setPersonId(Long personId) {
+		this.personId = personId;
+	}
+
+	public Long getActivityId() {
+		return activityId;
+	}
+
+	public void setActivityId(Long activityId) {
+		this.activityId = activityId;
+	}	
+	
 	public String getSurname() {
 		return surname;
 	}
@@ -106,8 +128,6 @@ public class InactiveParticipant implements WithApplicationTenancy {
 		this.surname = surname;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "2")
 	public String getFirstname() {
 		return firstName;
 	}
@@ -116,8 +136,6 @@ public class InactiveParticipant implements WithApplicationTenancy {
 		this.firstName = firstname;
 	}
 
-	@Property(hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "3")
 	public LocalDate getBirthdate() {
 		return birthDate;
 	}
@@ -126,8 +144,6 @@ public class InactiveParticipant implements WithApplicationTenancy {
 		this.birthDate = birthdate;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "4")
 	public String getActivity() {
 		return activityName;
 	}
@@ -135,9 +151,16 @@ public class InactiveParticipant implements WithApplicationTenancy {
 	public void setActivity(String activity) {
 		this.activityName = activity;
 	}
+	
+	public Date getStartDateTime() {
+		return startDateTime;
+	}
 
-	@Property()
-	@MemberOrder(sequence = "5")
+	public void setStartDateTime(Date startDateTime) {
+		this.startDateTime = startDateTime;
+	}
+
+
 	public Integer getDaysSinceLastAttended() {
 		return daysSinceLastAttended;
 	}
@@ -146,8 +169,6 @@ public class InactiveParticipant implements WithApplicationTenancy {
 		this.daysSinceLastAttended = daysSinceLastAttended;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "6")
 	public String getRegionName() {
 		return regionName;
 	}

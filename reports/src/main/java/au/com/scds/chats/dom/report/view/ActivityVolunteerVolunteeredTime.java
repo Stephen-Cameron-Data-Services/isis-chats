@@ -43,12 +43,13 @@ import org.joda.time.LocalDate;
 						+ "  {this.activityAbbreviatedName}, "						
 						+ "  {this.regionName}, "
 						+ "  {this.startDateTime}, "
+						+ "  {this.cancelled}, "
 						+ "  {this.volunteerId}, "
 						+ "  {this.participantId}, "						
 						+ "  {this.volunteerStatus}, "
 						+ "  {this.volunteeredTimeId}, "							
 						+ "  {this.includeAsParticipation}, "	
-						+ "  {this.minutesAttended} "
+						+ "  {this.minutes} "
 						+ ") AS "
 						+ "SELECT " 
 						+ "  person.person_id as personId, "
@@ -61,12 +62,13 @@ import org.joda.time.LocalDate;
 						+ "  activity.abbreviatedName AS activityAbbreviatedName, " 
 						+ "  activity.region_name AS regionName, "
 						+ "  activity.startdatetime AS startDateTime, "
+						+ "  activity.cancelled AS cancelled, "
 						+ "  volunteer.volunteer_id AS volunteerId, "
 						+ "  participant.participant_id AS participantId, "
 						+ "  volunteer.status AS volunteerStatus, "
 						+ "  volunteeredtime.volunteeredtime_id AS volunteeredtimeId, "
 						+ "  volunteeredtime.includeasparticipation as includeAsParticipation, "
-						+ "  TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime) as minutesattended "
+						+ "  TIMESTAMPDIFF(MINUTE,volunteeredtime.startdatetime,volunteeredtime.enddatetime) as minutes "
 						+ "FROM "
 						+ "  volunteeredtime "
 						+ "JOIN "
@@ -93,14 +95,25 @@ import org.joda.time.LocalDate;
 	@Query(name = "allActivityVolunteerVolunteeredTime",
 			language = "JDOQL",
 			value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime"),
+	//:endDateTime value is set by e.g. endDate.plusDays(1).toDate()
+	@Query(name = "allActivityVolunteerVolunteeredTimeForPeriod",
+			language = "JDOQL",
+			value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime vt "
+			+ "WHERE vt.volunteerId == :volunteerId && vt.startDateTime >= :startDateTime && vt.startDateTime < :endDateTime"),
+	//:endDateTime value is set by e.g. endDate.plusDays(1).toDate()
+	@Query(name = "allActivityVolunteeredTimeForPeriod",
+			language = "JDOQL",
+			value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime vt "
+			+ "WHERE vt.startDateTime >= :startDateTime && vt.startDateTime < :endDateTime"),	
+	//used for DEX reports, :endDateTime is set differently, hence <=
 	@Query(name = "allActivityVolunteerVolunteeredTimeForPeriodAndRegion",
 			language = "JDOQL",
 			value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime vt "
 					+ "WHERE vt.startDateTime >= :startDateTime && vt.startDateTime <= :endDateTime && vt.includeAsParticipation == :includeAsParticipation && vt.regionName == :region"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenancy*/ implements Comparable<ActivityVolunteerVolunteeredTime>{
+public class ActivityVolunteerVolunteeredTime implements WithApplicationTenancy, Comparable<ActivityVolunteerVolunteeredTime> {
 
-	
+
 	private Long personId;						
 	private String surname;
 	private String firstName;
@@ -108,6 +121,7 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 	private String slk;
 	private Long activityId;					
 	private String activityName;
+	private Boolean cancelled;
 	private String activityAbbreviatedName;						
 	private String regionName;
 	private Date startDateTime;
@@ -116,26 +130,8 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 	private String volunteerStatus;
 	private Long volunteeredTimeId;							
 	private Boolean includeAsParticipation;	
-	private Integer minutesAttended; 
-	
-	/*private Long personId;
-	private Long volunteerId;
-	private Long activityId;
-	private Long attendId;
-	private String surname;
-	private String firstName;
-	private LocalDate birthDate;
-	private String slk;
-	private String activityName;
-	private String activityAbbreviatedName;
-	private String regionName;
-	private Date startDateTime;
-	private String volunteerStatus;
-	private Integer minutesAttended;
-	private Boolean includeAsParticipation;*/
+	private Integer minutes; 
 
-	@Property()
-	@MemberOrder(sequence = "1")
 	public String getSurname() {
 		return surname;
 	}
@@ -144,8 +140,6 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 		this.surname = surname;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "2")
 	public String getFirstName() {
 		return firstName;
 	}
@@ -154,8 +148,6 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 		this.firstName = firstName;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "3.1")
 	public LocalDate getBirthDate() {
 		return birthDate;
 	}
@@ -164,8 +156,6 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 		this.birthDate = birthDate;
 	}
 	
-	@Property()
-	@MemberOrder(sequence = "3.2")
 	public String getSlk() {
 		return slk;
 	}
@@ -174,8 +164,6 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 		this.slk = slk;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "4")
 	public String getRegionName() {
 		return regionName;
 	}
@@ -184,8 +172,6 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 		this.regionName = region;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "5")
 	public String getActivityName() {
 		return activityName;
 	}
@@ -202,8 +188,6 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 		this.activityAbbreviatedName = activityAbbreviatedName;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "6")
 	public Date getStartDateTime() {
 		return startDateTime;
 	}
@@ -212,8 +196,14 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 		this.startDateTime = startDateTime;
 	}	
 	
-	@Property()
-	@MemberOrder(sequence = "7")
+	public Boolean getCancelled() {
+		return cancelled;
+	}
+
+	public void setCancelled(Boolean cancelled) {
+		this.cancelled = cancelled;
+	}
+
 	public String getParticipantStatus() {
 		return volunteerStatus;
 	}
@@ -222,41 +212,14 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 		this.volunteerStatus = volunteerStatus;
 	}
 
-	
-	
-	
-	/*@Property()
-	@MemberOrder(sequence = "9")
-	public String getArrivingTransportType() {
-		return arrivingTransportType;
+	public Integer getMinutes() {
+		return minutes;
 	}
 
-	public void setArrivingTransportType(String arrivingTransportType) {
-		this.arrivingTransportType = arrivingTransportType;
+	public void setMinutes(Integer minutes) {
+		this.minutes = minutes;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "10")
-	public String getDepartingTransportType() {
-		return departingTransportType;
-	}
-
-	public void setDepartingTransportType(String departingTransportType) {
-		this.departingTransportType = departingTransportType;
-	}*/
-
-	@Property()
-	@MemberOrder(sequence = "11")
-	public Integer getMinutesAttended() {
-		return minutesAttended;
-	}
-
-	public void setMinutesAttended(Integer minutesAttended) {
-		this.minutesAttended = minutesAttended;
-	}
-
-	@Property()
-	@MemberOrder(sequence = "12")
 	public Long getPersonId() {
 		return personId;
 	}
@@ -265,8 +228,6 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 		this.personId = personId;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "13")
 	public Long getVolunteerId() {
 		return volunteerId;
 	}
@@ -275,8 +236,6 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 		this.volunteerId = volunteerId;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "14")
 	public Long getActivityId() {
 		return activityId;
 	}
@@ -285,8 +244,7 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 		this.activityId = activityId;
 	}
 	
-	@Property()
-	@MemberOrder(sequence = "15")
+
 	public Long getVolunteeredTimeId() {
 		return volunteeredTimeId;
 	}
@@ -296,9 +254,6 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 	}
 
 
-
-	@Property()
-	@MemberOrder(sequence = "16")
 	public String getVolunteerStatus() {
 		return volunteerStatus;
 	}
@@ -307,8 +262,7 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 		this.volunteerStatus = volunteerStatus;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "17")
+
 	public Boolean getIncludeAsParticipation() {
 		return includeAsParticipation;
 	}
@@ -316,14 +270,8 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 	public void setIncludeAsParticipation(Boolean includeAsParticipation) {
 		this.includeAsParticipation = includeAsParticipation;
 	}
-	
-	@Override
-	public int compareTo(ActivityVolunteerVolunteeredTime o) {
-		return (int)(this.getVolunteeredTimeId() - o.getVolunteeredTimeId());
-	}
 
-	@Property()
-	@MemberOrder(sequence = "18")
+
 	public Long getParticipantId() {
 		return participantId;
 	}
@@ -331,6 +279,21 @@ public class ActivityVolunteerVolunteeredTime /*implements WithApplicationTenanc
 	public void setParticipantId(Long participantId) {
 		this.participantId = participantId;
 	}
-	
 
+	@Override
+	@Programmatic
+	public ApplicationTenancy getApplicationTenancy() {
+		ApplicationTenancy tenancy = new ApplicationTenancy();
+		if (getRegionName().equals("STATEWIDE"))
+			tenancy.setPath("/");
+		else {
+			tenancy.setPath("/" + getRegionName() + "_");
+		}
+		return tenancy;
+	}
+
+	@Override
+	public int compareTo(ActivityVolunteerVolunteeredTime o) {
+		return this.getVolunteerId().compareTo(o.getVolunteerId()) ;
+	}
 }

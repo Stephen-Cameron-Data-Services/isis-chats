@@ -44,7 +44,7 @@ public class DEXBulkUploadReport {
 
 	// constants
 	private final int TELEPHONE_WEB_CONTACT = 65;
-	//now corrected from SOCIAL_SUPPORT_GROUP to:
+	// now corrected from SOCIAL_SUPPORT_GROUP to:
 	private final int SOCIAL_SUPPORT_INDIVIDUAL = 64;
 	private final int OUTLET_ACTIVITY_ID_NORTH = 10262;
 	private final int OUTLET_ACTIVITY_ID_NORTHWEST = 10263;
@@ -94,9 +94,8 @@ public class DEXBulkUploadReport {
 	private DEXBulkUploadReport() {
 	}
 
-	public DEXBulkUploadReport(RepositoryService repository, IsisJdoSupport isisJdoSupport,
-			Participants participants, Integer year, Integer month, String regionName,
-			ClientIdGenerationMode nameMode) {
+	public DEXBulkUploadReport(RepositoryService repository, IsisJdoSupport isisJdoSupport, Participants participants,
+			Integer year, Integer month, String regionName, ClientIdGenerationMode nameMode) {
 
 		this.fileUpload = new DEXFileUpload();
 		this.fileUploadWrapper = new DEXFileUploadWrapper();
@@ -147,7 +146,13 @@ public class DEXBulkUploadReport {
 
 	public DEXFileUploadWrapper build() throws Exception {
 
-		if (fileUploadWrapper.hasAttendanceErrors(this.startDateTime, this.endDateTime, this.regionName)) {
+		boolean attendanceOK = fileUploadWrapper.hasAttendanceErrors(this.startDateTime, this.endDateTime,
+				this.regionName);
+		boolean volunteeredTimeOK = fileUploadWrapper.hasVolunteeredTimeErrors(this.startDateTime, this.endDateTime,
+				this.regionName);
+		boolean callsOK = fileUploadWrapper.hasCallsErrors(this.startDateTime, this.endDateTime, this.regionName);
+
+		if (!attendanceOK || !volunteeredTimeOK || !callsOK) {
 			return fileUploadWrapper;
 		}
 
@@ -214,12 +219,12 @@ public class DEXBulkUploadReport {
 				client.setClientId(clientKey);
 				client.setParticipationCode("CLIENT");
 				sessionWrapper.addClient(client);
-				//only adjust for transport time if data not from old system
+				// only adjust for transport time if data not from old system
 				if (attend.getOldId() == null) {
 					sessionWrapper.addMinutes(adjustTimeForTransport(attend.getMinutesAttended(),
 							attend.getArrivingTransportType(), attend.getDepartingTransportType()));
-				}else{
-					sessionWrapper.addMinutes(attend.getMinutesAttended());					
+				} else {
+					sessionWrapper.addMinutes(attend.getMinutesAttended());
 				}
 			}
 		}
@@ -232,7 +237,7 @@ public class DEXBulkUploadReport {
 			if (IGNORE_AGE || time.getBirthDate().isBefore(this.bornBeforeDate)) {
 				System.out.print(time.getActivityAbbreviatedName() + "," + time.getStartDateTime() + ",");
 				System.out.print(time.getSurname() + "," + time.getFirstName() + "," + time.getBirthDate() + ",");
-				System.out.println(time.getMinutesAttended());
+				System.out.println(time.getMinutes());
 				switch (this.mode) {
 				case NAME_KEY:
 					clientKey = time.getFirstName().trim() + "_" + time.getSurname().trim() + "_"
@@ -797,6 +802,41 @@ public class DEXBulkUploadReport {
 								+ "' has missing transport(s) for some attendees.\r\n");
 						hasErrors = true;
 					}
+				}
+			}
+			return hasErrors;
+		}
+
+		private boolean hasVolunteeredTimeErrors(DateTime start, DateTime end, String regionName) {
+			List<ActivityVolunteerVolunteeredTime> volunteeredTimes = repository
+					.allMatches(new QueryDefault(ActivityVolunteerVolunteeredTime.class,
+							"allActivityVolunteerVolunteeredTimeForPeriodAndRegion", "startDateTime", start.toDate(),
+							"endDateTime", end.toDate(), "includeAsParticipation", true, "region", regionName));
+			boolean hasErrors = false;
+			SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy HH:mm");
+			for (ActivityVolunteerVolunteeredTime time : volunteeredTimes) {
+				if (!time.getCancelled()) {
+					if (time.getMinutes() == null) {
+						this.errors.add("Activity '" + time.getActivityName() + "' on "
+								+ fmt.format(time.getStartDateTime()) + "' has incomplete date-time for volunteer "
+								+ time.getFirstName() + " " + time.getSurname() + ".\r\n");
+						hasErrors = true;
+					}
+				}
+			}
+			return hasErrors;
+		}
+
+		public boolean hasCallsErrors(DateTime start, DateTime end, String regionName) {
+			List<CallsDurationByParticipantAndDayForDEX> durations = repository.allMatches(new QueryDefault(
+					CallsDurationByParticipantAndDayForDEX.class, "allCallsDurationByParticipantAndDayAndRegion",
+					"startDate", start.toLocalDate(), "endDate", end.toLocalDate(), "region", regionName));
+			boolean hasErrors = false;
+			for (CallsDurationByParticipantAndDayForDEX call : durations) {
+				if (call.getCallMinutesTotal() == null) {
+					this.errors.add(" A call to '" + call.getFirstName() + " " + call.getSurname() 
+							+ " has incomplete date-time data.\r\n");
+					hasErrors = true;
 				}
 			}
 			return hasErrors;

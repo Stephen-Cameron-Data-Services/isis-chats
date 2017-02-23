@@ -40,31 +40,30 @@ GROUP BY
   activity.region_name,
   EXTRACT(YEAR_MONTH FROM activity.startdatetime);
 
-#DROP VIEW InactiveParticipant;
-CREATE VIEW InactiveParticipant AS
-SELECT 
-  person.surname, 
-  person.firstname AS firstName, 
-  person.birthdate AS birthDate, 
-  activity.name AS activityName, 
-  activity.region_name AS regionName, 
-  datediff(now(),attend.startdatetime) AS daysSinceLastattended 
-FROM 
-  attend, 
-  participant, 
-  person, 
-  activity 
-WHERE 
-  participant.participant_id = attend.participant_participant_id AND 
-  activity.activity_id = attend.activity_activity_id AND 
-  participant.person_person_id = person.person_id AND 
-  participant.status = 'ACTIVE'
-GROUP BY 
-  participant.participant_id, 
-  activity.activity_id 
-ORDER BY 
- daysSinceLastattended DESC;
-
+CREATE
+VIEW `inactiveparticipant` AS
+    SELECT 
+        `person`.`person_id` AS `personId`,
+        `person`.`surname` AS `surname`,
+        `person`.`firstname` AS `firstName`,
+        `person`.`birthdate` AS `birthDate`,
+        `activity`.`activity_id` AS `activityId`,
+        `activity`.`startdatetime` AS `startDateTime`,
+        `activity`.`name` AS `activityName`,
+        `activity`.`region_name` AS `regionName`,
+        (TO_DAYS(NOW()) - TO_DAYS(`attend`.`startdatetime`)) AS `daysSinceLastattended`
+    FROM
+        (((`attend`
+        JOIN `participant`)
+        JOIN `person`)
+        JOIN `activity`)
+    WHERE
+        ((`participant`.`participant_id` = `attend`.`participant_participant_id`)
+            AND (`activity`.`activity_id` = `attend`.`activity_activity_id`)
+            AND (`participant`.`person_person_id` = `person`.`person_id`)
+            AND (`participant`.`status` = 'ACTIVE'))
+    ORDER BY (TO_DAYS(NOW()) - TO_DAYS(`attend`.`startdatetime`)) ASC;
+    
 #DROP VIEW MailMergeData;
 CREATE VIEW MailMergeData AS
 SELECT 

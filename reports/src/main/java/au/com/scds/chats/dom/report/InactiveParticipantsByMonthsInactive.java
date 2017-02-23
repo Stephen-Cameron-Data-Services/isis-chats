@@ -1,5 +1,4 @@
 /*
- *
  *  Copyright 2015 Stephen Cameron Data Services
  *
  *
@@ -18,7 +17,10 @@
  */
 package au.com.scds.chats.dom.report;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -38,14 +40,26 @@ import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.report.view.InactiveParticipant;
-import au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance;
 
 @DomainService(nature = NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.5")
 public class InactiveParticipantsByMonthsInactive {
 
-	public List<InactiveParticipant> findMostInactiveParticipants() {
-		return container.allMatches(new QueryDefault<>(InactiveParticipant.class, "findInactiveParticipants"));
+	public Collection<InactiveParticipant> findMostInactiveParticipants() {
+		List<InactiveParticipant> list = container
+				.allMatches(new QueryDefault<>(InactiveParticipant.class, "findInactiveParticipants"));
+		Map<Long, InactiveParticipant> map = new HashMap<>();
+		// search for the most recent attendance of each active participant
+		for (InactiveParticipant p : list) {
+			if (p.getDaysSinceLastAttended() != null) {
+				if (!map.containsKey(p.getPersonId())) {
+					map.put(p.getPersonId(), p);
+				} else if (map.get(p.getPersonId()).getDaysSinceLastAttended() > p.getDaysSinceLastAttended()) {
+					map.replace(p.getPersonId(), p);
+				}
+			}
+		}
+		return map.values();
 	}
 
 	public List<InactiveParticipant> findParticipantActivity(
@@ -63,7 +77,6 @@ public class InactiveParticipantsByMonthsInactive {
 	public List<ParticipantIdentity> choices0FindParticipantActivity() {
 		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
-	
 
 	@Inject
 	DomainObjectContainer container;

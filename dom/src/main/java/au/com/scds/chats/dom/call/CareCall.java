@@ -20,7 +20,7 @@ import org.apache.isis.applib.annotation.DomainObject;
 public class CareCall extends Call {
 	
 	public String title(){
-		return "Care Call";
+		return "Care Call to " + getParticipant().getFullName();
 	}
 
 }

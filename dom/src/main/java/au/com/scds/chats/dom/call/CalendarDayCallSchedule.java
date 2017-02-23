@@ -39,6 +39,7 @@ import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
+import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Optionality;
@@ -108,6 +109,7 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity
 		return "Total: " + getTotalCalls() + "; Completed: " + getCompletedCalls();
 	}
 
+	@Property(editing = Editing.DISABLED, editingDisabledReason = "Use action 'Change Date' to change")
 	@Column(allowsNull = "false")
 	public LocalDate getCalendarDate() {
 		return calendarDate;
@@ -116,15 +118,19 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity
 	public void setCalendarDate(final LocalDate calendarDate) {
 		this.calendarDate = calendarDate;
 	}
-	
+
 	@Action
-	public CalendarDayCallSchedule changeDate(final LocalDate calendarDate){
+	public CalendarDayCallSchedule changeDate(final LocalDate calendarDate) {
 		setCalendarDate(calendarDate);
 		return this;
 	}
-	
-	public String validateChangeDate(final LocalDate calendarDate){
-		if(callsRepo.findVolunteerScheduleOnDate(this.getAllocatedVolunteer(), calendarDate) != null)
+
+	public LocalDate default0ChangeDate() {
+		return getCalendarDate();
+	}
+
+	public String validateChangeDate(final LocalDate calendarDate) {
+		if (callsRepo.findVolunteerScheduleOnDate(this.getAllocatedVolunteer(), calendarDate) != null)
 			return "A Call Schedule for the Volunteer already exists on that date";
 		else
 			return null;
@@ -148,8 +154,9 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity
 	public Integer getCompletedCalls() {
 		int i = 0;
 		for (ScheduledCall call : getScheduledCalls()) {
-			//if (call.getStatus() != null && call.getStatus().equals(ScheduledCallStatus.Completed)) {
-			if(call.getIsCompleted()){
+			// if (call.getStatus() != null &&
+			// call.getStatus().equals(ScheduledCallStatus.Completed)) {
+			if (call.getIsCompleted()) {
 				i++;
 			}
 		}
@@ -238,16 +245,15 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity
 	public DateTime default1AddNewCall() {
 		return new DateTime(getCalendarDate().toDateTimeAtCurrentTime());
 	}
-	
+
 	@Programmatic
 	public synchronized void addCall(final ScheduledCall call) {
 		if (call != null && !getScheduledCalls().contains(call)) {
-			getScheduledCalls().add(call);	
 			call.setCallSchedule(this);
 		}
 		return;
 	}
-	
+
 	@Action
 	public CalendarDayCallSchedule removeAndDeleteCall(final ScheduledCall call) {
 		if (call != null && getScheduledCalls().contains(call)) {
@@ -259,17 +265,17 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity
 		}
 		return this;
 	}
-	
-	public List<ScheduledCall> choices0RemoveAndDeleteCall(){
+
+	public List<ScheduledCall> choices0RemoveAndDeleteCall() {
 		List<ScheduledCall> calls = new ArrayList<>();
-		for(ScheduledCall call : getScheduledCalls()){
-			if(!call.getIsCompleted()){
+		for (ScheduledCall call : getScheduledCalls()) {
+			if (!call.getIsCompleted()) {
 				calls.add(call);
 			}
 		}
 		return calls;
 	}
-	
+
 	@Programmatic
 	public synchronized void releaseCall(final ScheduledCall call) {
 		if (call != null && getScheduledCalls().contains(call)) {

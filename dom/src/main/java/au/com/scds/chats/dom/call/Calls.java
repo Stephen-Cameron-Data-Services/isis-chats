@@ -67,8 +67,7 @@ public class Calls {
 		this.participantsRepo = participants;
 	}
 
-	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@Action()
 	@MemberOrder(sequence = "1.0")
 	public Call create(@Parameter(optionality = Optionality.MANDATORY) final CallType type,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") final ParticipantIdentity identity,
@@ -80,18 +79,21 @@ public class Calls {
 		case Care:
 			call = container.newTransientInstance(CareCall.class);
 			call.setParticipant(participant);
+			call.setStartDateTime(dateTime);
 			container.persistIfNotAlready(call);
 			container.flush();
 			break;
 		case Reconnect:
 			call = container.newTransientInstance(ReconnectCall.class);
 			call.setParticipant(participant);
+			call.setStartDateTime(dateTime);
 			container.persistIfNotAlready(call);
 			container.flush();
 			break;
 		case Survey:
 			call = container.newTransientInstance(SurveyCall.class);
 			call.setParticipant(participant);
+			call.setStartDateTime(dateTime);
 			container.persistIfNotAlready(call);
 			container.flush();
 			break;
@@ -128,7 +130,6 @@ public class Calls {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.1")
 	public List<CareCall> findCareCalls(
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Active Participant") final ParticipantIdentity identity) {
@@ -146,7 +147,6 @@ public class Calls {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.2")
 	public List<ReconnectCall> findReconnectCalls(
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Participant") final ParticipantIdentity identity) {
@@ -164,7 +164,6 @@ public class Calls {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.3")
 	public List<SurveyCall> findSurveyCalls(
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Active Participant") final ParticipantIdentity identity) {
@@ -182,11 +181,10 @@ public class Calls {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "10.4")
 	public List<ScheduledCall> findScheduledCalls(
-			@Parameter(optionality = Optionality.OPTIONAL) final Volunteer activeVolunteer,
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Participant") final ParticipantIdentity identity) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Participant") final ParticipantIdentity identity,
+			@Parameter(optionality = Optionality.OPTIONAL) final Volunteer activeVolunteer) {
 		Participant activeParticipant = participantsRepo.getParticipant(identity);
 		if (activeVolunteer != null && activeParticipant != null) {
 			return container
@@ -203,16 +201,15 @@ public class Calls {
 		}
 	}
 	
-	public List<Volunteer> choices0FindScheduledCalls() {
-		return volunteersRepo.listActiveVolunteers();
-	}
-
-	public List<ParticipantIdentity> choices1FindScheduledCalls() {
+	public List<ParticipantIdentity> choices0FindScheduledCalls() {
 		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
 	
+	public List<Volunteer> choices1FindScheduledCalls() {
+		return volunteersRepo.listActiveVolunteers();
+	}
+
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named = "List Calls In Period")
 	@MemberOrder(sequence = "10.5")
 	public List<Call> listCallsInPeriod(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Period") LocalDate start,
@@ -232,7 +229,6 @@ public class Calls {
 
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.AS_ROOT)
 	@MemberOrder(sequence = "11")
 	public List<CalendarDayCallSchedule> listDailyCallSchedulesForVolunteer(
 			@Parameter(optionality = Optionality.MANDATORY) final Volunteer volunteer) {
@@ -300,7 +296,7 @@ public class Calls {
 		ScheduledCall call = createScheduledCallWithoutSchedule(participant, volunteer);
 		call.setScheduledDateTime(dateTime);
 		call.setRegion(participant.getRegion());
-		//call.setStatus(ScheduledCallStatus.Scheduled);
+		sched.addCall(call);
 		return call;
 	}
 

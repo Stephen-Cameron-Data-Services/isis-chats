@@ -144,6 +144,11 @@ public class Volunteers {
 			return null;
 		return isisJdoSupport.getJdoPersistenceManager().getObjectById(Volunteer.class, identity.getJdoObjectId());
 	}
+	
+	@Programmatic
+	public List<VolunteerIdentity> listVolunteerIdentities() {
+		return container.allMatches(new QueryDefault<>(VolunteerIdentity.class, "listVolunteers"));
+	}
 
 	@Programmatic
 	public List<VolunteerIdentity> listActiveVolunteerIdentities() {
@@ -346,6 +351,8 @@ public class Volunteers {
 
 	@Inject
 	protected IsisJdoSupport isisJdoSupport;
+
+
 
 
 

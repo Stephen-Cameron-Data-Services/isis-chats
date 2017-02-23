@@ -20,6 +20,6 @@ import org.apache.isis.applib.annotation.DomainObject;
 public class ReconnectCall extends Call {
 
 	public String title(){
-		return "Reconnect Call";
+		return "Reconnect Call to " + getParticipant().getFullName();
 	}
 }

@@ -20,9 +20,10 @@
 									<ns2:describedAs>The Volunteer to whom this set of calls to Chats Participants has been allocated.</ns2:describedAs>
 								</ns2:property>
 								<ns2:property id="calendarDate">
+									<ns2:action id="changeDate" position="RIGHT"/>
 									<ns2:describedAs>The date on which the set of calls to Chats Participants are to be made.</ns2:describedAs>
 								</ns2:property>
-								<ns2:property id="totalCalls">
+								<ns2:property id="totalCalls" >
 									<ns2:describedAs>The total number of calls in the set.</ns2:describedAs>
 								</ns2:property>
 								<ns2:property id="completedCalls">

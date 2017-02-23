@@ -67,8 +67,6 @@ public class ActivityAttendanceSummary implements Comparable<ActivityAttendanceS
 	public Integer minTimeDiff;
 	public Integer maxTimeDiff;
 
-
-
 	public Long getActivityId() {
 		return activityId;
 	}

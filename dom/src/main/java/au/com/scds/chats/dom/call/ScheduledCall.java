@@ -102,12 +102,10 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall>, No
 		this.scheduledDateTime = dateTime;
 	}
 
-	// TODO remove
 	@Programmatic
 	@NotPersistent()
 	public Boolean getIsCompleted() {
 		return (getStartDateTime() != null && getEndDateTime() != null);
-		// return getStatus().equals(ScheduledCallStatus.Completed);
 	}
 
 	@Property(editing = Editing.DISABLED)

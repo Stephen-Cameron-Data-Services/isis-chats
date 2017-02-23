@@ -57,6 +57,7 @@ import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.activity.Activity;
+import au.com.scds.chats.dom.activity.ParentedActivityEvent;
 import au.com.scds.chats.dom.activity.RecurringActivity;
 import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Persons;
@@ -231,7 +232,14 @@ public class Participants {
 		List<ParticipationView> views = new ArrayList<>();
 		for (Participation p : participant.getParticipations()) {
 			Activity a = p.getActivity();
-			if (a.getStartDateTime().isAfterNow() && !(a instanceof RecurringActivity)) {
+			if (a instanceof RecurringActivity) {
+				for(ParentedActivityEvent e :((RecurringActivity) a).getFutureActivities()){
+					ParticipationView v = new ParticipationView();
+					v.setActivity(e);
+					v.setStartDateTime(e.getStartDateTime().toDate());
+					views.add(v);					
+				}
+			} else if (a.getStartDateTime().isAfterNow()) {
 				ParticipationView v = new ParticipationView();
 				v.setActivity(a);
 				v.setStartDateTime(p.getActivity().getStartDateTime().toDate());

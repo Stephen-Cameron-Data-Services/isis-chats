@@ -22,7 +22,7 @@ import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance;
-import au.com.scds.chats.dom.report.view.ParticipantCallOrAttendanceSummary;
+import au.com.scds.chats.dom.report.viewmodel.ParticipantCallOrAttendanceSummary;
 
 @DomainService(nature = NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.0")

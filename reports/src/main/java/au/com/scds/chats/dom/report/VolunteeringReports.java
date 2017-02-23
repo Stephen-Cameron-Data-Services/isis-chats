@@ -35,8 +35,8 @@ import au.com.scds.chats.dom.report.view.VolunteeredTimeForActivityByYearMonth;
 import au.com.scds.chats.dom.report.view.VolunteeredTimeForCallsByVolunteerAndYearMonth;
 import au.com.scds.chats.dom.report.view.VolunteeredTimeForCallsByYearMonth;
 
-@DomainService(nature=NatureOfService.VIEW_MENU_ONLY)
-@DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.1")
+//@DomainService(nature=NatureOfService.VIEW_MENU_ONLY)
+//@DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.1")
 public class VolunteeringReports {
 	
 	public List<VolunteeredTimeByVolunteerAndRoleAndYearMonth> volunteeredTimeByMonth(){

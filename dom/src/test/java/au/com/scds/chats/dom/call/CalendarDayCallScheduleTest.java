@@ -48,7 +48,7 @@ public class CalendarDayCallScheduleTest {
 
 	public static class CalendarDayCallScheduleTest_Tests extends CalendarDayCallScheduleTest {
 
-		@Test
+		/*@Test
         public void createDailyCallSchedule() throws Exception {
 
             // given
@@ -106,7 +106,7 @@ public class CalendarDayCallScheduleTest {
             assertThat(_schedule.getCompletedCalls()).isEqualTo(0);
             assertThat(_schedule.getTotalCalls()).isEqualTo(0);
             
-        }
+        }*/
 		
 		@Test
 		public void createSchedule() throws Exception {
@@ -134,7 +134,7 @@ public class CalendarDayCallScheduleTest {
 
 		}
 
-		@Test
+		/*@Test
 		public void addScheduledCall() throws Exception {
 
 			// given
@@ -160,7 +160,7 @@ public class CalendarDayCallScheduleTest {
 			assertThat(schedule.getScheduledCalls().first()).isEqualTo(call);
 			assertThat(schedule.getScheduledCalls().first().getParticipant()).isEqualTo(participant);
 			assertThat(schedule.getScheduledCalls().first().getScheduledDateTime()).isEqualTo(dateTime);
-		}
+		}*/
 
 	}
 

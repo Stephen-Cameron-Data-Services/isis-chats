@@ -47,7 +47,7 @@ import org.joda.time.LocalDate;
 		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW ActivityParticipantAttendanceFromDexDataGrouped "
 				+ "( " + "  {this.personId}, " + "  {this.surname}, " + "  {this.firstName}, " + "  {this.birthDate}, "
 				+ "  {this.slk}, " + "  {this.participantId}, " + "  {this.participantStatus}, " + "  {this.activity}, "
-				+ "  {this.date}, " + "  {this.minutes}, " + "  {this.regionName}, " + ") AS " + "SELECT "
+				+ "  {this.date}, " + "  {this.minutes}, " + "  {this.regionName} " + ") AS " + "SELECT "
 				+ "  person.person_id AS personId, " + "  person.surname AS surname, "
 				+ "  person.firstname AS firstName, " + "  person.birthdate AS birthDate, " + "  person.slk AS slk, "
 				+ "  participant.participant_id AS participantId, " + "  participant.status AS participantStatus, "

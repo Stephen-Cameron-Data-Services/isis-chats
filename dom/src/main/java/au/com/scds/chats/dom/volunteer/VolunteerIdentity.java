@@ -53,8 +53,10 @@ import org.joda.time.LocalDate;
 				+ "ON " 
 				+ "  person.person_id = volunteer.person_person_id  ") })
 @Queries({
+	@Query(name = "listVolunteers", language = "JDOQL", value = "SELECT "
+			+ "FROM au.com.scds.chats.dom.volunteer.VolunteerIdentity"),
 	@Query(name = "listVolunteersByStatus", language = "JDOQL", value = "SELECT "
-			+ "FROM au.com.scds.chats.dom.volunteer.VolunteerIdentity p WHERE status == :status"),
+			+ "FROM au.com.scds.chats.dom.volunteer.VolunteerIdentity WHERE status == :status"),
 	@Query(name = "findVolunteersBySurname", language = "JDOQL", value = "SELECT "
 			+ "FROM au.com.scds.chats.dom.volunteer.VolunteerIdentity  "
 			+ "WHERE surname.indexOf(:surname) >= 0"), })

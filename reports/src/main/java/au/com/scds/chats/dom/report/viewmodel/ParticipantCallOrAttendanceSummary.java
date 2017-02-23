@@ -16,7 +16,7 @@
 *  specific language governing permissions and limitations
 *  under the License.
 */
-package au.com.scds.chats.dom.report.view;
+package au.com.scds.chats.dom.report.viewmodel;
 
 import java.math.BigInteger;
 import java.util.Date;
@@ -42,6 +42,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport;
+import au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance;
 
 @ViewModel
 public class ParticipantCallOrAttendanceSummary implements WithApplicationTenancy {

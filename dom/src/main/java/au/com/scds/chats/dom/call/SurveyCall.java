@@ -22,6 +22,6 @@ import org.incode.module.note.dom.api.notable.Notable;
 public class SurveyCall extends Call  {
 
 	public String title(){
-		return "Survey Call";
+		return "Survey Call to " + getParticipant().getFullName();
 	}
 }

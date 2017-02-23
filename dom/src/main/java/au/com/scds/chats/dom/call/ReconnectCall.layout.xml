@@ -5,7 +5,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<row>
 		<col span="12" unreferencedActions="true">
-			<ns2:domainObject />
+			<ns2:domainObject bookmarking="AS_ROOT" />
 		</col>
 	</row>
 	<row>
@@ -17,6 +17,13 @@
 							<ns2:fieldSet name="General" id="general"
 								unreferencedProperties="true">
 								<ns2:property id="participant" />
+								<ns2:property id="summaryNotes" multiLine="10"
+									hidden="ALL_TABLES">
+									<ns2:named>Notes</ns2:named>
+								</ns2:property>
+								<ns2:property id="trimmedSummaryNotes" hidden="OBJECT_FORMS">
+									<ns2:named>Notes</ns2:named>
+								</ns2:property>
 							</ns2:fieldSet>
 						</col>
 						<col span="6">
@@ -40,16 +47,6 @@
 										<ns2:named>Start Date Time + N</ns2:named>
 									</ns2:action>
 								</ns2:property>
-							</ns2:fieldSet>
-						</col>
-					</row>
-				</tab>
-				<tab name="Calendar Notes">
-					<row>
-						<col span="6">
-							<ns2:fieldSet name="Summary" id="summary">
-								<ns2:property id="summaryNotes" multiLine="10"
-									hidden="ALL_TABLES" />
 							</ns2:fieldSet>
 						</col>
 					</row>
