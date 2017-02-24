@@ -400,7 +400,8 @@ FROM
 WHERE 
   attend.activity_activity_id = activity.activity_id AND 
   participant.participant_id = attend.participant_participant_id AND 
-  person.person_id = participant.person_person_id
+  person.person_id = participant.person_person_id AND
+  activity.cancelled = false
 ORDER BY
   activity.startdatetime, activity.abbreviatedname, activity.region_name;
  

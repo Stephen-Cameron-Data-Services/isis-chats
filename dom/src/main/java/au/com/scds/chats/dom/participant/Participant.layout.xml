@@ -70,7 +70,12 @@
 					<row>
 						<col span="12">
 							<ns2:collection id="participations" hidden="EVERYWHERE" />
-							<ns2:collection id="participationViews" />
+							<ns2:collection id="participationViews">
+								<ns2:action id="showFutureParticipation">
+									<ns2:named>Show Future Participation</ns2:named>
+									<ns2:describedAs>Shows all future participation in One-off Activities and children of Recurring Activities.</ns2:describedAs>
+								</ns2:action>
+							</ns2:collection>
 						</col>
 					</row>
 				</tab>
@@ -148,7 +153,7 @@
 							<ns2:fieldSet id="DSS" name="DSS (DEX) Data">
 								<ns2:action id="updateDexData">
 									<ns2:named>Update</ns2:named>
-									<ns2:describedAs>Set or Update all DSS (DEX) Data properties at once</ns2:describedAs>		
+									<ns2:describedAs>Set or Update all DSS (DEX) Data properties at once</ns2:describedAs>
 								</ns2:action>
 								<ns2:property id="consentToProvideDetails" hidden="ALL_TABLES" />
 								<ns2:property id="consentedForFutureContacts"

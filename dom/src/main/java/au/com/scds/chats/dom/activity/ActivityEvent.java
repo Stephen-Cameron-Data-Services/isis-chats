@@ -240,10 +240,10 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 
 	@Action()
 	public List<AttendBulkUpdatesWrapper> showAttendancesList() {
-		if (getAttendances() == null)
+		if (getAttends().size() == 0)
 			return null;
 		List<AttendBulkUpdatesWrapper> temp = new ArrayList<>();
-		for(Attend attend : getAttendances().getAttends()){
+		for(Attend attend : getAttends()){
 			AttendBulkUpdatesWrapper wrapper = new AttendBulkUpdatesWrapper();
 			wrapper.setWrapped(attend);
 			temp.add(wrapper);

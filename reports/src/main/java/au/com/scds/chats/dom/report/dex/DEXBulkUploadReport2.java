@@ -2,6 +2,8 @@ package au.com.scds.chats.dom.report.dex;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.List;
@@ -39,7 +41,7 @@ import au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
 
-public class DEXBulkUploadReport {
+public class DEXBulkUploadReport2 {
 
 	// constants
 	private final int TELEPHONE_WEB_CONTACT = 65;
@@ -52,26 +54,28 @@ public class DEXBulkUploadReport {
 	private final boolean IGNORE_AGE = false;
 
 	// flag for client id generation
-	public enum ClientIdGenerationMode {
+	public enum ClientIdGenerationMode2 {
 		NAME_KEY, SLK_KEY
 	}
 
 	// the XML report file object
 	private DEXFileUpload fileUpload;
 	// wrapper for the above
-	private DEXFileUploadWrapper fileUploadWrapper;
+	private DEXFileUploadWrapper2 fileUploadWrapper;
 
 	// xml report root node children
 	private Clients clients;
 	private Cases cases;
 	private Sessions sessions;
 
+	// lists to avoid double querying, once for errors once
+	// for report generation
+
 	// report bounds parameters
 	private Integer year;
 	private Integer month;
-	private DateTime startDateTime;
-	private DateTime endDateTime;
-	private LocalDate bornBeforeDate;
+	private Date startDate;
+	private Date endDate;;// private LocalDate bornBeforeDate;
 	private String regionName;
 
 	// domain services (injected via constructor)
@@ -83,21 +87,20 @@ public class DEXBulkUploadReport {
 
 	// data variables etc.
 	private int outletActivityId;
-	private ClientIdGenerationMode mode;
+	private ClientIdGenerationMode2 mode;
 	private Boolean validationMode;
-	private Map<String, Map<String, ParticipantActivityByMonthForDEX>> participationByMonth;
 
 	// utility
 	private SimpleDateFormat formatter;
 
-	private DEXBulkUploadReport() {
+	private DEXBulkUploadReport2() {
 	}
 
-	public DEXBulkUploadReport(RepositoryService repository, IsisJdoSupport isisJdoSupport, Participants participants,
-			Integer year, Integer month, String regionName, ClientIdGenerationMode nameMode) {
+	public DEXBulkUploadReport2(RepositoryService repository, IsisJdoSupport isisJdoSupport, Participants participants,
+			Integer year, Integer month, String regionName, ClientIdGenerationMode2 nameMode) {
 
 		this.fileUpload = new DEXFileUpload();
-		this.fileUploadWrapper = new DEXFileUploadWrapper();
+		this.fileUploadWrapper = new DEXFileUploadWrapper2();
 		this.fileUploadWrapper.setFileUpload(this.fileUpload);
 		this.clients = new Clients();
 		this.cases = new Cases();
@@ -106,19 +109,24 @@ public class DEXBulkUploadReport {
 		fileUpload.getClientsOrCasesOrSessions().add(clients);
 		fileUpload.getClientsOrCasesOrSessions().add(cases);
 		fileUpload.getClientsOrCasesOrSessions().add(sessions);
-		this.participationByMonth = new TreeMap<String, Map<String, ParticipantActivityByMonthForDEX>>();
+		
 		// this.container = repository;
 		this.repository = repository;
 		this.isisJdoSupport = isisJdoSupport;
 		this.participants = participants;
 		this.year = year;
 		this.month = month;
-		this.bornBeforeDate = new LocalDate(year, month, 1).minusYears(65);
 		this.regionName = regionName;
 
 		// set of the bounds for finding ActivityEvents
-		this.startDateTime = new DateTime(year, month, 1, 0, 0, 0);
-		this.endDateTime = startDateTime.dayOfMonth().withMaximumValue();
+		Calendar cal = Calendar.getInstance();
+		cal.set(year, month-1, 1, 0, 0, 0);
+		this.startDate = cal.getTime();
+		cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+		cal.set(Calendar.HOUR, 23);
+		cal.set(Calendar.MINUTE, 59);
+		cal.set(Calendar.SECOND, 59);
+		this.endDate = cal.getTime();
 
 		// get persistence manager to find Participants from person
 		persistenceManager = isisJdoSupport.getJdoPersistenceManager();
@@ -143,13 +151,29 @@ public class DEXBulkUploadReport {
 
 	}
 
-	public DEXFileUploadWrapper build() throws Exception {
+	public DEXFileUploadWrapper2 build() throws Exception {
 
-		boolean hasAttendanceErrors = fileUploadWrapper.hasAttendanceErrors(this.startDateTime, this.endDateTime,
-				this.regionName);
-		boolean hasVolunteeredTimeErrors = fileUploadWrapper.hasVolunteeredTimeErrors(this.startDateTime, this.endDateTime,
-				this.regionName);
-		boolean hasCallsErrors = fileUploadWrapper.hasCallsErrors(this.startDateTime, this.endDateTime, this.regionName);
+		List<ActivityAttendanceSummary> attendanceSummary = repository.allMatches(
+				new QueryDefault(ActivityAttendanceSummary.class, "allActivityAttendanceSummaryForPeriodAndRegion",
+						"startDateTime", this.startDate, "endDateTime", this.endDate, "region", regionName));
+
+		List<ActivityParticipantAttendance> attendances = repository.allMatches(new QueryDefault(
+				ActivityParticipantAttendance.class, "allParticipantActivityForPeriodAndRegionForDEX", "startDateTime",
+				this.startDate, "endDateTime", this.endDate, "attended", true, "region", this.regionName));
+
+		List<ActivityVolunteerVolunteeredTime> volunteeredTimes = repository
+				.allMatches(new QueryDefault(ActivityVolunteerVolunteeredTime.class,
+						"allActivityVolunteerVolunteeredTimeForPeriodAndRegionForDEX", "startDateTime", this.startDate,
+						"endDateTime", this.endDate, "region", this.regionName));
+
+		List<CallsDurationByParticipantAndDayForDEX> calls = repository.allMatches(new QueryDefault(
+				CallsDurationByParticipantAndDayForDEX.class, "allCallsDurationByParticipantAndDayAndRegion",
+				"startDate", this.startDate, "endDate", this.endDate, "region", this.regionName));
+
+		// check for likely errors in time data
+		boolean hasAttendanceErrors = fileUploadWrapper.hasAttendanceErrors(attendanceSummary);
+		boolean hasVolunteeredTimeErrors = fileUploadWrapper.hasVolunteeredTimeErrors(volunteeredTimes);
+		boolean hasCallsErrors = fileUploadWrapper.hasCallsErrors(calls);
 
 		if (hasAttendanceErrors || hasVolunteeredTimeErrors || hasCallsErrors) {
 			return fileUploadWrapper;
@@ -160,247 +184,163 @@ public class DEXBulkUploadReport {
 		Map<String, Case> casesMap = new HashMap<>();
 		Map<String, String> clientsInCaseMap = new HashMap<>();
 		Map<String, SessionWrapper> sessionsMap = new HashMap<>();
-		// Activities: find all case-session-clients via view
-		// ActivityParticipantAttendance
-		List<ActivityParticipantAttendance> attendances = repository.allMatches(new QueryDefault(
-				ActivityParticipantAttendance.class, "allParticipantActivityForPeriodAndRegion", "startDateTime",
-				this.startDateTime.toDate() /* new DateTime("2016-01-13") */, "endDateTime",
-				this.endDateTime.toDate() /* new DateTime("2016-01-14") */, "attended", true, "region",
-				this.regionName));
 		for (ActivityParticipantAttendance attend : attendances) {
-			if (IGNORE_AGE || attend.getBirthDate().isBefore(this.bornBeforeDate)) {
-				System.out.print(attend.getActivityAbbreviatedName() + "," + attend.getStartDateTime() + ",");
-				System.out.print(attend.getSurname() + "," + attend.getFirstName() + "," + attend.getBirthDate() + ",");
-				System.out.println(attend.getMinutesAttended());
-				switch (this.mode) {
-				case NAME_KEY:
-					clientKey = attend.getFirstName().trim() + "_" + attend.getSurname().trim() + "_"
-							+ attend.getBirthDate().toString("dd-MM-YYYY");
-					break;
-				case SLK_KEY:
-					clientKey = attend.getSlk();
-				}
-				caseKey = attend.getActivityAbbreviatedName().trim();
-				sessionKey = attend.getActivityAbbreviatedName().trim()
-						+ attend.getStartDateTime()/* toString("YYYYMMDD") */;
-				// System.out.println(clientKey);
-				// System.out.println(caseKey);
-				// System.out.println(sessionKey);
-				// find or make a client
-				if (!clientsMap.containsKey(clientKey)) {
-					clientsMap.put(clientKey, buildNewClient(clientKey, attend.getParticipantId()));
-				}
-				// find or make a case
-				Case case_ = null;
-				if (!casesMap.containsKey(caseKey)) {
-					case_ = buildNewCase(attend);
-					casesMap.put(caseKey, case_);
-				} else {
-					case_ = casesMap.get(caseKey);
-				}
-				// add client to case if not already present
-				if (!clientsInCaseMap.containsKey(caseKey + clientKey)) {
-					CaseClient cc = new CaseClient();
-					cc.setClientId(clientKey);
-					case_.getCaseClients().getCaseClient().add(cc);
-					clientsInCaseMap.put(caseKey + clientKey, null);
-				}
-				// find or make a session
-				SessionWrapper sessionWrapper = null;
-				if (!sessionsMap.containsKey(sessionKey)) {
-					sessionWrapper = buildNewSession(sessionKey, attend);
+			System.out.print(attend.getActivityAbbreviatedName() + "," + attend.getStartDateTime() + ",");
+			System.out.print(attend.getSurname() + "," + attend.getFirstName() + "," + attend.getBirthDate() + ",");
+			System.out.println(attend.getMinutesAttended());
+			switch (this.mode) {
+			case NAME_KEY:
+				clientKey = attend.getFirstName().trim() + "_" + attend.getSurname().trim() + "_"
+						+ attend.getBirthDate().toString("dd-MM-YYYY");
+				break;
+			case SLK_KEY:
+				clientKey = attend.getSlk();
+			}
+			caseKey = attend.getActivityAbbreviatedName().trim();
+			sessionKey = attend.getActivityAbbreviatedName().trim()
+					+ attend.getStartDateTime();
+			// find or make a client
+			if (!clientsMap.containsKey(clientKey)) {
+				clientsMap.put(clientKey, buildNewClient(clientKey, attend.getParticipantId()));
+			}
+			// find or make a case
+			Case case_ = null;
+			if (!casesMap.containsKey(caseKey)) {
+				case_ = buildNewCase(attend);
+				casesMap.put(caseKey, case_);
+			} else {
+				case_ = casesMap.get(caseKey);
+			}
+			// add client to case if not already present
+			if (!clientsInCaseMap.containsKey(caseKey + clientKey)) {
+				CaseClient cc = new CaseClient();
+				cc.setClientId(clientKey);
+				case_.getCaseClients().getCaseClient().add(cc);
+				clientsInCaseMap.put(caseKey + clientKey, null);
+			}
+			// find or make a session
+			SessionWrapper sessionWrapper = null;
+			if (!sessionsMap.containsKey(sessionKey)) {
+				sessionWrapper = buildNewSession(sessionKey, attend);
 
-					sessionsMap.put(sessionKey, sessionWrapper);
-				} else {
-					sessionWrapper = sessionsMap.get(sessionKey);
-				}
-				SessionClient client = new SessionClient();
-				client.setClientId(clientKey);
-				client.setParticipationCode("CLIENT");
-				sessionWrapper.addClient(client);
-				// only adjust for transport time if data not from old system
-				if (attend.getOldId() == null) {
-					sessionWrapper.addMinutes(adjustTimeForTransport(attend.getMinutesAttended(),
-							attend.getArrivingTransportType(), attend.getDepartingTransportType()));
-				} else {
-					sessionWrapper.addMinutes(attend.getMinutesAttended());
-				}
+				sessionsMap.put(sessionKey, sessionWrapper);
+			} else {
+				sessionWrapper = sessionsMap.get(sessionKey);
+			}
+			SessionClient client = new SessionClient();
+			client.setClientId(clientKey);
+			client.setParticipationCode("CLIENT");
+			sessionWrapper.addClient(client);
+			// only adjust for transport time if data not from old system
+			if (attend.getOldId() == null) {
+				sessionWrapper.addMinutes(adjustTimeForTransport(attend.getMinutesAttended(),
+						attend.getArrivingTransportType(), attend.getDepartingTransportType()));
+			} else {
+				sessionWrapper.addMinutes(attend.getMinutesAttended());
 			}
 		}
-		// do same for VolunteeredTimes on Activities
-		List<ActivityVolunteerVolunteeredTime> volunteeredTimes = repository.allMatches(new QueryDefault(
-				ActivityVolunteerVolunteeredTime.class, "allActivityVolunteerVolunteeredTimeForPeriodAndRegion",
-				"startDateTime", this.startDateTime.toDate(), "endDateTime", this.endDateTime.toDate(),
-				"includeAsParticipation", true, "region", this.regionName));
 		for (ActivityVolunteerVolunteeredTime time : volunteeredTimes) {
-			if (IGNORE_AGE || time.getBirthDate().isBefore(this.bornBeforeDate)) {
-				System.out.print(time.getActivityAbbreviatedName() + "," + time.getStartDateTime() + ",");
-				System.out.print(time.getSurname() + "," + time.getFirstName() + "," + time.getBirthDate() + ",");
-				System.out.println(time.getMinutes());
-				switch (this.mode) {
-				case NAME_KEY:
-					clientKey = time.getFirstName().trim() + "_" + time.getSurname().trim() + "_"
-							+ time.getBirthDate().toString("dd-MM-YYYY");
-					break;
-				case SLK_KEY:
-					clientKey = time.getSlk();
-				}
-				caseKey = time.getActivityAbbreviatedName().trim();
-				sessionKey = time.getActivityAbbreviatedName().trim() + time.getStartDateTime();
-				// System.out.println(clientKey);
-				// System.out.println(caseKey);
-				// System.out.println(sessionKey);
-				// find or make a client
-				if (!clientsMap.containsKey(clientKey)) {
-					if (time.getParticipantId() == null) {
-						System.out.println("ERROR: No Participant Id for " + clientKey + " (Volunteer Id = "
-								+ time.getVolunteerId() + ")");
-					} else {
-						clientsMap.put(clientKey, buildNewClient(clientKey, time.getParticipantId()));
-					}
-				}
-				// find or make a case
-				Case case_ = null;
-				if (!casesMap.containsKey(caseKey)) {
-					case_ = buildNewCase(time);
-					casesMap.put(caseKey, case_);
-				} else {
-					case_ = casesMap.get(caseKey);
-				}
-				// add client to case if not already present
-				if (!clientsInCaseMap.containsKey(caseKey + clientKey)) {
-					CaseClient cc = new CaseClient();
-					cc.setClientId(clientKey);
-					case_.getCaseClients().getCaseClient().add(cc);
-					clientsInCaseMap.put(caseKey + clientKey, null);
-				}
-
-				// find or make a session
-				SessionWrapper sessionWrapper = null;
-				if (!sessionsMap.containsKey(sessionKey)) {
-					sessionWrapper = buildNewSession(sessionKey, time);
-
-					sessionsMap.put(sessionKey, sessionWrapper);
-				} else {
-					sessionWrapper = sessionsMap.get(sessionKey);
-				}
-				SessionClient client = new SessionClient();
-				client.setClientId(clientKey);
-				client.setParticipationCode("CLIENT");
-				sessionWrapper.addClient(client);
-				// sessionWrapper.addMinutes(adjustTimeForTransport(attend.getMinutesAttended(),
-				// attend.getArrivingTransportType(),
-				// attend.getDepartingTransportType()));
+			System.out.print(time.getActivityAbbreviatedName() + "," + time.getStartDateTime() + ",");
+			System.out.print(time.getSurname() + "," + time.getFirstName() + "," + time.getBirthDate() + ",");
+			System.out.println(time.getMinutes());
+			switch (this.mode) {
+			case NAME_KEY:
+				clientKey = time.getFirstName().trim() + "_" + time.getSurname().trim() + "_"
+						+ time.getBirthDate().toString("dd-MM-YYYY");
+				break;
+			case SLK_KEY:
+				clientKey = time.getSlk();
 			}
+			caseKey = time.getActivityAbbreviatedName().trim();
+			sessionKey = time.getActivityAbbreviatedName().trim() + time.getStartDateTime();
+			// find or make a client
+			if (!clientsMap.containsKey(clientKey)) {
+				if (time.getParticipantId() == null) {
+					System.out.println("ERROR: No Participant Id for " + clientKey + " (Volunteer Id = "
+							+ time.getVolunteerId() + ")");
+				} else {
+					clientsMap.put(clientKey, buildNewClient(clientKey, time.getParticipantId()));
+				}
+			}
+			// find or make a case
+			Case case_ = null;
+			if (!casesMap.containsKey(caseKey)) {
+				case_ = buildNewCase(time);
+				casesMap.put(caseKey, case_);
+			} else {
+				case_ = casesMap.get(caseKey);
+			}
+			// add client to case if not already present
+			if (!clientsInCaseMap.containsKey(caseKey + clientKey)) {
+				CaseClient cc = new CaseClient();
+				cc.setClientId(clientKey);
+				case_.getCaseClients().getCaseClient().add(cc);
+				clientsInCaseMap.put(caseKey + clientKey, null);
+			}
+
+			// find or make a session
+			SessionWrapper sessionWrapper = null;
+			if (!sessionsMap.containsKey(sessionKey)) {
+				sessionWrapper = buildNewSession(sessionKey, time);
+
+				sessionsMap.put(sessionKey, sessionWrapper);
+			} else {
+				sessionWrapper = sessionsMap.get(sessionKey);
+			}
+			SessionClient client = new SessionClient();
+			client.setClientId(clientKey);
+			client.setParticipationCode("CLIENT");
+			sessionWrapper.addClient(client);
+
 		}
 		// set the times on all the Sessions
 		for (SessionWrapper wrapper : sessionsMap.values()) {
 			wrapper.getSession().setTimeMinutes(wrapper.getAverageTimeInMinutes());
 		}
-
-		// Calls: - each participant-day combination is a session, so get summed
-		// by day totals
-
 		// make a single case for calls
 		Case callsCase = new Case();
 		callsCase.setCaseClients(new CaseClients());
 		callsCase.setCaseId(createCaseId("ChatsSocialCalls"));
 		callsCase.setOutletActivityId(this.outletActivityId);
 		callsCase.setTotalNumberOfUnidentifiedClients(0);
-		// get calls data
-		List<CallsDurationByParticipantAndDayForDEX> durations = repository
-				.allMatches(new QueryDefault(CallsDurationByParticipantAndDayForDEX.class,
-						"allCallsDurationByParticipantAndDayAndRegion", "startDate", this.startDateTime.toLocalDate(),
-						"endDate", this.endDateTime.toLocalDate(), "region", this.regionName));
 		Map<String, CaseClient> callsCaseClientsMap = new HashMap<>();
 		SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-YYYY");
-		for (CallsDurationByParticipantAndDayForDEX c : durations) {
-			if (IGNORE_AGE || c.getBirthDate().isBefore(this.bornBeforeDate)) {
-				switch (this.mode) {
-				case NAME_KEY:
-					clientKey = c.getFirstName().trim() + "_" + c.getSurname().trim() + "_"
-							+ c.getBirthDate().toString("dd-MM-YYYY");
-					break;
-				case SLK_KEY:
-					clientKey = c.getSlk();
-				}
-				sessionKey = "To_" + clientKey + "_on_" + fmt.format(c.getDate());
-				// find or make a client
-				if (!clientsMap.containsKey(clientKey)) {
-					clientsMap.put(clientKey, buildNewClient(clientKey, c.getParticipantId()));
-				}
-				// add client to calls case if not already present
-				if (!callsCaseClientsMap.containsKey(clientKey)) {
-					CaseClient cc = new CaseClient();
-					cc.setClientId(clientKey);
-					callsCase.getCaseClients().getCaseClient().add(cc);
-					callsCaseClientsMap.put(clientKey, cc);
-				}
-				// make a session with one session client
-				Session session = new Session();
-				this.sessions.getSession().add(session);
-				session.setCaseId(createCaseId("ChatsSocialCalls"));
-				session.setSessionId(sessionKey);
-				session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
-				session.setTimeMinutes(Integer.valueOf(c.getCallMinutesTotal()));
-				SessionClients clients = new SessionClients();
-				session.setSessionClients(clients);
-				SessionClient client = new SessionClient();
-				clients.getSessionClient().add(client);
-				client.setClientId(clientKey);
-				client.setParticipationCode("CLIENT");
-				session.setTimeMinutes(c.getCallMinutesTotal());
+		for (CallsDurationByParticipantAndDayForDEX c : calls) {
+			switch (this.mode) {
+			case NAME_KEY:
+				clientKey = c.getFirstName().trim() + "_" + c.getSurname().trim() + "_"
+						+ c.getBirthDate().toString("dd-MM-YYYY");
+				break;
+			case SLK_KEY:
+				clientKey = c.getSlk();
 			}
+			sessionKey = "To_" + clientKey + "_on_" + fmt.format(c.getDate());
+			// find or make a client
+			if (!clientsMap.containsKey(clientKey)) {
+				clientsMap.put(clientKey, buildNewClient(clientKey, c.getParticipantId()));
+			}
+			// add client to calls case if not already present
+			if (!callsCaseClientsMap.containsKey(clientKey)) {
+				CaseClient cc = new CaseClient();
+				cc.setClientId(clientKey);
+				callsCase.getCaseClients().getCaseClient().add(cc);
+				callsCaseClientsMap.put(clientKey, cc);
+			}
+			// make a session with one session client
+			Session session = new Session();
+			this.sessions.getSession().add(session);
+			session.setCaseId(createCaseId("ChatsSocialCalls"));
+			session.setSessionId(sessionKey);
+			session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
+			session.setTimeMinutes(Integer.valueOf(c.getCallMinutesTotal()));
+			SessionClients clients = new SessionClients();
+			session.setSessionClients(clients);
+			SessionClient client = new SessionClient();
+			clients.getSessionClient().add(client);
+			client.setClientId(clientKey);
+			client.setParticipationCode("CLIENT");
+			session.setTimeMinutes(c.getCallMinutesTotal());
 		}
-		// add the volunteered time for calls
-		/*List<VolunteeredTimeForCallsByVolunteerAndDayForDEX> volDurations = repository.allMatches(new QueryDefault(
-				VolunteeredTimeForCallsByVolunteerAndDayForDEX.class,
-				"allVolunteeredTimeForCallsByVolunteerAndDayAndRegion", "startDate", this.startDateTime.toLocalDate(),
-				"endDate", this.endDateTime.toLocalDate(), "region", this.regionName));
-		for (VolunteeredTimeForCallsByVolunteerAndDayForDEX c : volDurations) {
-			if (IGNORE_AGE || c.getBirthDate().isBefore(this.bornBeforeDate)) {
-				switch (this.mode) {
-				case NAME_KEY:
-					clientKey = c.getFirstName().trim() + "_" + c.getSurname().trim() + "_"
-							+ c.getBirthDate().toString("dd-MM-YYYY");
-					break;
-				case SLK_KEY:
-					clientKey = c.getSlk();
-				}
-				sessionKey = "By_" + clientKey + "_on_" + c.getDate().toString("dd-MM-YYYY");
-				// find or make a client
-				if (!clientsMap.containsKey(clientKey)) {
-					clientsMap.put(clientKey, buildNewClient(clientKey, c.getParticipantId()));
-				}
-				// add client to calls case if not already present
-				if (!callsCaseClientsMap.containsKey(clientKey)) {
-					CaseClient cc = new CaseClient();
-					cc.setClientId(clientKey);
-					callsCase.getCaseClients().getCaseClient().add(cc);
-					callsCaseClientsMap.put(clientKey, cc);
-				}
-				// make a session with one session client
-				Session session = new Session();
-				this.sessions.getSession().add(session);
-				session.setCaseId(createCaseId("ChatsSocialCalls"));
-				if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
-					session.setSessionId(
-							(String.format("%1$-12s", Math.abs(sessionKey.hashCode())) + formatter.format(c.getDate()))
-									.replace(" ", "0"));
-				} else {
-					session.setSessionId(sessionKey);
-				}
-				session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
-				session.setTimeMinutes(Integer.valueOf(c.getMinutesTotal()));
-				SessionClients clients = new SessionClients();
-				session.setSessionClients(clients);
-				SessionClient client = new SessionClient();
-				clients.getSessionClient().add(client);
-				client.setClientId(clientKey);
-				client.setParticipationCode("CLIENT");
-				session.setTimeMinutes(c.getMinutesTotal());
-			}
-		}*/
 		// only add calls case if calls found
 		if (callsCaseClientsMap.size() > 0) {
 			this.cases.getCase().add(callsCase);
@@ -469,7 +409,7 @@ public class DEXBulkUploadReport {
 	private SessionWrapper buildNewSession(String sessionKey, ActivityParticipantAttendance a) {
 		Session session = new Session();
 		this.sessions.getSession().add(session);
-		if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
+		if (this.mode.equals(ClientIdGenerationMode2.SLK_KEY)) {
 			session.setSessionId(
 					(String.format("%1$-12s", Math.abs(sessionKey.hashCode())) + formatter.format(a.getStartDateTime()))
 							.replace(" ", "0"));
@@ -491,7 +431,7 @@ public class DEXBulkUploadReport {
 	private SessionWrapper buildNewSession(String sessionKey, ActivityVolunteerVolunteeredTime v) {
 		Session session = new Session();
 		this.sessions.getSession().add(session);
-		if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
+		if (this.mode.equals(ClientIdGenerationMode2.SLK_KEY)) {
 			session.setSessionId(
 					(String.format("%1$-12s", Math.abs(sessionKey.hashCode())) + formatter.format(v.getStartDateTime()))
 							.replace(" ", "0"));
@@ -666,16 +606,6 @@ public class DEXBulkUploadReport {
 						errors.add("No SLK found for Person " + participant.getPerson().getFullname() + "\r\n");
 					if (participant.getPerson().getSlk() == null)
 						errors.add("No SLK found for Person " + participant.getPerson().getFullname() + "\r\n");
-					/*
-					 * if (participant.isConsentToProvideDetails() == null)
-					 * errors.add(
-					 * "'Consent To Provide Details' is NULL for Participant " +
-					 * participant.getFullName() + "\r\n"); if
-					 * (participant.isConsentedForFutureContacts() == null)
-					 * errors.add(
-					 * "'Consent To Future Contacts' is NULL for Participant " +
-					 * participant.getFullName() + "\r\n");
-					 */
 					if (participant.getPerson().getBirthdate() == null)
 						errors.add("Birthdate is NULL for Person " + participant.getPerson().getFullname() + "\r\n");
 					if (participant.getPerson().getSex() == null)
@@ -688,21 +618,8 @@ public class DEXBulkUploadReport {
 					if (participant.getAboriginalOrTorresStraitIslanderOrigin() == null)
 						errors.add("'Aboriginal Or Torres Strait Islander Origin' is NULL for Participant "
 								+ participant.getFullName() + "\r\n");
-					/*
-					 * if (participant.isHasDisabilities() == null) errors.add(
-					 * "'Has Disabilities' is NULL for Participant " +
-					 * participant.getFullName() + "\r\n");
-					 */
 					if (participant.getDvaCardStatus() == null)
 						errors.add("'DVA Card Status' is NULL for Participant " + participant.getFullName() + "\r\n");
-					/*
-					 * if (participant.isHasCarer() == null) errors.add(
-					 * "'Has Carer' is NULL for Participant " +
-					 * participant.getFullName() + "\r\n"); if
-					 * (participant.isHasDisabilities() == null) errors.add(
-					 * "'Has Disabilities' is NULL for Participant " +
-					 * participant.getFullName() + "\r\n");
-					 */
 					if (participant.getHouseholdComposition() == null)
 						errors.add("'Household Composition Code' is NULL for Participant " + participant.getFullName()
 								+ "\r\n");
@@ -740,7 +657,7 @@ public class DEXBulkUploadReport {
 	}
 
 	/** Class used to report all Client/Participant errors to user **/
-	public class DEXFileUploadWrapper {
+	public class DEXFileUploadWrapper2 {
 
 		private DEXFileUpload fileUpload;
 		private List<String> errors = new ArrayList<>();
@@ -750,32 +667,38 @@ public class DEXBulkUploadReport {
 			return fileUpload;
 		}
 
-		public void setFileUpload(DEXFileUpload fileUpload) {
-			this.fileUpload = fileUpload;
-		}
-
-		public void addClientWrapper(ClientWrapper client) {
-			this.clients.add(client);
-		}
-
-		public boolean hasErrors() {
+		public boolean hasCallsErrors(List<CallsDurationByParticipantAndDayForDEX> calls) {
 			boolean hasErrors = false;
-			if (errors.size() > 0)
-				hasErrors = true;
-			for (ClientWrapper client : clients) {
-				if (client.getErrorCount() > 0)
+			for (CallsDurationByParticipantAndDayForDEX call : calls) {
+				if (call.getCallMinutesTotal() == null) {
+					this.errors.add(" A call to '" + call.getFirstName() + " " + call.getSurname()
+							+ " has incomplete date-time data.\r\n");
 					hasErrors = true;
+				}
 			}
 			return hasErrors;
 		}
 
-		private Boolean hasAttendanceErrors(DateTime start, DateTime end, String regionName) {
-			List<ActivityAttendanceSummary> attendances = repository.allMatches(
-					new QueryDefault(ActivityAttendanceSummary.class, "allActivityAttendanceSummaryForPeriodAndRegion",
-							"startDateTime", start.toDate(), "endDateTime", end.toDate(), "region", regionName));
+		public boolean hasVolunteeredTimeErrors(List<ActivityVolunteerVolunteeredTime> volunteeredTimes) {
 			boolean hasErrors = false;
 			SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy HH:mm");
-			for (ActivityAttendanceSummary attendance : attendances) {
+			for (ActivityVolunteerVolunteeredTime time : volunteeredTimes) {
+				if (!time.getCancelled()) {
+					if (time.getMinutes() == null) {
+						this.errors.add("Activity '" + time.getActivityName() + "' on "
+								+ fmt.format(time.getStartDateTime()) + "' has incomplete date-time for volunteer "
+								+ time.getFirstName() + " " + time.getSurname() + ".\r\n");
+						hasErrors = true;
+					}
+				}
+			}
+			return hasErrors;
+		}
+
+		public boolean hasAttendanceErrors(List<ActivityAttendanceSummary> attendanceSummary) {
+			boolean hasErrors = false;
+			SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy HH:mm");
+			for (ActivityAttendanceSummary attendance : attendanceSummary) {
 				if (attendance.getCancelled()) {
 					if (attendance.getAttendedCount() > 0) {
 						this.errors.add("Activity '" + attendance.getActivityName() + "' on "
@@ -807,37 +730,21 @@ public class DEXBulkUploadReport {
 			return hasErrors;
 		}
 
-		private boolean hasVolunteeredTimeErrors(DateTime start, DateTime end, String regionName) {
-			List<ActivityVolunteerVolunteeredTime> volunteeredTimes = repository
-					.allMatches(new QueryDefault(ActivityVolunteerVolunteeredTime.class,
-							"allActivityVolunteerVolunteeredTimeForPeriodAndRegion", "startDateTime", start.toDate(),
-							"endDateTime", end.toDate(), "includeAsParticipation", true, "region", regionName));
-			boolean hasErrors = false;
-			SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy HH:mm");
-			for (ActivityVolunteerVolunteeredTime time : volunteeredTimes) {
-				if (!time.getCancelled()) {
-					if (time.getMinutes() == null) {
-						this.errors.add("Activity '" + time.getActivityName() + "' on "
-								+ fmt.format(time.getStartDateTime()) + "' has incomplete date-time for volunteer "
-								+ time.getFirstName() + " " + time.getSurname() + ".\r\n");
-						hasErrors = true;
-					}
-				}
-			}
-			return hasErrors;
+		public void setFileUpload(DEXFileUpload fileUpload) {
+			this.fileUpload = fileUpload;
 		}
 
-		public boolean hasCallsErrors(DateTime start, DateTime end, String regionName) {
-			List<CallsDurationByParticipantAndDayForDEX> durations = repository.allMatches(new QueryDefault(
-					CallsDurationByParticipantAndDayForDEX.class, "allCallsDurationByParticipantAndDayAndRegion",
-					"startDate", start.toLocalDate(), "endDate", end.toLocalDate(), "region", regionName));
+		public void addClientWrapper(ClientWrapper client) {
+			this.clients.add(client);
+		}
+
+		public boolean hasErrors() {
 			boolean hasErrors = false;
-			for (CallsDurationByParticipantAndDayForDEX call : durations) {
-				if (call.getCallMinutesTotal() == null) {
-					this.errors.add(" A call to '" + call.getFirstName() + " " + call.getSurname() 
-							+ " has incomplete date-time data.\r\n");
+			if (errors.size() > 0)
+				hasErrors = true;
+			for (ClientWrapper client : clients) {
+				if (client.getErrorCount() > 0)
 					hasErrors = true;
-				}
 			}
 			return hasErrors;
 		}

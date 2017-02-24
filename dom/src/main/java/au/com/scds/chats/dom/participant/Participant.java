@@ -37,6 +37,8 @@ import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.activity.Activity;
+import au.com.scds.chats.dom.activity.ParentedActivityEvent;
+import au.com.scds.chats.dom.activity.RecurringActivity;
 import au.com.scds.chats.dom.call.Calls;
 import au.com.scds.chats.dom.call.RegularScheduledCallAllocation;
 import au.com.scds.chats.dom.dex.DexReferenceData;
@@ -140,15 +142,13 @@ public class Participant extends AbstractChatsDomainEntity
 
 	public String title() {
 		String title = getPerson().getFullname();
-		if(getStatus() != Status.ACTIVE)
+		if (getStatus() != Status.ACTIVE)
 			title.concat(" (" + getStatus() + ")");
 		return title;
 	}
-	
+
 	public String disabled(Identifier.Type identifierType) {
-	    return (getStatus().equals(Status.EXITED))
-	            ? "EXITED Participants cannot be changed"
-	            : null;
+		return (getStatus().equals(Status.EXITED)) ? "EXITED Participants cannot be changed" : null;
 	}
 
 	@Property(editing = Editing.DISABLED)
@@ -277,11 +277,35 @@ public class Participant extends AbstractChatsDomainEntity
 	@CollectionLayout(render = RenderType.LAZILY)
 	public Set<ParticipationView> getParticipationViews() {
 		SortedSet<ParticipationView> views = new TreeSet<>();
-		for(Participation p : getParticipations()){
+		for (Participation p : getParticipations()) {
 			ParticipationView v = new ParticipationView();
 			v.setActivity(p.getActivity());
 			v.setStartDateTime(p.getActivity().getStartDateTime().toDate());
 			views.add(v);
+		}
+		return views;
+	}
+
+	@Action()
+	public List<ParticipationView> showFutureParticipation() {
+		List<ParticipationView> views = new ArrayList<>();
+		for (Participation participation : getParticipations()) {
+			Activity activity = participation.getActivity();
+			if (activity instanceof RecurringActivity) {
+				for (ParentedActivityEvent pActivity : ((RecurringActivity) activity).getFutureActivities()) {
+					if (pActivity.getStartDateTime().isAfterNow()) {
+						ParticipationView v = new ParticipationView();
+						v.setActivity(pActivity);
+						v.setStartDateTime(pActivity.getStartDateTime().toDate());
+						views.add(v);
+					}
+				}
+			} else if (activity.getStartDateTime().isAfterNow()) {
+				ParticipationView v = new ParticipationView();
+				v.setActivity(activity);
+				v.setStartDateTime(participation.getActivity().getStartDateTime().toDate());
+				views.add(v);
+			}
 		}
 		return views;
 	}
@@ -435,7 +459,7 @@ public class Participant extends AbstractChatsDomainEntity
 		this.involvementIH = involvmentInInterestsHobbies;
 	}
 
-	@Column(allowsNull = "true", length=1000)
+	@Column(allowsNull = "true", length = 1000)
 	public String getLoneliness() {
 		return loneliness;
 	}
@@ -675,7 +699,7 @@ public class Participant extends AbstractChatsDomainEntity
 		this.lifeExperiences = experiences;
 	}
 
-	@Column(allowsNull = "true", length=1000)
+	@Column(allowsNull = "true", length = 1000)
 	public String getHobbies() {
 		return hobbies;
 	}
@@ -684,7 +708,7 @@ public class Participant extends AbstractChatsDomainEntity
 		this.hobbies = hobbies;
 	}
 
-	@Column(allowsNull = "true", length=1000)
+	@Column(allowsNull = "true", length = 1000)
 	public String getInterests() {
 		return interests;
 	}
@@ -753,6 +777,7 @@ public class Participant extends AbstractChatsDomainEntity
 	public List<AboriginalOrTorresStraitIslanderOrigin> choices5UpdateDexData() {
 		return dexRefData.allAboriginalOrTorresStraitIslanderOrigin();
 	}
+
 	public HouseholdComposition default6UpdateDexData() {
 		return getHouseholdComposition();
 	}
@@ -760,7 +785,7 @@ public class Participant extends AbstractChatsDomainEntity
 	public List<HouseholdComposition> choices6UpdateDexData() {
 		return dexRefData.allHouseholdComposition();
 	}
-	
+
 	public AccommodationType default7UpdateDexData() {
 		return getAccommodationType();
 	}

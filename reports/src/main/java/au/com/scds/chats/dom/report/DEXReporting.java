@@ -37,7 +37,9 @@ import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportFromSeparateDexData;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport.ClientIdGenerationMode;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport.DEXFileUploadWrapper;
-import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportFromSeparateDexData.DEXFileUploadWrapper2;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport2;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport2.ClientIdGenerationMode2;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport2.DEXFileUploadWrapper2;
 import au.com.scds.chats.dom.report.view.ActivityAttendanceSummary;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
@@ -66,14 +68,14 @@ public class DEXReporting {
 
 	public Clob createDexReportForMonth(@ParameterLayout(named = "Year") Integer year,
 			@ParameterLayout(named = "Month") Month month, @ParameterLayout(named = "Region") String regionName,
-			@ParameterLayout(named = "Client Id Generation") ClientIdGenerationMode nameMode)
+			@ParameterLayout(named = "Client Id Generation") ClientIdGenerationMode2 nameMode)
 			throws Exception {
 		System.out
 				.println("Starting DEX report: Year=" + year + ",Month=" + month.getValue() + ",region=" + regionName);
-		DEXBulkUploadReport report1 = new DEXBulkUploadReport(repository, isisJdoSupport,
+		DEXBulkUploadReport2 report1 = new DEXBulkUploadReport2(repository, isisJdoSupport,
 				participants, year, month.getValue(), regionName, nameMode);
 
-		DEXFileUploadWrapper wrapped = report1.build();
+		DEXFileUploadWrapper2 wrapped = report1.build();
 		if (wrapped.hasErrors()) {
 			String report = wrapped.getErrors();
 			Clob clob = new Clob("DexReportingERRORSFor" + regionName + "_" + month + "_" + year + ".txt", "text/plain",
@@ -95,8 +97,8 @@ public class DEXReporting {
 		return Arrays.asList("SOUTH", "NORTH", "NORTH-WEST");
 	}
 	
-	public ClientIdGenerationMode default3CreateDexReportForMonth() {
-		return ClientIdGenerationMode.SLK_KEY;
+	public ClientIdGenerationMode2 default3CreateDexReportForMonth() {
+		return ClientIdGenerationMode2.SLK_KEY;
 	}
 	
 	

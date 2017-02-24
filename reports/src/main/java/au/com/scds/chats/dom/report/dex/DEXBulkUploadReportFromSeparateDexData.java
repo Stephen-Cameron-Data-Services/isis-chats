@@ -43,8 +43,6 @@ import au.com.scds.chats.dom.report.view.ActivityParticipantAttendanceFromDexDat
 import au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime;
 import au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX;
 import au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX;
-import au.com.scds.chats.dom.report.view.VolunteeredTimeForCallsByVolunteerAndDayForDEX;
-
 public class DEXBulkUploadReportFromSeparateDexData {
 
 	// constants

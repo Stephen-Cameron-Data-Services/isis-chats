@@ -18,6 +18,8 @@
  */
 package au.com.scds.chats.dom.report.view;
 
+import java.util.Date;
+
 import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Inheritance;
@@ -40,77 +42,44 @@ import org.joda.time.LocalDate;
 
 @ViewModel
 @DomainObject(editing = Editing.DISABLED)
-@PersistenceCapable(
-		identityType = IdentityType.NONDURABLE,
-		table = "CallsDurationByParticipantAndDayForDEX",
-		extensions = { @Extension(
-				vendorName = "datanucleus",
-				key = "view-definition",
-				value = "CREATE VIEW CallsDurationByParticipantAndDayForDEX "
-						+ "( "
-						+ "  {this.personId}, "						
-						+ "  {this.surname}, "
-						+ "  {this.firstName}, "
-						+ "  {this.birthDate}, "
-						+ "  {this.slk}, "
-						+ "  {this.age}, "						
-						+ "  {this.participantId}, "						
-						+ "  {this.regionName}, "
-						+ "  {this.participantStatus}, "						
-						+ "  {this.date}, "
-						+ "  {this.callMinutesTotal} "
-						+ ") AS "
-						+ "SELECT "
-						+ "  person.person_id AS personId, "						
-						+ "  person.surname, "
-						+ "  person.firstname AS firstName, "
-						+ "  person.birthdate AS birthDate, "
-						+ "  person.slk, "
-						+ "  timestampdiff(year,person.birthdate,curdate()) AS age, "						
-						+ "  participant.participant_id AS participantId, "						
-						+ "  participant.region_name AS regionName, "
-						+ "  participant.status AS participantStatus, "
-						+ "	 DATE(telephonecall.startdatetime) as date, "
-						+ "	 CAST(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime)) AS UNSIGNED) as callMinutesTotal "
-						+ "FROM "
-						+ "  telephonecall, "						
-						+ "  participant, "
-						+ "  person "
-						+ "WHERE "
-						+ "  participant.participant_id = telephonecall.participant_participant_id AND "
-						+ "  person.person_id = participant.person_person_id "						
-						+ "GROUP BY "
-						+ "  participant.participant_id, "
-						+ "  DATE(telephonecall.startdatetime);") })
+@PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "CallsDurationByParticipantAndDayForDEX", extensions = {
+		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW CallsDurationByParticipantAndDayForDEX "
+				+ "( " + "  {this.personId}, " + "  {this.surname}, " + "  {this.firstName}, " + "  {this.birthDate}, "
+				+ "  {this.slk}, " + "  {this.ageAtDateOfCall}, " + "  {this.participantId}, " + "  {this.regionName}, "
+				+ "  {this.participantStatus}, " + "  {this.date}, " + "  {this.callMinutesTotal} " + ") AS "
+				+ "SELECT " + "  person.person_id AS personId, " + "  person.surname, "
+				+ "  person.firstname AS firstName, " + "  person.birthdate AS birthDate, " + "  person.slk, "
+				+ "  timestampdiff(year,person.birthdate,curdate()) AS ageAtDateOfCall, "
+				+ "  participant.participant_id AS participantId, " + "  participant.region_name AS regionName, "
+				+ "  participant.status AS participantStatus, " + "	 DATE(telephonecall.startdatetime) as date, "
+				+ "	 CAST(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime)) AS UNSIGNED) as callMinutesTotal "
+				+ "FROM " + "  telephonecall, " + "  participant, " + "  person " + "WHERE "
+				+ "  participant.participant_id = telephonecall.participant_participant_id AND "
+				+ "  person.person_id = participant.person_person_id " + "GROUP BY " + "  participant.participant_id, "
+				+ "  DATE(telephonecall.startdatetime);") })
 @Queries({
-	@Query(name = "allCallsDurationByParticipantAndDay",
-			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX"),
-	@Query(name = "allCallsDurationByParticipantAndDayAndRegion",
-			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX "
-			+ "WHERE date >= :startDate && date <= :endDate && regionName == :region"),})
+		@Query(name = "allCallsDurationByParticipantAndDay", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX"),
+		@Query(name = "allCallsDurationByParticipantAndDayAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX "
+				+ "WHERE date >= :startDate && date <= :endDate && regionName == :region && ageAtDateOfCall > 64"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTenancy{
-	
+public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTenancy {
+
 	public Long personId;
 	public String surname;
 	public String firstName;
 	public LocalDate birthDate;
 	public String slk;
-	public Integer age;
+	public Integer ageAtDateOfCall;
 	public Long participantId;
 	public String regionName;
 	public String participantStatus;
-	public LocalDate date;
+	public Date date;
 	public Integer callMinutesTotal;
-	
-	public String title(){
+
+	public String title() {
 		return "Calls: " + getFirstName() + " " + getSurname() + " " + getDate();
 	}
 
-	@Property(hidden=Where.EVERYWHERE)
-	//@MemberOrder(sequence = "1")	
 	public Long getPersonId() {
 		return personId;
 	}
@@ -119,8 +88,6 @@ public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTe
 		this.personId = personId;
 	}
 
-	@Property(hidden=Where.EVERYWHERE)
-	//@MemberOrder(sequence = "1")
 	public Long getParticipantId() {
 		return participantId;
 	}
@@ -129,8 +96,6 @@ public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTe
 		this.participantId = participantId;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "1")
 	public String getSurname() {
 		return surname;
 	}
@@ -139,8 +104,6 @@ public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTe
 		this.surname = surname;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "2")
 	public String getFirstName() {
 		return firstName;
 	}
@@ -149,8 +112,6 @@ public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTe
 		this.firstName = firstName;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "3.1")
 	public LocalDate getBirthDate() {
 		return birthDate;
 	}
@@ -158,9 +119,7 @@ public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTe
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
-	
-	@Property()
-	@MemberOrder(sequence = "3.2")
+
 	public String getSlk() {
 		return slk;
 	}
@@ -169,18 +128,6 @@ public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTe
 		this.slk = slk;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "3.3")
-	public Integer getAge() {
-		return age;
-	}
-
-	public void setAge(Integer age) {
-		this.age = age;
-	}
-
-	@Property()
-	@MemberOrder(sequence = "4")
 	public String getRegionName() {
 		return regionName;
 	}
@@ -188,9 +135,7 @@ public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTe
 	public void setRegionName(String region) {
 		this.regionName = region;
 	}
-	
-	@Property()
-	@MemberOrder(sequence = "5")
+
 	public String getParticipantStatus() {
 		return participantStatus;
 	}
@@ -199,24 +144,28 @@ public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTe
 		this.participantStatus = participantStatus;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "7")
-	public LocalDate getDate() {
+	public Date getDate() {
 		return date;
 	}
 
-	public void setDate(LocalDate date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 
-	@Property()
-	@MemberOrder(sequence = "8")
 	public Integer getCallMinutesTotal() {
 		return callMinutesTotal;
 	}
 
 	public void setCallMinutesTotal(Integer total) {
-		this.callMinutesTotal = callMinutesTotal;
+		this.callMinutesTotal = total;
+	}
+
+	public Integer getAgeAtDateOfCall() {
+		return ageAtDateOfCall;
+	}
+
+	public void setAgeAtDateOfCall(Integer ageAtDateOfCall) {
+		this.ageAtDateOfCall = ageAtDateOfCall;
 	}
 
 	@Programmatic
@@ -229,4 +178,5 @@ public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTe
 		}
 		return tenancy;
 	}
+
 }

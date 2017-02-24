@@ -205,10 +205,6 @@ public class Participants {
 		return list2;
 	}
 
-	public Status default1FindBySurname() {
-		return Status.ACTIVE;
-	}
-
 	public List<Status> choices1FindBySurname() {
 		return Arrays.asList(Status.values());
 	}
@@ -229,24 +225,7 @@ public class Participants {
 	@MemberOrder(sequence = "4")
 	public List<ParticipationView> findFutureParticipation(ParticipantIdentity identity) {
 		Participant participant = getParticipant(identity);
-		List<ParticipationView> views = new ArrayList<>();
-		for (Participation p : participant.getParticipations()) {
-			Activity a = p.getActivity();
-			if (a instanceof RecurringActivity) {
-				for(ParentedActivityEvent e :((RecurringActivity) a).getFutureActivities()){
-					ParticipationView v = new ParticipationView();
-					v.setActivity(e);
-					v.setStartDateTime(e.getStartDateTime().toDate());
-					views.add(v);					
-				}
-			} else if (a.getStartDateTime().isAfterNow()) {
-				ParticipationView v = new ParticipationView();
-				v.setActivity(a);
-				v.setStartDateTime(p.getActivity().getStartDateTime().toDate());
-				views.add(v);
-			}
-		}
-		return views;
+		return participant.showFutureParticipation();
 	}
 
 	public List<ParticipantIdentity> choices0FindFutureParticipation() {

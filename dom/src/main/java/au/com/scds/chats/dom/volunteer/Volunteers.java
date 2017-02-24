@@ -119,10 +119,6 @@ public class Volunteers {
 		return list2;
 	}
 
-	public Status default1FindBySurname() {
-		return Status.ACTIVE;
-	}
-
 	public List<Status> choices1FindBySurname() {
 		return Arrays.asList(Status.values());
 	}

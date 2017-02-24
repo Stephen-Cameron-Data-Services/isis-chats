@@ -43,74 +43,41 @@ import org.joda.time.LocalDate;
 
 @ViewModel
 @DomainObject(editing = Editing.DISABLED)
-@PersistenceCapable(
-		identityType = IdentityType.NONDURABLE,
-		table = "ActivityParticipantAttendance",
-		extensions = { @Extension(
-				vendorName = "datanucleus",
-				key = "view-definition",
-				value = "CREATE VIEW ActivityParticipantAttendance "
-						+ "( "						
-						+ "  {this.personId}, "						
-						+ "  {this.surname}, "
-						+ "  {this.firstName}, "
-						+ "  {this.birthDate}, "
-						+ "  {this.ageAtDayOfActivity}, "
-						+ "  {this.slk}, "
-						+ "  {this.activityId}, "						
-						+ "  {this.activityName}, "
-						+ "  {this.activityAbbreviatedName}, "						
-						+ "  {this.regionName}, "
-						+ "  {this.startDateTime}, "
-						+ "  {this.oldId}, "						
-						+ "  {this.participantId}, "
-						+ "  {this.participantStatus}, "
-						+ "  {this.attendId}, "							
-						+ "  {this.attended}, "	
-						+ "  {this.arrivingTransportType}, "
-						+ "  {this.departingTransportType}, "
-						+ "  {this.minutesAttended} "
-						+ ") AS "
-						+ "SELECT "
-						+ "  person.person_id as personId, "						
-						+ "  person.surname, "
-						+ "  person.firstname AS firstName, "
-						+ "  person.birthdate AS birthDate, "
-						+ "  TIMESTAMPDIFF(YEAR,person.birthdate, activity.startdatetime) AS ageAtDayOfActivity, "
-						+ "  person.slk, "
-						+ "  activity.activity_id as activityId, "						
-						+ "  activity.name AS activityName, "
-						+ "  activity.abbreviatedName AS activityAbbreviatedName, "
-						+ "  activity.region_name AS regionName, "
-						+ "  activity.startdatetime AS startDateTime, "
-						+ "  activity.oldid AS oldId, "
-						+ "  participant.participant_id AS participantId, "						
-						+ "  participant.status AS participantStatus, "
-						+ "  attend.attend_id as attendId, "	
-						+ "  attend.attended, "				
-						+ "  attend.arrivingtransporttype_name AS arrivingTransportType, "
-						+ "  attend.departingtransporttype_name AS departingTransporttype, "			
-						+ "	ROUND(TIMESTAMPDIFF(MINUTE,attend.startdatetime,attend.enddatetime),1) as minutesAttended "
-						+ "FROM "
-						+ "  activity, "
-						+ "  attend, "						
-						+ "  participant, "
-						+ "  person "
-						+ "WHERE "
-						+ "  attend.activity_activity_id = activity.activity_id AND "
-						+ "  participant.participant_id = attend.participant_participant_id AND "
-						+ "ORDER BY"
-						+ "  activity.startdatetime, activity.abbreviatedname") })
+@PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "ActivityParticipantAttendance", extensions = {
+		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW ActivityParticipantAttendance "
+				+ "( " + "  {this.personId}, " + "  {this.surname}, " + "  {this.firstName}, " + "  {this.birthDate}, "
+				+ "  {this.ageAtDayOfActivity}, " + "  {this.slk}, " + "  {this.activityId}, "
+				+ "  {this.activityName}, " + "  {this.activityAbbreviatedName}, " + "  {this.regionName}, "
+				+ "  {this.startDateTime}, " + "  {this.oldId}, " + "  {this.participantId}, "
+				+ "  {this.participantStatus}, " + "  {this.attendId}, " + "  {this.attended}, "
+				+ "  {this.arrivingTransportType}, " + "  {this.departingTransportType}, " + "  {this.minutesAttended} "
+				+ ") AS " + "SELECT " + "  person.person_id as personId, " + "  person.surname, "
+				+ "  person.firstname AS firstName, " + "  person.birthdate AS birthDate, "
+				+ "  TIMESTAMPDIFF(YEAR,person.birthdate, activity.startdatetime) AS ageAtDayOfActivity, "
+				+ "  person.slk, " + "  activity.activity_id as activityId, " + "  activity.name AS activityName, "
+				+ "  activity.abbreviatedName AS activityAbbreviatedName, " + "  activity.region_name AS regionName, "
+				+ "  activity.startdatetime AS startDateTime, " + "  activity.oldid AS oldId, "
+				+ "  participant.participant_id AS participantId, " + "  participant.status AS participantStatus, "
+				+ "  attend.attend_id as attendId, " + "  attend.attended, "
+				+ "  attend.arrivingtransporttype_name AS arrivingTransportType, "
+				+ "  attend.departingtransporttype_name AS departingTransporttype, "
+				+ "	ROUND(TIMESTAMPDIFF(MINUTE,attend.startdatetime,attend.enddatetime),1) as minutesAttended "
+				+ "FROM " + "  activity, " + "  attend, " + "  participant, " + "  person " + "WHERE "
+				+ "  attend.activity_activity_id = activity.activity_id AND "
+				+ "  participant.participant_id = attend.participant_participant_id AND " 
+				+ "  person.person_id = participant.person_person_id AND "
+				+ "  activity.cancelled = false "
+				+ "ORDER BY"
+				+ "  activity.startdatetime, activity.abbreviatedname") })
 @Queries({
-	@Query(name = "allActivityParticipantAttendance",
-			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityParticipantAttendance"),
-	@Query(name = "allParticipantActivityForPeriodAndRegion",
-			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityParticipantAttendance pa "
-					+ "WHERE pa.startDateTime >= :startDateTime && pa.startDateTime <= :endDateTime && pa.attended == :attended && pa.regionName == :region"), })
+		@Query(name = "allActivityParticipantAttendance", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityParticipantAttendance"),
+		@Query(name = "allParticipantActivityForPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityParticipantAttendance pa "
+				+ "WHERE pa.startDateTime >= :startDateTime && pa.startDateTime <= :endDateTime && pa.attended == :attended && pa.regionName == :region"),
+		@Query(name = "allParticipantActivityForPeriodAndRegionForDEX", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityParticipantAttendance pa "
+				+ "WHERE pa.startDateTime >= :startDateTime && pa.startDateTime <= :endDateTime && pa.attended == :attended && pa.regionName == :region && pa.ageAtDayOfActivity > 64"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class ActivityParticipantAttendance /*implements WithApplicationTenancy*/ implements Comparable<ActivityParticipantAttendance>{
+public class ActivityParticipantAttendance
+		/* implements WithApplicationTenancy */ implements Comparable<ActivityParticipantAttendance> {
 
 	private Long personId;
 	private Long participantId;
@@ -131,7 +98,7 @@ public class ActivityParticipantAttendance /*implements WithApplicationTenancy*/
 	private Boolean attended;
 	private String arrivingTransportType;
 	private String departingTransportType;
-	//public ApplicationTenancy tenancy;
+	// public ApplicationTenancy tenancy;
 
 	@Property()
 	@MemberOrder(sequence = "1")
@@ -162,7 +129,7 @@ public class ActivityParticipantAttendance /*implements WithApplicationTenancy*/
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
-	
+
 	@Property()
 	@MemberOrder(sequence = "3.2")
 	public Integer getAgeAtDayOfActivity() {
@@ -202,7 +169,7 @@ public class ActivityParticipantAttendance /*implements WithApplicationTenancy*/
 	public void setActivityName(String activityName) {
 		this.activityName = activityName;
 	}
-	
+
 	public String getActivityAbbreviatedName() {
 		return activityAbbreviatedName;
 	}
@@ -231,7 +198,6 @@ public class ActivityParticipantAttendance /*implements WithApplicationTenancy*/
 		this.oldId = oldId;
 	}
 
-	
 	@Property()
 	@MemberOrder(sequence = "7")
 	public String getParticipantStatus() {
@@ -251,7 +217,7 @@ public class ActivityParticipantAttendance /*implements WithApplicationTenancy*/
 	public void setAttended(Boolean attended) {
 		this.attended = attended;
 	}
-	
+
 	@Property()
 	@MemberOrder(sequence = "9")
 	public String getArrivingTransportType() {
@@ -297,7 +263,7 @@ public class ActivityParticipantAttendance /*implements WithApplicationTenancy*/
 	public Long getParticipantId() {
 		return participantId;
 	}
-	
+
 	public void setParticipantId(Long participantId) {
 		this.participantId = participantId;
 	}
@@ -313,7 +279,7 @@ public class ActivityParticipantAttendance /*implements WithApplicationTenancy*/
 	}
 
 	@Property()
-	@MemberOrder(sequence = "15")	
+	@MemberOrder(sequence = "15")
 	public Long getAttendId() {
 		return attendId;
 	}
@@ -324,21 +290,15 @@ public class ActivityParticipantAttendance /*implements WithApplicationTenancy*/
 
 	@Override
 	public int compareTo(ActivityParticipantAttendance o) {
-		return (int)(this.getAttendId() - o.getAttendId());
-	}	
-	
+		return (int) (this.getAttendId() - o.getAttendId());
+	}
 
-
-	/*@Programmatic
-	public ApplicationTenancy getApplicationTenancy() {
-		ApplicationTenancy tenancy = new ApplicationTenancy();
-		if (getRegionName().equals("STATEWIDE") || getRegionName().equals("TEST"))
-			tenancy.setPath("/");
-		else {
-			tenancy.setPath("/" + getRegionName() + "_");
-		}
-		return tenancy;
-	}*/
-
+	/*
+	 * @Programmatic public ApplicationTenancy getApplicationTenancy() {
+	 * ApplicationTenancy tenancy = new ApplicationTenancy(); if
+	 * (getRegionName().equals("STATEWIDE") || getRegionName().equals("TEST"))
+	 * tenancy.setPath("/"); else { tenancy.setPath("/" + getRegionName() +
+	 * "_"); } return tenancy; }
+	 */
 
 }

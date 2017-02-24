@@ -79,7 +79,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	private String dropoffTime;
 	private String pickupTime;
 
-	//private AdditionalTransportTime transportTime = AdditionalTransportTime.ZERO;
+	// private AdditionalTransportTime transportTime =
+	// AdditionalTransportTime.ZERO;
 	private Long roleId;
 	private String transportNotes;
 
@@ -99,9 +100,9 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 			return null;
 		}
 	}
-	
+
 	public String iconName() {
-		return (getActivity() instanceof RecurringActivity) ? "Recurring" : "Oneoff";	
+		return (getActivity() instanceof RecurringActivity) ? "Recurring" : "Oneoff";
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Created from Parent Activity")
@@ -153,7 +154,7 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	public String default0UpdateGeneral() {
 		return getArrivingTransportTypeName();
 	}
-	
+
 	public List<String> choices0UpdateGeneral() {
 		return transportTypes.allNames();
 	}
@@ -161,7 +162,7 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	public String default1UpdateGeneral() {
 		return getDepartingTransportTypeName();
 	}
-	
+
 	public List<String> choices1UpdateGeneral() {
 		return transportTypes.allNames();
 	}
@@ -217,7 +218,7 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	public List<String> choicesDepartingTransportTypeName() {
 		return transportTypes.allNames();
 	}
-	
+
 	@Property()
 	@Column(allowsNull = "true")
 	public TransportHub getTransportHub() {
@@ -227,13 +228,13 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	public void setTransportHub(TransportHub transportHub) {
 		this.transportHub = transportHub;
 	}
-	
+
 	@Property()
 	@NotPersistent()
 	public String getTransportHubName() {
 		return (getTransportHub() != null) ? getTransportHub().title() : null;
 	}
-	
+
 	@Action()
 	public Participation updateTransportHub(
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Known Transport Hub") TransportHub namedTransportHub,
@@ -321,8 +322,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 		if (isNamedTransportHub()) {
 			return null;
 		} else {
-			return getTransportHub() != null ? suburbs.findSuburb(getTransportHub().getSuburb(), getTransportHub().getPostcode())
-					: null;
+			return getTransportHub() != null
+					? suburbs.findSuburb(getTransportHub().getSuburb(), getTransportHub().getPostcode()) : null;
 		}
 	}
 
@@ -331,8 +332,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	@Property(regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM")
-	//@PropertyLayout(hidden = Where.ALL_TABLES)
-	//@MemberOrder(sequence = "6")
+	// @PropertyLayout(hidden = Where.ALL_TABLES)
+	// @MemberOrder(sequence = "6")
 	@Column(allowsNull = "true")
 	public String getDropoffTime() {
 		return this.dropoffTime;
@@ -343,8 +344,8 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 	}
 
 	@Property(regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternFlags = Pattern.CASE_INSENSITIVE, regexPatternReplacement = "Must be time format 'NN:NN (AM|PM) e.g 10:30 AM or 4:30 PM")
-	//@PropertyLayout(hidden = Where.ALL_TABLES)
-	//@MemberOrder(sequence = "7")
+	// @PropertyLayout(hidden = Where.ALL_TABLES)
+	// @MemberOrder(sequence = "7")
 	@Column(allowsNull = "true")
 	public String getPickupTime() {
 		return this.pickupTime;
@@ -356,7 +357,7 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 
 	@Property()
 	@PropertyLayout(hidden = Where.ALL_TABLES)
-	//@MemberOrder(sequence = "9")
+	// @MemberOrder(sequence = "9")
 	@Column(allowsNull = "true")
 	public Long getRoleId() {
 		return this.roleId;
@@ -366,25 +367,27 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 		this.roleId = roleId;
 	}
 
-	//replaced with arriving and departing transportType
-	/*@Property()
-	@PropertyLayout(hidden = Where.ALL_TABLES)
-	@MemberOrder(sequence = "10")
-	public AdditionalTransportTime getTransportTime() {
-		return transportTime;
-	}
-
-	public void setTransportTime(AdditionalTransportTime transportTime) {
-		this.transportTime = transportTime;
-	}*/
+	// replaced with arriving and departing transportType
+	/*
+	 * @Property()
+	 * 
+	 * @PropertyLayout(hidden = Where.ALL_TABLES)
+	 * 
+	 * @MemberOrder(sequence = "10") public AdditionalTransportTime
+	 * getTransportTime() { return transportTime; }
+	 * 
+	 * public void setTransportTime(AdditionalTransportTime transportTime) {
+	 * this.transportTime = transportTime; }
+	 */
 
 	public enum AdditionalTransportTime {
 		ZERO, HALF_HOUR, ONE_HOUR
 	}
 
 	@Property()
-	//@PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP, hidden = Where.ALL_TABLES)
-	//@MemberOrder(sequence = "11")
+	// @PropertyLayout(multiLine = 10, labelPosition = LabelPosition.TOP, hidden
+	// = Where.ALL_TABLES)
+	// @MemberOrder(sequence = "11")
 	@Column(allowsNull = "true", length = 1000)
 	public String getTransportNotes() {
 		return this.transportNotes;
@@ -396,20 +399,28 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 
 	@Override
 	public int compareTo(final Participation o) {
-		// TODO needs more
-		// return ObjectContracts.compare(o, this,"activity","participant");
-
-		return ComparisonChain.start().compare(getActivity(), o.getActivity())
-				.compare(getParticipant(), o.getParticipant()).result();
-		// return getParticipant().compareTo(o.getParticipant());
+		// System.out.println(ComparisonChain.start().compare(getActivity(),
+		// o.getActivity())
+		// .compare(getParticipant(), o.getParticipant()).result());
+		int i = 0;
+		if (getActivity().equals(o.getActivity())) {
+			i = getParticipant().compareTo(o.getParticipant());
+		} else {
+			i = getActivity().compareTo(o.getActivity());
+		}
+		System.out.println(i);
+		return i;
+		// return ComparisonChain.start().compare(getActivity(),
+		// o.getActivity())
+		// .compare(getParticipant(), o.getParticipant()).result();
 	}
 
 	@Inject
 	TransportTypes transportTypes;
-	
+
 	@Inject
 	Locations locationsRepo;
-	
+
 	@Inject
 	Suburbs suburbs;
 
