@@ -151,31 +151,32 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 	 * Compares based on startDateTime, putting most more recent first.
 	 */
 	public int compareTo(final Activity other) {
-		// return ObjectContracts.compare(other, this, "startDateTime");
-		return ObjectContracts.compare(other, this, "name", "startDateTime");
 
-		// return ComparisonChain.start().compare(getName(),
-		// other.getName()).compare(getStartDateTime(),other.getStartDateTime()).compare(getRegion(),other.getRegion()).result();
-
-		// if (other != null)
-		// return other.getStartDateTime().compareTo(getStartDateTime());
-		// else
-		// return 0;
-
+		if (this == other) {
+			return 0;
+		} else {
+			// compare on date, putting most recent first
+			int result = other.getStartDateTime().compareTo(this.getStartDateTime());
+			if (result != 0) {
+				return result;
+			} else {
+				result = this.getName().compareTo(other.getName());
+				if (result != 0) {
+					return result;
+				} else {
+					if(this.getCreatedOn() != null && other.getCreatedOn() != null){
+						return this.getCreatedOn().compareTo(this.getStartDateTime());
+					}else if(this.getCreatedOn() != null){
+						return 1;
+					}else if(other.getCreatedOn() != null){
+						return -1;
+					}else{
+						return 0;
+					}
+				}
+			}
+		}
 	}
-
-	/*
-	 * @Property(hidden = Where.ALL_TABLES) // @MemberOrder(sequence = "2")
-	 * 
-	 * @Column(allowsNull = "true") public Provider getProvider() { return
-	 * provider; }
-	 * 
-	 * public void setProvider(final Provider provider) { this.provider =
-	 * provider; }
-	 * 
-	 * public List<Provider> choicesProvider() { return
-	 * activityProvidersRepo.listAllProviders(); }
-	 */
 
 	@Property(hidden = Where.EVERYWHERE)
 	@Column(allowsNull = "true")

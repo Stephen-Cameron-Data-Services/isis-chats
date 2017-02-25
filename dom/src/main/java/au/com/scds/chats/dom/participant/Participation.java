@@ -399,20 +399,12 @@ public class Participation extends AbstractChatsDomainEntity implements Comparab
 
 	@Override
 	public int compareTo(final Participation o) {
-		// System.out.println(ComparisonChain.start().compare(getActivity(),
-		// o.getActivity())
-		// .compare(getParticipant(), o.getParticipant()).result());
-		int i = 0;
-		if (getActivity().equals(o.getActivity())) {
-			i = getParticipant().compareTo(o.getParticipant());
+		int result = this.getActivity().compareTo(o.getActivity());
+		if (result != 0) {
+			return result;
 		} else {
-			i = getActivity().compareTo(o.getActivity());
+			return this.getParticipant().compareTo(o.getParticipant());
 		}
-		System.out.println(i);
-		return i;
-		// return ComparisonChain.start().compare(getActivity(),
-		// o.getActivity())
-		// .compare(getParticipant(), o.getParticipant()).result();
 	}
 
 	@Inject
