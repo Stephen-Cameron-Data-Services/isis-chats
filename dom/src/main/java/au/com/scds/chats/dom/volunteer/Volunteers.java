@@ -133,6 +133,26 @@ public class Volunteers {
 	public List<VolunteerIdentity> choices0FindActiveVolunteer() {
 		return listActiveVolunteerIdentities();
 	}
+	
+	@Action()
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@MemberOrder(sequence = "1")
+	public Volunteer create(final @Parameter(maxLength = 100) @ParameterLayout(named = "First name") String firstname,
+			final @Parameter(maxLength = 100) @ParameterLayout(named = "Family name") String surname,
+			final @ParameterLayout(named = "Date of Birth") LocalDate dob, Sex sex) {
+		// find the region of the user
+		UserMemento user = userService.getUser();
+		Region region = null;
+		if (user != null) {
+			String name = user.getName();
+			ApplicationUser appUser = userRepository.findByUsername(name);
+			if (appUser != null) {
+				String regionName = AbstractChatsDomainEntity.regionNameOfApplicationUser(appUser);
+				region = regionsRepo.regionForName(regionName);
+			}
+		}
+		return newVolunteer(firstname, surname, dob, sex, region);
+	}
 
 	@Programmatic
 	public Volunteer getVolunteer(VolunteerIdentity identity) {
@@ -152,34 +172,16 @@ public class Volunteers {
 				Status.ACTIVE.toString()));
 	}
 	
+	@Programmatic	
 	public List<VolunteerIdentity> listAllInactiveVolunteerIdentities() {
 		return container.allMatches(new QueryDefault<>(VolunteerIdentity.class, "listVolunteersByStatus", "status",
 				Status.INACTIVE.toString()));
 	}
 	
+	@Programmatic
 	public List<VolunteerIdentity> listAllExitedVolunteerIdentities() {
 		return container.allMatches(new QueryDefault<>(VolunteerIdentity.class, "listVolunteersByStatus", "status",
 				Status.EXITED.toString()));
-	}
-
-	@Action()
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "1")
-	public Volunteer create(final @Parameter(maxLength = 100) @ParameterLayout(named = "First name") String firstname,
-			final @Parameter(maxLength = 100) @ParameterLayout(named = "Family name") String surname,
-			final @ParameterLayout(named = "Date of Birth") LocalDate dob, Sex sex) {
-		// find the region of the user
-		UserMemento user = userService.getUser();
-		Region region = null;
-		if (user != null) {
-			String name = user.getName();
-			ApplicationUser appUser = userRepository.findByUsername(name);
-			if (appUser != null) {
-				String regionName = AbstractChatsDomainEntity.regionNameOfApplicationUser(appUser);
-				region = regionsRepo.regionForName(regionName);
-			}
-		}
-		return newVolunteer(firstname, surname, dob, sex, region);
 	}
 
 	@Programmatic

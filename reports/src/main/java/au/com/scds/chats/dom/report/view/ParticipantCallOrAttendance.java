@@ -41,6 +41,8 @@ import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport;
+
 @ViewModel
 @DomainObject(editing = Editing.DISABLED)
 @PersistenceCapable(
@@ -148,6 +150,12 @@ public class ParticipantCallOrAttendance implements WithApplicationTenancy{
 
 	public void setMinutes(Integer minutes) {
 		this.minutes = minutes;
+	}
+	
+	@NotPersistent
+	public Integer getAdjustedMinutes() {
+		return DEXBulkUploadReport.adjustTimeForTransport(
+				getMinutes(), getArrivingTransport(), getDepartingTransport());
 	}
 
 	public String getSurname() {

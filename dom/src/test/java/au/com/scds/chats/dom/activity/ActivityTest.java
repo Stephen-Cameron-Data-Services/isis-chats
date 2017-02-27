@@ -28,7 +28,7 @@ public class ActivityTest {
 
 	}
 
-	public static class ActivitiesTest_Tests extends ActivitiesTest {
+	public static class ActivitiesTest_Tests extends ActivityTest {
 
 		@Test
 		public void activitieWithDifferentNameSameDateTest() throws Exception {
@@ -114,10 +114,10 @@ public class ActivityTest {
 			
 			activity1.setName("A");
 			activity1.setStartDateTime(time1);
-			activity1.setCreatedOn(new DateTime());
+			activity1.setCreatedOn(time1);
 			activity2.setName("A");
 			activity2.setStartDateTime(time2);
-			activity2.setCreatedOn(new DateTime());
+			activity2.setCreatedOn(time1.plusSeconds(1));
 			
 			activities.add(activity1);
 			activities.add(activity2);;

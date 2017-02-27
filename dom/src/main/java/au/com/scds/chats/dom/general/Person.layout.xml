@@ -80,20 +80,20 @@
 					<row>
 						<col span="12">
 							<ns2:fieldSet name="Emergency Contact" id="emergencyContactDetails">
-								<ns2:property id="emergencyContactName">
+								<ns2:property id="emergencyContactName" hidden="ALL_TABLES">
 									<ns2:named>Full Name</ns2:named>
 								</ns2:property>
-								<ns2:property id="emergencyContactAddress">
+								<ns2:property id="emergencyContactAddress" hidden="ALL_TABLES">
 									<ns2:named>Address</ns2:named>
 								</ns2:property>
-								<ns2:property id="emergencyContactPhone">
+								<ns2:property id="emergencyContactPhone" hidden="ALL_TABLES">
 									<ns2:named>Phone</ns2:named>
 								</ns2:property>
-								<ns2:property id="emergencyContactRelationship">
+								<ns2:property id="emergencyContactRelationship" hidden="ALL_TABLES">
 									<ns2:named>Relationship</ns2:named>
 								</ns2:property>
 							</ns2:fieldSet>
-							<ns2:collection id="emergencyContacts">
+							<!--ns2:collection id="emergencyContacts">
 								<ns2:action id="addEmergencyContact">
 									<ns2:named>Add</ns2:named>
 									<ns2:describedAs>Add a new Emergency Contact to the list</ns2:describedAs>
@@ -102,7 +102,7 @@
 									<ns2:named>Remove</ns2:named>
 									<ns2:describedAs>Remove an Emergency Contact from the list</ns2:describedAs>
 								</ns2:action>
-							</ns2:collection>
+							</ns2:collection-->
 						</col>
 					</row>
 				</tab>

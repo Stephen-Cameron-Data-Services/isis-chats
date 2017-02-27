@@ -91,7 +91,8 @@ public class Persons {
 		return regions.listAllRegions();
 	}
 	
-	@Action(semantics = SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE)
+	//@Action(semantics = SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE)
+	@Programmatic
 	public List<Result> resetAllSlks() {
 		List<Result> results = new ArrayList<>();
 		List<Person> persons = listAllPersons();

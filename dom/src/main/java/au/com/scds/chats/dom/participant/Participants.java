@@ -156,6 +156,7 @@ public class Participants {
 				Status.INACTIVE.toString()));
 	}
 
+	@Programmatic
 	public List<ParticipantIdentity> listAllExitedParticipantIdentities() {
 		return container.allMatches(new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatus", "status",
 				Status.EXITED.toString()));

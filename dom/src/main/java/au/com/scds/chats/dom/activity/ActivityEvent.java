@@ -84,7 +84,7 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 		@Query(name = "findActivitiesInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent WHERE startDateTime >= :startDateTime && startDateTime <= :endDateTime ORDER BY startDateTime DESC"), })
 public class ActivityEvent extends Activity implements Notable, CalendarEventable {
 
-	protected AttendanceList attendances;
+	protected AttendanceList attendanceList;
 	@Persistent(mappedBy = "activity")
 	@Order(column = "activity_order_idx")
 	protected List<Attend> attends;
@@ -120,25 +120,25 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	}
 
 	@Column(allowsNull = "true")
-	public AttendanceList getAttendances() {
-		return attendances;
+	public AttendanceList getAttendanceList() {
+		return attendanceList;
 	}
 
-	public void setAttendances(final AttendanceList attendances) {
-		this.attendances = attendances;
+	public void setAttendanceList(final AttendanceList attendanceList) {
+		this.attendanceList = attendanceList;
 	}
 
 	@Action()
 	public ActivityEvent createAttendancesFromParticipants() {
-		if (getAttendances() == null)
+		if (getAttendanceList() == null)
 			createAttendanceList();
-		getAttendances().addAllAttends();
-		getAttendances().updateAllAttendsToDefaultValues(getStartDateTime(), getEndDateTime());
+		getAttendanceList().addAllAttends();
+		getAttendanceList().updateAllAttendsToDefaultValues(getStartDateTime(), getEndDateTime());
 		return this;
 	}
 
 	public String disableCreateAttendancesFromParticipants() {
-		if (getAttendances() == null) {
+		if (getAttendanceList() == null) {
 			return null;
 		} else {
 			return "Attendance-List already created for this Activity";
@@ -148,16 +148,16 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 	@Programmatic
 	public AttendanceList createAttendanceList() {
 		attendanceListsRepo.createActivityAttendanceList(this);
-		return getAttendances();
+		return getAttendanceList();
 	}
 
 	@Action()
 	public AttendanceList showAttendanceList() {
-		return getAttendances();
+		return getAttendanceList();
 	}
 
 	public String disableShowAttendanceList() {
-		if (getAttendances() != null) {
+		if (getAttendanceList() != null) {
 			return null;
 		} else {
 			return "Attendance-List not created yet for this Activity";

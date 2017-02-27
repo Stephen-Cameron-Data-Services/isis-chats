@@ -45,7 +45,7 @@
 								<ns2:property id="cancelled" >
 									<ns2:describedAs>If an Activity is flagged as 'cancelled' it will be ignored in reporting</ns2:describedAs>
 								</ns2:property>
-								<ns2:property id="attendances" hidden="EVERYWHERE" />
+								<ns2:property id="attendanceList" hidden="EVERYWHERE" />
 							</ns2:fieldSet>
 						</col>
 						<col span="6">

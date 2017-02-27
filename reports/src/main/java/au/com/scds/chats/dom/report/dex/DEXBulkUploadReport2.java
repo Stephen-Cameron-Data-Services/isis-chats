@@ -282,7 +282,6 @@ public class DEXBulkUploadReport2 {
 			SessionWrapper sessionWrapper = null;
 			if (!sessionsMap.containsKey(sessionKey)) {
 				sessionWrapper = buildNewSession(sessionKey, time);
-
 				sessionsMap.put(sessionKey, sessionWrapper);
 			} else {
 				sessionWrapper = sessionsMap.get(sessionKey);
@@ -291,7 +290,7 @@ public class DEXBulkUploadReport2 {
 			client.setClientId(clientKey);
 			client.setParticipationCode("CLIENT");
 			sessionWrapper.addClient(client);
-
+			sessionWrapper.addMinutes(time.getMinutes());
 		}
 		// set the times on all the Sessions
 		for (SessionWrapper wrapper : sessionsMap.values()) {

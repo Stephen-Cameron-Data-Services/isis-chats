@@ -23,7 +23,10 @@
 				<ns2:property id="name" />
 				<ns2:property id="startDateTime" />
 				<ns2:property id="minutes" />
+				<ns2:property id="adjustedMinutes" />
 				<ns2:property id="regionName" />
+				<ns2:property id="arrivingTransport" />
+				<ns2:property id="departingTransport" />
 			</ns2:fieldSet>
 		</col>
 		<col span="12" unreferencedCollections="true" />
