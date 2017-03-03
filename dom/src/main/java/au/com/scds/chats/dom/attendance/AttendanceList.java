@@ -115,7 +115,7 @@ public class AttendanceList extends AbstractChatsDomainEntity {
 				Attend attend = attendanceListsRepo.createAttend(this, parentActivity, participant, true);
 				attend.setArrivingTransportType(participation.getArrivingTransportType());
 				attend.setDepartingTransportType(participation.getDepartingTransportType());
-				getAttends().add(attend);
+				//getAttends().add(attend);
 			}
 		}
 		return this;

@@ -74,7 +74,8 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "ACTIVITY")
-//@Unique(name = "ActivityEvent_UNQ", members = { "name", "startdatetime", "region" })
+// @Unique(name = "ActivityEvent_UNQ", members = { "name", "startdatetime",
+// "region" })
 @Queries({
 		@Query(name = "findActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent "),
 		@Query(name = "findActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent WHERE name.indexOf(:name) >= 0 "),
@@ -173,6 +174,20 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		this.attends = attends;
 	}
 
+	@Action()
+	public ActivityEvent removeAttend(Attend attend) {
+		//remove from attendance list as a separate transaction before
+		//deleting the attend, otherwise it gives a 'database row doesn't exist' error
+		attendanceListsRepo.removeAttendFromList(attend,getAttendanceList());
+		getAttends().remove(attend);
+		attendanceListsRepo.deleteAttend(attend);
+		return this;
+	}
+
+	public List<Attend> choices0RemoveAttend() {
+		return getAttends();
+	}
+
 	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<VolunteeredTimeForActivity> getVolunteeredTimes() {
 		return super.getVolunteeredTimes();
@@ -243,7 +258,7 @@ public class ActivityEvent extends Activity implements Notable, CalendarEventabl
 		if (getAttends().size() == 0)
 			return null;
 		List<AttendBulkUpdatesWrapper> temp = new ArrayList<>();
-		for(Attend attend : getAttends()){
+		for (Attend attend : getAttends()) {
 			AttendBulkUpdatesWrapper wrapper = new AttendBulkUpdatesWrapper();
 			wrapper.setWrapped(attend);
 			temp.add(wrapper);

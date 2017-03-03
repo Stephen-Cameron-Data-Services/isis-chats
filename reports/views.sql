@@ -61,7 +61,8 @@ VIEW `inactiveparticipant` AS
         ((`participant`.`participant_id` = `attend`.`participant_participant_id`)
             AND (`activity`.`activity_id` = `attend`.`activity_activity_id`)
             AND (`participant`.`person_person_id` = `person`.`person_id`)
-            AND (`participant`.`status` = 'ACTIVE'))
+            AND (`participant`.`status` = 'ACTIVE')
+            AND (`attend`.`attended` = TRUE))
     ORDER BY (TO_DAYS(NOW()) - TO_DAYS(`attend`.`startdatetime`)) ASC;
     
 #DROP VIEW MailMergeData;

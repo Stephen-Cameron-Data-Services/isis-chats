@@ -17,6 +17,7 @@
  */
 package au.com.scds.chats.dom.report;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +46,7 @@ import au.com.scds.chats.dom.report.view.InactiveParticipant;
 @DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.5")
 public class InactiveParticipantsByMonthsInactive {
 
-	public Collection<InactiveParticipant> findMostInactiveParticipants() {
+	public List<InactiveParticipant> findMostInactiveParticipants() {
 		List<InactiveParticipant> list = container
 				.allMatches(new QueryDefault<>(InactiveParticipant.class, "findInactiveParticipants"));
 		Map<Long, InactiveParticipant> map = new HashMap<>();
@@ -59,7 +60,11 @@ public class InactiveParticipantsByMonthsInactive {
 				}
 			}
 		}
-		return map.values();
+		ArrayList<InactiveParticipant> temp = new ArrayList<>();
+		for(InactiveParticipant i : map.values()){
+			temp.add(i);
+		}
+		return temp;
 	}
 
 	public List<InactiveParticipant> findParticipantActivity(

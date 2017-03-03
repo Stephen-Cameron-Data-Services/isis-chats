@@ -42,7 +42,7 @@
 									<ns2:named>Cut-off Limit</ns2:named>
 									<ns2:describedAs>Maximum number of Participants that can participate (add any more to the Wait List).</ns2:describedAs>
 								</ns2:property>
-								<ns2:property id="cancelled" >
+								<ns2:property id="cancelled">
 									<ns2:describedAs>If an Activity is flagged as 'cancelled' it will be ignored in reporting</ns2:describedAs>
 								</ns2:property>
 								<ns2:property id="attendanceList" hidden="EVERYWHERE" />
@@ -99,7 +99,8 @@
 					<row>
 						<col span="12">
 							<ns2:collection id="participations">
-								<ns2:describedAs>Participations link a Participant to the Activity and hold Activity specific participation information</ns2:describedAs>
+								<ns2:describedAs>Participations link a Participant to the
+									Activity and hold Activity specific participation information</ns2:describedAs>
 								<ns2:action id="addParticipant">
 									<ns2:describedAs>Add a Participation (with existing Chats Participant) to the Activity</ns2:describedAs>
 								</ns2:action>
@@ -162,6 +163,10 @@
 								<ns2:action id="showAttendanceList">
 									<ns2:describedAs>Go at an Attendance List containing these Attendances, provides more options (such as adding other Participants than those with Participations)</ns2:describedAs>
 								</ns2:action>
+								<ns2:action id="removeAttend">
+									<ns2:named>Remove</ns2:named>
+									<ns2:describedAs>Remove an Attendance</ns2:describedAs>
+								</ns2:action>
 							</ns2:collection>
 						</col>
 					</row>
@@ -190,8 +195,9 @@
 				<tab name="Calendar Notes">
 					<row>
 						<col span="12">
-							<ns2:collection id="notes" >
-							<ns2:describedAs>Generic Notes linked to this Activity (and optionally visible within a Calendar display)</ns2:describedAs>
+							<ns2:collection id="notes">
+								<ns2:describedAs>Generic Notes linked to this Activity (and
+									optionally visible within a Calendar display)</ns2:describedAs>
 							</ns2:collection>
 						</col>
 					</row>

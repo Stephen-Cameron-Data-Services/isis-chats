@@ -136,9 +136,8 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 		this.name = name;
 	}
 
-	@Property(maxLength = 25)
-	// @MemberOrder(sequence = "1")
-	@Column(allowsNull = "false")
+	@Property(maxLength = 25, regexPattern = "[a-zA-Z0-9]*")
+	@Column(allowsNull = "false", length = 25 )
 	public String getAbbreviatedName() {
 		return abbreviatedName;
 	}
@@ -164,13 +163,13 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 				if (result != 0) {
 					return result;
 				} else {
-					if(this.getCreatedOn() != null && other.getCreatedOn() != null){
+					if (this.getCreatedOn() != null && other.getCreatedOn() != null) {
 						return this.getCreatedOn().compareTo(this.getStartDateTime());
-					}else if(this.getCreatedOn() != null){
+					} else if (this.getCreatedOn() != null) {
 						return 1;
-					}else if(other.getCreatedOn() != null){
+					} else if (other.getCreatedOn() != null) {
 						return -1;
-					}else{
+					} else {
 						return 0;
 					}
 				}
@@ -257,46 +256,16 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 		this.description = description;
 	}
 
-	/*
-	 * @Property(hidden = Where.NOWHERE)
-	 * 
-	 * @PropertyLayout() // @MemberOrder(sequence = "10")
-	 * 
-	 * @Column(allowsNull = "false") public DateTime getStartDateTime() { return
-	 * this.startDateTime; }
-	 * 
-	 * public void setStartDateTime(DateTime startDateTime) { this.startDateTime
-	 * = startDateTime; }
-	 */
-
-	/*
-	 * public void modifyStartDateTime(DateTime startDateTime) { if
-	 * (startDateTime == null) return; if (getApproximateEndDateTime() != null
-	 * && getApproximateEndDateTime().isBefore(startDateTime)) {
-	 * setApproximateEndDateTime(null); } setStartDateTime(startDateTime); }
-	 */
 	@Action
 	public Activity updateGeneral(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Name") String name,
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "DEX 'Case' Id", describedAs = "Gets used to build a DSS DEX Case name (Note: 5 digits get appended for region-month-year)") String abbreviatedName,
+			@Parameter(optionality = Optionality.MANDATORY, maxLength = 25, regexPattern = "[a-zA-Z0-9_]*") @ParameterLayout(named = "DEX 'Case' Id", describedAs = "Gets used to build a DSS DEX Case name (Note: 5 digits get appended for region-month-year)") String abbreviatedName,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Description") String description,
-			// @Parameter(optionality = Optionality.OPTIONAL)
-			// @ParameterLayout(named = "Activity Type") String activityType,
-			// @Parameter(optionality = Optionality.MANDATORY)
-			// @ParameterLayout(named = "Start Date Time") DateTime
-			// startDateTime,
-			// @Parameter(optionality = Optionality.OPTIONAL)
-			// @ParameterLayout(named = "Approx End Date Time") DateTime
-			// approximateEndDateTime,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Cost for Participant") String costForParticipant,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Cut-off Limit") Integer cutoffLimit) {
 		setName(name);
 		setAbbreviatedName(abbreviatedName);
 		setDescription(description);
-		// setActivityType((activityType != null) ?
-		// activityTypesRepo.activityTypeForName(activityType) : null);
-		// setStartDateTime(startDateTime);
-		// setApproximateEndDateTime(approximateEndDateTime);
 		setCostForParticipant(costForParticipant);
 		setCutoffLimit(cutoffLimit);
 		return this;
@@ -340,15 +309,10 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 			// DateTime startDateTime,
 			// DateTime approximateEndDateTime,
 			String costForParticipant, Integer cuffoffLimit) {
-		/*
-		 * if (approximateEndDateTime != null) { if
-		 * (approximateEndDateTime.isBefore(startDateTime)) return
-		 * "Approximate End Date Time is before Start Date Time"; Duration dur =
-		 * new Duration(startDateTime, approximateEndDateTime); if
-		 * (dur.getStandardHours() > 12) { return
-		 * " Start Date Time and Approximate End Date Time are on different days"
-		 * ; } else { return null; } } else
-		 */ if (cutoffLimit != null && cutoffLimit < 1) {
+		/*if (abbreviatedName != null && (abbreviatedName.contains("") || abbreviatedName.length() > 25)) {
+			return "Abbreviated Name should not contain spaces or be greater than 25 characters";
+		}*/
+		if (cutoffLimit != null && cutoffLimit < 1) {
 			return "Cut-off Limit must be greater than 0";
 		} else
 			return null;

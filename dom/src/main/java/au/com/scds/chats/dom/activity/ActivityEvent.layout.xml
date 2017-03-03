@@ -150,6 +150,10 @@
 								<ns2:action id="showAttendanceList">
 									<ns2:describedAs>Go at an Attendance List containing these Attendances, provides more options (such as adding other Participants than those with Participations)</ns2:describedAs>
 								</ns2:action>
+								<ns2:action id="removeAttend">
+									<ns2:named>Remove</ns2:named>
+									<ns2:describedAs>Remove an Attendance</ns2:describedAs>
+								</ns2:action>
 							</ns2:collection>
 
 						</col>

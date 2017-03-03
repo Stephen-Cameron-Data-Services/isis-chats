@@ -21,6 +21,7 @@
 				<ns2:property id="participantId" hidden="EVERYWHERE"/>
 				<ns2:property id="participantStatus" />
 				<ns2:property id="name" />
+				<ns2:property id="abbreviatedName" />
 				<ns2:property id="startDateTime" />
 				<ns2:property id="minutes" />
 				<ns2:property id="adjustedMinutes" />

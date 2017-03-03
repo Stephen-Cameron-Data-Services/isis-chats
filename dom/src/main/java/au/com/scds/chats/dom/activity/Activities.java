@@ -69,6 +69,15 @@ public class Activities {
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
 			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25) @ParameterLayout(named = "DEX 'Case' Name") final String abbreviatedName,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start date time") final DateTime startDateTime) {
+		Activity a = findActivity(name, startDateTime);
+		if (a != null) {
+			container.informUser("Activity with same Name, Start Date Time and Region exists");
+			if (a instanceof RecurringActivity) {
+				return ((RecurringActivity) a);
+			} else {
+				return null;
+			}
+		}
 		if (findActivity(name, startDateTime) != null) {
 			container.informUser("Activity with same Name, Start Date Time and Region exists");
 			return null;
@@ -118,11 +127,16 @@ public class Activities {
 	@MemberOrder(sequence = "2")
 	public ActivityEvent createOneOffActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
-			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25) @ParameterLayout(named = "DEX 'Case' Id") final String abbreviatedName,
+			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25, regexPattern="[\\p{Alnum}]") @ParameterLayout(named = "DEX 'Case' Id") final String abbreviatedName,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start date time") final DateTime startDateTime) {
-		if (findActivity(name, startDateTime) != null) {
+		Activity a = findActivity(name, startDateTime);
+		if (a != null) {
 			container.informUser("Activity with same Name, Start Date Time and Region exists");
-			return null;
+			if (a instanceof ActivityEvent) {
+				return ((ActivityEvent) a);
+			} else {
+				return null;
+			}
 		}
 		// create the new ActivityEvent
 		final ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
@@ -130,7 +144,7 @@ public class Activities {
 		if (abbreviatedName != null) {
 			obj.setAbbreviatedName(abbreviatedName);
 		} else {
-			obj.setAbbreviatedName(name.replaceAll("\\s", ""));
+			obj.setAbbreviatedName(name.replaceAll("[^\\p{Alnum}]", "").substring(0,24));
 		}
 		obj.setStartDateTime(startDateTime);
 		container.persistIfNotAlready(obj);
@@ -156,7 +170,8 @@ public class Activities {
 			List<Activity> activities = container.allMatches(new QueryDefault<>(Activity.class,
 					"findActivityByUpperCaseName", "name", name.trim().toUpperCase()));
 			for (Activity activity : activities) {
-				if (activity.getStartDateTime().equals(startDateTime) && activity.getRegion().equals(region)) {
+				if (activity.getStartDateTime().getDayOfYear() == startDateTime.getDayOfYear()
+						&& activity.getRegion().equals(region)) {
 					return activity;
 				}
 			}
@@ -278,9 +293,9 @@ public class Activities {
 		return container.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivitiesInPeriod", "startDateTime",
 				start.toDateTimeAtStartOfDay(), "endDateTime", end.toDateTime(new LocalTime(23, 59))));
 	}
-	
-	public String validateListActivitiesInPeriod( LocalDate start, LocalDate end) {
-		if(end.isBefore(start))
+
+	public String validateListActivitiesInPeriod(LocalDate start, LocalDate end) {
+		if (end.isBefore(start))
 			return "End Date is before Start Date";
 		else
 			return null;

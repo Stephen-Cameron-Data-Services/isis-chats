@@ -89,7 +89,6 @@ public class AttendanceLists {
 		attend.setRegion(activity.getRegion());
 		container.persistIfNotAlready(attend);
 		container.flush();
-		// needed?
 		if (attendanceList != null)
 			attendanceList.getAttends().add(attend);
 		activity.getAttends().add(attend);
@@ -174,5 +173,15 @@ public class AttendanceLists {
 
 	@Inject
 	DomainObjectContainer container;
+
+	public void removeAttendFromList(Attend attend, AttendanceList attendanceList) {
+		if(attend != null && attendanceList != null){
+			if(attendanceList.getAttends().contains(attend)){
+				attendanceList.getAttends().remove(attend);
+				attend.setParentList(null);
+				container.flush();
+			}
+		}
+	}
 
 }

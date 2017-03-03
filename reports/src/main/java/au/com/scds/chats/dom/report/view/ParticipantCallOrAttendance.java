@@ -62,7 +62,8 @@ import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport;
 						+ "  {this.participantId}, "
 						+ "  {this.regionName}, "			
 						+ "  {this.participantStatus}, "
-						+ "  {this.name}, "						
+						+ "  {this.name}, "	
+						+ "  {this.abbreviatedName}, "						
 						+ "  {this.startDateTime}, "			
 						+ "  {this.minutes}, "
 						+ "  {this.arrivingTransport}, "
@@ -79,6 +80,7 @@ import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport;
 						+ "  regionName AS regionName, "
 						+ "  participantStatus AS participantStatus, "
 						+ "  'CALL' AS name, "
+						+ "  'CALL' AS abbreviatedName, "						
 						+ "  startDateTime AS startDateTime, "
 						+ "  callMinutesTotal AS minutes, "
 						+ "  'N/A' AS arrivingTransport, "
@@ -96,7 +98,8 @@ import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport;
 						+ "  participantId AS participantId, "
 						+ "  regionName AS regionName, "
 						+ "  participantStatus AS participantStatus, "
-						+ "  activityName AS as name, "
+						+ "  activityName AS name, "
+						+ "  activityAbbreviatedName AS abbreviatedName, "						
 						+ "  startDateTime AS startDateTime, "
 						+ "  minutesAttended AS minutes, "
 						+ "  arrivingTransportType AS arrivingTransport, "
@@ -127,6 +130,7 @@ public class ParticipantCallOrAttendance implements WithApplicationTenancy{
 	private String regionName;
 	private String participantStatus;
 	private String name;
+	private String abbreviatedName;
 	private Date startDateTime;
 	private Integer minutes;
 	private String arrivingTransport;
@@ -142,6 +146,14 @@ public class ParticipantCallOrAttendance implements WithApplicationTenancy{
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getAbbreviatedName() {
+		return abbreviatedName;
+	}
+
+	public void setAbbreviatedName(String abbreviatedName) {
+		this.abbreviatedName = abbreviatedName;
 	}
 
 	public Integer getMinutes() {

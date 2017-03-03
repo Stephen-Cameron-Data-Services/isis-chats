@@ -23,6 +23,7 @@ import au.com.scds.chats.dom.general.Address;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport.ClientIdGenerationMode;
 import au.com.scds.chats.dom.report.dex.model.generated.Case;
 import au.com.scds.chats.dom.report.dex.model.generated.CaseClient;
 import au.com.scds.chats.dom.report.dex.model.generated.CaseClients;
@@ -231,13 +232,8 @@ public class DEXBulkUploadReport2 {
 			client.setClientId(clientKey);
 			client.setParticipationCode("CLIENT");
 			sessionWrapper.addClient(client);
-			// only adjust for transport time if data not from old system
-			if (attend.getOldId() == null) {
-				sessionWrapper.addMinutes(adjustTimeForTransport(attend.getMinutesAttended(),
+			sessionWrapper.addMinutes(adjustTimeForTransport(attend.getMinutesAttended(),
 						attend.getArrivingTransportType(), attend.getDepartingTransportType()));
-			} else {
-				sessionWrapper.addMinutes(attend.getMinutesAttended());
-			}
 		}
 		for (ActivityVolunteerVolunteeredTime time : volunteeredTimes) {
 			System.out.print(time.getActivityAbbreviatedName() + "," + time.getStartDateTime() + ",");
@@ -277,7 +273,6 @@ public class DEXBulkUploadReport2 {
 				case_.getCaseClients().getCaseClient().add(cc);
 				clientsInCaseMap.put(caseKey + clientKey, null);
 			}
-
 			// find or make a session
 			SessionWrapper sessionWrapper = null;
 			if (!sessionsMap.containsKey(sessionKey)) {
@@ -329,6 +324,14 @@ public class DEXBulkUploadReport2 {
 			Session session = new Session();
 			this.sessions.getSession().add(session);
 			session.setCaseId(createCaseId("ChatsSocialCalls"));
+			if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
+				session.setSessionId(
+						(String.format("%1$-12s", Math.abs(sessionKey.hashCode())) + formatter.format(c.getDate()))
+								.replace(" ", "0"));
+			} else {
+				session.setSessionId(sessionKey);
+			}
+			session.setSessionDate(new LocalDate(c.getDate()));
 			session.setSessionId(sessionKey);
 			session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
 			session.setTimeMinutes(Integer.valueOf(c.getCallMinutesTotal()));

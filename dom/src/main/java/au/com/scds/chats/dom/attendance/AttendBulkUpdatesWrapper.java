@@ -59,11 +59,11 @@ import au.com.scds.chats.dom.general.names.TransportType;
 import au.com.scds.chats.dom.general.names.TransportTypes;
 import au.com.scds.chats.dom.participant.Participant;
 
-@DomainObject(nature=Nature.INMEMORY_ENTITY)
-public class AttendBulkUpdatesWrapper{
+@DomainObject(nature = Nature.INMEMORY_ENTITY)
+public class AttendBulkUpdatesWrapper {
 
 	private Attend wrapped;
-	
+
 	public Attend getWrapped() {
 		return wrapped;
 	}
@@ -83,15 +83,15 @@ public class AttendBulkUpdatesWrapper{
 	public String getParticipant() {
 		return getWrapped().getParticipantName();
 	}
-	
+
 	public DateTime getStartDateTime() {
 		return getWrapped().getStartDateTime();
 	}
-	
+
 	public DateTime getEndDateTime() {
 		return getWrapped().getEndDateTime();
 	}
-	
+
 	public String getIntervalLength() {
 		return getWrapped().getIntervalLength();
 	}
@@ -100,20 +100,27 @@ public class AttendBulkUpdatesWrapper{
 		return getWrapped().getWasAttended();
 	}
 
-	@Action(invokeOn=InvokeOn.COLLECTION_ONLY)
+	@Action(invokeOn = InvokeOn.COLLECTION_ONLY)
 	public void wasAttended() {
-		getWrapped().wasAttended();
+		if (getWrapped() != null)
+			getWrapped().wasAttended();
 		return;
 	}
 
-	@Action(invokeOn=InvokeOn.COLLECTION_ONLY)
+	@Action(invokeOn = InvokeOn.COLLECTION_ONLY)
 	public void wasNotAttended() {
-		getWrapped().wasNotAttended();
-		return;
+		if (getWrapped() != null)
+			getWrapped().wasNotAttended();
 	}
-	
-	@Action(invokeOn=InvokeOn.COLLECTION_ONLY)
+
+	@Action(invokeOn = InvokeOn.COLLECTION_ONLY)
 	public void updateDatesAndTimesFromActivity() {
-		getWrapped().updateDatesAndTimesFromActivity();
+		if (getWrapped() != null)
+			getWrapped().updateDatesAndTimesFromActivity();
+	}
+
+	@Action(invokeOn = InvokeOn.COLLECTION_ONLY)
+	public void removeAttendance() {
+		setWrapped(null);
 	}
 }
