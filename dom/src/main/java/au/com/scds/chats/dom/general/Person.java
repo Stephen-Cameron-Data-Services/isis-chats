@@ -270,8 +270,8 @@ public class Person extends AbstractChatsDomainEntity implements /* Locatable, *
 			throw new Exception("Person's sex is not set!");
 
 		// remove all spaces
-		String firstname = getFirstname().replace(" ", "");
-		String surname = getSurname().replace(" ", "");
+		String firstname = getFirstname().replaceAll("[^\\p{Alpha}]", "");
+		String surname = getSurname().replaceAll("[^\\p{Alpha}]", "");
 
 		// build the key
 		StringBuffer buffer = new StringBuffer();

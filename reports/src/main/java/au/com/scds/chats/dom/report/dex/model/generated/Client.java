@@ -138,7 +138,7 @@ public class Client {
     protected String aboriginalOrTorresStraitIslanderOriginCode;
     @XmlElement(name = "HasDisabilities")
     protected boolean hasDisabilities;
-    @XmlElementRef(name = "Disabilities", type = Client.Disabilities.class, required = false)
+    @XmlElement(name = "Disabilities", nillable = true)
     protected Client.Disabilities disabilities;
     @XmlElement(name = "AccommodationTypeCode")
     protected String accommodationTypeCode;

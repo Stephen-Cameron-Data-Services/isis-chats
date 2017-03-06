@@ -321,27 +321,8 @@ public class DEXBulkUploadReport2 {
 				callsCaseClientsMap.put(clientKey, cc);
 			}
 			// make a session with one session client
-			Session session = new Session();
-			this.sessions.getSession().add(session);
-			session.setCaseId(createCaseId("ChatsSocialCalls"));
-			if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
-				session.setSessionId(
-						(String.format("%1$-12s", Math.abs(sessionKey.hashCode())) + formatter.format(c.getDate()))
-								.replace(" ", "0"));
-			} else {
-				session.setSessionId(sessionKey);
-			}
-			session.setSessionDate(new LocalDate(c.getDate()));
-			session.setSessionId(sessionKey);
-			session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
-			session.setTimeMinutes(Integer.valueOf(c.getCallMinutesTotal()));
-			SessionClients clients = new SessionClients();
-			session.setSessionClients(clients);
-			SessionClient client = new SessionClient();
-			clients.getSessionClient().add(client);
-			client.setClientId(clientKey);
-			client.setParticipationCode("CLIENT");
-			session.setTimeMinutes(c.getCallMinutesTotal());
+			SessionWrapper sessionWrapper = buildNewSession(sessionKey, clientKey, c);
+			sessionsMap.put(sessionKey, sessionWrapper);
 		}
 		// only add calls case if calls found
 		if (callsCaseClientsMap.size() > 0) {
@@ -418,11 +399,7 @@ public class DEXBulkUploadReport2 {
 		} else {
 			session.setSessionId(sessionKey);
 		}
-		if (a.getActivityAbbreviatedName().equals("ChatsSocialCall")) {
-			session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
-		} else {
-			session.setServiceTypeId(this.SOCIAL_SUPPORT_INDIVIDUAL);
-		}
+		session.setServiceTypeId(this.SOCIAL_SUPPORT_INDIVIDUAL);
 		SessionClients clients = new SessionClients();
 		session.setCaseId(createCaseId(a.getActivityAbbreviatedName()));
 		session.setSessionDate(new LocalDate(a.getStartDateTime()));
@@ -440,15 +417,34 @@ public class DEXBulkUploadReport2 {
 		} else {
 			session.setSessionId(sessionKey);
 		}
-		if (v.getActivityAbbreviatedName().equals("ChatsSocialCall")) {
-			session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
-		} else {
-			session.setServiceTypeId(this.SOCIAL_SUPPORT_INDIVIDUAL);
-		}
+		session.setServiceTypeId(this.SOCIAL_SUPPORT_INDIVIDUAL);
 		SessionClients clients = new SessionClients();
 		session.setCaseId(createCaseId(v.getActivityAbbreviatedName()));
 		session.setSessionDate(new LocalDate(v.getStartDateTime()));
 		session.setSessionClients(clients);
+		return new SessionWrapper(session);
+	}
+	
+	private SessionWrapper buildNewSession(String sessionKey, String clientKey, CallsDurationByParticipantAndDayForDEX c) {
+		Session session = new Session();
+		this.sessions.getSession().add(session);
+		session.setCaseId(createCaseId("ChatsSocialCalls"));
+		if (this.mode.equals(ClientIdGenerationMode2.SLK_KEY)) {
+			session.setSessionId(
+					(String.format("%1$-12s", Math.abs(sessionKey.hashCode())) + formatter.format(c.getDate()))
+							.replace(" ", "0"));
+		} else {
+			session.setSessionId(sessionKey);
+		}
+		session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
+		session.setTimeMinutes(Integer.valueOf(c.getCallMinutesTotal()));
+		session.setSessionDate(new LocalDate(c.getDate()));
+		SessionClients clients = new SessionClients();
+		session.setSessionClients(clients);
+		SessionClient client = new SessionClient();
+		clients.getSessionClient().add(client);
+		client.setClientId(clientKey);
+		client.setParticipationCode("CLIENT");
 		return new SessionWrapper(session);
 	}
 
