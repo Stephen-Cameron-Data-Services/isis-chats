@@ -71,6 +71,7 @@ import au.com.scds.chats.dom.report.dex.model.generated.SessionClients;
     "sessionDate",
     "serviceTypeId",
     "totalNumberOfUnidentifiedClients",
+    "feesCharged",
     "sessionClients",
     "timeMinutes"
 })
@@ -88,6 +89,8 @@ public class Session {
     protected int serviceTypeId;
     @XmlElement(name = "TotalNumberOfUnidentifiedClients")
     protected int totalNumberOfUnidentifiedClients;
+    @XmlElement(name = "FeesCharged", nillable = true)
+    protected BigDecimal feesCharged;
     @XmlElement(name = "SessionClients", nillable = true)
     protected SessionClients sessionClients;
     @XmlElement(name = "TimeMinutes", nillable = true)
@@ -195,6 +198,30 @@ public class Session {
      */
     public void setTotalNumberOfUnidentifiedClients(int value) {
         this.totalNumberOfUnidentifiedClients = value;
+    }
+    
+    /**
+     * Gets the value of the feesCharged property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigDecimal }
+     *     
+     */
+    public BigDecimal getFeesCharged() {
+        return feesCharged;
+    }
+
+    /**
+     * Sets the value of the feesCharged property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigDecimal }
+     *     
+     */
+    public void setFeesCharged(BigDecimal value) {
+        this.feesCharged = value;
     }
 
     /**

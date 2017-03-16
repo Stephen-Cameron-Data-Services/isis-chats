@@ -39,72 +39,18 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ResidentialAddress", propOrder = {
-    "addressLine1",
-    "addressLine2",
     "suburb",
     "stateCode",
     "postcode"
 })
-public class ResidentialAddressOrig {
+public class ResidentialAddressNew {
 
-    @XmlElement(name = "AddressLine1", nillable = true)
-    protected String addressLine1;
-    @XmlElement(name = "AddressLine2", nillable = true)
-    protected String addressLine2;
     @XmlElement(name = "Suburb", required = true)
     protected String suburb;
     @XmlElement(name = "StateCode", required = true)
     protected String stateCode;
     @XmlElement(name = "Postcode", required = true)
     protected String postcode;
-
-    /**
-     * Gets the value of the addressLine1 property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAddressLine1() {
-        return addressLine1;
-    }
-
-    /**
-     * Sets the value of the addressLine1 property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAddressLine1(String value) {
-        this.addressLine1 = value;
-    }
-
-    /**
-     * Gets the value of the addressLine2 property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAddressLine2() {
-        return addressLine2;
-    }
-
-    /**
-     * Sets the value of the addressLine2 property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAddressLine2(String value) {
-        this.addressLine2 = value;
-    }
 
     /**
      * Gets the value of the suburb property.

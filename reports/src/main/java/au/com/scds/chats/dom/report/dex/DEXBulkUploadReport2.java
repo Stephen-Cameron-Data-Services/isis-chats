@@ -1,5 +1,6 @@
 package au.com.scds.chats.dom.report.dex;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -93,6 +94,7 @@ public class DEXBulkUploadReport2 {
 
 	// utility
 	private SimpleDateFormat formatter;
+	private BigDecimal zeroCost;
 
 	private DEXBulkUploadReport2() {
 	}
@@ -110,7 +112,7 @@ public class DEXBulkUploadReport2 {
 		fileUpload.getClientsOrCasesOrSessions().add(clients);
 		fileUpload.getClientsOrCasesOrSessions().add(cases);
 		fileUpload.getClientsOrCasesOrSessions().add(sessions);
-		
+
 		// this.container = repository;
 		this.repository = repository;
 		this.isisJdoSupport = isisJdoSupport;
@@ -121,7 +123,7 @@ public class DEXBulkUploadReport2 {
 
 		// set of the bounds for finding ActivityEvents
 		Calendar cal = Calendar.getInstance();
-		cal.set(year, month-1, 1, 0, 0, 0);
+		cal.set(year, month - 1, 1, 0, 0, 0);
 		this.startDate = cal.getTime();
 		cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
 		cal.set(Calendar.HOUR, 23);
@@ -149,6 +151,8 @@ public class DEXBulkUploadReport2 {
 		this.mode = nameMode;
 
 		formatter = new SimpleDateFormat("ddMMYYYY");
+		this.zeroCost = new BigDecimal(0);
+		this.zeroCost.setScale(2);
 
 	}
 
@@ -162,10 +166,9 @@ public class DEXBulkUploadReport2 {
 				ActivityParticipantAttendance.class, "allParticipantActivityForPeriodAndRegionForDEX", "startDateTime",
 				this.startDate, "endDateTime", this.endDate, "attended", true, "region", this.regionName));
 
-		List<ActivityVolunteerVolunteeredTime> volunteeredTimes = repository
-				.allMatches(new QueryDefault(ActivityVolunteerVolunteeredTime.class,
-						"allActivityVolunteerVolunteeredTimeForPeriodAndRegionForDEX", "startDateTime", this.startDate,
-						"endDateTime", this.endDate, "region", this.regionName));
+		List<ActivityVolunteerVolunteeredTime> volunteeredTimes = repository.allMatches(new QueryDefault(
+				ActivityVolunteerVolunteeredTime.class, "allActivityVolunteerVolunteeredTimeForPeriodAndRegionForDEX",
+				"startDateTime", this.startDate, "endDateTime", this.endDate, "region", this.regionName));
 
 		List<CallsDurationByParticipantAndDayForDEX> calls = repository.allMatches(new QueryDefault(
 				CallsDurationByParticipantAndDayForDEX.class, "allCallsDurationByParticipantAndDayAndRegion",
@@ -198,8 +201,7 @@ public class DEXBulkUploadReport2 {
 				clientKey = attend.getSlk();
 			}
 			caseKey = attend.getActivityAbbreviatedName().trim();
-			sessionKey = attend.getActivityAbbreviatedName().trim()
-					+ attend.getStartDateTime();
+			sessionKey = attend.getActivityAbbreviatedName().trim() + attend.getStartDateTime();
 			// find or make a client
 			if (!clientsMap.containsKey(clientKey)) {
 				clientsMap.put(clientKey, buildNewClient(clientKey, attend.getParticipantId()));
@@ -233,7 +235,7 @@ public class DEXBulkUploadReport2 {
 			client.setParticipationCode("CLIENT");
 			sessionWrapper.addClient(client);
 			sessionWrapper.addMinutes(adjustTimeForTransport(attend.getMinutesAttended(),
-						attend.getArrivingTransportType(), attend.getDepartingTransportType()));
+					attend.getArrivingTransportType(), attend.getDepartingTransportType()));
 		}
 		for (ActivityVolunteerVolunteeredTime time : volunteeredTimes) {
 			System.out.print(time.getActivityAbbreviatedName() + "," + time.getStartDateTime() + ",");
@@ -403,6 +405,7 @@ public class DEXBulkUploadReport2 {
 		SessionClients clients = new SessionClients();
 		session.setCaseId(createCaseId(a.getActivityAbbreviatedName()));
 		session.setSessionDate(new LocalDate(a.getStartDateTime()));
+		session.setFeesCharged(this.zeroCost);
 		session.setSessionClients(clients);
 		return new SessionWrapper(session);
 	}
@@ -421,11 +424,13 @@ public class DEXBulkUploadReport2 {
 		SessionClients clients = new SessionClients();
 		session.setCaseId(createCaseId(v.getActivityAbbreviatedName()));
 		session.setSessionDate(new LocalDate(v.getStartDateTime()));
+		session.setFeesCharged(this.zeroCost);
 		session.setSessionClients(clients);
 		return new SessionWrapper(session);
 	}
-	
-	private SessionWrapper buildNewSession(String sessionKey, String clientKey, CallsDurationByParticipantAndDayForDEX c) {
+
+	private SessionWrapper buildNewSession(String sessionKey, String clientKey,
+			CallsDurationByParticipantAndDayForDEX c) {
 		Session session = new Session();
 		this.sessions.getSession().add(session);
 		session.setCaseId(createCaseId("ChatsSocialCalls"));
@@ -439,6 +444,7 @@ public class DEXBulkUploadReport2 {
 		session.setServiceTypeId(this.TELEPHONE_WEB_CONTACT);
 		session.setTimeMinutes(Integer.valueOf(c.getCallMinutesTotal()));
 		session.setSessionDate(new LocalDate(c.getDate()));
+		session.setFeesCharged(this.zeroCost);
 		SessionClients clients = new SessionClients();
 		session.setSessionClients(clients);
 		SessionClient client = new SessionClient();
@@ -483,14 +489,9 @@ public class DEXBulkUploadReport2 {
 			client.setSlk(participant.getPerson().getSlk());
 			client.setConsentToProvideDetails(participant.isConsentToProvideDetails());
 			client.setConsentedForFutureContacts(participant.isConsentedForFutureContacts());
-			switch (this.mode) {
-			case NAME_KEY:
+			if (participant.isConsentToProvideDetails()) {
 				client.setGivenName(participant.getPerson().getFirstname());
 				client.setFamilyName(participant.getPerson().getSurname());
-				break;
-			case SLK_KEY:
-				client.setGivenName(null);
-				client.setFamilyName(null);
 			}
 			client.setIsUsingPsuedonym(false);
 			client.setBirthDate(participant.getPerson().getBirthdate());
@@ -520,6 +521,10 @@ public class DEXBulkUploadReport2 {
 			Address s = participant.getPerson().getStreetAddress();
 			if (s != null) {
 				ResidentialAddress address = new ResidentialAddress();
+				if (participant.isConsentToProvideDetails()) {
+					address.setAddressLine1(((s.getStreet1().trim().length() > 0) ? s.getStreet1() : null));
+					address.setAddressLine2(((s.getStreet2().trim().length() > 0) ? s.getStreet2() : null));
+				}
 				address.setSuburb(s.getSuburb());
 				address.setPostcode(s.getPostcode());
 				address.setStateCode("TAS");
