@@ -10,7 +10,7 @@ import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Persons;
 import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.participant.Participants;
-import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport.ClientIdGenerationMode;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport2.ClientIdGenerationMode2;
 import domainapp.app.DomainAppAppManifest;
 
 //import org.incode.note.fixture.dom.notedemoobject.NoteDemoObject;
@@ -88,10 +88,9 @@ public class DexReportTests extends IntegrationTestAbstract {
 	
 	@Test
 	public void DEXReportSinglePass() throws Exception {
-		
 		String DIR = new String("C:/Users/stevec/Desktop/dex/");
 		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadSOUTH-JAN2016.xml"));
-		DEXBulkUploadReport report1 = new DEXBulkUploadReport( repository, isisJdoSupport,  participants, 2016, 1, "SOUTH", ClientIdGenerationMode.NAME_KEY);
+		DEXBulkUploadReport2 report1 = new DEXBulkUploadReport2( repository, isisJdoSupport,  participants, 2016, 1, "SOUTH", ClientIdGenerationMode2.NAME_KEY);
 		file1.write(jaxbService.toXml(report1.build()).getBytes());
 	}
 	
@@ -100,7 +99,7 @@ public class DexReportTests extends IntegrationTestAbstract {
 		
 		String DIR = new String("C:/temp2/DEX/reports/");
 		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadSOUTH-JUL2016.xml"));
-		DEXBulkUploadReportFromSeparateDexData report1 = new DEXBulkUploadReportFromSeparateDexData( repository, isisJdoSupport,  participants, 2016, 7, "NORTH-WEST", ClientIdGenerationMode.NAME_KEY);
+		DEXBulkUploadReportFromSeparateDexData report1 = new DEXBulkUploadReportFromSeparateDexData( repository, isisJdoSupport,  participants, 2016, 7, "NORTH-WEST", ClientIdGenerationMode2.NAME_KEY);
 		file1.write(jaxbService.toXml(report1.build()).getBytes());
 	}
 	

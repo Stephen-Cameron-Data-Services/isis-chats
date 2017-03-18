@@ -1,12 +1,7 @@
 package au.com.scds.chats.dom.report;
 
-
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +29,6 @@ import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportFromSeparateDexData;
-import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport;
-import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport.ClientIdGenerationMode;
-import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport.DEXFileUploadWrapper;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport2;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport2.ClientIdGenerationMode2;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport2.DEXFileUploadWrapper2;

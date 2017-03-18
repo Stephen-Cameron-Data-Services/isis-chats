@@ -15,15 +15,13 @@ import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
 import org.apache.isis.applib.services.repository.RepositoryService;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import au.com.scds.chats.dom.dex.reference.Disability;
 import au.com.scds.chats.dom.general.Address;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
-import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport.ClientIdGenerationMode;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport2.ClientIdGenerationMode2;
 import au.com.scds.chats.dom.report.dex.model.generated.Case;
 import au.com.scds.chats.dom.report.dex.model.generated.CaseClient;
 import au.com.scds.chats.dom.report.dex.model.generated.CaseClients;
@@ -81,7 +79,7 @@ public class DEXBulkUploadReportFromSeparateDexData {
 
 	// data variables etc.
 	private int outletActivityId;
-	private ClientIdGenerationMode mode;
+	private ClientIdGenerationMode2 mode;
 	private Boolean validationMode;
 	private Map<String, Map<String, ParticipantActivityByMonthForDEX>> participationByMonth;
 
@@ -92,7 +90,7 @@ public class DEXBulkUploadReportFromSeparateDexData {
 	}
 
 	public DEXBulkUploadReportFromSeparateDexData(RepositoryService repository, IsisJdoSupport isisJdoSupport,
-			Participants participants, Integer year, Integer month, String regionName, ClientIdGenerationMode nameKey) {
+			Participants participants, Integer year, Integer month, String regionName, ClientIdGenerationMode2 nameKey) {
 
 		this.fileUpload = new DEXFileUpload();
 		this.fileUploadWrapper = new DEXFileUploadWrapper2();
@@ -248,7 +246,7 @@ public class DEXBulkUploadReportFromSeparateDexData {
 				Session session = new Session();
 				this.sessions.getSession().add(session);
 				session.setCaseId(createCaseId("ChatsSocialCalls"));
-				if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
+				if (this.mode.equals(ClientIdGenerationMode2.SLK_KEY)) {
 					session.setSessionId(
 							(String.format("%1$-12s", Math.abs(sessionKey.hashCode())) + formatter.format(c.getDate()))
 									.replace(" ", "0"));
@@ -277,7 +275,7 @@ public class DEXBulkUploadReportFromSeparateDexData {
 	private SessionWrapper buildNewSession(String sessionKey, ActivityParticipantAttendanceFromDexData attend) {
 		Session session = new Session();
 		this.sessions.getSession().add(session);
-		if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
+		if (this.mode.equals(ClientIdGenerationMode2.SLK_KEY)) {
 			session.setSessionId(
 					(String.format("%1$-12s", Math.abs(sessionKey.hashCode())) + formatter.format(attend.getDate()))
 							.replace(" ", "0"));
@@ -299,7 +297,7 @@ public class DEXBulkUploadReportFromSeparateDexData {
 	private SessionWrapper buildNewSession(String sessionKey, ActivityVolunteerVolunteeredTime v) {
 		Session session = new Session();
 		this.sessions.getSession().add(session);
-		if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
+		if (this.mode.equals(ClientIdGenerationMode2.SLK_KEY)) {
 			session.setSessionId(
 					(String.format("%1$-12s", Math.abs(sessionKey.hashCode())) + formatter.format(v.getStartDateTime()))
 							.replace(" ", "0"));

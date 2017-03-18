@@ -53,7 +53,7 @@ public abstract class StartAndFinishDateTime extends AbstractChatsDomainEntity {
 	}
 
 	@NotPersistent
-	public String getIntervalLength() {
+	public String getIntervalLengthFormatted() {
 		if (getStartDateTime() != null && getEndDateTime() != null) {
 			Duration duration = new Duration(getStartDateTime(), getEndDateTime());
 			Long hours = duration.getStandardHours();
@@ -61,7 +61,15 @@ public abstract class StartAndFinishDateTime extends AbstractChatsDomainEntity {
 			if (hours > 0)
 				minutes = minutes - hours * 60;
 			return String.format("%01d:%02d", hours, minutes);
+		} else
+			return null;
+	}
 
+	@NotPersistent
+	public Long getIntervalLengthInMinutes() {
+		if (getStartDateTime() != null && getEndDateTime() != null) {
+			Duration duration = new Duration(getStartDateTime(), getEndDateTime());
+			return duration.getStandardMinutes();
 		} else
 			return null;
 	}
@@ -74,7 +82,7 @@ public abstract class StartAndFinishDateTime extends AbstractChatsDomainEntity {
 				Duration duration = new Duration(start, finish);
 				if (duration.getStandardMinutes() == 0)
 					return "End is equal to Start";
-				if(duration.getStandardHours()>12)
+				if (duration.getStandardHours() > 12)
 					return "End and Start are not in the same 12 hour period";
 				if (finish.getDayOfWeek() != start.getDayOfWeek()) {
 					return "End and Start are on different days of the week";
@@ -83,7 +91,7 @@ public abstract class StartAndFinishDateTime extends AbstractChatsDomainEntity {
 		}
 		return null;
 	}
-	
+
 	@Action()
 	public StartAndFinishDateTime updateStartDateTime(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Time") DateTime start) {
@@ -102,7 +110,8 @@ public abstract class StartAndFinishDateTime extends AbstractChatsDomainEntity {
 		return validateStartAndFinishDateTimes(start, getEndDateTime());
 	}
 
-	//NOTE Must keep end date time optional to be able to change start date time to anything
+	// NOTE Must keep end date time optional to be able to change start date
+	// time to anything
 	@Action()
 	public StartAndFinishDateTime updateEndDateTime(
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "End Time") DateTime end) {
@@ -127,9 +136,8 @@ public abstract class StartAndFinishDateTime extends AbstractChatsDomainEntity {
 		setEndDateTime(getStartDateTime().plusMinutes(minutes));
 		return this;
 	}
-	
 
-	public String validateUpdateEndDateTimeOffStart( Integer minutes) {
+	public String validateUpdateEndDateTimeOffStart(Integer minutes) {
 		return validateStartAndFinishDateTimes(getStartDateTime(), getStartDateTime().plusMinutes(minutes));
 	}
 
@@ -139,13 +147,13 @@ public abstract class StartAndFinishDateTime extends AbstractChatsDomainEntity {
 		else
 			return null;
 	}
-	
-	protected DateTime trimSeconds(DateTime dateTime){
-		if(dateTime == null)
+
+	protected DateTime trimSeconds(DateTime dateTime) {
+		if (dateTime == null)
 			return null;
 		final DateTime hour = dateTime.hourOfDay().roundFloorCopy();
-	    final long millisSinceHour = new Duration(hour, dateTime).getMillis();
-	    final int roundedMinutes = ((int)Math.round(millisSinceHour / 60000.0 ));
-	    return hour.plusMinutes(roundedMinutes);
+		final long millisSinceHour = new Duration(hour, dateTime).getMillis();
+		final int roundedMinutes = ((int) Math.round(millisSinceHour / 60000.0));
+		return hour.plusMinutes(roundedMinutes);
 	}
 }

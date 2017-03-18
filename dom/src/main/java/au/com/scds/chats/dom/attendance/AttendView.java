@@ -33,7 +33,7 @@ public class AttendView {
 	}
 
 	public String getIntervalLength() {
-		return getAttend().getIntervalLength();
+		return getAttend().getIntervalLengthFormatted();
 	}
 
 	public String getParticipantName() {

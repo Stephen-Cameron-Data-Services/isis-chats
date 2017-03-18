@@ -45,9 +45,13 @@
 								<ns2:action id="endCall" position="RIGHT">
 									<ns2:describedAs>Click to set the End Date-time of the call as Date-time for 'now'.</ns2:describedAs>
 								</ns2:action>
-								<ns2:property id="intervalLength">
-									<ns2:named>Call Length</ns2:named>
-									<ns2:describedAs>Calculated Call Length (HH:MM)</ns2:describedAs>
+								<ns2:property id="intervalLengthFormatted">
+									<ns2:named>Period</ns2:named>
+									<ns2:describedAs>Calculated Period Length (HH:MM).</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="intervalLengthInMinutes" hidden="OBJECT_FORMS">
+									<ns2:named>Minutes</ns2:named>
+									<ns2:describedAs>Calculated Period Length (Minutes).</ns2:describedAs>							
 								</ns2:property>
 								<ns2:property id="scheduledDateTime">
 									<ns2:describedAs>The Date-time for which the call is scheduled to occur.</ns2:describedAs>

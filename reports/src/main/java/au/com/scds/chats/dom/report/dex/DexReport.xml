@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<?xml-stylesheet type='text/xsl' href='dex.xsl' ?>
-<DEXFileUpload 
-        xmlns="https://dss.dex.gov.au"	
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="https://dss.dex.gov.au DEXFileUpload.xsd">
-
-</DEXFileUpload>

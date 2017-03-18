@@ -41,7 +41,7 @@ import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport2;
 import au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance;
 
 @ViewModel
@@ -156,7 +156,7 @@ public class ParticipantCallOrAttendanceSummary implements WithApplicationTenanc
 			if (time.getName().equals("CALL")) {
 				setTotalAdjustedMinutes(getTotalAdjustedMinutes() + time.getMinutes());
 			} else {
-				setTotalAdjustedMinutes(getTotalAdjustedMinutes() + DEXBulkUploadReport.adjustTimeForTransport(
+				setTotalAdjustedMinutes(getTotalAdjustedMinutes() + DEXBulkUploadReport2.adjustTimeForTransport(
 						time.getMinutes(), time.getArrivingTransport(), time.getDepartingTransport()));
 			}
 		}

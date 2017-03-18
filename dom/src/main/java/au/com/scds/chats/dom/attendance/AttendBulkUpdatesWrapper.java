@@ -93,7 +93,15 @@ public class AttendBulkUpdatesWrapper {
 	}
 
 	public String getIntervalLength() {
-		return getWrapped().getIntervalLength();
+		return getWrapped().getIntervalLengthFormatted();
+	}
+	
+	public String getArrivingTransportType() {
+		return getWrapped().getArrivingTransportTypeName();
+	}
+	
+	public String getDepartingTransportType() {
+		return getWrapped().getDepartingTransportTypeName();
 	}
 
 	public String getWasAttended() {

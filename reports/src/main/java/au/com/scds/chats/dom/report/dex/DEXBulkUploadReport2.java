@@ -14,17 +14,13 @@ import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.query.QueryDefault;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
 import org.apache.isis.applib.services.repository.RepositoryService;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import au.com.scds.chats.dom.dex.reference.Disability;
 import au.com.scds.chats.dom.general.Address;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
-import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport.ClientIdGenerationMode;
 import au.com.scds.chats.dom.report.dex.model.generated.Case;
 import au.com.scds.chats.dom.report.dex.model.generated.CaseClient;
 import au.com.scds.chats.dom.report.dex.model.generated.CaseClients;
@@ -335,58 +331,64 @@ public class DEXBulkUploadReport2 {
 
 	public static Integer adjustTimeForTransport(final Integer minutesAttended, final String arrivingTransportType,
 			final String departingTransportType) {
-		Integer arrive, depart;
-		switch (arrivingTransportType) {
-		case "Chats Share":
-			arrive = 30;
-			break;
-		case "Community Transport":
-			arrive = 60;
-			break;
-		case "Lifeline Vehicle":
-			arrive = 60;
-			break;
-		case "Outsource":
-			arrive = 60;
-			break;
-		case "Self Travel":
-			arrive = 0;
-			break;
-		case "Taxi":
-			arrive = 30;
-			break;
-		case "Unknown":
-			arrive = 0;
-			break;
-		default:
-			arrive = 0;
-			break;
+		if (minutesAttended == null)
+			return 0;
+		Integer arrive = 0, depart = 0;
+		if (arrivingTransportType != null) {
+			switch (arrivingTransportType) {
+			case "Chats Share":
+				arrive = 30;
+				break;
+			case "Community Transport":
+				arrive = 60;
+				break;
+			case "Lifeline Vehicle":
+				arrive = 60;
+				break;
+			case "Outsource":
+				arrive = 60;
+				break;
+			case "Self Travel":
+				arrive = 0;
+				break;
+			case "Taxi":
+				arrive = 30;
+				break;
+			case "Unknown":
+				arrive = 0;
+				break;
+			default:
+				arrive = 0;
+				break;
+			}
 		}
-		switch (departingTransportType) {
-		case "Chats Share":
-			depart = 30;
-			break;
-		case "Community Transport":
-			depart = 60;
-			break;
-		case "Lifeline Vehicle":
-			depart = 60;
-			break;
-		case "Outsource":
-			depart = 60;
-			break;
-		case "Self Travel":
-			depart = 0;
-			break;
-		case "Taxi":
-			depart = 30;
-			break;
-		case "Unknown":
-			depart = 0;
-			break;
-		default:
-			depart = 0;
-			break;
+		if (departingTransportType != null) {
+			switch (departingTransportType) {
+			case "Chats Share":
+				depart = 30;
+				break;
+			case "Community Transport":
+				depart = 60;
+				break;
+			case "Lifeline Vehicle":
+				depart = 60;
+				break;
+			case "Outsource":
+				depart = 60;
+				break;
+			case "Self Travel":
+				depart = 0;
+				break;
+			case "Taxi":
+				depart = 30;
+				break;
+			case "Unknown":
+				depart = 0;
+				break;
+			default:
+				depart = 0;
+				break;
+			}
 		}
 		return minutesAttended + arrive + depart;
 	}

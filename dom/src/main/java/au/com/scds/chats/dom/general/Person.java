@@ -599,6 +599,14 @@ public class Person extends AbstractChatsDomainEntity implements /* Locatable, *
 		Period p = new Period(getBirthdate(), futureDate);
 		return p.getYears();
 	}
+	
+	@Programmatic()
+	public static Integer getAgeAtDate(LocalDate birthDate, LocalDate futureDate) {
+		if (futureDate == null)
+			futureDate = LocalDate.now();
+		Period p = new Period(birthDate, futureDate);
+		return p.getYears();
+	}
 
 	@NotPersistent
 	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {

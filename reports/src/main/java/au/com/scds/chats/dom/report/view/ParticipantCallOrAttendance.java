@@ -39,75 +39,34 @@ import org.apache.isis.applib.annotation.ViewModel;
 import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
 import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 
-import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport;
+import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport2;
 
 @ViewModel
 @DomainObject(editing = Editing.DISABLED)
-@PersistenceCapable(
-		identityType = IdentityType.NONDURABLE,
-		table = "CombinedCallAndAttendance",
-		extensions = { @Extension(
-				vendorName = "datanucleus",
-				key = "view-definition",
-				value = "CREATE VIEW CombinedCallAndAttendance "
-						+ "( "						
-						+ "  {this.personId}, "						
-						+ "  {this.surname}, "
-						+ "  {this.firstName}, "
-						+ "  {this.birthDate}, "
-						+ "  {this.age}, "
-						+ "  {this.slk}, "						
-						+ "  {this.participantId}, "
-						+ "  {this.regionName}, "			
-						+ "  {this.participantStatus}, "
-						+ "  {this.name}, "	
-						+ "  {this.abbreviatedName}, "						
-						+ "  {this.startDateTime}, "			
-						+ "  {this.minutes}, "
-						+ "  {this.arrivingTransport}, "
-						+ "  {this.departingTransport} "
-						+ ") AS "
-						+ "(SELECT "
-						+ "  personId AS personId, "
-						+ "  surname AS surname, "
-						+ "  firstName AS firstName, "
-						+ "  birthDate AS birthDate, "
-						+ "  ageAtDayOfCall AS age, "
-						+ "  slk AS slk, "
-						+ "  participantId AS participantId, "
-						+ "  regionName AS regionName, "
-						+ "  participantStatus AS participantStatus, "
-						+ "  'CALL' AS name, "
-						+ "  'CALL' AS abbreviatedName, "						
-						+ "  startDateTime AS startDateTime, "
-						+ "  callMinutesTotal AS minutes, "
-						+ "  'N/A' AS arrivingTransport, "
-						+ "  'N/A' AS departingTransport "
-						+ "FROM "
-						+ "  calldurationparticipant) "
-						+ "UNION "
-						+ "(SELECT "
-						+ "  personId AS personId, "
-						+ "  surname AS surname, "
-						+ "  firstName AS firstName, "
-						+ "  birthDate AS birthDate, "
-						+ "  ageAtDayOfActivity AS age, "						
-						+ "  slk AS slk, "
-						+ "  participantId AS participantId, "
-						+ "  regionName AS regionName, "
-						+ "  participantStatus AS participantStatus, "
-						+ "  activityName AS name, "
-						+ "  activityAbbreviatedName AS abbreviatedName, "						
-						+ "  startDateTime AS startDateTime, "
-						+ "  minutesAttended AS minutes, "
-						+ "  arrivingTransportType AS arrivingTransport, "
-						+ "  departingTransportType AS departingTransport "						
-						+ "FROM "
-						+ "  activityparticipantattendance "
-						+ "WHERE "
-						+ "  (attended = TRUE))") })
+@PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "CombinedCallAndAttendance", extensions = {
+		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW CombinedCallAndAttendance "
+				+ "( " + "  {this.personId}, " + "  {this.surname}, " + "  {this.firstName}, " + "  {this.birthDate}, "
+				+ "  {this.age}, " + "  {this.slk}, " + "  {this.participantId}, " + "  {this.regionName}, "
+				+ "  {this.participantStatus}, " + "  {this.name}, " + "  {this.abbreviatedName}, "
+				+ "  {this.startDateTime}, " + "  {this.minutes}, " + "  {this.arrivingTransport}, "
+				+ "  {this.departingTransport} " + ") AS " + "(SELECT " + "  personId AS personId, "
+				+ "  surname AS surname, " + "  firstName AS firstName, " + "  birthDate AS birthDate, "
+				+ "  ageAtDayOfCall AS age, " + "  slk AS slk, " + "  participantId AS participantId, "
+				+ "  regionName AS regionName, " + "  participantStatus AS participantStatus, " + "  'CALL' AS name, "
+				+ "  'CALL' AS abbreviatedName, " + "  startDateTime AS startDateTime, "
+				+ "  callMinutesTotal AS minutes, " + "  'N/A' AS arrivingTransport, "
+				+ "  'N/A' AS departingTransport " + "FROM " + "  calldurationparticipant) " + "UNION " + "(SELECT "
+				+ "  personId AS personId, " + "  surname AS surname, " + "  firstName AS firstName, "
+				+ "  birthDate AS birthDate, " + "  ageAtDayOfActivity AS age, " + "  slk AS slk, "
+				+ "  participantId AS participantId, " + "  regionName AS regionName, "
+				+ "  participantStatus AS participantStatus, " + "  activityName AS name, "
+				+ "  activityAbbreviatedName AS abbreviatedName, " + "  startDateTime AS startDateTime, "
+				+ "  minutesAttended AS minutes, " + "  arrivingTransportType AS arrivingTransport, "
+				+ "  departingTransportType AS departingTransport " + "FROM " + "  activityparticipantattendance "
+				+ "WHERE " + "  (attended = TRUE))") })
 @Queries({
 		@Query(name = "allCallOrAttendanceForParticipantInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
 				+ "WHERE participantId == :participantId && startDateTime >= :startDate && startDateTime < :endDate"),
@@ -118,7 +77,7 @@ import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport;
 		@Query(name = "allParticipantCallOrAttendanceInPeriodAgedOver", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
 				+ "WHERE startDateTime >= :startDate && startDateTime < :endDate && age > :greaterThanAge"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class ParticipantCallOrAttendance implements WithApplicationTenancy{
+public class ParticipantCallOrAttendance implements WithApplicationTenancy {
 
 	private Long personId;
 	private String surname;
@@ -135,8 +94,8 @@ public class ParticipantCallOrAttendance implements WithApplicationTenancy{
 	private Integer minutes;
 	private String arrivingTransport;
 	private String departingTransport;
-	
-	public String title(){
+
+	public String title() {
 		return getFirstName() + " " + getSurname() + " (" + getAge() + ") - " + getName();
 	}
 
@@ -147,7 +106,7 @@ public class ParticipantCallOrAttendance implements WithApplicationTenancy{
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getAbbreviatedName() {
 		return abbreviatedName;
 	}
@@ -163,11 +122,11 @@ public class ParticipantCallOrAttendance implements WithApplicationTenancy{
 	public void setMinutes(Integer minutes) {
 		this.minutes = minutes;
 	}
-	
+
 	@NotPersistent
 	public Integer getAdjustedMinutes() {
-		return DEXBulkUploadReport.adjustTimeForTransport(
-				getMinutes(), getArrivingTransport(), getDepartingTransport());
+		return DEXBulkUploadReport2.adjustTimeForTransport(getMinutes(), getArrivingTransport(),
+				getDepartingTransport());
 	}
 
 	public String getSurname() {
@@ -193,7 +152,7 @@ public class ParticipantCallOrAttendance implements WithApplicationTenancy{
 	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;
 	}
-	
+
 	public Integer getAge() {
 		return age;
 	}
@@ -201,7 +160,7 @@ public class ParticipantCallOrAttendance implements WithApplicationTenancy{
 	public void setAge(Integer age) {
 		this.age = age;
 	}
-	
+
 	public String getSlk() {
 		return slk;
 	}
@@ -224,8 +183,8 @@ public class ParticipantCallOrAttendance implements WithApplicationTenancy{
 
 	public void setStartDateTime(Date startDateTime) {
 		this.startDateTime = startDateTime;
-	}	
-	
+	}
+
 	public String getParticipantStatus() {
 		return participantStatus;
 	}
@@ -245,7 +204,7 @@ public class ParticipantCallOrAttendance implements WithApplicationTenancy{
 	public Long getParticipantId() {
 		return participantId;
 	}
-	
+
 	public void setParticipantId(Long participantId) {
 		this.participantId = participantId;
 	}
@@ -265,7 +224,23 @@ public class ParticipantCallOrAttendance implements WithApplicationTenancy{
 	public void setDepartingTransport(String departingTransport) {
 		this.departingTransport = departingTransport;
 	}
+
+	public String getIntervalLengthFormatted() {
+		Integer minutes = getMinutes();
+		Integer hours = (minutes / 60);
+		if (hours > 0)
+			minutes = minutes - hours * 60;
+		return String.format("%01d:%02d", hours, minutes);
+	}
 	
+	public String getAdjustedIntervalLengthFormatted() {
+		Integer minutes = getAdjustedMinutes();
+		Integer hours = (minutes / 60);
+		if (hours > 0)
+			minutes = minutes - hours * 60;
+		return String.format("%01d:%02d", hours, minutes);
+	}
+
 	@Override
 	@Programmatic
 	public ApplicationTenancy getApplicationTenancy() {

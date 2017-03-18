@@ -8,6 +8,8 @@
 			<ns2:domainObject bookmarking="AS_ROOT" />
 		</col>
 	</row>
+	
+	
 	<row>
 		<col span="12">
 			<tabGroup>
@@ -48,7 +50,8 @@
 						</col>
 						<col span="6">
 							<ns2:fieldSet name="Times" id="time">
-								<ns2:property id="intervalLength" hidden="ALL_TABLES">
+								<ns2:property id="intervalLengthInMinutes" hidden="EVERYWHERE"/>
+								<ns2:property id="intervalLengthFormatted" hidden="ALL_TABLES">
 									<ns2:named>Period Length</ns2:named>
 									<ns2:describedAs>Calculated Period Length (HH:MM).</ns2:describedAs>
 								</ns2:property>

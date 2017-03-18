@@ -46,6 +46,6 @@ public class ScheduledCallView {
 	}
 
 	public String getIntervalLength() {
-		return getScheduledCall().getIntervalLength();
+		return getScheduledCall().getIntervalLengthFormatted();
 	}
 }
