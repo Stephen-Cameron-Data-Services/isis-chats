@@ -4,6 +4,10 @@
 
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/activity-menu.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/activity-menu.png"]
 
+image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/recurring-activity.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/recurring-activity.png"]
+
+image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/recurring-activity-update-general.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/recurring-activity-update-general.png"]
+
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/participants-menu.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/participants-menu.png"]
 
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/volunteers-menu.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/volunteers-menu.png"]
