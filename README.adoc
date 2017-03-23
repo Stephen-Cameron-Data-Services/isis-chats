@@ -1,1 +1,6 @@
+:imagesdir: ./images
+
 = CHATS PROGRAM ADMIN APPLICATION
+
+image::activity-menu.png
+
