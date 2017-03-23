@@ -16,4 +16,6 @@ image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/im
 
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/calls-menu.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/calls-menu.png"]
 
+image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/reports-menu.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/reports-menu.png"]
+
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/notes-menu.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/notes-menu.png"]
