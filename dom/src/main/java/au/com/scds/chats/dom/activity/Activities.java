@@ -67,7 +67,7 @@ public class Activities {
 	@MemberOrder(sequence = "1")
 	public RecurringActivity createRecurringActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
-			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25, regexPattern = "[\\p{Alnum}]") @ParameterLayout(named = "DEX 'Case' Name") final String abbreviatedName,
+			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25, regexPattern = "^[\\p{IsAlphabetic}\\p{IsDigit}]+$",regexPatternReplacement="Must be Alpha-Numeric") @ParameterLayout(named = "DEX 'Case' Name") final String abbreviatedName,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start date time") final DateTime startDateTime) {
 		Activity a = findActivity(name, startDateTime);
 		if (a != null) {
@@ -129,7 +129,7 @@ public class Activities {
 	@MemberOrder(sequence = "2")
 	public ActivityEvent createOneOffActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
-			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25, regexPattern = "[\\p{Alnum}]") @ParameterLayout(named = "DEX 'Case' Id") final String abbreviatedName,
+			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25, regexPattern = "^[\\p{IsAlphabetic}\\p{IsDigit}]+$",regexPatternReplacement="Must be Alpha-Numeric") @ParameterLayout(named = "DEX 'Case' Id") final String abbreviatedName,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start date time") final DateTime startDateTime) {
 		Activity a = findActivity(name, startDateTime);
 		if (a != null) {

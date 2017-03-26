@@ -259,7 +259,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 	@Action
 	public Activity updateGeneral(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Name") String name,
-			@Parameter(optionality = Optionality.MANDATORY, maxLength = 25, regexPattern = "[\\p{Alnum}]") @ParameterLayout(named = "DEX 'Case' Id", describedAs = "Gets used to build a DSS DEX Case name (Note: 5 digits get appended for region-month-year)") String abbreviatedName,
+			@Parameter(optionality = Optionality.MANDATORY, maxLength = 25, regexPattern = "^[\\p{IsAlphabetic}\\p{IsDigit}]+$") @ParameterLayout(named = "DEX 'Case' Id", describedAs = "Gets used to build a DSS DEX Case name (Note: 5 digits get appended for region-month-year)") String abbreviatedName,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Description") String description,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Cost for Participant") String costForParticipant,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Cut-off Limit") Integer cutoffLimit) {
