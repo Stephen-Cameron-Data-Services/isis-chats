@@ -28,7 +28,6 @@ import org.joda.time.DateTime;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.participant.Participants;
-import au.com.scds.chats.dom.report.dex.DEXBulkUploadReportFromSeparateDexData;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport2;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport2.ClientIdGenerationMode2;
 import au.com.scds.chats.dom.report.dex.DEXBulkUploadReport2.DEXFileUploadWrapper2;

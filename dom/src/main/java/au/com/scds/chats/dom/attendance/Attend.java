@@ -217,20 +217,20 @@ public class Attend extends StartAndFinishDateTime implements Comparable<Attend>
 	}
 
 	@Action()
-	public void wasAttended() {
+	public Attend wasAttended() {
 		if (!getAttended())
 			setAttended(true);
-		return;
+		return this;
 	}
 
 	@Action()
-	public void wasNotAttended() {
+	public Attend wasNotAttended() {
 		if (getAttended()) {
 			setAttended(false);
 			setStartDateTime(null);
 			setEndDateTime(null);
 		}
-		return;
+		return this;
 	}
 	
 	@Programmatic

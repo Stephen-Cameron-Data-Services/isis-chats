@@ -332,7 +332,7 @@ public class DEXBulkUploadReport2 {
 	public static Integer adjustTimeForTransport(final Integer minutesAttended, final String arrivingTransportType,
 			final String departingTransportType) {
 		if (minutesAttended == null)
-			return 0;
+			return null;
 		Integer arrive = 0, depart = 0;
 		if (arrivingTransportType != null) {
 			switch (arrivingTransportType) {

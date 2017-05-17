@@ -208,7 +208,7 @@ public class Activities {
 	}
 
 	@Programmatic
-	public ParentedActivityEvent createParentedActivity(RecurringActivity parent, final DateTime startDateTime) {
+	public ParentedActivityEvent createParentedActivity(RecurringActivity parent, final DateTime startDateTime, final DateTime endDateTime) {
 		if (parent == null || startDateTime == null) {
 			return null;
 		}
@@ -225,6 +225,9 @@ public class Activities {
 		}
 		obj.setParentActivity(parent);
 		obj.setStartDateTime(startDateTime);
+		if(endDateTime != null){
+			obj.setEndDateTime(endDateTime);
+		}
 		container.persistIfNotAlready(obj);
 		container.flush();
 		return obj;

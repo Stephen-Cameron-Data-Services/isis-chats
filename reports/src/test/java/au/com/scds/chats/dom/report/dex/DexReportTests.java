@@ -94,14 +94,6 @@ public class DexReportTests extends IntegrationTestAbstract {
 		file1.write(jaxbService.toXml(report1.build()).getBytes());
 	}
 	
-	@Test
-	public void DEXReportSinglePassFromSeparateDexData() throws Exception {
-		
-		String DIR = new String("C:/temp2/DEX/reports/");
-		FileOutputStream file1 = new FileOutputStream(new File(DIR + "DEXBulkUploadSOUTH-JUL2016.xml"));
-		DEXBulkUploadReportFromSeparateDexData report1 = new DEXBulkUploadReportFromSeparateDexData( repository, isisJdoSupport,  participants, 2016, 7, "NORTH-WEST", ClientIdGenerationMode2.NAME_KEY);
-		file1.write(jaxbService.toXml(report1.build()).getBytes());
-	}
 	
 	@Test
 	public void FixSLK() throws Exception {

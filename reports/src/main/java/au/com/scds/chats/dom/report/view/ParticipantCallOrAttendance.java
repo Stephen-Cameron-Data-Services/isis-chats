@@ -226,19 +226,27 @@ public class ParticipantCallOrAttendance implements WithApplicationTenancy {
 	}
 
 	public String getIntervalLengthFormatted() {
-		Integer minutes = getMinutes();
-		Integer hours = (minutes / 60);
-		if (hours > 0)
-			minutes = minutes - hours * 60;
-		return String.format("%01d:%02d", hours, minutes);
+		if (getMinutes() != null) {
+			Integer minutes = getMinutes();
+			Integer hours = (minutes / 60);
+			if (hours > 0)
+				minutes = minutes - hours * 60;
+			return String.format("%01d:%02d", hours, minutes);
+		} else {
+			return "";
+		}
 	}
-	
+
 	public String getAdjustedIntervalLengthFormatted() {
-		Integer minutes = getAdjustedMinutes();
-		Integer hours = (minutes / 60);
-		if (hours > 0)
-			minutes = minutes - hours * 60;
-		return String.format("%01d:%02d", hours, minutes);
+		if (getAdjustedMinutes() != null) {
+			Integer minutes = getAdjustedMinutes();
+			Integer hours = (minutes / 60);
+			if (hours > 0)
+				minutes = minutes - hours * 60;
+			return String.format("%01d:%02d", hours, minutes);
+		} else {
+			return "";
+		}
 	}
 
 	@Override

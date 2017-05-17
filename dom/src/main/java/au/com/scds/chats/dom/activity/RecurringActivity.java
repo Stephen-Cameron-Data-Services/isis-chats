@@ -56,7 +56,7 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 @Queries({
 		@Query(name = "findRecurringActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.RecurringActivity "),
 		@Query(name = "findRecurringActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.RecurringActivity WHERE name.indexOf(:name) >= 0 ") })
-//@Unique(name = "RecurringActivity_UNQ", members = { "name", "region" })
+// @Unique(name = "RecurringActivity_UNQ", members = { "name", "region" })
 public class RecurringActivity extends Activity {
 
 	private Periodicity periodicity = Periodicity.WEEKLY;
@@ -68,8 +68,8 @@ public class RecurringActivity extends Activity {
 	}
 
 	// used for testing only
-	public RecurringActivity(DomainObjectContainer container, Activities activitiesRepo, Participants participantsRepo, Volunteers volunteersRepo,
-			ActivityTypes activityTypes, Locations locations) {
+	public RecurringActivity(DomainObjectContainer container, Activities activitiesRepo, Participants participantsRepo,
+			Volunteers volunteersRepo, ActivityTypes activityTypes, Locations locations) {
 		super(container, activitiesRepo, participantsRepo, volunteersRepo, activityTypes, locations);
 	}
 
@@ -89,8 +89,8 @@ public class RecurringActivity extends Activity {
 	}
 
 	/**
-	 * ParentedActivityEvents are displayed as two separate lists: Future and Completed,
-	 * see below.
+	 * ParentedActivityEvents are displayed as two separate lists: Future and
+	 * Completed, see below.
 	 */
 	@CollectionLayout(hidden = Where.EVERYWHERE)
 	SortedSet<ParentedActivityEvent> getChildActivities() {
@@ -130,9 +130,13 @@ public class RecurringActivity extends Activity {
 
 	@Action
 	public RecurringActivity addNextScheduledActivity(DateTime startDateTime) {
-		if(startDateTime == null)
+		if (startDateTime == null)
 			startDateTime = default0AddNextScheduledActivity();
-		ParentedActivityEvent activity = activitiesRepo.createParentedActivity(this, startDateTime);
+		DateTime endDateTime = null;
+		if (this.getEndDateTime() != null) {
+			endDateTime = startDateTime.plusMinutes(this.getIntervalLengthInMinutes().intValue());
+		}
+		ParentedActivityEvent activity = activitiesRepo.createParentedActivity(this, startDateTime, endDateTime);
 		return this;
 	}
 
@@ -162,18 +166,18 @@ public class RecurringActivity extends Activity {
 		}
 		return null;
 	}
-	
+
 	/*
-	 * To remove a participation we need to see if its been ignored
-	 * by any of the children and remove that link 
+	 * To remove a participation we need to see if its been ignored by any of
+	 * the children and remove that link
 	 */
 	@Programmatic
 	@Override
 	public void removeParticipation(Participation participation) {
-		if(participation == null)
+		if (participation == null)
 			return;
-		for(ParentedActivityEvent activity : getChildActivities()){
-			if(activity.getIgnored().contains(participation)){
+		for (ParentedActivityEvent activity : getChildActivities()) {
+			if (activity.getIgnored().contains(participation)) {
 				activity.getIgnored().remove(participation);
 			}
 		}
