@@ -39,12 +39,10 @@ import org.apache.isis.applib.annotation.Where;
 import au.com.scds.chats.dom.activity.Activity;
 import au.com.scds.chats.dom.call.CalendarDayCallSchedule;
 
-@DomainObject(objectType = "VTIMEFORCALLS")
-@DomainObjectLayout(bookmarking = BookmarkPolicy.NEVER)
-@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = {  "Admin" })
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "CALLS")
+@DomainObject()
 public class VolunteeredTimeForCalls extends VolunteeredTime {
 	
 	private CalendarDayCallSchedule callSchedule;

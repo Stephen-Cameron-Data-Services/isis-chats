@@ -30,6 +30,7 @@ import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.MinLength;
 import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
@@ -45,7 +46,6 @@ import au.com.scds.chats.dom.attendance.Attend;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
-import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.Volunteers;
@@ -70,11 +70,10 @@ public class Calls {
 	@Action()
 	@MemberOrder(sequence = "1.0")
 	public Call create(@Parameter(optionality = Optionality.MANDATORY) final CallType type,
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") final ParticipantIdentity identity,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") final Participant participant,
 			@Parameter(optionality = Optionality.OPTIONAL) final Volunteer volunteer,
 			@Parameter(optionality = Optionality.OPTIONAL) final DateTime dateTime) throws Exception {
 		Call call = null;
-		Participant participant = participantsRepo.getParticipant(identity);
 		switch (type) {
 		case Care:
 			call = container.newTransientInstance(CareCall.class);
@@ -112,15 +111,15 @@ public class Calls {
 		return CallType.Scheduled;
 	}
 
-	public List<ParticipantIdentity> choices1Create() {
-		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
+	public List<Participant> autoComplete1Create(@MinLength(3) String search) {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All, search);
 	}
 
 	public List<Volunteer> choices2Create() {
 		return volunteersRepo.listActiveVolunteers();
 	}
 
-	public String validateCreate(final CallType type, final ParticipantIdentity identity, final Volunteer volunteer,
+	public String validateCreate(final CallType type, final Participant identity, final Volunteer volunteer,
 			final DateTime dateTime) {
 		if (type == CallType.Scheduled && (volunteer == null || dateTime == null)) {
 			return "For a Scheduled Call, both Volunteer and DateTime are required too.";
@@ -132,81 +131,76 @@ public class Calls {
 	@Action(semantics = SemanticsOf.SAFE)
 	@MemberOrder(sequence = "10.1")
 	public List<CareCall> findCareCalls(
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Active Participant") final ParticipantIdentity identity) {
-		Participant activeParticipant = participantsRepo.getParticipant(identity);
-		if (activeParticipant != null) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Active Participant") final Participant participant) {
+		if (participant != null) {
 			return container.allMatches(
-					new QueryDefault<>(CareCall.class, "findCareCallsByParticipant", "participant", activeParticipant));
+					new QueryDefault<>(CareCall.class, "findCareCallsByParticipant", "participant", participant));
 		} else {
 			return container.allMatches(new QueryDefault<>(CareCall.class, "findCareCalls"));
 		}
 	}
 
-	public List<ParticipantIdentity> choices0FindCareCalls() {
-		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
+	public List<Participant> autoComplete0FindCareCalls(@MinLength(3) String search) {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All, search);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@MemberOrder(sequence = "10.2")
 	public List<ReconnectCall> findReconnectCalls(
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Participant") final ParticipantIdentity identity) {
-		Participant activeParticipant = participantsRepo.getParticipant(identity);
-		if (activeParticipant != null) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Participant") final Participant participant) {
+		if (participant != null) {
 			return container.allMatches(new QueryDefault<>(ReconnectCall.class, "findReconnectCallsByParticipant",
-					"participant", activeParticipant));
+					"participant", participant));
 		} else {
 			return container.allMatches(new QueryDefault<>(ReconnectCall.class, "findReconnectCalls"));
 		}
 	}
 
-	public List<ParticipantIdentity> choices0FindReconnectCalls() {
-		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
+	public List<Participant> autoComplete0FindReconnectCalls(@MinLength(3) String search) {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All, search);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@MemberOrder(sequence = "10.3")
 	public List<SurveyCall> findSurveyCalls(
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Active Participant") final ParticipantIdentity identity) {
-		Participant activeParticipant = participantsRepo.getParticipant(identity);
-		if (activeParticipant != null) {
-			return container.allMatches(new QueryDefault<>(SurveyCall.class, "findSurveyCallsByParticipant",
-					"participant", activeParticipant));
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Active Participant") final Participant participant) {
+		if (participant != null) {
+			return container.allMatches(
+					new QueryDefault<>(SurveyCall.class, "findSurveyCallsByParticipant", "participant", participant));
 		} else {
 			return container.allMatches(new QueryDefault<>(SurveyCall.class, "findSurveyCalls"));
 		}
 	}
 
-	public List<ParticipantIdentity> choices0FindSurveyCalls() {
-		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
+	public List<Participant> autoComplete0FindSurveyCalls(@MinLength(3) String search) {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All, search);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@MemberOrder(sequence = "10.4")
 	public List<ScheduledCall> findScheduledCalls(
-			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Participant") final ParticipantIdentity identity,
-			@Parameter(optionality = Optionality.OPTIONAL) final Volunteer activeVolunteer) {
-		Participant activeParticipant = participantsRepo.getParticipant(identity);
-		if (activeVolunteer != null && activeParticipant != null) {
-			return container
-					.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipantAndVolunteer",
-							"participant", activeParticipant, "volunteer", activeVolunteer));
-		} else if (activeVolunteer != null) {
-			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByVolunteer",
-					"volunteer", activeVolunteer));
-		} else if (activeParticipant != null) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Participant") final Participant participant,
+			@Parameter(optionality = Optionality.OPTIONAL) final Volunteer volunteer) {
+		if (volunteer != null && participant != null) {
+			return container.allMatches(new QueryDefault<>(ScheduledCall.class,
+					"findScheduledCallsByParticipantAndVolunteer", "participant", participant, "volunteer", volunteer));
+		} else if (volunteer != null) {
+			return container.allMatches(
+					new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByVolunteer", "volunteer", volunteer));
+		} else if (participant != null) {
 			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipant",
-					"participant", activeParticipant));
+					"participant", participant));
 		} else {
 			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCalls"));
 		}
 	}
-	
-	public List<ParticipantIdentity> choices0FindScheduledCalls() {
-		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
+
+	public List<Participant> autoComplete0FindScheduledCalls(@MinLength(3) String search) {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All, search);
 	}
-	
-	public List<Volunteer> choices1FindScheduledCalls() {
-		return volunteersRepo.listActiveVolunteers();
+
+	public List<Volunteer> autoComplete1FindScheduledCalls(@MinLength(3) String search) {
+		return volunteersRepo.listActiveVolunteers(search);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
@@ -226,8 +220,6 @@ public class Calls {
 				new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipant", "participant", participant));
 	}
 
-
-
 	@Action(semantics = SemanticsOf.SAFE)
 	@MemberOrder(sequence = "11")
 	public List<CalendarDayCallSchedule> listDailyCallSchedulesForVolunteer(
@@ -243,19 +235,26 @@ public class Calls {
 	@Action
 	public CalendarDayCallSchedule createCalendarDayCallSchedule(
 			final @Parameter(optionality = Optionality.MANDATORY) LocalDate date, final Volunteer volunteer,
-			final @ParameterLayout(named="Include All Allocated Participants") Boolean includeAllAllocatedCallParticipants) {
+			final @ParameterLayout(named = "Include All Allocated Participants") Boolean includeAllAllocatedCallParticipants) {
 		CalendarDayCallSchedule schedule = createCalendarDayCallSchedule(date, volunteer);
 		if (includeAllAllocatedCallParticipants) {
 			ScheduledCall call = null;
 			for (RegularScheduledCallAllocation allocation : volunteer.getCallAllocations()) {
-				call = schedule.addNewCall(allocation.getParticipant(), allocation.approximateCallDateTime(date));
-				call.setAllocatedVolunteer(volunteer);
+				try {
+					call = createScheduledCall(volunteer, allocation.getParticipant(),
+							allocation.approximateCallDateTime(date));
+					// call = schedule.addNewCall(allocation.getParticipant(),
+					// allocation.approximateCallDateTime(date));
+					call.setAllocatedVolunteer(volunteer);
+				} catch (Exception e) {
+					return null;
+				}
 			}
 		}
 		return schedule;
 	}
-	
-	public List<Volunteer> choices1CreateCalendarDayCallSchedule(){
+
+	public List<Volunteer> choices1CreateCalendarDayCallSchedule() {
 		return volunteersRepo.listActiveVolunteers();
 	}
 
@@ -323,14 +322,14 @@ public class Calls {
 		}
 		call.setAllocatedVolunteer(volunteer);
 		call.setScheduledDateTime(dateTime);
-		//call.setStatus(ScheduledCallStatus.Scheduled);
+		// call.setStatus(ScheduledCallStatus.Scheduled);
 		if (call.getCallSchedule() != null) {
 			call.getCallSchedule().releaseCall(call);
 		}
 		sched.addCall(call);
 		return call;
 	}
-	
+
 	@Programmatic
 	public CalendarDayCallSchedule findVolunteerScheduleOnDate(Volunteer volunteer, LocalDate calendarDate) {
 		List<CalendarDayCallSchedule> schedules = listDailyCallSchedulesForVolunteer(volunteer);
@@ -344,12 +343,12 @@ public class Calls {
 
 	@Programmatic
 	ScheduledCall createScheduledCall(CalendarDayCallSchedule callSchedule, Participant participant, LocalTime time) {
-		if(callSchedule == null || participant == null || time == null)
+		if (callSchedule == null || participant == null || time == null)
 			return null;
 		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
 		call.setParticipant(participant);
 		call.setAllocatedVolunteer(callSchedule.getAllocatedVolunteer());
-		//call.setStatus(ScheduledCallStatus.Scheduled);
+		// call.setStatus(ScheduledCallStatus.Scheduled);
 		call.setScheduledDateTime(callSchedule.getCalendarDate().toDateTime(time));
 		callSchedule.addCall(call);
 		container.persistIfNotAlready(call);
@@ -368,7 +367,7 @@ public class Calls {
 		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
 		call.setParticipant(participant);
 		call.setAllocatedVolunteer(volunteer);
-		//call.setStatus(ScheduledCallStatus.Scheduled);
+		// call.setStatus(ScheduledCallStatus.Scheduled);
 		call.setRegion(participant.getRegion());
 		container.persistIfNotAlready(call);
 		container.flush();
@@ -404,9 +403,5 @@ public class Calls {
 
 	@Inject
 	public Participants participantsRepo;
-
-
-
-
 
 }

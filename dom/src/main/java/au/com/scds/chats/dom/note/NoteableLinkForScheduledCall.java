@@ -37,9 +37,9 @@ import com.google.common.eventbus.Subscribe;
 
 import au.com.scds.chats.dom.call.ScheduledCall;
 
-@DomainObject(objectType = "NoteableLinkForScheduledCall")
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="noteablelinkforscheduledcall")
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
+@DomainObject()
 public class NoteableLinkForScheduledCall extends NotableLink {
 
 	@DomainService(nature = NatureOfService.DOMAIN)

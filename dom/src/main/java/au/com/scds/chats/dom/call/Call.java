@@ -31,9 +31,8 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 /**
  * A Call is a logged call to a Participant.
  * 
- * @author stevec
  */
-@PersistenceCapable(table = "telephonecall", identityType = IdentityType.DATASTORE)
+@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table = "telephonecall")
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "classifier", value = "_CALL")
 @Queries({

@@ -16,7 +16,7 @@ import org.apache.isis.applib.annotation.DomainObject;
 	@Query(name = "findCareCalls", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.CareCall "),
 	@Query(name = "findCareCallsByParticipant", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.CareCall WHERE participant == :participant "), 
 	@Query(name = "findCareCallsInPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.CareCall WHERE startDateTime >= :startDateTime && startDateTime <= :endDateTime && region == :region ORDER BY startDateTime ASC"), })
-@DomainObject(objectType = "CARE_CALL")
+@DomainObject()
 public class CareCall extends Call {
 	
 	public String title(){

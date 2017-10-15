@@ -38,6 +38,7 @@ import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.MinLength;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
@@ -63,20 +64,24 @@ import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
-import au.com.scds.chats.dom.participant.ParticipantIdentity;
+import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 
-@DomainObject(objectType = "VOLUNTEER")
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
+
+@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="volunteer")
+@Inheritance(strategy=InheritanceStrategy.NEW_TABLE)
 @Queries({
 		@Query(name = "listVolunteersByStatus", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer WHERE status == :status"),
-		@Query(name = "findVolunteersBySurname", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer WHERE person.surname.indexOf(:surname) >= 0"),
+		@Query(name = "findVolunteersByToUpperCaseNameStart", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer WHERE person.surname.toUpperCase().startsWith(:start)"),
+		@Query(name = "findVolunteersByStatusAndToUpperCaseNameStart", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer WHERE status == :status && (person.surname.toUpperCase().startsWith(:start) || person.firstname.toUpperCase().startsWith(:start)) "),
 		@Query(name = "findVolunteerByApplicationUsername", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer WHERE username == :username"), })
 
 @Unique(name = "Volunteer_UNQ", members = { "person", "region" })
+@DomainObject()
 public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* Locatable */ Comparable<Volunteer> {
 
 	private Person person;
@@ -123,9 +128,8 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* 
 	}
 
 	public Volunteer addAllocatedCallParticipant(
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") ParticipantIdentity identity,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") Participant participant,
 			@Parameter(optionality = Optionality.OPTIONAL, regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternReplacement = "HH:MM AM|PM") @ParameterLayout(named = "Approx. Call Time") String time) {
-		Participant participant = participantsRepo.getParticipant(identity);
 		RegularScheduledCallAllocation allocation = schedulesRepo.createRegularScheduledCallAllocation(this,
 				participant);
 		if (time != null)
@@ -133,21 +137,21 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* 
 		return this;
 	}
 
-	public List<ParticipantIdentity> choices0AddAllocatedCallParticipant() {
-		List<ParticipantIdentity> list1 = participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
-		List<ParticipantIdentity> list2 = new ArrayList<>();
+	public List<Participant> autoComplete0AddAllocatedCallParticipant(@MinLength(3) String search) {
+		List<Participant> list1 = participantsRepo.listActiveParticipantIdentities(AgeGroup.All, search);
+		List<Participant> list2 = new ArrayList<>();
 		boolean allocated = false;
-		for (ParticipantIdentity identity : list1) {
+		for (Participant p : list1) {
 			allocated = false;
 			if (getCallAllocations().size() > 0) {
 				for (RegularScheduledCallAllocation allocation : getCallAllocations()) {
-					if (participantsRepo.isIdentityOfParticipant(identity, allocation.getParticipant())) {
+					if (allocation.getParticipant().equals(p)) {
 						allocated = true;
 					}
 				}
 			}
 			if (!allocated)
-				list2.add(identity);
+				list2.add(p);
 		}
 		return list2;
 	}
@@ -194,26 +198,20 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* 
 		this.callSchedules = callSchedules;
 	}
 
-	@Programmatic
-	public Volunteer addScheduledCall(final Participant participant, final DateTime dateTime) throws Exception {
-		ScheduledCall call = schedulesRepo.createScheduledCall(this, participant, dateTime);
-		return this;
-	}
-
 	@Action()
 	public Volunteer addScheduledCall(
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") final ParticipantIdentity identity,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") final Participant participant,
 			@Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) {
 		try {
-			addScheduledCall(participantsRepo.getParticipant(identity), dateTime);
+			schedulesRepo.createScheduledCall(this, participant, dateTime);
 		} catch (Exception e) {
 			container.warnUser(e.getMessage());
 		}
 		return this;
 	}
 
-	public List<ParticipantIdentity> choices0AddScheduledCall() {
-		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
+	public List<Participant> autoComplete0AddScheduledCall(@MinLength(3) String search) {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All, search);
 	}
 
 	@Property(editing = Editing.DISABLED)

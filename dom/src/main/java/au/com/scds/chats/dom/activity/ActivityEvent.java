@@ -70,12 +70,10 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
  * Attended records.
  * 
  */
-@DomainObject(objectType = "ACTIVITY")
+@DomainObject()
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "ACTIVITY")
-// @Unique(name = "ActivityEvent_UNQ", members = { "name", "startdatetime",
-// "region" })
 @Queries({
 		@Query(name = "findActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent "),
 		@Query(name = "findActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent WHERE name.indexOf(:name) >= 0 "),

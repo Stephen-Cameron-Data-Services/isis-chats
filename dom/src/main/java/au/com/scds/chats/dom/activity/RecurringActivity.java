@@ -49,14 +49,13 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
  * occurring, that is a series of calendar events make up a recurring activity.
  * 
  */
-@DomainObject(objectType = "RECURRING_ACTIVITY")
+@DomainObject()
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "RECURRING_ACTIVITY")
 @Queries({
 		@Query(name = "findRecurringActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.RecurringActivity "),
 		@Query(name = "findRecurringActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.RecurringActivity WHERE name.indexOf(:name) >= 0 ") })
-// @Unique(name = "RecurringActivity_UNQ", members = { "name", "region" })
 public class RecurringActivity extends Activity {
 
 	private Periodicity periodicity = Periodicity.WEEKLY;

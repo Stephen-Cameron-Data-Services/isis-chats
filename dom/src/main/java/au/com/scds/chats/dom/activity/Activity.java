@@ -57,7 +57,6 @@ import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.general.names.TransportTypes;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
-import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.participant.Participation;
 import au.com.scds.chats.dom.participant.WaitListedParticipant;
@@ -65,29 +64,21 @@ import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.VolunteeredTimeForActivity;
 import au.com.scds.chats.dom.volunteer.Volunteers;
 
-@PersistenceCapable(table = "activity", identityType = IdentityType.DATASTORE)
+@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table = "activity" )
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-// @Unique(name = "Activity_UNQ", members = { "name", "startDateTime", "region"
-// })
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "classifier", value = "_ACTIVITY")
 @Queries({
 		@Query(name = "findActivityByUpperCaseName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.Activity WHERE name.trim().toUpperCase() == :name") })
 public abstract class Activity extends StartAndFinishDateTime implements /* Locatable, */ Comparable<Activity> {
 
-	private Long oldId; // id copied from old system
+	private Long oldId;
 	protected String name;
 	protected String abbreviatedName;
-	// protected Provider provider;
 	protected ActivityType activityType;
-	// protected DateTime approximateEndDateTime;
-	// protected Long copiedFromActivityId;
 	protected String costForParticipant;
 	protected Integer cutoffLimit;
 	protected String description;
-	// protected DateTime startDateTime;
 	protected Address address;
-	// protected Boolean isRestricted;
-	// protected Long scheduleId;
 	@Persistent(mappedBy = "activity")
 	protected SortedSet<Participation> participations = new TreeSet<>();
 	@Persistent(mappedBy = "activity")
@@ -580,12 +571,9 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 	@Action()
 	@ActionLayout(named = "Add")
 	// @MemberOrder(name = "participations", sequence = "1")
-	public Activity addParticipant(@ParameterLayout(named = "Participant") final ParticipantIdentity identity,
+	public Activity addParticipant(@ParameterLayout(named = "Participant") final Participant participant,
 			@ParameterLayout(named = "Arriving Transport") @Parameter(optionality = Optionality.OPTIONAL) String arrivingTransportTypeName,
 			@ParameterLayout(named = "Departing Transport") @Parameter(optionality = Optionality.OPTIONAL) String departingTransportTypeName) {
-		if (identity == null)
-			return this;
-		Participant participant = participantsRepo.getParticipant(identity);
 		if (participant != null) {
 			if (!hasParticipant(participant)) {
 				Participation participation = participantsRepo.createParticipation(this, participant);
@@ -601,8 +589,8 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 		return this;
 	}
 
-	public List<ParticipantIdentity> choices0AddParticipant() {
-		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
+	public List<Participant> autoComplete0AddParticipant(@MinLength(3) String search) {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All, search);
 	}
 
 	public List<String> choices1AddParticipant() {

@@ -16,7 +16,7 @@ import org.apache.isis.applib.annotation.DomainObject;
 	@Query(name = "findReconnectCalls", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.ReconnectCall "),
 	@Query(name = "findReconnectCallsByParticipant", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.ReconnectCall WHERE participant == :participant "), 
 	@Query(name = "findReconnectCallsInPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.ReconnectCall WHERE startDateTime >= :startDateTime && startDateTime <= :endDateTime && region == :region ORDER BY startDateTime ASC"), })
-@DomainObject(objectType = "RECONNECT_CALL")
+@DomainObject()
 public class ReconnectCall extends Call {
 
 	public String title(){

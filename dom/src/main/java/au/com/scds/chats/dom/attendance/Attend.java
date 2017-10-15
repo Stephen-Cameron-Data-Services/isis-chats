@@ -59,7 +59,7 @@ import au.com.scds.chats.dom.general.names.TransportTypes;
 import au.com.scds.chats.dom.participant.Participant;
 
 @DomainObject()
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="attend")
 @Queries({
 		@Query(name = "findAttendsByActivityName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.Attend WHERE activity.name.indexOf(:name) >= 0 ORDER BY activity.startDateTime DESC"),
 		@Query(name = "findAttendsInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.Attend WHERE activity.startDateTime >= :startDateTime && activity.startDateTime <= :endDateTime ORDER BY activity.startDateTime DESC"),

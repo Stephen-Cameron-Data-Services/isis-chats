@@ -31,6 +31,7 @@ import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.MinLength;
 import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
@@ -40,6 +41,7 @@ import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
 import org.apache.isis.applib.security.UserMemento;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
+import org.apache.isis.applib.services.repository.RepositoryService;
 import org.apache.isis.applib.services.user.UserService;
 import org.isisaddons.module.security.dom.user.ApplicationUser;
 import org.isisaddons.module.security.dom.user.ApplicationUserRepository;
@@ -57,7 +59,6 @@ import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
-import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 
@@ -76,6 +77,7 @@ public class Volunteers {
 	public List<Volunteer> listAll() {
 		return container.allInstances(Volunteer.class);
 	}
+	
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
@@ -104,10 +106,10 @@ public class Volunteers {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2.2")
-	public List<Volunteer> findBySurname(@ParameterLayout(named = "Surname") final String surname,
+	public List<Volunteer> findBySurname(@ParameterLayout(named = "Surname") final String search,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Status") final Status status) {
 		List<Volunteer> list1 = container
-				.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersBySurname", "surname", surname));
+				.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByToUpperCaseNameStart", "start", search.toUpperCase()));
 		List<Volunteer> list2 = new ArrayList<>(list1);
 		if (status != null) {
 			for (Volunteer p : list1) {
@@ -126,14 +128,14 @@ public class Volunteers {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2.1")
-	public Volunteer findActiveVolunteer(@ParameterLayout(named="Volunteer") VolunteerIdentity identity) {
-		return getVolunteer(identity);
+	public Volunteer findActiveVolunteer(@ParameterLayout(named = "Volunteer") Volunteer volunteer) {
+		return getVolunteer(volunteer);
 	}
 
-	public List<VolunteerIdentity> choices0FindActiveVolunteer() {
-		return listActiveVolunteerIdentities();
+	public List<Volunteer> autoComplete0FindActiveVolunteer(@MinLength(3) String search) {
+		return listActiveVolunteers(search);
 	}
-	
+
 	@Action()
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
@@ -155,33 +157,52 @@ public class Volunteers {
 	}
 
 	@Programmatic
-	public Volunteer getVolunteer(VolunteerIdentity identity) {
+	public Volunteer getVolunteer(Volunteer identity) {
 		if (identity == null)
 			return null;
-		return isisJdoSupport.getJdoPersistenceManager().getObjectById(Volunteer.class, identity.getJdoObjectId());
-	}
-	
-	@Programmatic
-	public List<VolunteerIdentity> listVolunteerIdentities() {
-		return container.allMatches(new QueryDefault<>(VolunteerIdentity.class, "listVolunteers"));
+		return null;// isisJdoSupport.getJdoPersistenceManager().getObjectById(Volunteer.class,
+					// identity.getJdoObjectId());
 	}
 
 	@Programmatic
-	public List<VolunteerIdentity> listActiveVolunteerIdentities() {
-		return container.allMatches(new QueryDefault<>(VolunteerIdentity.class, "listVolunteersByStatus", "status",
-				Status.ACTIVE.toString()));
+	public List<Volunteer> listVolunteers(String search) {
+		if (search != null)
+			return container.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByToUpperCaseNameStart", "start", search.toUpperCase()));
+		else
+			return container.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteers"));
 	}
-	
-	@Programmatic	
-	public List<VolunteerIdentity> listAllInactiveVolunteerIdentities() {
-		return container.allMatches(new QueryDefault<>(VolunteerIdentity.class, "listVolunteersByStatus", "status",
-				Status.INACTIVE.toString()));
-	}
-	
+
 	@Programmatic
-	public List<VolunteerIdentity> listAllExitedVolunteerIdentities() {
-		return container.allMatches(new QueryDefault<>(VolunteerIdentity.class, "listVolunteersByStatus", "status",
-				Status.EXITED.toString()));
+	public List<Volunteer> listActiveVolunteers(String search) {
+		if (search != null)
+			return container
+					.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByStatusAndToUpperCaseNameStart",
+							"status", Status.ACTIVE.toString(), "start", search.toUpperCase()));
+		else
+			return container.allMatches(
+					new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.ACTIVE.toString()));
+	}
+
+	@Programmatic
+	public List<Volunteer> listAllInactiveVolunteers(String search) {
+		if (search != null)
+			return container
+					.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByStatusAndToUpperCaseNameStart",
+							"status", Status.INACTIVE.toString(), "start", search.toUpperCase()));
+		else
+			return container.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status",
+					Status.INACTIVE.toString()));
+	}
+
+	@Programmatic
+	public List<Volunteer> listAllExitedVolunteers(String search) {
+		if (search != null)
+			return container
+					.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByStatusAndToUpperCaseNameStart",
+							"status", Status.EXITED.toString(), "start", search.toUpperCase()));
+		else
+			return container.allMatches(
+					new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.EXITED.toString()));
 	}
 
 	@Programmatic
@@ -191,7 +212,7 @@ public class Volunteers {
 		String n2 = surname.trim();
 		// check of existing Volunteer
 		List<Volunteer> volunteers = container
-				.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersBySurname", "surname", n2));
+				.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByToUpperCaseNameStart", "start", n2.toUpperCase()));
 		for (Volunteer volunteer : volunteers) {
 			if (volunteer.getPerson().getFirstname().equalsIgnoreCase(n1)
 					&& volunteer.getPerson().getBirthdate().equals(dob) && volunteer.getPerson().getSex().equals(sex)) {
@@ -328,6 +349,9 @@ public class Volunteers {
 
 	@Inject
 	protected DomainObjectContainer container;
+	
+	@Inject
+	protected RepositoryService repositoryService;
 
 	@Inject
 	protected Persons persons;
@@ -349,9 +373,5 @@ public class Volunteers {
 
 	@Inject
 	protected IsisJdoSupport isisJdoSupport;
-
-
-
-
 
 }

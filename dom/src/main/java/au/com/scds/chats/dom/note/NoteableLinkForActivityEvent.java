@@ -37,9 +37,10 @@ import com.google.common.eventbus.Subscribe;
 
 import au.com.scds.chats.dom.activity.ActivityEvent;
 
-@DomainObject(objectType = "NoteableLinkForActivityEvent")
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
+
+@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="notablelinkforactivityevent")
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
+@DomainObject()
 public class NoteableLinkForActivityEvent extends NotableLink {
 
 	@DomainService(nature = NatureOfService.DOMAIN)

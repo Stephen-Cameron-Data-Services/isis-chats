@@ -24,7 +24,8 @@ import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.util.ObjectContracts;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
+@PersistenceCapable(identityType = IdentityType.APPLICATION, schema="chats", table="region")
+@Inheritance(strategy=InheritanceStrategy.NEW_TABLE)
 @Queries({
 	@Query(name = "findRegionByName", language = "JDOQL", value = "SELECT "
 			+ "FROM au.com.scds.chats.dom.general.names.Region "

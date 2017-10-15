@@ -63,11 +63,11 @@ import au.com.scds.chats.dom.general.TransportHub;
 import au.com.scds.chats.dom.general.names.TransportType;
 import au.com.scds.chats.dom.general.names.TransportTypes;
 
-@DomainObject(objectType = "PARTICIPATION")
-@DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
+
+@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="participation")
+@Inheritance(strategy=InheritanceStrategy.NEW_TABLE)
 @Unique(name = "Participation_UNQ", members = { "participant", "activity" })
+@DomainObject()
 public class Participation extends AbstractChatsDomainEntity implements Comparable<Participation> {
 
 	private Participant participant;

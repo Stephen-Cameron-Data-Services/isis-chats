@@ -34,6 +34,8 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.Inheritance;
+import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.Unique;
 
 import org.apache.isis.applib.DomainObjectContainer;
@@ -58,7 +60,8 @@ import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.general.names.Salutation;
 import au.com.scds.chats.dom.general.names.Salutations;
 
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@PersistenceCapable(identityType = IdentityType.DATASTORE, schema = "chats", table = "person")
+@Inheritance(strategy=InheritanceStrategy.NEW_TABLE)
 @Unique(name = "Person_UNQ", members = { "firstname", "surname", "birthdate" })
 @Queries({
 		@Query(name = "findPersonsBySurname", language = "JDOQL", value = "SELECT "
@@ -69,9 +72,7 @@ import au.com.scds.chats.dom.general.names.Salutations;
 				+ "FROM au.com.scds.chats.dom.general.Person WHERE oldId == :oldid"),
 		@Query(name = "findPerson", language = "JDOQL", value = "SELECT " + "FROM au.com.scds.chats.dom.general.Person "
 				+ "WHERE firstname == :firstname && surname == :surname && birthdate == :birthdate"), })
-@DomainObject(objectType = "PERSON")
-@DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = "General", middle = { "Contact Details", "Admin" })
+@DomainObject()
 public class Person extends AbstractChatsDomainEntity implements /* Locatable, */ Comparable<Person> {
 
 	private Long oldId;
@@ -97,9 +98,9 @@ public class Person extends AbstractChatsDomainEntity implements /* Locatable, *
 	private String emergencyContactPhone;
 	private String emergencyContactRelationship;
 	private Sex sex;
-	//@Persistent(mappedBy="person")
-	//@Order(column = "idx")
-	//private List<EmergencyContact> emergencyContacts = new ArrayList<>();
+	// @Persistent(mappedBy="person")
+	// @Order(column = "idx")
+	// private List<EmergencyContact> emergencyContacts = new ArrayList<>();
 
 	public Person() {
 		super();
@@ -599,7 +600,7 @@ public class Person extends AbstractChatsDomainEntity implements /* Locatable, *
 		Period p = new Period(getBirthdate(), futureDate);
 		return p.getYears();
 	}
-	
+
 	@Programmatic()
 	public static Integer getAgeAtDate(LocalDate birthDate, LocalDate futureDate) {
 		if (futureDate == null)
@@ -615,39 +616,35 @@ public class Person extends AbstractChatsDomainEntity implements /* Locatable, *
 		else
 			return null;
 	}
-	
-	/*@CollectionLayout(render=RenderType.EAGERLY)
-	public List<EmergencyContact> getEmergencyContacts() {
-		return emergencyContacts;
-	}
 
-	public void setEmergencyContacts(List<EmergencyContact> emergencyContacts) {
-		this.emergencyContacts = emergencyContacts;
-	}
-	
-	@Action()
-	public Person addEmergencyContact(@Parameter(optionality=Optionality.OPTIONAL) String name,
-			@Parameter(optionality=Optionality.OPTIONAL)String address,
-			@Parameter(optionality=Optionality.OPTIONAL) String phone,
-			 @Parameter(optionality=Optionality.OPTIONAL) String relationship){
-		EmergencyContact contact = persons.createEmergencyContact(this);
-		contact.setName(name);
-		contact.setAddress(address);
-		contact.setPhone(phone);
-		contact.setRelationship(relationship);
-		getEmergencyContacts().add(contact);
-		return this;
-	}
-	
-	@Action()
-	public Person removeEmergencyContact(EmergencyContact contact){
-		persons.deleteEmergencyContact(contact);
-		return this;
-	}
-	
-	public List<EmergencyContact> choices0RemoveEmergencyContact(){
-		return getEmergencyContacts();
-	}*/
+	/*
+	 * @CollectionLayout(render=RenderType.EAGERLY) public
+	 * List<EmergencyContact> getEmergencyContacts() { return emergencyContacts;
+	 * }
+	 * 
+	 * public void setEmergencyContacts(List<EmergencyContact>
+	 * emergencyContacts) { this.emergencyContacts = emergencyContacts; }
+	 * 
+	 * @Action() public Person
+	 * addEmergencyContact(@Parameter(optionality=Optionality.OPTIONAL) String
+	 * name,
+	 * 
+	 * @Parameter(optionality=Optionality.OPTIONAL)String address,
+	 * 
+	 * @Parameter(optionality=Optionality.OPTIONAL) String phone,
+	 * 
+	 * @Parameter(optionality=Optionality.OPTIONAL) String relationship){
+	 * EmergencyContact contact = persons.createEmergencyContact(this);
+	 * contact.setName(name); contact.setAddress(address);
+	 * contact.setPhone(phone); contact.setRelationship(relationship);
+	 * getEmergencyContacts().add(contact); return this; }
+	 * 
+	 * @Action() public Person removeEmergencyContact(EmergencyContact contact){
+	 * persons.deleteEmergencyContact(contact); return this; }
+	 * 
+	 * public List<EmergencyContact> choices0RemoveEmergencyContact(){ return
+	 * getEmergencyContacts(); }
+	 */
 
 	@Column(allowsNull = "true")
 	public String getEmergencyContactName() {

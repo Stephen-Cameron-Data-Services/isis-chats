@@ -38,9 +38,9 @@ import com.google.common.eventbus.Subscribe;
 
 import au.com.scds.chats.dom.activity.RecurringActivity;
 
-@DomainObject(objectType = "NoteableLinkForRecurringActivity")
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="notablelinkforrecurringactivity")
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
+@DomainObject()
 public class NoteableLinkForRecurringActivity extends NotableLink {
 
 	@DomainService(nature = NatureOfService.DOMAIN)

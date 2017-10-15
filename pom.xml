@@ -377,6 +377,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     <module>fixture</module>
     <!--module>integtests</module-->
     <module>webapp</module>
-    <module>reports</module>
+    <!-- module>reports</module-->
   </modules>
 </project>

@@ -44,7 +44,6 @@ import au.com.scds.chats.dom.general.names.TransportType;
 import au.com.scds.chats.dom.general.names.TransportTypes;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
-import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.participant.Participation;
 
@@ -63,7 +62,7 @@ import au.com.scds.chats.dom.participant.Participation;
  * Activity record.
  * 
  */
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@PersistenceCapable(identityType = IdentityType.DATASTORE, schema = "chats", table = "attendancelist")
 @Queries({
 		@Query(name = "findAttendanceListsByActivityName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.AttendanceList WHERE parentActivity.name.indexOf(:name) >= 0 ORDER BY parentActivity.startDateTime DESC"),
 		@Query(name = "findAttendanceListsInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.AttendanceList WHERE parentActivity.startDateTime >= :startDateTime && parentActivity.startDateTime <= :endDateTime ORDER BY parentActivity.startDateTime DESC") })
@@ -115,7 +114,7 @@ public class AttendanceList extends AbstractChatsDomainEntity {
 				Attend attend = attendanceListsRepo.createAttend(this, parentActivity, participant, true);
 				attend.setArrivingTransportType(participation.getArrivingTransportType());
 				attend.setDepartingTransportType(participation.getDepartingTransportType());
-				//getAttends().add(attend);
+				// getAttends().add(attend);
 			}
 		}
 		return this;
@@ -129,33 +128,21 @@ public class AttendanceList extends AbstractChatsDomainEntity {
 		}
 		return false;
 	}
-	
-	@Programmatic
+
+	@Action
 	public AttendanceList addAttend(@Parameter(optionality = Optionality.MANDATORY) Participant participant) {
 		Attend attended = attendanceListsRepo.createAttend(this, getParentActivity(), participant, true);
 		getAttends().add(attended);
 		return this;
 	}
 
-	@Action
-	public AttendanceList addAttend(@Parameter(optionality = Optionality.MANDATORY) ParticipantIdentity identity) {
-		if (identity == null)
-			return null;
-		Participant participant = participantsRepo.getParticipant(identity);
-		if (participant == null)
-			return null;
-		Attend attended = attendanceListsRepo.createAttend(this, getParentActivity(), participant, true);
-		getAttends().add(attended);
-		return this;
-	}
-
-	public List<ParticipantIdentity> choices0AddAttend() {
-		List<ParticipantIdentity> list = participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
-		List<ParticipantIdentity> temp = new ArrayList<>(list);
-		for (ParticipantIdentity identity : list) {
+	public List<Participant> autoComplete0AddAttend(@MinLength(3) String search) {
+		List<Participant> list = participantsRepo.listActiveParticipantIdentities(AgeGroup.All, search);
+		List<Participant> temp = new ArrayList<>(list);
+		for (Participant p : list) {
 			for (Attend attend : getAttends()) {
-				if (participantsRepo.isIdentityOfParticipant(identity, attend.getParticipant()))
-					temp.remove(identity);
+				if (attend.getParticipant().equals(p))
+					temp.remove(p);
 			}
 		}
 		return temp;
@@ -173,28 +160,27 @@ public class AttendanceList extends AbstractChatsDomainEntity {
 
 	@Action
 	public AttendanceList updateAllAttendsToDefaultValues(
-			@Parameter(optionality=Optionality.OPTIONAL) @ParameterLayout(named="Start Date Time") DateTime start,
-			@Parameter(optionality=Optionality.OPTIONAL) @ParameterLayout(named="Finish Date Time") DateTime finish) {
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Start Date Time") DateTime start,
+			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Finish Date Time") DateTime finish) {
 		for (Attend attend : getAttends()) {
 			attend.wasAttended();
 			attend.setDatesAndTimes(start, finish);
 		}
 		return this;
 	}
-	
-	public DateTime default0UpdateAllAttendsToDefaultValues(){
+
+	public DateTime default0UpdateAllAttendsToDefaultValues() {
 		return getParentActivity().getStartDateTime();
 	}
-	
-	public DateTime default1UpdateAllAttendsToDefaultValues(){
+
+	public DateTime default1UpdateAllAttendsToDefaultValues() {
 		return getParentActivity().getEndDateTime();
 	}
-	
+
 	public String validateUpdateAllAttendsToDefaultValues(DateTime start, DateTime finish) {
 		return StartAndFinishDateTime.validateStartAndFinishDateTimes(start, finish);
 	}
-	
-	
+
 	@Action
 	public AttendanceList removeAttend(Attend attend) {
 		if (attend != null)

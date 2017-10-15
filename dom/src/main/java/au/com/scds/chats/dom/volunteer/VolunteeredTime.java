@@ -53,10 +53,11 @@ import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.StartAndFinishDateTime;
 import au.com.scds.chats.dom.attendance.Attend;
 
-@DomainObject(objectType = "VOLUNTEERED_TIME")
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
+
+@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="volunteeredtime")
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "role", value = "GENERAL")
+@DomainObject(objectType = "VOLUNTEERED_TIME")
 public class VolunteeredTime extends StartAndFinishDateTime implements Comparable<VolunteeredTime> {
 
 	private Volunteer volunteer;

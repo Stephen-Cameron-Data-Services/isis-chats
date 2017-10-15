@@ -42,6 +42,7 @@ import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.MinLength;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
@@ -61,7 +62,6 @@ import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.StartAndFinishDateTime;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
-import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.VolunteeredTimeForActivity;
@@ -72,15 +72,14 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
  * A manager of ScheduledCall objects for a specific Calendar day, usually for a
  * specific Volunteer .
  */
-@DomainObject(objectType = "CALENDAR_DAY_CALL_SCHEDULE")
-@DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
-@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
+
+@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="calendardaycallschedule")
 @Queries({
 		@Query(name = "findCallSchedule", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.call.CalendarDayCallSchedule "),
 		@Query(name = "findCallScheduleByVolunteer", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.call.CalendarDayCallSchedule WHERE allocatedVolunteer == :volunteer ") })
+@DomainObject()
 public class CalendarDayCallSchedule extends AbstractChatsDomainEntity
 		implements CalendarEventable, Comparable<CalendarDayCallSchedule> {
 
@@ -224,22 +223,16 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity
 		return getVolunteeredTimes();
 	}
 
-	@Programmatic
-	public ScheduledCall addNewCall(final Participant participant, final DateTime dateTime) {
-		return callsRepo.createScheduledCall(this, participant, dateTime.toLocalTime());
-	}
-
 	@Action()
 	public CalendarDayCallSchedule addNewCall(
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") final ParticipantIdentity identity,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") final Participant participant,
 			@Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) throws Exception {
-		Participant participant = participantsRepo.getParticipant(identity);
-		addNewCall(participant, dateTime);
+		callsRepo.createScheduledCall(this, participant, dateTime.toLocalTime());
 		return this;
 	}
 
-	public List<ParticipantIdentity> choices0AddNewCall() {
-		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
+	public List<Participant> autoComplete0AddNewCall(@MinLength(3) String search) {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All, search);
 	}
 
 	public DateTime default1AddNewCall() {

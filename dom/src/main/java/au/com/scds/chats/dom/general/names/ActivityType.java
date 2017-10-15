@@ -23,7 +23,8 @@ import javax.jdo.annotations.*;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.PropertyLayout;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
+@PersistenceCapable(identityType = IdentityType.APPLICATION, schema="chats", table="activitytype")
+@Inheritance(strategy=InheritanceStrategy.NEW_TABLE)
 @Queries({
 	@Query(name = "findActivityTypeByName", language = "JDOQL", value = "SELECT "
 			+ "FROM au.com.scds.chats.dom.general.names.ActivityType "

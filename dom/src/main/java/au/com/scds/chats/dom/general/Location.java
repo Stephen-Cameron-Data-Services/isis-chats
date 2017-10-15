@@ -32,6 +32,7 @@ import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.AbstractDomainObject;
+import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Programmatic;
@@ -48,12 +49,15 @@ import au.com.scds.chats.dom.AbstractChatsDomainEntity;
  * @author stevec
  * 
  */
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@PersistenceCapable(identityType = IdentityType.DATASTORE, schema = "chats", table = "location")
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, value = "LOCATION")
-@Queries({ @Query(name = "findLocationByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.Location WHERE name == :name"),
+@Queries({
+		@Query(name = "findLocationByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.Location WHERE name == :name"),
 		@Query(name = "findAllLocations", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.Location ORDER BY name") })
-public class Location extends AbstractChatsDomainEntity /*implements Locatable*/ {
+@DomainObject()
+public class Location
+		extends AbstractChatsDomainEntity /* implements Locatable */ {
 
 	private String name;
 	private Double latitude;

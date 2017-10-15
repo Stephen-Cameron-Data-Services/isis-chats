@@ -44,7 +44,6 @@ import au.com.scds.chats.dom.activity.Activity;
  * @author stevec
  * 
  */
-// TODO maybe this could be a map to prevent unnecessary database queries
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
 public abstract class ClassificationValue {

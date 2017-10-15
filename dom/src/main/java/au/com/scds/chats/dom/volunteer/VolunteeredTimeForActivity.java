@@ -42,12 +42,10 @@ import org.apache.isis.applib.annotation.Where;
 
 import au.com.scds.chats.dom.activity.Activity;
 
-@DomainObject(objectType = "VTIMEFORACTIVITY")
-@DomainObjectLayout(bookmarking = BookmarkPolicy.NEVER)
-@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = {  "Admin" })
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "VTACTIVITY")
+@DomainObject()
 public class VolunteeredTimeForActivity extends VolunteeredTime {
 	
 	private Activity activity;

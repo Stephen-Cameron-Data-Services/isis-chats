@@ -38,6 +38,7 @@ import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.MinLength;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
@@ -129,49 +130,67 @@ public class Participants {
 	}
 
 	@Programmatic
-	public List<ParticipantIdentity> listActiveParticipantIdentities(
-			@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup) {
-		switch (ageGroup) {
-		case All:
-			return container.allMatches(new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatus",
-					"status", Status.ACTIVE.toString()));
-		case Under_Sixty_Five:
+	public List<Participant> listActiveParticipantIdentities(
+			@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup, String search) {
+		if (search != null) {
+			// search by name then filter by age
+			List<Participant> temp = container
+					.allMatches(new QueryDefault<>(Participant.class, "findParticipantsByStatusAndToUpperCaseNameStart",
+							"status", Status.ACTIVE.toString(), "start", search.toUpperCase()));
+			ArrayList<Participant> temp2 = new ArrayList<>();
 			LocalDate lowerLimit = LocalDate.now().minusYears(65);
-			return container.allMatches(
-					new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatusAndBirthdateAbove", "status",
-							Status.ACTIVE.toString(), "lowerLimit", lowerLimit));
-		case Sixty_Five_and_Over:
 			LocalDate upperLimit = LocalDate.now().minusYears(65).plusDays(1);
-			return container.allMatches(
-					new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatusAndBirthdateBelow", "status",
-							Status.ACTIVE.toString(), "upperLimit", upperLimit));
-		default:
-			return null;
+			for (Participant p : temp) {
+				if (AgeGroup.All.equals(ageGroup)) {
+					temp2.add(p);
+				} else if (p.getAge() < 65) {
+					if (AgeGroup.Under_Sixty_Five.equals(ageGroup))
+						temp2.add(p);
+				} else {
+					if (AgeGroup.Sixty_Five_and_Over.equals(ageGroup))
+						temp2.add(p);
+				}
+			}
+			return temp;
+		} else {
+			// filter by age on database
+			switch (ageGroup) {
+			case All:
+				return container.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status",
+						Status.ACTIVE.toString()));
+			case Under_Sixty_Five:
+				LocalDate lowerLimit = LocalDate.now().minusYears(65);
+				return container
+						.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatusAndBirthdateAbove",
+								"status", Status.ACTIVE.toString(), "lowerLimit", lowerLimit));
+			case Sixty_Five_and_Over:
+				LocalDate upperLimit = LocalDate.now().minusYears(65).plusDays(1);
+				return container
+						.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatusAndBirthdateBelow",
+								"status", Status.ACTIVE.toString(), "upperLimit", upperLimit));
+			default:
+				return null;
+			}
 		}
 	}
 
 	@Programmatic
-	public List<ParticipantIdentity> listInactiveParticipantIdentities() {
-		return container.allMatches(new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatus", "status",
-				Status.INACTIVE.toString()));
+	public List<Participant> listInactiveParticipantIdentities(String search) {
+		return container
+				.allMatches(new QueryDefault<>(Participant.class, "findParticipantsByStatusAndToUpperCaseNameStart",
+						"status", Status.INACTIVE.toString(), "start", search.toUpperCase()));
 	}
 
 	@Programmatic
-	public List<ParticipantIdentity> listAllExitedParticipantIdentities() {
-		return container.allMatches(new QueryDefault<>(ParticipantIdentity.class, "listParticipantsByStatus", "status",
-				Status.EXITED.toString()));
+	public List<Participant> listAllExitedParticipantIdentities(String search) {
+		return container
+				.allMatches(new QueryDefault<>(Participant.class, "FindParticipantsByStatusAndToUpperCaseNameStart",
+						"status", Status.EXITED.toString(), "start", search.toUpperCase()));
 	}
 
 	@Programmatic
-	public List<ParticipantIdentity> listAllParticipantIdentities() {
-		return container.allMatches(new QueryDefault<>(ParticipantIdentity.class, "listParticipants"));
-	}
-
-	@Programmatic
-	public Participant getParticipant(@ParameterLayout(named = "Participant") ParticipantIdentity identity) {
-		if (identity == null)
-			return null;
-		return isisJdoSupport.getJdoPersistenceManager().getObjectById(Participant.class, identity.getJdoObjectId());
+	public List<Participant> listAllParticipantIdentities() {
+		return container.allMatches(new QueryDefault<>(Participant.class, "listParticipants"));
 	}
 
 	@Programmatic
@@ -180,12 +199,6 @@ public class Participants {
 			return null;
 		return container
 				.firstMatch(new QueryDefault<>(Participant.class, "findParticipantForPerson", "person", person));
-	}
-
-	@Programmatic
-	public Boolean isIdentityOfParticipant(ParticipantIdentity identity, Participant participant) {
-		String id = isisJdoSupport.getJdoPersistenceManager().getObjectId(participant).toString();
-		return id.equals(identity.getJdoObjectId());
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
@@ -213,24 +226,23 @@ public class Participants {
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
-	public Participant findActiveParticipant(ParticipantIdentity identity) {
-		return getParticipant(identity);
+	public Participant findActiveParticipant(Participant participant) {
+		return participant;
 	}
 
-	public List<ParticipantIdentity> choices0FindActiveParticipant() {
-		return listActiveParticipantIdentities(AgeGroup.All);
+	public List<Participant> autoComplete0FindActiveParticipant(@MinLength(3) String search) {
+		return listActiveParticipantIdentities(AgeGroup.All, search);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "4")
-	public List<ParticipationView> findFutureParticipation(ParticipantIdentity identity) {
-		Participant participant = getParticipant(identity);
+	public List<ParticipationView> findFutureParticipation(Participant participant) {
 		return participant.showFutureParticipation();
 	}
 
-	public List<ParticipantIdentity> choices0FindFutureParticipation() {
-		return listActiveParticipantIdentities(AgeGroup.All);
+	public List<Participant> autoComplete0FindFutureParticipation(@MinLength(3) String search) {
+		return listActiveParticipantIdentities(AgeGroup.All, search);
 	}
 
 	@MemberOrder(sequence = "1")

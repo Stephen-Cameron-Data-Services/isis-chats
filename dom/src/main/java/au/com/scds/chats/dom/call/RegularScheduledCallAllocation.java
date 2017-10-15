@@ -20,7 +20,7 @@ import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 
 @DomainObject()
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="scheduledcallallocation")
 public class RegularScheduledCallAllocation extends AbstractChatsDomainEntity
 		implements Comparable<RegularScheduledCallAllocation> {
 

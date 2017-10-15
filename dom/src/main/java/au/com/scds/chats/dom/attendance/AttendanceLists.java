@@ -32,6 +32,7 @@ import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
+import org.apache.isis.applib.annotation.MinLength;
 import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
@@ -46,7 +47,6 @@ import au.com.scds.chats.dom.activity.Activities;
 import au.com.scds.chats.dom.activity.ActivityEvent;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
-import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 
 @DomainService(repositoryFor = AttendanceList.class, nature = NatureOfService.VIEW_MENU_ONLY)
@@ -150,11 +150,10 @@ public class AttendanceLists {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named = "Find Attendances By Participant")
 	@MemberOrder(sequence = "5.0")
 	public List<AttendView> findAttendsByParticipant(
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") ParticipantIdentity identity) {
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") Participant identity) {
 		if (identity == null)
 			return null;
-		List<Attend> attends = container.allMatches(new QueryDefault<>(Attend.class, "findAttendsByParticipant", "participant",
-				participants.getParticipant(identity)));
+		List<Attend> attends = container.allMatches(new QueryDefault<>(Attend.class, "findAttendsByParticipant", "participant",identity));
 		List<AttendView> views = new ArrayList<>();
 		for(Attend attend : attends){
 			AttendView v = new AttendView();
@@ -164,8 +163,8 @@ public class AttendanceLists {
 		return views;
 	}
 
-	public List<ParticipantIdentity> choices0FindAttendsByParticipant() {
-		return participants.listActiveParticipantIdentities(AgeGroup.All);
+	public List<Participant> autoComplete0FindAttendsByParticipant(@MinLength(3) String search) {
+		return participants.listActiveParticipantIdentities(AgeGroup.All, search);
 	}
 
 	@Inject

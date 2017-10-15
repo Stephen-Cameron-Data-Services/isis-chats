@@ -2,13 +2,17 @@ package au.com.scds.chats.dom.participant;
 
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.Inheritance;
+import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import org.apache.isis.applib.annotation.DomainObject;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 
+
+@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="participantnote")
+@Inheritance(strategy=InheritanceStrategy.NEW_TABLE)
 @DomainObject()
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
 public class ParticipantNote extends AbstractChatsDomainEntity implements Comparable<ParticipantNote> {
 
 	private Participant participant;

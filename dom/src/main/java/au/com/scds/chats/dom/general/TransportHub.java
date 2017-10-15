@@ -9,15 +9,17 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
 
+import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.util.TitleBuffer;
 
-@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, value = "TRANSPORT_HUB")
 @Queries({
 		@Query(name = "findTransportHubByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.TransportHub WHERE name == :name"),
 		@Query(name = "findAllTransportHubs", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.TransportHub"),
 		@Query(name = "findAllNamedTransportHubs", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.TransportHub WHERE name != null && name.trim().length() > 0 ORDER BY name") })
+@DomainObject()
 public class TransportHub extends Address {
 
 	@Override
