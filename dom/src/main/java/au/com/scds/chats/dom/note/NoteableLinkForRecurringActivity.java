@@ -18,59 +18,71 @@
  */
 package au.com.scds.chats.dom.note;
 
-import javax.inject.Inject;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.InheritanceStrategy;
 
-import org.apache.isis.applib.AbstractSubscriber;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainService;
+import org.apache.isis.applib.annotation.Mixin;
 import org.apache.isis.applib.annotation.NatureOfService;
-import org.apache.isis.applib.annotation.Programmatic;
-import org.incode.module.note.dom.api.notable.Notable;
-import org.incode.module.note.dom.impl.notablelink.NotableLink;
-import org.incode.module.note.dom.impl.note.NoteRepository;
 
-import com.google.common.eventbus.Subscribe;
+import org.incode.module.note.dom.impl.notablelink.NotableLink;
+import org.incode.module.note.dom.impl.notablelink.NotableLinkRepository;
+import org.incode.module.note.dom.impl.note.T_addNote;
+import org.incode.module.note.dom.impl.note.T_notes;
+import org.incode.module.note.dom.impl.note.T_removeNote;
 
 import au.com.scds.chats.dom.activity.RecurringActivity;
+
 
 @PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="notablelinkforrecurringactivity")
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @DomainObject()
 public class NoteableLinkForRecurringActivity extends NotableLink {
 
-	@DomainService(nature = NatureOfService.DOMAIN)
-	public static class InstantiationSubscriber extends AbstractSubscriber {
-		@Programmatic
-		@Subscribe
-		public void on(final InstantiateEvent ev) {
-			if (ev.getPolymorphicReference() instanceof RecurringActivity) {
-				ev.setSubtype(NoteableLinkForRecurringActivity.class);
-			}
-		}
-	}
+    private RecurringActivity object;
+    @Column( allowsNull = "false", name = "object_id" )
+    public RecurringActivity getObject() {                                         
+        return object;
+    }
+    public void setObject(final RecurringActivity object) {
+        this.object = object;
+    }
 
-	@Override
-	public void setPolymorphicReference(final Notable polymorphicReference) {
-		super.setPolymorphicReference(polymorphicReference);
-		setRecurringActivity((RecurringActivity) polymorphicReference);
-	}
+    public Object getNotable() {                                                    
+        return getObject();
+    }
+    protected void setNotable(final Object object) {
+        setObject((RecurringActivity) object);
+    }
 
-	private RecurringActivity recurringActivity;
+    @DomainService(nature = NatureOfService.DOMAIN)
+    public static class SubtypeProvider
+                extends NotableLinkRepository.SubtypeProviderAbstract {             
+        public SubtypeProvider() {
+            super(RecurringActivity.class, NoteableLinkForRecurringActivity.class);
+        }
+    }
 
-	@Column(allowsNull = "false", name = "recurringActivityId")
-	public RecurringActivity getRecurringActivity() {
-		return recurringActivity;
-	}
-
-	public void setRecurringActivity(final RecurringActivity recurringActivity) {
-		this.recurringActivity = recurringActivity;
-	}
-
-	@Inject
-	private NoteRepository noteRepository;
+    @Mixin
+    public static class _notes extends T_notes<RecurringActivity> {                    
+        public _notes(final RecurringActivity notable) {
+            super(notable);
+        }
+    }
+    @Mixin
+    public static class _addNote extends T_addNote<RecurringActivity> {
+        public _addNote(final RecurringActivity notable) {
+            super(notable);
+        }
+    }
+    @Mixin
+    public static class _removeNote extends T_removeNote<RecurringActivity> {
+        public _removeNote(final RecurringActivity notable) {
+            super(notable);
+        }
+    }
 }

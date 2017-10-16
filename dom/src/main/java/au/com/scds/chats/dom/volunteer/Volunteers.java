@@ -41,6 +41,8 @@ import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
 import org.apache.isis.applib.security.UserMemento;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
+import org.apache.isis.applib.services.message.MessageService;
+import org.apache.isis.applib.services.registry.ServiceRegistry2;
 import org.apache.isis.applib.services.repository.RepositoryService;
 import org.apache.isis.applib.services.user.UserService;
 import org.isisaddons.module.security.dom.user.ApplicationUser;
@@ -62,28 +64,20 @@ import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 
-@DomainService(repositoryFor = Volunteer.class)
+@DomainService(objectType="chats.volunteers", repositoryFor = Volunteer.class, nature=NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(menuOrder = "30")
 public class Volunteers {
 
-	public Volunteers() {
-	}
-
-	public Volunteers(DomainObjectContainer container) {
-		this.container = container;
-	}
-
 	@Programmatic
 	public List<Volunteer> listAll() {
-		return container.allInstances(Volunteer.class);
+		return repositoryService.allInstances(Volunteer.class);
 	}
 	
-
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "3")
 	public List<Volunteer> listActiveVolunteers() {
-		return container
+		return repositoryService
 				.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.ACTIVE));
 	}
 
@@ -91,7 +85,7 @@ public class Volunteers {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "4")
 	public List<Volunteer> listInactiveVolunteers() {
-		return container
+		return repositoryService
 				.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.INACTIVE));
 	}
 
@@ -99,7 +93,7 @@ public class Volunteers {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "5")
 	public List<Volunteer> listToExitVolunteers() {
-		return container
+		return repositoryService
 				.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.TO_EXIT));
 	}
 
@@ -108,7 +102,7 @@ public class Volunteers {
 	@MemberOrder(sequence = "2.2")
 	public List<Volunteer> findBySurname(@ParameterLayout(named = "Surname") final String search,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Status") final Status status) {
-		List<Volunteer> list1 = container
+		List<Volunteer> list1 = repositoryService
 				.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByToUpperCaseNameStart", "start", search.toUpperCase()));
 		List<Volunteer> list2 = new ArrayList<>(list1);
 		if (status != null) {
@@ -167,41 +161,41 @@ public class Volunteers {
 	@Programmatic
 	public List<Volunteer> listVolunteers(String search) {
 		if (search != null)
-			return container.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByToUpperCaseNameStart", "start", search.toUpperCase()));
+			return repositoryService.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByToUpperCaseNameStart", "start", search.toUpperCase()));
 		else
-			return container.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteers"));
+			return repositoryService.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteers"));
 	}
 
 	@Programmatic
 	public List<Volunteer> listActiveVolunteers(String search) {
 		if (search != null)
-			return container
+			return repositoryService
 					.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByStatusAndToUpperCaseNameStart",
 							"status", Status.ACTIVE.toString(), "start", search.toUpperCase()));
 		else
-			return container.allMatches(
+			return repositoryService.allMatches(
 					new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.ACTIVE.toString()));
 	}
 
 	@Programmatic
 	public List<Volunteer> listAllInactiveVolunteers(String search) {
 		if (search != null)
-			return container
+			return repositoryService
 					.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByStatusAndToUpperCaseNameStart",
 							"status", Status.INACTIVE.toString(), "start", search.toUpperCase()));
 		else
-			return container.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status",
+			return repositoryService.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status",
 					Status.INACTIVE.toString()));
 	}
 
 	@Programmatic
 	public List<Volunteer> listAllExitedVolunteers(String search) {
 		if (search != null)
-			return container
+			return repositoryService
 					.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByStatusAndToUpperCaseNameStart",
 							"status", Status.EXITED.toString(), "start", search.toUpperCase()));
 		else
-			return container.allMatches(
+			return repositoryService.allMatches(
 					new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.EXITED.toString()));
 	}
 
@@ -211,19 +205,19 @@ public class Volunteers {
 		String n1 = firstname.trim();
 		String n2 = surname.trim();
 		// check of existing Volunteer
-		List<Volunteer> volunteers = container
+		List<Volunteer> volunteers = repositoryService
 				.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByToUpperCaseNameStart", "start", n2.toUpperCase()));
 		for (Volunteer volunteer : volunteers) {
 			if (volunteer.getPerson().getFirstname().equalsIgnoreCase(n1)
 					&& volunteer.getPerson().getBirthdate().equals(dob) && volunteer.getPerson().getSex().equals(sex)) {
 				if (region != null) {
 					if (region.equals(volunteer.getRegion())) {
-						container.informUser(
+						messageService.informUser(
 								"An existing Volunteer with same first-name, surname, date-of-birth, sex and region properties has been found");
 						return volunteer;
 					}
 				} else {
-					container.informUser(
+					messageService.informUser(
 							"An existing Volunteer with same first-name, surname, date-of-birth and sex properties has been found");
 					return volunteer;
 				}
@@ -242,10 +236,10 @@ public class Volunteers {
 			// person so probably a Participant
 			participant = participantsRepo.getParticipant(person);
 		}
-		final Volunteer volunteer = container.newTransientInstance(Volunteer.class);
+		final Volunteer volunteer = new Volunteer();
+		serviceRegistry.injectServicesInto(volunteer);
 		volunteer.setPerson(person);
-		container.persistIfNotAlready(volunteer);
-		container.flush();
+		repositoryService.persist(volunteer);
 		if (participant != null)
 			participant.setVolunteer(volunteer);
 		return volunteer;
@@ -253,21 +247,20 @@ public class Volunteers {
 
 	@Programmatic
 	public Volunteer create(Person person) {
-		final Volunteer volunteer = container.newTransientInstance(Volunteer.class);
+		final Volunteer volunteer = new Volunteer();
 		volunteer.setPerson(person);
-		container.persistIfNotAlready(volunteer);
-		container.flush();
+		repositoryService.persist(volunteer);
 		return volunteer;
 	}
 
 	// used for data migration
 	@Programmatic
 	public Volunteer newVolunteer(Person person, Region region) {
-		final Volunteer volunteer = container.newTransientInstance(Volunteer.class);
+		final Volunteer volunteer = new Volunteer();
+		serviceRegistry.injectServicesInto(volunteer);
 		volunteer.setPerson(person);
 		volunteer.setRegion(region);
-		container.persistIfNotAlready(volunteer);
-		container.flush();
+		repositoryService.persist(volunteer);
 		return volunteer;
 	}
 
@@ -275,13 +268,13 @@ public class Volunteers {
 	public VolunteeredTime createVolunteeredTime(Volunteer volunteer, DateTime startDateTime, DateTime endDateTime) {
 		if (volunteer == null || startDateTime == null || endDateTime == null)
 			return null;
-		VolunteeredTime time = container.newTransientInstance(VolunteeredTime.class);
+		VolunteeredTime time = new VolunteeredTime();
+		serviceRegistry.injectServicesInto(time);
 		time.setStartDateTime(startDateTime);
 		time.setEndDateTime(endDateTime);
 		time.setVolunteer(volunteer);
 		volunteer.addVolunteeredTime(time);
-		container.persistIfNotAlready(time);
-		container.flush();
+		repositoryService.persist(time);
 		return time;
 	}
 
@@ -290,7 +283,8 @@ public class Volunteers {
 			DateTime startDateTime, DateTime endDateTime) {
 		if (volunteer == null || activity == null)
 			return null;
-		VolunteeredTimeForActivity time = container.newTransientInstance(VolunteeredTimeForActivity.class);
+		VolunteeredTimeForActivity time = new VolunteeredTimeForActivity();
+		serviceRegistry.injectServicesInto(time);
 		time.setStartDateTime(startDateTime);
 		time.setEndDateTime(endDateTime);
 		time.setVolunteer(volunteer);
@@ -299,15 +293,13 @@ public class Volunteers {
 			time.setVolunteerRole(volunteer.getVolunteerRoles().get(0));
 		volunteer.addVolunteeredTime(time);
 		activity.addVolunteeredTime(time);
-		container.persistIfNotAlready(time);
-		container.flush();
+		repositoryService.persist(time);
 		return time;
 	}
 
 	@Programmatic
 	public void deleteVolunteeredTimeForActivity(VolunteeredTimeForActivity time) {
-		container.removeIfNotAlready(time);
-		container.flush();
+		repositoryService.remove(time);
 	}
 
 	@Programmatic
@@ -315,21 +307,20 @@ public class Volunteers {
 			CalendarDayCallSchedule callSchedule, DateTime startDateTime, DateTime endDateTime) {
 		if (volunteer == null || callSchedule == null)
 			return null;
-		VolunteeredTimeForCalls time = container.newTransientInstance(VolunteeredTimeForCalls.class);
+		VolunteeredTimeForCalls time = new VolunteeredTimeForCalls();
+		serviceRegistry.injectServicesInto(time);
 		time.setStartDateTime(startDateTime);
 		time.setEndDateTime(endDateTime);
 		time.setVolunteer(volunteer);
 		volunteer.addVolunteeredTime(time);
 		callSchedule.addVolunteeredTime(time);
-		container.persistIfNotAlready(time);
-		container.flush();
+		repositoryService.persist(time);
 		return time;
 	}
 
 	@Programmatic
 	public void deleteVolunteeredTimeForCalls(VolunteeredTimeForCalls time) {
-		container.removeIfNotAlready(time);
-		container.flush();
+		repositoryService.remove(time);
 	}
 
 	@Programmatic
@@ -348,10 +339,13 @@ public class Volunteers {
 	}
 
 	@Inject
-	protected DomainObjectContainer container;
+	protected RepositoryService repositoryService;
 	
 	@Inject
-	protected RepositoryService repositoryService;
+	protected ServiceRegistry2 serviceRegistry;
+	
+	@Inject
+	protected MessageService messageService;
 
 	@Inject
 	protected Persons persons;

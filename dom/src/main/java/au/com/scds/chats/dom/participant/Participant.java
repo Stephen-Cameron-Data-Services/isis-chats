@@ -30,7 +30,6 @@ import javax.jdo.annotations.*;
 import org.apache.isis.applib.Identifier;
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.services.i18n.TranslatableString;
-import org.incode.module.note.dom.api.notable.Notable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 import org.joda.time.LocalDate;
@@ -86,7 +85,7 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 				+ "|| (person.modifiedOn >= :startDate && person.modifiedOn < :startDate)) && region = :region"), })
 @DomainObject()
 public class Participant extends AbstractChatsDomainEntity
-		implements /* Locatable, */ Notable, Comparable<Participant> {
+		implements Comparable<Participant> {
 
 	// general
 	private Person person;

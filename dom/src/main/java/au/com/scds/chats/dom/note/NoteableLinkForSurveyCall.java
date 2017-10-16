@@ -24,16 +24,16 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.InheritanceStrategy;
 
-import org.apache.isis.applib.AbstractSubscriber;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainService;
+import org.apache.isis.applib.annotation.Mixin;
 import org.apache.isis.applib.annotation.NatureOfService;
-import org.apache.isis.applib.annotation.Programmatic;
-import org.incode.module.note.dom.api.notable.Notable;
-import org.incode.module.note.dom.impl.notablelink.NotableLink;
-import org.incode.module.note.dom.impl.note.NoteRepository;
 
-import com.google.common.eventbus.Subscribe;
+import org.incode.module.note.dom.impl.notablelink.NotableLink;
+import org.incode.module.note.dom.impl.notablelink.NotableLinkRepository;
+import org.incode.module.note.dom.impl.note.T_addNote;
+import org.incode.module.note.dom.impl.note.T_notes;
+import org.incode.module.note.dom.impl.note.T_removeNote;
 
 import au.com.scds.chats.dom.call.SurveyCall;
 
@@ -43,35 +43,46 @@ import au.com.scds.chats.dom.call.SurveyCall;
 @DomainObject()
 public class NoteableLinkForSurveyCall extends NotableLink {
 
-	@DomainService(nature = NatureOfService.DOMAIN)
-	public static class InstantiationSubscriber extends AbstractSubscriber {
-		@Programmatic
-		@Subscribe
-		public void on(final InstantiateEvent ev) {
-			if (ev.getPolymorphicReference() instanceof SurveyCall) {
-				ev.setSubtype(NoteableLinkForSurveyCall.class);
-			}
-		}
-	}
+    private SurveyCall object;
+    @Column( allowsNull = "false", name = "object_id" )
+    public SurveyCall getObject() {                                         
+        return object;
+    }
+    public void setObject(final SurveyCall object) {
+        this.object = object;
+    }
 
-	@Override
-	public void setPolymorphicReference(final Notable polymorphicReference) {
-		super.setPolymorphicReference(polymorphicReference);
-		setSurveyCall((SurveyCall) polymorphicReference);
-	}
+    public Object getNotable() {                                                    
+        return getObject();
+    }
+    protected void setNotable(final Object object) {
+        setObject((SurveyCall) object);
+    }
 
-	private SurveyCall call;
+    @DomainService(nature = NatureOfService.DOMAIN)
+    public static class SubtypeProvider
+                extends NotableLinkRepository.SubtypeProviderAbstract {             
+        public SubtypeProvider() {
+            super(SurveyCall.class, NoteableLinkForSurveyCall.class);
+        }
+    }
 
-	@Column(allowsNull = "false", name = "callId")
-	public SurveyCall getSurveyCall() {
-		return call;
-	}
-
-	public void setSurveyCall(final SurveyCall call) {
-		this.call = call;
-	}
-
-	@javax.inject.Inject
-	private NoteRepository noteRepository;
-	
+    @Mixin
+    public static class _notes extends T_notes<SurveyCall> {                    
+        public _notes(final SurveyCall notable) {
+            super(notable);
+        }
+    }
+    @Mixin
+    public static class _addNote extends T_addNote<SurveyCall> {
+        public _addNote(final SurveyCall notable) {
+            super(notable);
+        }
+    }
+    @Mixin
+    public static class _removeNote extends T_removeNote<SurveyCall> {
+        public _removeNote(final SurveyCall notable) {
+            super(notable);
+        }
+    }
 }

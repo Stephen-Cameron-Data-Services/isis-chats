@@ -18,15 +18,11 @@
  */
 package au.com.scds.chats.dom.call;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
-import org.apache.isis.applib.annotation.ActionLayout;
-import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
@@ -38,33 +34,25 @@ import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
+import org.apache.isis.applib.services.message.MessageService;
+import org.apache.isis.applib.services.registry.ServiceRegistry2;
+import org.apache.isis.applib.services.repository.RepositoryService;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
-import au.com.scds.chats.dom.attendance.Attend;
-import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.Volunteers;
 
-@DomainService(nature = NatureOfService.VIEW_MENU_ONLY, repositoryFor = Call.class)
+@DomainService(objectType="chats.calls", nature = NatureOfService.VIEW_MENU_ONLY, repositoryFor = Call.class)
 @DomainServiceLayout(named = "Calls", menuOrder = "50")
 public class Calls {
 
 	public enum CallType {
 		Care, Reconnect, Survey, Scheduled
-	}
-
-	public Calls() {
-	}
-
-	public Calls(DomainObjectContainer container, Volunteers volunteers, Participants participants) {
-		this.container = container;
-		this.volunteersRepo = volunteers;
-		this.participantsRepo = participants;
 	}
 
 	@Action()
@@ -76,29 +64,29 @@ public class Calls {
 		Call call = null;
 		switch (type) {
 		case Care:
-			call = container.newTransientInstance(CareCall.class);
+			call = new CareCall();
+			serviceRegistry.injectServicesInto(call);
 			call.setParticipant(participant);
 			call.setStartDateTime(dateTime);
-			container.persistIfNotAlready(call);
-			container.flush();
+			repositoryService.persist(call);
 			break;
 		case Reconnect:
-			call = container.newTransientInstance(ReconnectCall.class);
+			call = new ReconnectCall();
+			serviceRegistry.injectServicesInto(call);
 			call.setParticipant(participant);
 			call.setStartDateTime(dateTime);
-			container.persistIfNotAlready(call);
-			container.flush();
+			repositoryService.persist(call);
 			break;
 		case Survey:
-			call = container.newTransientInstance(SurveyCall.class);
+			call = new SurveyCall();
+			serviceRegistry.injectServicesInto(call);
 			call.setParticipant(participant);
 			call.setStartDateTime(dateTime);
-			container.persistIfNotAlready(call);
-			container.flush();
+			repositoryService.persist(call);
 			break;
 		case Scheduled:
 			if (volunteer == null || dateTime == null) {
-				container.informUser("Volunteer and Date-time are both needed to create a Scheduled Call");
+				messageService.informUser("Volunteer and Date-time are both needed to create a Scheduled Call");
 			} else {
 				call = createScheduledCall(volunteer, participant, dateTime);
 			}
@@ -133,10 +121,10 @@ public class Calls {
 	public List<CareCall> findCareCalls(
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Active Participant") final Participant participant) {
 		if (participant != null) {
-			return container.allMatches(
+			return repositoryService.allMatches(
 					new QueryDefault<>(CareCall.class, "findCareCallsByParticipant", "participant", participant));
 		} else {
-			return container.allMatches(new QueryDefault<>(CareCall.class, "findCareCalls"));
+			return repositoryService.allMatches(new QueryDefault<>(CareCall.class, "findCareCalls"));
 		}
 	}
 
@@ -149,10 +137,10 @@ public class Calls {
 	public List<ReconnectCall> findReconnectCalls(
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Participant") final Participant participant) {
 		if (participant != null) {
-			return container.allMatches(new QueryDefault<>(ReconnectCall.class, "findReconnectCallsByParticipant",
+			return repositoryService.allMatches(new QueryDefault<>(ReconnectCall.class, "findReconnectCallsByParticipant",
 					"participant", participant));
 		} else {
-			return container.allMatches(new QueryDefault<>(ReconnectCall.class, "findReconnectCalls"));
+			return repositoryService.allMatches(new QueryDefault<>(ReconnectCall.class, "findReconnectCalls"));
 		}
 	}
 
@@ -165,10 +153,10 @@ public class Calls {
 	public List<SurveyCall> findSurveyCalls(
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Active Participant") final Participant participant) {
 		if (participant != null) {
-			return container.allMatches(
+			return repositoryService.allMatches(
 					new QueryDefault<>(SurveyCall.class, "findSurveyCallsByParticipant", "participant", participant));
 		} else {
-			return container.allMatches(new QueryDefault<>(SurveyCall.class, "findSurveyCalls"));
+			return repositoryService.allMatches(new QueryDefault<>(SurveyCall.class, "findSurveyCalls"));
 		}
 	}
 
@@ -182,16 +170,16 @@ public class Calls {
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Participant") final Participant participant,
 			@Parameter(optionality = Optionality.OPTIONAL) final Volunteer volunteer) {
 		if (volunteer != null && participant != null) {
-			return container.allMatches(new QueryDefault<>(ScheduledCall.class,
+			return repositoryService.allMatches(new QueryDefault<>(ScheduledCall.class,
 					"findScheduledCallsByParticipantAndVolunteer", "participant", participant, "volunteer", volunteer));
 		} else if (volunteer != null) {
-			return container.allMatches(
+			return repositoryService.allMatches(
 					new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByVolunteer", "volunteer", volunteer));
 		} else if (participant != null) {
-			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipant",
+			return repositoryService.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipant",
 					"participant", participant));
 		} else {
-			return container.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCalls"));
+			return repositoryService.allMatches(new QueryDefault<>(ScheduledCall.class, "findScheduledCalls"));
 		}
 	}
 
@@ -208,7 +196,7 @@ public class Calls {
 	public List<Call> listCallsInPeriod(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Period") LocalDate start,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "End Period") LocalDate end) {
-		return container.allMatches(new QueryDefault<>(Call.class, "findCallsInPeriod", "startDateTime",
+		return repositoryService.allMatches(new QueryDefault<>(Call.class, "findCallsInPeriod", "startDateTime",
 				start.toDateTimeAtStartOfDay(), "endDateTime", end.toDateTime(new LocalTime(23, 59))));
 	}
 
@@ -216,7 +204,7 @@ public class Calls {
 	public List<ScheduledCall> findScheduledCallsForParticipant(final Participant participant) {
 		if (participant == null)
 			return null;
-		return container.allMatches(
+		return repositoryService.allMatches(
 				new QueryDefault<>(ScheduledCall.class, "findScheduledCallsByParticipant", "participant", participant));
 	}
 
@@ -224,7 +212,7 @@ public class Calls {
 	@MemberOrder(sequence = "11")
 	public List<CalendarDayCallSchedule> listDailyCallSchedulesForVolunteer(
 			@Parameter(optionality = Optionality.MANDATORY) final Volunteer volunteer) {
-		return container.allMatches(new QueryDefault<>(CalendarDayCallSchedule.class, "findCallScheduleByVolunteer",
+		return repositoryService.allMatches(new QueryDefault<>(CalendarDayCallSchedule.class, "findCallScheduleByVolunteer",
 				"volunteer", volunteer));
 	}
 
@@ -261,12 +249,12 @@ public class Calls {
 	@Programmatic
 	public CalendarDayCallSchedule createCalendarDayCallSchedule(
 			final @Parameter(optionality = Optionality.MANDATORY) LocalDate date, final Volunteer volunteer) {
-		CalendarDayCallSchedule schedule = container.newTransientInstance(CalendarDayCallSchedule.class);
+		CalendarDayCallSchedule schedule = new CalendarDayCallSchedule();
+		serviceRegistry.injectServicesInto(schedule);
 		schedule.setCalendarDate(date);
 		schedule.setAllocatedVolunteer(volunteer);
 		schedule.setRegion(volunteer.getRegion());
-		container.persistIfNotAlready(schedule);
-		container.flush();
+		repositoryService.persist(schedule);
 		return schedule;
 	}
 
@@ -345,32 +333,29 @@ public class Calls {
 	ScheduledCall createScheduledCall(CalendarDayCallSchedule callSchedule, Participant participant, LocalTime time) {
 		if (callSchedule == null || participant == null || time == null)
 			return null;
-		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
+		ScheduledCall call = new ScheduledCall();
+		serviceRegistry.injectServicesInto(call);
 		call.setParticipant(participant);
 		call.setAllocatedVolunteer(callSchedule.getAllocatedVolunteer());
-		// call.setStatus(ScheduledCallStatus.Scheduled);
 		call.setScheduledDateTime(callSchedule.getCalendarDate().toDateTime(time));
 		callSchedule.addCall(call);
-		container.persistIfNotAlready(call);
-		container.flush();
+		repositoryService.persist(call);
 		return call;
 	}
 
 	@Programmatic
 	public void deleteCall(Call call) {
-		container.removeIfNotAlready(call);
-		container.flush();
+		repositoryService.remove(call);
 	}
 
 	@Programmatic
 	public ScheduledCall createScheduledCallWithoutSchedule(Participant participant, Volunteer volunteer) {
-		ScheduledCall call = container.newTransientInstance(ScheduledCall.class);
+		ScheduledCall call = new ScheduledCall();
+		serviceRegistry.injectServicesInto(call);
 		call.setParticipant(participant);
 		call.setAllocatedVolunteer(volunteer);
-		// call.setStatus(ScheduledCallStatus.Scheduled);
 		call.setRegion(participant.getRegion());
-		container.persistIfNotAlready(call);
-		container.flush();
+		repositoryService.persist(call);
 		return call;
 	}
 
@@ -379,12 +364,11 @@ public class Calls {
 			Participant participant) {
 		if (volunteer == null || participant == null)
 			return null;
-		RegularScheduledCallAllocation allocation = container
-				.newTransientInstance(RegularScheduledCallAllocation.class);
+		RegularScheduledCallAllocation allocation = new RegularScheduledCallAllocation();
+		serviceRegistry.injectServicesInto(allocation);
 		allocation.setParticipant(participant);
 		allocation.setVolunteer(volunteer);
-		container.persistIfNotAlready(allocation);
-		container.flush();
+		repositoryService.persist(allocation);
 		volunteer.getCallAllocations().add(allocation);
 		participant.getCallAllocations().add(allocation);
 		return allocation;
@@ -392,16 +376,22 @@ public class Calls {
 
 	@Programmatic
 	public void deleteRegularScheduledCallAllocation(RegularScheduledCallAllocation allocation) {
-		container.removeIfNotAlready(allocation);
+		repositoryService.remove(allocation);
 	}
 
-	@Inject
-	public DomainObjectContainer container;
 
 	@Inject
-	public Volunteers volunteersRepo;
+	protected Volunteers volunteersRepo;
 
 	@Inject
-	public Participants participantsRepo;
+	protected Participants participantsRepo;
 
+	@Inject
+	protected RepositoryService repositoryService;
+	
+	@Inject
+	protected ServiceRegistry2 serviceRegistry;
+	
+	@Inject
+	protected MessageService messageService;
 }

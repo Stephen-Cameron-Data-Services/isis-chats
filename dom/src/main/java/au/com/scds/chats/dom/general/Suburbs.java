@@ -20,19 +20,21 @@ package au.com.scds.chats.dom.general;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
+import org.apache.isis.applib.services.message.MessageService;
+import org.apache.isis.applib.services.registry.ServiceRegistry2;
+import org.apache.isis.applib.services.repository.RepositoryService;
 
 @DomainService(nature = NatureOfService.DOMAIN, repositoryFor = Suburb.class)
-// @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration",
-// menuOrder = "100.1")
 public class Suburbs {
 
 	@Action(semantics = SemanticsOf.SAFE)
-	// @ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	// @MemberOrder(sequence = "2")
 	public Suburb createSuburb(final @ParameterLayout(named = "Activity Type Name") String name, Integer postcode) {
 		final Suburb obj = create(name, postcode);
 		return obj;
@@ -43,9 +45,9 @@ public class Suburbs {
 		if (name == null && postcode == null)
 			return null;
 		else if (postcode == null)
-			return container.firstMatch(new QueryDefault<>(Suburb.class, "findSuburbsWithNamesLike", "name", name));
+			return repositoryService.firstMatch(new QueryDefault<>(Suburb.class, "findSuburbsWithNamesLike", "name", name));
 		else
-			return container.firstMatch(new QueryDefault<>(Suburb.class, "findSuburbByNameAndPostcode", "name", name,
+			return repositoryService.firstMatch(new QueryDefault<>(Suburb.class, "findSuburbByNameAndPostcode", "name", name,
 					"postcode", postcode));
 	}
 
@@ -60,20 +62,18 @@ public class Suburbs {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	// @ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	// @MemberOrder(sequence = "1")
 	public List<Suburb> listAllSuburbs() {
-		List<Suburb> list = container.allMatches(new QueryDefault<>(Suburb.class, "findAllSuburbs"));
+		List<Suburb> list = repositoryService.allMatches(new QueryDefault<>(Suburb.class, "findAllSuburbs"));
 		return list;
 	}
 
 	@Programmatic
 	public Suburb create(String name, Integer postcode) {
-		final Suburb obj = container.newTransientInstance(Suburb.class);
+		final Suburb obj = new Suburb();
+		serviceRegistry.injectServicesInto(obj);
 		obj.setName(name);
 		obj.setPostcode(postcode);
-		container.persistIfNotAlready(obj);
-		container.flush();
+		repositoryService.persist(obj);
 		return obj;
 	}
 
@@ -97,10 +97,12 @@ public class Suburbs {
 		if (search == null)
 			return null;
 		else
-			return container.allMatches(new QueryDefault<>(String.class, "findSuburbNamesLike", "name", search));
+			return repositoryService.allMatches(new QueryDefault<>(String.class, "findSuburbNamesLike", "name", search));
 	}
 
-	@javax.inject.Inject
-	DomainObjectContainer container;
-
+	@Inject
+	protected RepositoryService repositoryService;
+	
+	@Inject
+	protected ServiceRegistry2 serviceRegistry;
 }

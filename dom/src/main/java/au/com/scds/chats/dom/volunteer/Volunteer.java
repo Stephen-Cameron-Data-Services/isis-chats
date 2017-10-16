@@ -49,7 +49,7 @@ import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.annotation.Where;
 //import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
 import org.apache.isis.applib.services.i18n.TranslatableString;
-import org.incode.module.note.dom.api.notable.Notable;
+import org.apache.isis.applib.services.message.MessageService;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 import org.joda.time.DateTime;
@@ -82,7 +82,7 @@ import au.com.scds.chats.dom.participant.Participants;
 
 @Unique(name = "Volunteer_UNQ", members = { "person", "region" })
 @DomainObject()
-public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* Locatable */ Comparable<Volunteer> {
+public class Volunteer extends AbstractChatsDomainEntity implements /* Locatable */ Comparable<Volunteer> {
 
 	private Person person;
 	private Status status = Status.ACTIVE;
@@ -205,7 +205,7 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* 
 		try {
 			schedulesRepo.createScheduledCall(this, participant, dateTime);
 		} catch (Exception e) {
-			container.warnUser(e.getMessage());
+			messageService.warnUser(e.getMessage());
 		}
 		return this;
 	}
@@ -342,5 +342,8 @@ public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* 
 
 	@Inject
 	protected Participants participantsRepo;
+	
+	@Inject
+	protected MessageService messageService;
 
 }

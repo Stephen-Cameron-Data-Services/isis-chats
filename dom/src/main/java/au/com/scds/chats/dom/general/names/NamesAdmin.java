@@ -23,7 +23,7 @@ import java.util.List;
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 
-@DomainService()
+@DomainService(objectType="chats.namesadmin", nature=NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.14")
 public class NamesAdmin {
 

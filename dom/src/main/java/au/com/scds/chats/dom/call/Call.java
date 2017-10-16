@@ -43,13 +43,6 @@ public abstract class Call extends StartAndFinishDateTime {
 	private Participant participant;
 	private String summaryNotes;
 
-	public Call() {
-	}
-
-	public Call(DomainObjectContainer container) {
-		this.container = container;
-	}
-
 	public String title() {
 		return "Call to: " + getParticipant().getFullName();
 	}
@@ -103,16 +96,11 @@ public abstract class Call extends StartAndFinishDateTime {
 			return null;
 		}
 	}
+
+	@Inject()
+	protected ClockService clockService;
 	
 	@Inject()
-	DomainObjectContainer container;
-
-	@Inject()
-	ClockService clockService;
-	
-	@Inject()
-	Volunteers volunteersRepo;
-
-
+	protected Volunteers volunteersRepo;
 
 }

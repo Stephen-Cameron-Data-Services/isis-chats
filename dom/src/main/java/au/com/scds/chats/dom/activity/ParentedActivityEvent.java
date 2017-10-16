@@ -46,10 +46,6 @@ public class ParentedActivityEvent extends ActivityEvent {
 		super();
 	}
 
-	public ParentedActivityEvent(DomainObjectContainer container, Participants participants) {
-		super(container, participants);
-	}
-
 	public String iconName() {
 		return (getCancelled() ? "Cancelled" : "");
 	}

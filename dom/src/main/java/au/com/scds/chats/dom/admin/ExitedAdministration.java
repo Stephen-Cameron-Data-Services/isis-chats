@@ -20,7 +20,7 @@ import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.Volunteers;
 
-@DomainService(nature=NatureOfService.VIEW_MENU_ONLY)
+@DomainService(objectType = "chats.exitedadministration", nature=NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "400.1")
 public class ExitedAdministration {
 

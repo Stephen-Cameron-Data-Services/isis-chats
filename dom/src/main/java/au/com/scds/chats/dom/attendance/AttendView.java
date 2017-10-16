@@ -1,10 +1,11 @@
 package au.com.scds.chats.dom.attendance;
 
+import org.apache.isis.applib.annotation.DomainObject;
+import org.apache.isis.applib.annotation.Nature;
 import org.apache.isis.applib.annotation.ViewModel;
 import org.joda.time.DateTime;
 
-@ViewModel
-// use this to avoid bulk updates appearing
+@DomainObject(objectType = "chats.attendview", nature = Nature.VIEW_MODEL)
 public class AttendView {
 
 	private Attend attend;

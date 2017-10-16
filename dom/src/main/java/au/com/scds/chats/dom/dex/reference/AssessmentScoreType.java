@@ -14,24 +14,26 @@ import javax.jdo.annotations.PrimaryKey;
 import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.annotation.CollectionLayout;
+import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.RenderType;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
+@PersistenceCapable(identityType = IdentityType.APPLICATION, schema = "chats", table = "assessmentscoretype")
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-@Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.chats.dom.dex.reference.AssessmentScoreType")
+@Query(name = "all", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.dex.reference.AssessmentScoreType")
+@DomainObject()
 public class AssessmentScoreType {
 
 	private String scoreType;
 	private String applicableFor;
-	@Persistent(mappedBy="scoreType")
+	@Persistent(mappedBy = "scoreType")
 	private SortedSet<AssessmentDomain> domains = new TreeSet<>();
 
-	public String title(){
+	public String title() {
 		return getScoreType();
 	}
-	
+
 	@Property()
 	@MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
@@ -57,7 +59,7 @@ public class AssessmentScoreType {
 
 	@Property()
 	@MemberOrder(sequence = "3")
-	@CollectionLayout(render=RenderType.EAGERLY)
+	@CollectionLayout(render = RenderType.EAGERLY)
 	public SortedSet<AssessmentDomain> getDomains() {
 		return domains;
 	}

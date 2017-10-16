@@ -24,16 +24,15 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.InheritanceStrategy;
 
-import org.apache.isis.applib.AbstractSubscriber;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainService;
+import org.apache.isis.applib.annotation.Mixin;
 import org.apache.isis.applib.annotation.NatureOfService;
-import org.apache.isis.applib.annotation.Programmatic;
-import org.incode.module.note.dom.api.notable.Notable;
 import org.incode.module.note.dom.impl.notablelink.NotableLink;
-import org.incode.module.note.dom.impl.note.NoteRepository;
-
-import com.google.common.eventbus.Subscribe;
+import org.incode.module.note.dom.impl.notablelink.NotableLinkRepository;
+import org.incode.module.note.dom.impl.note.T_addNote;
+import org.incode.module.note.dom.impl.note.T_notes;
+import org.incode.module.note.dom.impl.note.T_removeNote;
 
 import au.com.scds.chats.dom.activity.ActivityEvent;
 
@@ -43,34 +42,46 @@ import au.com.scds.chats.dom.activity.ActivityEvent;
 @DomainObject()
 public class NoteableLinkForActivityEvent extends NotableLink {
 
-	@DomainService(nature = NatureOfService.DOMAIN)
-	public static class InstantiationSubscriber extends AbstractSubscriber {
-		@Programmatic
-		@Subscribe
-		public void on(final InstantiateEvent ev) {
-			if (ev.getPolymorphicReference() instanceof ActivityEvent) {
-				ev.setSubtype(NoteableLinkForActivityEvent.class);
-			}
-		}
-	}
+    private ActivityEvent object;
+    @Column( allowsNull = "false", name = "object_id" )
+    public ActivityEvent getObject() {                                         
+        return object;
+    }
+    public void setObject(final ActivityEvent object) {
+        this.object = object;
+    }
 
-	@Override
-	public void setPolymorphicReference(final Notable polymorphicReference) {
-		super.setPolymorphicReference(polymorphicReference);
-		setActivityEvent((ActivityEvent) polymorphicReference);
-	}
+    public Object getNotable() {                                                    
+        return getObject();
+    }
+    protected void setNotable(final Object object) {
+        setObject((ActivityEvent) object);
+    }
 
-	private ActivityEvent activityEvent;
+    @DomainService(nature = NatureOfService.DOMAIN)
+    public static class SubtypeProvider
+                extends NotableLinkRepository.SubtypeProviderAbstract {             
+        public SubtypeProvider() {
+            super(ActivityEvent.class, NoteableLinkForActivityEvent.class);
+        }
+    }
 
-	@Column(allowsNull = "false", name = "activityEventId")
-	public ActivityEvent getActivityEvent() {
-		return activityEvent;
-	}
-
-	public void setActivityEvent(final ActivityEvent activityEvent) {
-		this.activityEvent = activityEvent;
-	}
-
-	@javax.inject.Inject
-	private NoteRepository noteRepository;
+    @Mixin
+    public static class _notes extends T_notes<ActivityEvent> {                    
+        public _notes(final ActivityEvent notable) {
+            super(notable);
+        }
+    }
+    @Mixin
+    public static class _addNote extends T_addNote<ActivityEvent> {
+        public _addNote(final ActivityEvent notable) {
+            super(notable);
+        }
+    }
+    @Mixin
+    public static class _removeNote extends T_removeNote<ActivityEvent> {
+        public _removeNote(final ActivityEvent notable) {
+            super(notable);
+        }
+    }
 }

@@ -24,16 +24,16 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.InheritanceStrategy;
 
-import org.apache.isis.applib.AbstractSubscriber;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainService;
+import org.apache.isis.applib.annotation.Mixin;
 import org.apache.isis.applib.annotation.NatureOfService;
-import org.apache.isis.applib.annotation.Programmatic;
-import org.incode.module.note.dom.api.notable.Notable;
-import org.incode.module.note.dom.impl.notablelink.NotableLink;
-import org.incode.module.note.dom.impl.note.NoteRepository;
 
-import com.google.common.eventbus.Subscribe;
+import org.incode.module.note.dom.impl.notablelink.NotableLink;
+import org.incode.module.note.dom.impl.notablelink.NotableLinkRepository;
+import org.incode.module.note.dom.impl.note.T_addNote;
+import org.incode.module.note.dom.impl.note.T_notes;
+import org.incode.module.note.dom.impl.note.T_removeNote;
 
 import au.com.scds.chats.dom.volunteer.Volunteer;
 
@@ -43,34 +43,46 @@ import au.com.scds.chats.dom.volunteer.Volunteer;
 @DomainObject()
 public class NoteableLinkForVolunteer extends NotableLink {
 
-	@DomainService(nature = NatureOfService.DOMAIN)
-	public static class InstantiationSubscriber extends AbstractSubscriber {
-		@Programmatic
-		@Subscribe
-		public void on(final InstantiateEvent ev) {
-			if (ev.getPolymorphicReference() instanceof Volunteer) {
-				ev.setSubtype(NoteableLinkForVolunteer.class);
-			}
-		}
-	}
+    private Volunteer object;
+    @Column( allowsNull = "false", name = "object_id" )
+    public Volunteer getObject() {                                         
+        return object;
+    }
+    public void setObject(final Volunteer object) {
+        this.object = object;
+    }
 
-	@Override
-	public void setPolymorphicReference(final Notable polymorphicReference) {
-		super.setPolymorphicReference(polymorphicReference);
-		setVolunteer((Volunteer) polymorphicReference);
-	}
+    public Object getNotable() {                                                    
+        return getObject();
+    }
+    protected void setNotable(final Object object) {
+        setObject((Volunteer) object);
+    }
 
-	private Volunteer volunteer;
+    @DomainService(nature = NatureOfService.DOMAIN)
+    public static class SubtypeProvider
+                extends NotableLinkRepository.SubtypeProviderAbstract {             
+        public SubtypeProvider() {
+            super(Volunteer.class, NoteableLinkForVolunteer.class);
+        }
+    }
 
-	@Column(allowsNull = "false", name = "volunteerId")
-	public Volunteer getVolunteer() {
-		return volunteer;
-	}
-
-	public void setVolunteer(final Volunteer volunteer) {
-		this.volunteer = volunteer;
-	}
-
-	@javax.inject.Inject
-	private NoteRepository noteRepository;
+    @Mixin
+    public static class _notes extends T_notes<Volunteer> {                    
+        public _notes(final Volunteer notable) {
+            super(notable);
+        }
+    }
+    @Mixin
+    public static class _addNote extends T_addNote<Volunteer> {
+        public _addNote(final Volunteer notable) {
+            super(notable);
+        }
+    }
+    @Mixin
+    public static class _removeNote extends T_removeNote<Volunteer> {
+        public _removeNote(final Volunteer notable) {
+            super(notable);
+        }
+    }
 }

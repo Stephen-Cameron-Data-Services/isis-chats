@@ -52,6 +52,7 @@ import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.i18n.TranslatableString;
+import org.apache.isis.applib.services.message.MessageService;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEvent;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEventable;
 import org.joda.time.DateTime;
@@ -90,19 +91,6 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity
 	@Persistent(mappedBy = "callSchedule")
 	@Order(column = "cs_idx")
 	protected List<VolunteeredTimeForCalls> volunteeredTimes = new ArrayList<>();
-
-	public CalendarDayCallSchedule() {
-
-	}
-
-	// for mock testing
-	public CalendarDayCallSchedule(DomainObjectContainer container, Calls schedules, Participants participants,
-			Volunteers volunteers) {
-		this.container = container;
-		this.callsRepo = schedules;
-		this.participantsRepo = participants;
-		this.volunteersRepo = volunteers;
-	}
 
 	public String title() {
 		return "Total: " + getTotalCalls() + "; Completed: " + getCompletedCalls();
@@ -251,7 +239,7 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity
 	public CalendarDayCallSchedule removeAndDeleteCall(final ScheduledCall call) {
 		if (call != null && getScheduledCalls().contains(call)) {
 			if (call.getIsCompleted()) {
-				container.informUser("call is completed and cannot be deleted");
+				messageService.informUser("call is completed and cannot be deleted");
 			} else {
 				callsRepo.deleteCall(call);
 			}
@@ -273,7 +261,7 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity
 	public synchronized void releaseCall(final ScheduledCall call) {
 		if (call != null && getScheduledCalls().contains(call)) {
 			if (call.getIsCompleted()) {
-				container.informUser("call is Completed and cannot be released from schedule");
+				messageService.informUser("call is Completed and cannot be released from schedule");
 			} else {
 				getScheduledCalls().remove(call);
 				call.setCallSchedule(null);
@@ -300,15 +288,15 @@ public class CalendarDayCallSchedule extends AbstractChatsDomainEntity
 	}
 
 	@Inject()
-	Calls callsRepo;
+	protected Calls callsRepo;
+	
+	@Inject
+	protected MessageService messageService;
 
 	@Inject()
-	DomainObjectContainer container;
+	protected Participants participantsRepo;
 
 	@Inject()
-	Participants participantsRepo;
-
-	@Inject()
-	Volunteers volunteersRepo;
+	protected Volunteers volunteersRepo;
 
 }

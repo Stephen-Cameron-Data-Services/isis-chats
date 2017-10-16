@@ -39,6 +39,7 @@ import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.MinLength;
+import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
@@ -50,6 +51,9 @@ import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
 import org.apache.isis.applib.security.UserMemento;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
+import org.apache.isis.applib.services.message.MessageService;
+import org.apache.isis.applib.services.registry.ServiceRegistry2;
+import org.apache.isis.applib.services.repository.RepositoryService;
 import org.apache.isis.applib.services.user.UserService;
 import org.isisaddons.module.security.dom.user.ApplicationUser;
 import org.isisaddons.module.security.dom.user.ApplicationUserRepository;
@@ -67,21 +71,13 @@ import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
 
-@DomainService(repositoryFor = Participant.class)
+@DomainService(objectType="chats.participants", repositoryFor = Participant.class, nature=NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(named = "Participants", menuOrder = "20")
 public class Participants {
 
-	public Participants() {
-	}
-
-	public Participants(DomainObjectContainer container, Persons persons) {
-		this.container = container;
-		this.persons = persons;
-	}
-
 	@Programmatic
 	public List<Participant> listAll() {
-		return container.allInstances(Participant.class);
+		return repositoryService.allInstances(Participant.class);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
@@ -89,15 +85,15 @@ public class Participants {
 	public List<Participant> listActiveParticipants(@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup) {
 		switch (ageGroup) {
 		case All:
-			return container.allMatches(
+			return repositoryService.allMatches(
 					new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.ACTIVE));
 		case Under_Sixty_Five:
 			LocalDate lowerLimit = LocalDate.now().minusYears(65);
-			return container.allMatches(new QueryDefault<>(Participant.class,
+			return repositoryService.allMatches(new QueryDefault<>(Participant.class,
 					"listParticipantsByStatusAndBirthdateAbove", "status", Status.ACTIVE, "lowerLimit", lowerLimit));
 		case Sixty_Five_and_Over:
 			LocalDate upperLimit = LocalDate.now().minusYears(65).plusDays(1);
-			return container.allMatches(new QueryDefault<>(Participant.class,
+			return repositoryService.allMatches(new QueryDefault<>(Participant.class,
 					"listParticipantsByStatusAndBirthdateBelow", "status", Status.ACTIVE, "upperLimit", upperLimit));
 		default:
 			return null;
@@ -111,21 +107,21 @@ public class Participants {
 	@Action(semantics = SemanticsOf.SAFE)
 	@MemberOrder(sequence = "10.3")
 	public List<Participant> listInactiveParticipants() {
-		return container.allMatches(
+		return repositoryService.allMatches(
 				new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.INACTIVE));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@MemberOrder(sequence = "10.4")
 	public List<Participant> listToExitParticipants() {
-		return container.allMatches(
+		return repositoryService.allMatches(
 				new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.TO_EXIT));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@MemberOrder(sequence = "10.2")
 	public List<Participant> listExitedParticipants() {
-		return container
+		return repositoryService
 				.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status", Status.EXITED));
 	}
 
@@ -134,7 +130,7 @@ public class Participants {
 			@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup, String search) {
 		if (search != null) {
 			// search by name then filter by age
-			List<Participant> temp = container
+			List<Participant> temp = repositoryService
 					.allMatches(new QueryDefault<>(Participant.class, "findParticipantsByStatusAndToUpperCaseNameStart",
 							"status", Status.ACTIVE.toString(), "start", search.toUpperCase()));
 			ArrayList<Participant> temp2 = new ArrayList<>();
@@ -156,16 +152,16 @@ public class Participants {
 			// filter by age on database
 			switch (ageGroup) {
 			case All:
-				return container.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status",
+				return repositoryService.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatus", "status",
 						Status.ACTIVE.toString()));
 			case Under_Sixty_Five:
 				LocalDate lowerLimit = LocalDate.now().minusYears(65);
-				return container
+				return repositoryService
 						.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatusAndBirthdateAbove",
 								"status", Status.ACTIVE.toString(), "lowerLimit", lowerLimit));
 			case Sixty_Five_and_Over:
 				LocalDate upperLimit = LocalDate.now().minusYears(65).plusDays(1);
-				return container
+				return repositoryService
 						.allMatches(new QueryDefault<>(Participant.class, "listParticipantsByStatusAndBirthdateBelow",
 								"status", Status.ACTIVE.toString(), "upperLimit", upperLimit));
 			default:
@@ -176,28 +172,28 @@ public class Participants {
 
 	@Programmatic
 	public List<Participant> listInactiveParticipantIdentities(String search) {
-		return container
+		return repositoryService
 				.allMatches(new QueryDefault<>(Participant.class, "findParticipantsByStatusAndToUpperCaseNameStart",
 						"status", Status.INACTIVE.toString(), "start", search.toUpperCase()));
 	}
 
 	@Programmatic
 	public List<Participant> listAllExitedParticipantIdentities(String search) {
-		return container
+		return repositoryService
 				.allMatches(new QueryDefault<>(Participant.class, "FindParticipantsByStatusAndToUpperCaseNameStart",
 						"status", Status.EXITED.toString(), "start", search.toUpperCase()));
 	}
 
 	@Programmatic
 	public List<Participant> listAllParticipantIdentities() {
-		return container.allMatches(new QueryDefault<>(Participant.class, "listParticipants"));
+		return repositoryService.allMatches(new QueryDefault<>(Participant.class, "listParticipants"));
 	}
 
 	@Programmatic
 	public Participant getParticipant(Person person) {
 		if (person == null)
 			return null;
-		return container
+		return repositoryService
 				.firstMatch(new QueryDefault<>(Participant.class, "findParticipantForPerson", "person", person));
 	}
 
@@ -206,7 +202,7 @@ public class Participants {
 	@MemberOrder(sequence = "3")
 	public List<Participant> findBySurname(@ParameterLayout(named = "Surname") final String surname,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Status") final Status status) {
-		List<Participant> list1 = container
+		List<Participant> list1 = repositoryService
 				.allMatches(new QueryDefault<>(Participant.class, "findParticipantsBySurname", "surname", surname));
 		List<Participant> list2 = new ArrayList<>(list1);
 		if (status != null) {
@@ -270,7 +266,7 @@ public class Participants {
 		String n1 = firstname.trim();
 		String n2 = surname.trim();
 		// check of existing Participant
-		List<Participant> participants = container
+		List<Participant> participants = repositoryService
 				.allMatches(new QueryDefault<>(Participant.class, "findParticipantsBySurname", "surname", n2));
 		for (Participant participant : participants) {
 			if (participant.getPerson().getFirstname().equalsIgnoreCase(n1)
@@ -278,12 +274,12 @@ public class Participants {
 					&& participant.getPerson().getSex().equals(sex)) {
 				if (region != null) {
 					if (region.equals(participant.getRegion())) {
-						container.informUser(
+						messageService.informUser(
 								"An existing Participant with same first-name, surname, date-of-birth, sex and region properties has been found");
 						return participant;
 					}
 				} else {
-					container.informUser(
+					messageService.informUser(
 							"An existing Participant with same first-name, surname, date-of-birth and sex properties has been found");
 					return participant;
 				}
@@ -298,62 +294,61 @@ public class Participants {
 				System.out.print(e.getMessage());
 			}
 		}
-		final Participant participant = container.newTransientInstance(Participant.class);
+		final Participant participant = new Participant();
+		serviceRegistry.injectServicesInto(participant);
 		participant.setPerson(person);
 		participant.setRegion(person.getRegion());
-		container.persistIfNotAlready(participant);
-		container.flush();
+		repositoryService.persist(participant);
 		return participant;
 	}
 
 	@Programmatic
 	public Participant newParticipant(final Person person) {
-		Participant p = container.newTransientInstance(Participant.class);
+		Participant p = new Participant();
+		serviceRegistry.injectServicesInto(p);
 		p.setPerson(person);
 		p.setRegion(person.getRegion());
-		container.persistIfNotAlready(p);
-		container.flush();
+		repositoryService.persist(p);
 		return p;
 	}
 
 	@Programmatic
 	public Participation createParticipation(Activity activity, Participant participant) {
-		Participation note = container.newTransientInstance(Participation.class);
-		note.setActivity(activity);
-		note.setParticipant(participant);
-		activity.addParticipation(note);
-		participant.addParticipation(note);
-		container.persistIfNotAlready(note);
-		container.flush();
-		return note;
+		Participation p = new Participation();
+		serviceRegistry.injectServicesInto(p);
+		p.setActivity(activity);
+		p.setParticipant(participant);
+		activity.addParticipation(p);
+		participant.addParticipation(p);
+		repositoryService.persist(p);
+		return p;
 	}
 
 	@Programmatic
 	public WaitListedParticipant createWaitListedParticipant(Activity activity, Participant participant) {
-		WaitListedParticipant waitListed = container.newTransientInstance(WaitListedParticipant.class);
+		WaitListedParticipant waitListed = new WaitListedParticipant();
+		serviceRegistry.injectServicesInto(waitListed);
 		waitListed.setActivity(activity);
 		waitListed.setParticipant(participant);
-		container.persistIfNotAlready(waitListed);
-		container.flush();
+		repositoryService.persist(waitListed);
 		return waitListed;
 	}
 
 	@Programmatic
 	public void deleteWaitListedParticipant(WaitListedParticipant waitListed) {
-		container.removeIfNotAlready(waitListed);
-		container.flush();
+		repositoryService.remove(waitListed);
 	}
 
 	@Programmatic
 	public Participation createParticipation(Activity activity, Participant participant, Region region) {
-		Participation note = container.newTransientInstance(Participation.class);
+		Participation note = new Participation();
+		serviceRegistry.injectServicesInto(note);		
 		note.setActivity(activity);
 		note.setParticipant(participant);
 		note.setRegion(region);
 		activity.addParticipation(note);
 		participant.addParticipation(note);
-		container.persistIfNotAlready(note);
-		container.flush();
+		repositoryService.persist(note);
 		return note;
 	}
 
@@ -364,30 +359,34 @@ public class Participants {
 		// means unit test no longer works.
 		// note.getActivity().removeParticipation(note);
 		// note.getParticipant().removeParticipation(note);
-		container.removeIfNotAlready(note);
-		container.flush();
+		repositoryService.remove(note);
 	}
 
 	@Programmatic
 	public ParticipantNote createParticipantNote(Participant participant) {
-		ParticipantNote note = container.newTransientInstance(ParticipantNote.class);
+		ParticipantNote note = new ParticipantNote();
+		serviceRegistry.injectServicesInto(note);
 		note.setParticipant(participant);
-		container.persistIfNotAlready(note);
-		container.flush();
+		repositoryService.persist(note);
 		return note;
 	}
 
 	@Programmatic
 	public void deleteParticipantNote(ParticipantNote note) {
-		container.removeIfNotAlready(note);
-		container.flush();
+		repositoryService.remove(note);
 	}
 
 	@Inject
 	protected Persons persons;
 
 	@Inject
-	protected DomainObjectContainer container;
+	protected RepositoryService repositoryService;
+	
+	@Inject
+	protected ServiceRegistry2 serviceRegistry;
+	
+	@Inject
+	protected MessageService messageService;
 
 	@Inject
 	protected IsisJdoSupport isisJdoSupport;

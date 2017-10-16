@@ -40,6 +40,9 @@ import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
+import org.apache.isis.applib.services.message.MessageService;
+import org.apache.isis.applib.services.registry.ServiceRegistry2;
+import org.apache.isis.applib.services.repository.RepositoryService;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
@@ -49,28 +52,20 @@ import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.Participants;
 
-@DomainService(repositoryFor = AttendanceList.class, nature = NatureOfService.VIEW_MENU_ONLY)
+@DomainService(objectType="chats.attendancelists", repositoryFor = AttendanceList.class, nature = NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(named = "Attendances", menuOrder = "40")
 public class AttendanceLists {
-
-	public AttendanceLists() {
-	}
-
-	// used for testing only
-	public AttendanceLists(DomainObjectContainer container) {
-		this.container = container;
-	}
 
 	@Programmatic
 	public AttendanceList createActivityAttendanceList(
 			@ParameterLayout(named = "Activity") final ActivityEvent activityEvent) {
 		if (activityEvent == null)
 			return null;
-		AttendanceList attendanceList = container.newTransientInstance(AttendanceList.class);
+		AttendanceList attendanceList = new AttendanceList();
+		serviceRegistry.injectServicesInto(attendanceList);
 		attendanceList.setParentActivity(activityEvent);
 		activityEvent.setAttendanceList(attendanceList);
-		container.persistIfNotAlready(attendanceList);
-		container.flush();
+		repositoryService.persist(attendanceList);
 		return attendanceList;
 	}
 
@@ -79,7 +74,8 @@ public class AttendanceLists {
 			final Participant participant, final Boolean attended) {
 		if (activity == null || participant == null)
 			return null;
-		Attend attend = container.newTransientInstance(Attend.class);
+		Attend attend = new Attend();
+		serviceRegistry.injectServicesInto(attend);
 		if (attendanceList != null)
 			attend.setParentList(attendanceList);
 		attend.setActivity(activity);
@@ -87,8 +83,7 @@ public class AttendanceLists {
 		attend.setParticipant(participant);
 		// set region for data-migration
 		attend.setRegion(activity.getRegion());
-		container.persistIfNotAlready(attend);
-		container.flush();
+		repositoryService.persist(attend);
 		if (attendanceList != null)
 			attendanceList.getAttends().add(attend);
 		activity.getAttends().add(attend);
@@ -98,8 +93,7 @@ public class AttendanceLists {
 	@Programmatic
 	public void deleteAttend(Attend attend) {
 		if (attend != null)
-			container.removeIfNotAlready(attend);
-			container.flush();
+			repositoryService.remove(attend);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
@@ -108,7 +102,7 @@ public class AttendanceLists {
 	public List<AttendanceList> listAttendanceListsInPeriod(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Period") LocalDate start,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "End Period") LocalDate end) {
-		return container.allMatches(new QueryDefault<>(AttendanceList.class, "findAttendanceListsInPeriod",
+		return repositoryService.allMatches(new QueryDefault<>(AttendanceList.class, "findAttendanceListsInPeriod",
 				"startDateTime", start.toDateTimeAtStartOfDay(), "endDateTime", end.toDateTime(new LocalTime(23, 59))));
 	}
 
@@ -117,7 +111,7 @@ public class AttendanceLists {
 	@MemberOrder(sequence = "2.0")
 	public List<AttendanceList> findAttendanceListsByActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity Name") String name) {
-		return container.allMatches(
+		return repositoryService.allMatches(
 				new QueryDefault<>(AttendanceList.class, "findAttendanceListsByActivityName", "name", name));
 	}
 
@@ -127,7 +121,7 @@ public class AttendanceLists {
 	public List<Attend> listAttendsInPeriod(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Period") LocalDate start,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "End Period") LocalDate end) {
-		return container.allMatches(new QueryDefault<>(Attend.class, "findAttendsInPeriod", "startDateTime",
+		return repositoryService.allMatches(new QueryDefault<>(Attend.class, "findAttendsInPeriod", "startDateTime",
 				start.toDateTimeAtStartOfDay(), "endDateTime", end.toDateTime(new LocalTime(23, 59))));
 	}
 
@@ -136,7 +130,7 @@ public class AttendanceLists {
 	@MemberOrder(sequence = "4.0")
 	public List<AttendView> findAttendsByActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity Name") String name) {
-		List<Attend> attends = container.allMatches(new QueryDefault<>(Attend.class, "findAttendsByActivityName", "name", name));
+		List<Attend> attends = repositoryService.allMatches(new QueryDefault<>(Attend.class, "findAttendsByActivityName", "name", name));
 		List<AttendView> views = new ArrayList<>();
 		for(Attend attend : attends){
 			AttendView v = new AttendView();
@@ -153,7 +147,7 @@ public class AttendanceLists {
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") Participant identity) {
 		if (identity == null)
 			return null;
-		List<Attend> attends = container.allMatches(new QueryDefault<>(Attend.class, "findAttendsByParticipant", "participant",identity));
+		List<Attend> attends = repositoryService.allMatches(new QueryDefault<>(Attend.class, "findAttendsByParticipant", "participant",identity));
 		List<AttendView> views = new ArrayList<>();
 		for(Attend attend : attends){
 			AttendView v = new AttendView();
@@ -167,20 +161,25 @@ public class AttendanceLists {
 		return participants.listActiveParticipantIdentities(AgeGroup.All, search);
 	}
 
-	@Inject
-	Participants participants;
-
-	@Inject
-	DomainObjectContainer container;
-
 	public void removeAttendFromList(Attend attend, AttendanceList attendanceList) {
 		if(attend != null && attendanceList != null){
 			if(attendanceList.getAttends().contains(attend)){
 				attendanceList.getAttends().remove(attend);
 				attend.setParentList(null);
-				container.flush();
 			}
 		}
 	}
+
+	@Inject
+	protected Participants participants;
+
+	@Inject
+	protected RepositoryService repositoryService;
+	
+	@Inject
+	protected ServiceRegistry2 serviceRegistry;
+	
+	@Inject
+	protected MessageService messageService;
 
 }

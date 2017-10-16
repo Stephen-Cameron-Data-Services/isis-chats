@@ -45,7 +45,9 @@ import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.actinvoc.ActionInvocationContext;
-
+import org.apache.isis.applib.services.message.MessageService;
+import org.apache.isis.applib.services.registry.ServiceRegistry2;
+import org.apache.isis.applib.services.repository.RepositoryService;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Period;
@@ -73,13 +75,6 @@ public class Attend extends StartAndFinishDateTime implements Comparable<Attend>
 	private TransportType arrivingTransportType;
 	private TransportType departingTransportType;
 
-	public Attend() {
-		super();
-	}
-
-	public Attend(DomainObjectContainer container) {
-		this.container = container;
-	}
 
 	public String title() {
 		return getParticipant().getFullName();

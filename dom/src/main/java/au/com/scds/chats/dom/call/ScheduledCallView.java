@@ -20,10 +20,12 @@ package au.com.scds.chats.dom.call;
 
 import java.util.Date;
 
+import org.apache.isis.applib.annotation.DomainObject;
+import org.apache.isis.applib.annotation.Nature;
 import org.apache.isis.applib.annotation.ViewModel;
 import org.joda.time.DateTime;
 
-@ViewModel()
+@DomainObject(objectType = "chats.scheduledcallview", nature = Nature.VIEW_MODEL)
 public class ScheduledCallView {
 
 	private ScheduledCall call;

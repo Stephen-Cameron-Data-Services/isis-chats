@@ -35,7 +35,7 @@ import org.apache.isis.applib.services.clock.ClockService;
 import org.apache.isis.applib.services.timestamp.Timestampable;
 
 import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
-import org.isisaddons.module.security.dom.tenancy.WithApplicationTenancy;
+import org.isisaddons.module.security.dom.tenancy.HasAtPath;
 import org.isisaddons.module.security.dom.user.ApplicationUser;
 import org.isisaddons.module.security.dom.user.ApplicationUserRepository;
 
@@ -50,9 +50,10 @@ import au.com.scds.chats.dom.general.names.Regions;
  * Has the 'Admin' section properties.
  * 
  */
+
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public abstract class AbstractChatsDomainEntity implements Timestampable, WithApplicationTenancy{
+public abstract class AbstractChatsDomainEntity implements Timestampable, HasAtPath{
 
 	private String createdBy;
 	private DateTime createdOn;
@@ -133,7 +134,7 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 			//always set the region of a new record off the user tenancy.
 			if (userRepository != null) {
 				ApplicationUser user = userRepository.findByUsername(updatedBy);
-				if (user != null && user.getTenancy() != null) {
+				if (user != null && user.getAtPath() != null) {
 					String name = regionNameOfApplicationUser(user);
 					Region region = regions.regionForName(name);
 					if (region != null)
@@ -154,7 +155,7 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 	
 	@Programmatic
 	public static String regionNameOfApplicationUser(ApplicationUser user){
-		String path = user.getTenancy().getPath();
+		String path = user.getAtPath();
 		String name = null;
 		if (path.equals("/")) {
 			name = "STATEWIDE";
@@ -172,7 +173,7 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 			setLastModifiedOn(new DateTime(updatedAt));
 	}
 
-	@Programmatic
+	/*@Programmatic
 	public ApplicationTenancy getApplicationTenancy() {
 		ApplicationTenancy tenancy = new ApplicationTenancy();
 		if (getRegion().getName().equals("STATEWIDE") || getRegion().getName().equals("TEST"))
@@ -181,10 +182,16 @@ public abstract class AbstractChatsDomainEntity implements Timestampable, WithAp
 			tenancy.setPath("/" + getRegion().getName() + "_");
 		}
 		return tenancy;
+	}*/
+	
+	@Programmatic
+	public String getAtPath() {
+		if (getRegion().getName().equals("STATEWIDE") || getRegion().getName().equals("TEST"))
+			return "/";
+		else {
+			return "/" + getRegion().getName() + "_";
+		}
 	}
-
-	@Inject
-	protected DomainObjectContainer container;
 
 	@Inject
 	protected ClockService clockService;

@@ -24,11 +24,12 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.inject.Inject;
 import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
-import org.incode.module.note.dom.api.notable.Notable;
+import org.apache.isis.applib.services.message.MessageService;
 import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.general.Locations;
@@ -66,12 +67,6 @@ public class RecurringActivity extends Activity {
 		super();
 	}
 
-	// used for testing only
-	public RecurringActivity(DomainObjectContainer container, Activities activitiesRepo, Participants participantsRepo,
-			Volunteers volunteersRepo, ActivityTypes activityTypes, Locations locations) {
-		super(container, activitiesRepo, participantsRepo, volunteersRepo, activityTypes, locations);
-	}
-
 	@Override
 	public String title() {
 		return getName();
@@ -101,10 +96,8 @@ public class RecurringActivity extends Activity {
 	}
 
 	/**
-	 * Provides a list of currently scheduled activities sorted soonest to
-	 * latest
+	 * Provides a list of currently scheduled activities sorted sooner to later
 	 */
-	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<ParentedActivityEvent> getFutureActivities() {
 		ArrayList<ParentedActivityEvent> temp = new ArrayList<>();
 		for (ParentedActivityEvent event : getChildActivities()) {
@@ -116,7 +109,6 @@ public class RecurringActivity extends Activity {
 		return temp;
 	}
 
-	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<ParentedActivityEvent> getCompletedActivities() {
 		ArrayList<ParentedActivityEvent> temp = new ArrayList<>();
 		for (ParentedActivityEvent event : getChildActivities()) {
@@ -142,7 +134,7 @@ public class RecurringActivity extends Activity {
 	public DateTime default0AddNextScheduledActivity() {
 		if (getChildActivities().size() == 0) {
 			if (getStartDateTime() == null) {
-				container.warnUser(
+				messageService.warnUser(
 						"Please set 'Start date time' for this Recurring Activity (as starting time from which to schedule more activity events)");
 				return null;
 			} else {
@@ -165,35 +157,7 @@ public class RecurringActivity extends Activity {
 		}
 		return null;
 	}
-
-	/*
-	 * To remove a participation we need to see if its been ignored by any of
-	 * the children and remove that link
-	 */
-	@Programmatic
-	@Override
-	public void removeParticipation(Participation participation) {
-		if (participation == null)
-			return;
-		for (ParentedActivityEvent activity : getChildActivities()) {
-			if (activity.getIgnored().contains(participation)) {
-				activity.getIgnored().remove(participation);
-			}
-		}
-		super.removeParticipation(participation);
-	}
-
-	@Programmatic
-	public ParentedActivityEvent createActivity(String name, DateTime startDateTime, Region region) {
-		ParentedActivityEvent obj = container.newTransientInstance(ParentedActivityEvent.class);
-		obj.setParentActivity(this);
-		obj.setName(name);
-		obj.setAbbreviatedName("TO-DO");
-		obj.setStartDateTime(startDateTime);
-		obj.setRegion(region);
-		getChildActivities().add(obj);
-		container.persistIfNotAlready(obj);
-		container.flush();
-		return obj;
-	}
+	
+	@Inject
+	MessageService messageService;
 }

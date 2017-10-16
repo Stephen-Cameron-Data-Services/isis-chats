@@ -24,16 +24,16 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.InheritanceStrategy;
 
-import org.apache.isis.applib.AbstractSubscriber;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainService;
+import org.apache.isis.applib.annotation.Mixin;
 import org.apache.isis.applib.annotation.NatureOfService;
-import org.apache.isis.applib.annotation.Programmatic;
-import org.incode.module.note.dom.api.notable.Notable;
-import org.incode.module.note.dom.impl.notablelink.NotableLink;
-import org.incode.module.note.dom.impl.note.NoteRepository;
 
-import com.google.common.eventbus.Subscribe;
+import org.incode.module.note.dom.impl.notablelink.NotableLink;
+import org.incode.module.note.dom.impl.notablelink.NotableLinkRepository;
+import org.incode.module.note.dom.impl.note.T_addNote;
+import org.incode.module.note.dom.impl.note.T_notes;
+import org.incode.module.note.dom.impl.note.T_removeNote;
 
 import au.com.scds.chats.dom.call.ScheduledCall;
 
@@ -42,35 +42,46 @@ import au.com.scds.chats.dom.call.ScheduledCall;
 @DomainObject()
 public class NoteableLinkForScheduledCall extends NotableLink {
 
-	@DomainService(nature = NatureOfService.DOMAIN)
-	public static class InstantiationSubscriber extends AbstractSubscriber {
-		@Programmatic
-		@Subscribe
-		public void on(final InstantiateEvent ev) {
-			if (ev.getPolymorphicReference() instanceof ScheduledCall) {
-				ev.setSubtype(NoteableLinkForScheduledCall.class);
-			}
-		}
-	}
+    private ScheduledCall object;
+    @Column( allowsNull = "false", name = "object_id" )
+    public ScheduledCall getObject() {                                         
+        return object;
+    }
+    public void setObject(final ScheduledCall object) {
+        this.object = object;
+    }
 
-	@Override
-	public void setPolymorphicReference(final Notable polymorphicReference) {
-		super.setPolymorphicReference(polymorphicReference);
-		setScheduledCall((ScheduledCall) polymorphicReference);
-	}
+    public Object getNotable() {                                                    
+        return getObject();
+    }
+    protected void setNotable(final Object object) {
+        setObject((ScheduledCall) object);
+    }
 
-	private ScheduledCall call;
+    @DomainService(nature = NatureOfService.DOMAIN)
+    public static class SubtypeProvider
+                extends NotableLinkRepository.SubtypeProviderAbstract {             
+        public SubtypeProvider() {
+            super(ScheduledCall.class, NoteableLinkForScheduledCall.class);
+        }
+    }
 
-	@Column(allowsNull = "false", name = "callId")
-	public ScheduledCall getScheduledCall() {
-		return call;
-	}
-
-	public void setScheduledCall(final ScheduledCall call) {
-		this.call = call;
-	}
-
-	@javax.inject.Inject
-	private NoteRepository noteRepository;
-	
+    @Mixin
+    public static class _notes extends T_notes<ScheduledCall> {                    
+        public _notes(final ScheduledCall notable) {
+            super(notable);
+        }
+    }
+    @Mixin
+    public static class _addNote extends T_addNote<ScheduledCall> {
+        public _addNote(final ScheduledCall notable) {
+            super(notable);
+        }
+    }
+    @Mixin
+    public static class _removeNote extends T_removeNote<ScheduledCall> {
+        public _removeNote(final ScheduledCall notable) {
+            super(notable);
+        }
+    }
 }
