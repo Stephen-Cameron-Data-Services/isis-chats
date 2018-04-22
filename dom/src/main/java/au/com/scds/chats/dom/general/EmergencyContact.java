@@ -1,75 +1,93 @@
 package au.com.scds.chats.dom.general;
 
+import java.sql.Timestamp;
+
+import javax.inject.Inject;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 
-import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
-import org.apache.isis.applib.annotation.DomainObjectLayout;
+import org.apache.isis.applib.services.timestamp.Timestampable;
+import org.isisaddons.module.security.dom.tenancy.HasAtPath;
+import org.joda.time.DateTime;
 
-import au.com.scds.chats.dom.AbstractChatsDomainEntity;
+import au.com.scds.chats.dom.ChatsDomainEntitiesService;
+import au.com.scds.chats.dom.ChatsEntity;
+import au.com.scds.chats.dom.general.names.Region;
+import lombok.Getter;
+import lombok.Setter;
 
 @DomainObject()
 @PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="emergencycontact")
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class EmergencyContact extends AbstractChatsDomainEntity {
-
-	private Person person;
+public class EmergencyContact implements ChatsEntity, Timestampable, HasAtPath{
+	
+	@Column(allowsNull = "false")
+	@Getter
+	@Setter
+	private ChatsPerson person;
+	@Column(allowsNull = "true")
+	@Getter
+	@Setter
 	private String name;
+	@Column(allowsNull = "true")
+	@Getter
+	@Setter
 	private String address;
+	@Column(allowsNull = "true")
+	@Getter
+	@Setter
 	private String phone;
+	@Column(allowsNull = "true")
+	@Getter
+	@Setter
 	private String relationship;
+	@Column(allowsNull = "true")
+	@Getter
+	@Setter
+	private String createdBy;
+	@Column(allowsNull = "true")
+	@Getter
+	@Setter
+	private DateTime createdOn;
+	@Column(allowsNull = "true")
+	@Getter
+	@Setter
+	private DateTime lastModifiedOn;
+	@Column(allowsNull = "true")
+	@Getter
+	@Setter
+	private String lastModifiedBy;
+	@Column(allowsNull = "true")
+	@Getter
+	@Setter
+	private Region region;
+	
 
 	public String title() {
 		return getName() + " (" + getRelationship() + ")";
 	}
+	
 
-	@Column(allowsNull = "false")
-	public Person getPerson() {
-		return person;
+	@Override
+	public void setUpdatedBy(String updatedBy) {
+		chatsService.setUpdatedBy(this, updatedBy);
 	}
 
-	public void setPerson(Person person) {
-		this.person = person;
+	@Override
+	public void setUpdatedAt(Timestamp updatedAt) {
+		chatsService.setUpdatedAt(this, updatedAt);
 	}
 
-	@Column(allowsNull = "true")
-	public String getName() {
-		return name;
+	@Override
+	public String getAtPath() {
+		return chatsService.getAtPath(this);
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Column(allowsNull = "true")
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	@Column(allowsNull = "true")
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	@Column(allowsNull = "true")
-	public String getRelationship() {
-		return relationship;
-	}
-
-	public void setRelationship(String relationship) {
-		this.relationship = relationship;
-	}
+	@Inject
+	ChatsDomainEntitiesService chatsService;
 
 }

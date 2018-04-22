@@ -12,4 +12,8 @@ import javax.jdo.annotations.Query;
 @Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.chats.dom.dex.reference.Section60ICertificateType ORDER BY orderNumber ASC;")
 public class Section60ICertificateType extends AbstractDexReferenceItem {
 
+	public Section60ICertificateType(String name, String description, int orderNumber) {
+		super(name, description, orderNumber);
+	}
+
 }

@@ -16,4 +16,8 @@ import javax.jdo.annotations.Query;
 	@Query(name = "allDescriptions", language = "JDOQL", value = "SELECT description FROM au.com.scds.chats.dom.dex.reference.HouseholdComposition ORDER BY orderNumber ASC")})
 public class HouseholdComposition extends AbstractDexReferenceItem {
 
+	public HouseholdComposition(String name, String description, int orderNumber) {
+		super(name, description, orderNumber);
+	}
+
 }

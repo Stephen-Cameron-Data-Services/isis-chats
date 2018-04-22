@@ -11,5 +11,9 @@ import javax.jdo.annotations.Query;
 @Discriminator(value = "MigrationVisaCategory")
 @Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.chats.dom.dex.reference.MigrationVisaCategory ORDER BY orderNumber ASC;")
 public class MigrationVisaCategory extends AbstractDexReferenceItem {
+
+	public MigrationVisaCategory(String name, String description, int orderNumber) {
+		super(name, description, orderNumber);
+	}
 	
 }

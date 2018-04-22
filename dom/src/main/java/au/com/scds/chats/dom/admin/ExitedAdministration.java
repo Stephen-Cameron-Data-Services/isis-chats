@@ -14,11 +14,11 @@ import org.apache.isis.applib.annotation.MinLength;
 import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.SemanticsOf;
 
+import au.com.scds.chats.dom.activity.ChatsParticipant;
+import au.com.scds.chats.dom.activity.ParticipantMenu;
 import au.com.scds.chats.dom.general.Status;
-import au.com.scds.chats.dom.participant.Participant;
-import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
-import au.com.scds.chats.dom.volunteer.Volunteers;
+import au.com.scds.chats.dom.volunteer.VolunteerMenu;
 
 @DomainService(objectType = "chats.exitedadministration", nature=NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "400.1")
@@ -28,7 +28,7 @@ public class ExitedAdministration {
 	@ActionLayout(describedAs = "Sets all status 'To Exit' Participants to 'Exited'")
 	public List<ParticipantExiter> exitAllToExitParticipants() {
 		List<ParticipantExiter> list = new ArrayList<>();
-		for (Participant p : participantsRepo.listToExitParticipants()) {
+		for (ChatsParticipant p : participantsRepo.listToExitChatsParticipants()) {
 			ParticipantExiter e = new ParticipantExiter();
 			e.setParticipant(p);
 			list.add(e);
@@ -50,13 +50,13 @@ public class ExitedAdministration {
 	
 	@Action(semantics = SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE)
 	@ActionLayout(describedAs = "Sets status of 'Exited' Participant to 'Active'")
-	public Participant reactivateParticipant(Participant participant) {
+	public ChatsParticipant reactivateParticipant(ChatsParticipant participant) {
 		participant.setStatus(Status.ACTIVE);
 		return participant;
 	}
 	
-	public List<Participant> autoComplete0ReactivateParticipant(@MinLength(3) String search){
-		return participantsRepo.listAllExitedParticipantIdentities(search);
+	public List<ChatsParticipant> autoComplete0ReactivateParticipant(@MinLength(3) String search){
+		return participantsRepo.listAllExitedChatsParticipantIdentities(search);
 	}
 
 
@@ -72,9 +72,9 @@ public class ExitedAdministration {
 	}
 
 	@Inject()
-	Participants participantsRepo;
+	ParticipantMenu participantsRepo;
 
 	@Inject()
-	Volunteers volunteersRepo;
+	VolunteerMenu volunteersRepo;
 
 }

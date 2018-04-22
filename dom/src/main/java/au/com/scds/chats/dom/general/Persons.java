@@ -44,42 +44,40 @@ import org.apache.isis.applib.services.registry.ServiceRegistry2;
 import org.apache.isis.applib.services.repository.RepositoryService;
 import org.joda.time.LocalDate;
 
-import au.com.scds.chats.dom.general.Person;
+import au.com.scds.chats.dom.general.ChatsPerson;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
 
-@DomainService(objectType = "chats.persons", nature = NatureOfService.VIEW_MENU_ONLY, repositoryFor = Person.class)
-@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100")
+@DomainService(objectType = "ChatsPersons", 
+nature = NatureOfService.VIEW_MENU_ONLY, 
+repositoryFor = ChatsPerson.class)
 public class Persons {
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@MemberOrder(sequence = "1")
-	public List<Person> listAllPersons() {
-		return repositoryService.allInstances(Person.class);
+	public List<ChatsPerson> listAllPersons() {
+		return repositoryService.allInstances(ChatsPerson.class);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@MemberOrder(sequence = "2")
-	public List<Person> findPersonBySurname(@ParameterLayout(named = "Surname") final String surname) {
-		return repositoryService.allMatches(new QueryDefault<>(Person.class, "findPersonsBySurname", "surname", surname));
+	public List<ChatsPerson> findPersonBySurname(@ParameterLayout(named = "Surname") final String surname) {
+		return repositoryService
+				.allMatches(new QueryDefault<>(ChatsPerson.class, "findPersonsBySurname", "surname", surname));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@MemberOrder(sequence = "3")
-	public List<Person> findPersonBySLK(@ParameterLayout(named = "SLK") final String slk) {
-		return repositoryService.allMatches(new QueryDefault<>(Person.class, "findPersonBySLK", "slk", slk));
+	public List<ChatsPerson> findPersonBySLK(@ParameterLayout(named = "SLK") final String slk) {
+		return repositoryService.allMatches(new QueryDefault<>(ChatsPerson.class, "findPersonBySLK", "slk", slk));
 	}
 
 	@Action(semantics = SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE)
-	// Provide a means to change the identifying unique key properties
-	public Person changeRegionOfPerson(@Parameter(optionality = Optionality.MANDATORY) Person person,
+	public ChatsPerson changeRegionOfPerson(@Parameter(optionality = Optionality.MANDATORY) ChatsPerson ChatsPerson,
 			@Parameter(optionality = Optionality.MANDATORY) Region region) throws Exception {
-		if (!region.equals(person.getRegion()))
-			person.setRegion(region);
-		return person;
+		if (!region.equals(ChatsPerson.getRegion()))
+			ChatsPerson.setRegion(region);
+		return ChatsPerson;
 	}
 
-	public List<Person> choices0ChangeRegionOfPerson() {
+	public List<ChatsPerson> choices0ChangeRegionOfPerson() {
 		return listAllPersons();
 	}
 
@@ -87,38 +85,38 @@ public class Persons {
 		return regions.listAllRegions();
 	}
 
-	// @Action(semantics = SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE)
 	@Programmatic
 	public List<Result> resetAllSlks() {
 		List<Result> results = new ArrayList<>();
-		List<Person> persons = listAllPersons();
-		for (Person person : persons) {
+		List<ChatsPerson> ChatsPersons = listAllPersons();
+		for (ChatsPerson ChatsPerson : ChatsPersons) {
 			try {
-				person.buildSlk();
-				results.add(new Result("Reset " + person.getFullname()));
+				ChatsPerson.buildSlk();
+				results.add(new Result("Reset " + ChatsPerson.getFullname()));
 			} catch (Exception e) {
-				results.add(new Result("ERROR (" + person.getFullname() + "): " + e.getMessage()));
+				results.add(new Result("ERROR (" + ChatsPerson.getFullname() + "): " + e.getMessage()));
 			}
 		}
 		return results;
 	}
 
 	@Action(semantics = SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE)
-	public Person resetPersonIdentity(final @Parameter(optionality = Optionality.MANDATORY) Person person,
+	public ChatsPerson resetPersonIdentity(
+			final @Parameter(optionality = Optionality.MANDATORY) ChatsPerson ChatsPerson,
 			final @Parameter(optionality = Optionality.MANDATORY, maxLength = 100) @ParameterLayout(named = "First name") String firstname,
 			final @Parameter(optionality = Optionality.MANDATORY, maxLength = 100) @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob,
 			final @ParameterLayout(named = "Sex") Sex sex) throws Exception {
-		person.updateIdentity(firstname, surname, dob, sex);
-		return person;
+		ChatsPerson.updateIdentity(firstname, surname, dob, sex);
+		return ChatsPerson;
 	}
 
-	public List<Person> choices0ResetPersonIdentity() {
+	public List<ChatsPerson> choices0ResetPersonIdentity() {
 		return listAllPersons();
 	}
 
 	@Programmatic
-	public Person createPerson(String firstname, String surname, LocalDate dob, Sex sex) throws Exception {
+	public ChatsPerson createPerson(String firstname, String surname, LocalDate dob, Sex sex) throws Exception {
 
 		if (firstname == null || firstname.trim().equals(""))
 			throw new Exception("firstname is not set!");
@@ -129,58 +127,25 @@ public class Persons {
 		if (sex == null)
 			throw new Exception("sex is not set!");
 
-		Person person = new Person();
+		ChatsPerson person = new ChatsPerson(firstname, surname, dob, sex);
 		serviceRegistry.injectServicesInto(person);
-		person.setFirstname(firstname);
-		person.setSurname(surname);
-		person.setBirthdate(dob);
-		person.setSex(sex);
 		person.buildSlk();
-		repositoryService.persist(person);
-		return person;
-	}
-
-	// used for data migration
-	@Programmatic
-	public Person createPerson(String firstname, String surname, LocalDate dob, Region region) throws Exception {
-
-		if (firstname == null || firstname.trim().equals(""))
-			throw new Exception("firstname is not set!");
-		if (surname == null || surname.trim().equals(""))
-			throw new Exception("surname is not set!");
-		if (dob == null)
-			throw new Exception("birthdate is not set!");
-		if (region == null)
-			throw new Exception("region is not set!");
-
-		Person person = new Person();
-		serviceRegistry.injectServicesInto(person);
-		person.setFirstname(firstname);
-		person.setSurname(surname);
-		person.setBirthdate(dob);
-		person.setRegion(region);
-		repositoryService.persist(person);
+		repositoryService.persistAndFlush(person);
 		return person;
 	}
 
 	@Programmatic
-	public Person findPerson(String firstname, String surname, LocalDate dob) {
-		return repositoryService.firstMatch(new QueryDefault<>(Person.class, "findPerson", "firstname", firstname, "surname",
-				surname, "birthdate", dob));
-	}
-
-	// data migration
-	@Programmatic
-	public Person findPersonByOldId(BigInteger personId) {
-		return repositoryService.firstMatch(new QueryDefault<>(Person.class, "findPersonByOldId", "oldid", personId));
+	public ChatsPerson findPerson(String firstname, String surname, LocalDate dob) {
+		return repositoryService.uniqueMatch(new QueryDefault<>(ChatsPerson.class, "findPerson", "firstname",
+				firstname, "surname", surname, "birthdate", dob));
 	}
 
 	@Programmatic
-	public EmergencyContact createEmergencyContact(Person person) {
+	public EmergencyContact createEmergencyContact(ChatsPerson ChatsPerson) {
 		EmergencyContact contact = new EmergencyContact();
 		serviceRegistry.injectServicesInto(contact);
-		contact.setPerson(person);
-		repositoryService.persist(contact);
+		contact.setPerson(ChatsPerson);
+		repositoryService.persistAndFlush(contact);
 		return contact;
 	}
 
@@ -189,13 +154,13 @@ public class Persons {
 		repositoryService.remove(contact);
 	}
 
-	@javax.inject.Inject
+	@Inject
 	RepositoryService repositoryService;
-	
+
 	@Inject
 	protected ServiceRegistry2 serviceRegistry;
-	
-	@javax.inject.Inject
+
+	@Inject
 	Regions regions;
 
 }

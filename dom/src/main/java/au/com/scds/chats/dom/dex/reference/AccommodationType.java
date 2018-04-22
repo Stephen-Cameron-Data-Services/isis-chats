@@ -19,4 +19,8 @@ import org.apache.isis.applib.annotation.DomainObject;
 @DomainObject(objectType="chats.accommodationtype")
 public class AccommodationType extends AbstractDexReferenceItem{
 
+	public AccommodationType(String name, String description, int orderNumber) {
+		super(name, description, orderNumber);
+	}
+
 }

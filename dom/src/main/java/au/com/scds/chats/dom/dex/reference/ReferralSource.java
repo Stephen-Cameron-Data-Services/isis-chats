@@ -12,5 +12,9 @@ import javax.jdo.annotations.Query;
 @Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.chats.dom.dex.reference.ReferralSource ORDER BY orderNumber ASC;")
 public class ReferralSource extends AbstractDexReferenceItem {
 
+	public ReferralSource(String name, String description, int orderNumber) {
+		super(name, description, orderNumber);
+	}
+
 }
 

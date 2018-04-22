@@ -18,13 +18,8 @@
  */
 package domainapp.webapp;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.List;
 
-import com.google.common.base.Joiner;
-import com.google.common.io.Resources;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
@@ -67,6 +62,8 @@ public class DomainApplication extends IsisWicketApplication {
         settings.setThemeProvider(new BootswatchThemeProvider(BootswatchTheme.Flatly));
     }
 
+    private static final String APP_NAME = "Simple App";
+
     @Override
     protected Module newIsisWicketModule() {
         final Module isisDefaults = super.newIsisWicketModule();
@@ -74,11 +71,11 @@ public class DomainApplication extends IsisWicketApplication {
         final Module overrides = new AbstractModule() {
             @Override
             protected void configure() {
-                bind(String.class).annotatedWith(Names.named("applicationName")).toInstance("Chats App");
+                bind(String.class).annotatedWith(Names.named("applicationName")).toInstance(APP_NAME);
                 bind(String.class).annotatedWith(Names.named("applicationCss")).toInstance("css/application.css");
                 bind(String.class).annotatedWith(Names.named("applicationJs")).toInstance("scripts/application.js");
-                bind(String.class).annotatedWith(Names.named("welcomeMessage")).toInstance(readLines(getClass(), "welcome.html"));
-                bind(String.class).annotatedWith(Names.named("aboutMessage")).toInstance("Chats Program Data Management App");
+                bind(String.class).annotatedWith(Names.named("welcomeMessage")).toInstance(readLines(getClass(), "welcome.html", "This is a simple app"));
+                bind(String.class).annotatedWith(Names.named("aboutMessage")).toInstance(APP_NAME);
                 bind(InputStream.class).annotatedWith(Names.named("metaInfManifest")).toProvider(
                         Providers.of(getServletContext().getResourceAsStream("/META-INF/MANIFEST.MF")));
                 // if uncommented, then overrides isis.appManifest in config file.
@@ -89,14 +86,5 @@ public class DomainApplication extends IsisWicketApplication {
         return Modules.override(isisDefaults).with(overrides);
     }
 
-    private static String readLines(final Class<?> contextClass, final String resourceName) {
-        try {
-            List<String> readLines = Resources.readLines(Resources.getResource(contextClass, resourceName), Charset.defaultCharset());
-            final String aboutText = Joiner.on("\n").join(readLines);
-            return aboutText;
-        } catch (IOException e) {
-            return "This is a simple app";
-        }
-    }
 
 }

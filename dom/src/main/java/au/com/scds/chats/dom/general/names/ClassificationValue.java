@@ -27,7 +27,6 @@ import javax.jdo.annotations.PrimaryKey;
 
 import org.apache.isis.applib.util.ObjectContracts;
 
-import au.com.scds.chats.dom.activity.Activity;
 
 //import au.com.scds.chats.dom.AbstractNamedChatsDomainEntity;
 

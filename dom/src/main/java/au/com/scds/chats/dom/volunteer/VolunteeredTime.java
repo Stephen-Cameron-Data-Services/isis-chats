@@ -35,8 +35,6 @@ import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
-import org.apache.isis.applib.annotation.InvokeOn;
-import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
@@ -49,61 +47,45 @@ import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import au.com.scds.chats.dom.AbstractChatsDomainEntity;
-import au.com.scds.chats.dom.StartAndFinishDateTime;
-import au.com.scds.chats.dom.attendance.Attend;
+import au.com.scds.eventschedule.base.impl.BaseEvent;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
-
-@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="volunteeredtime")
+@DomainObject()
+@PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-@Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "role", value = "GENERAL")
-@DomainObject(objectType = "VOLUNTEERED_TIME")
-public class VolunteeredTime extends StartAndFinishDateTime implements Comparable<VolunteeredTime> {
+@Discriminator(value="VolunteeredTime")
+public class VolunteeredTime extends BaseEvent implements Comparable<VolunteeredTime> {
 
+	@Column(allowsNull = "false")
+	@Getter
+	@Setter(value=AccessLevel.PROTECTED)
 	private Volunteer volunteer;
+	@Column(allowsNull = "true")
+	@Getter
+	@Setter
 	private String description;
+	@Column(allowsNull = "false")
+	@Getter
+	@Setter
 	private Boolean includeAsParticipation;
 
 	private static DecimalFormat hoursFormat = new DecimalFormat("#,##0.00");
 	private static DateTimeFormatter titleFormatter = DateTimeFormat.forPattern("dd-MMM-yyyy");
+	
+	public VolunteeredTime(Volunteer volunteer, DateTime start, DateTime end){
+		super(start, end);
+		setVolunteer(volunteer);
+	}
 
 	public String title() {
-		return getVolunteer().getFullName() + " on " + titleFormatter.print(getStartDateTime());
-	}
-	
-	@Property(editing=Editing.DISABLED)
-	@Column(allowsNull = "false")
-	public Volunteer getVolunteer() {
-		return volunteer;
-	}
-
-	public void setVolunteer(Volunteer volunteer) {
-		this.volunteer = volunteer;
-	}
-
-	@Column(allowsNull = "true")
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	@Column(allowsNull = "false")
-	public Boolean getIncludeAsParticipation() {
-		return includeAsParticipation;
-	}
-
-	public void setIncludeAsParticipation(Boolean includeAsParticipation) {
-		this.includeAsParticipation = includeAsParticipation;
+		return getVolunteer().getFullName() + " on " + titleFormatter.print(getStart());
 	}
 	
 	@Override
 	public int compareTo(VolunteeredTime other) {
-
 		return ObjectContracts.compare(this, other, "volunteer", "startDateTime", "endDateTime");
-
 	}
 
 }

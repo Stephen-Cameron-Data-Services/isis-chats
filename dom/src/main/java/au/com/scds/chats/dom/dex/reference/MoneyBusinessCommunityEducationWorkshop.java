@@ -12,4 +12,8 @@ import javax.jdo.annotations.Query;
 @Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.chats.dom.dex.reference.MoneyBusinessCommunityEducationWorkshop ORDER BY orderNumber ASC;")
 public class MoneyBusinessCommunityEducationWorkshop extends AbstractDexReferenceItem {
 
+	public MoneyBusinessCommunityEducationWorkshop(String name, String description, int orderNumber) {
+		super(name, description, orderNumber);
+	}
+
 }

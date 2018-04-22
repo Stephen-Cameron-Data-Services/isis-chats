@@ -15,5 +15,9 @@ import javax.jdo.annotations.Query;
 	@Query(name = "description", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.dex.reference.Language WHERE description == :description"),
 	@Query(name = "allDescriptions", language = "JDOQL", value = "SELECT description FROM au.com.scds.chats.dom.dex.reference.Language ORDER BY orderNumber ASC")})
 public class Language extends AbstractDexReferenceItem {
+
+	public Language(String name, String description, int orderNumber) {
+		super(name, description, orderNumber);
+	}
 	
 }

@@ -6,23 +6,23 @@ import org.apache.isis.applib.annotation.InvokeOn;
 import org.apache.isis.applib.annotation.Nature;
 import org.apache.isis.applib.annotation.ViewModel;
 
+import au.com.scds.chats.dom.activity.ChatsParticipant;
 import au.com.scds.chats.dom.general.Status;
-import au.com.scds.chats.dom.participant.Participant;
 
 @DomainObject(objectType = "chats.participantexiter", nature=Nature.VIEW_MODEL)
 public class ParticipantExiter{
 	
-	private Participant participant;
+	private ChatsParticipant participant;
 	
 	public String title(){
 		return getParticipant().title();
 	}
 
-	public Participant getParticipant() {
+	public ChatsParticipant getParticipant() {
 		return participant;
 	}
 
-	public void setParticipant(Participant participant) {
+	public void setParticipant(ChatsParticipant participant) {
 		this.participant = participant;
 	}
 
@@ -35,7 +35,7 @@ public class ParticipantExiter{
 	}
 
 	public String getRegionName() {
-		return getParticipant().getRegionName();
+		return getParticipant().getRegion().getName();
 	}
 
 	@Action(invokeOn=InvokeOn.OBJECT_AND_COLLECTION)

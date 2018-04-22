@@ -18,26 +18,13 @@
  */
 package au.com.scds.chats.dom.volunteer;
 
-import javax.jdo.annotations.Column;
 import javax.jdo.annotations.Discriminator;
-import javax.jdo.annotations.DiscriminatorStrategy;
-import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 
-import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
-import org.apache.isis.applib.annotation.DomainObjectLayout;
-import org.apache.isis.applib.annotation.Editing;
-import org.apache.isis.applib.annotation.MemberGroupLayout;
-import org.apache.isis.applib.annotation.MemberOrder;
-import org.apache.isis.applib.annotation.Property;
-import org.apache.isis.applib.annotation.PropertyLayout;
-import org.apache.isis.applib.annotation.Where;
-
-import au.com.scds.chats.dom.activity.Activity;
-import au.com.scds.chats.dom.call.CalendarDayCallSchedule;
+import org.joda.time.DateTime;
 
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
@@ -45,16 +32,8 @@ import au.com.scds.chats.dom.call.CalendarDayCallSchedule;
 @DomainObject()
 public class VolunteeredTimeForCalls extends VolunteeredTime {
 	
-	private CalendarDayCallSchedule callSchedule;
-
-	@Property(editing=Editing.DISABLED)
-	@Column(allowsNull="false")
-	public CalendarDayCallSchedule getCallSchedule() {
-		return callSchedule;
-	}
-
-	public void setCallSchedule(CalendarDayCallSchedule callSchedule) {
-		this.callSchedule = callSchedule;
+	public VolunteeredTimeForCalls(Volunteer volunteer, DateTime start, DateTime end){
+		super(volunteer, start, end);
 	}
 
 }

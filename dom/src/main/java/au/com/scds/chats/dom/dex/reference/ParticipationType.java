@@ -12,4 +12,8 @@ import javax.jdo.annotations.Query;
 @Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.chats.dom.dex.reference.ParticipationType ORDER BY orderNumber ASC;")
 public class ParticipationType extends AbstractDexReferenceItem {
 
+	public ParticipationType(String name, String description, int orderNumber) {
+		super(name, description, orderNumber);
+	}
+
 }

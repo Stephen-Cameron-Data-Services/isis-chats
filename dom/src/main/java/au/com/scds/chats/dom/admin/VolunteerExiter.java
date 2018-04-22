@@ -34,7 +34,7 @@ public class VolunteerExiter {
 	}
 
 	public String getRegionName() {
-		return getVolunteer().getRegionName();
+		return getVolunteer().getRegion().getName();
 	}
 
 	@Action(invokeOn=InvokeOn.OBJECT_AND_COLLECTION)

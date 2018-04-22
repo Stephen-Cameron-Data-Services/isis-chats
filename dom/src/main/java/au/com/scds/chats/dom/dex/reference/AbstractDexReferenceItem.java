@@ -22,6 +22,12 @@ public abstract class AbstractDexReferenceItem {
 	protected String description;
 	protected int orderNumber;
 	
+	public AbstractDexReferenceItem(String name, String description, int orderNumber){
+		setName(name);
+		setDescription(description);
+		setOrderNumber(orderNumber);
+	}
+	
 	public String title(){
 		return getDescription();
 	}

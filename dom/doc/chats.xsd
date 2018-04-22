@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://lifelinetasmania.org.au/chats" jaxb:version="2.1" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:c="http://lifelinetasmania.org.au/chats">
+	<xsd:annotation>
+		<xsd:appinfo>
+			<jaxb:globalBindings>
+				<jaxb:javaType name="java.util.Date" xmlType="xsd:dateTime" parseMethod="au.com.scds.chats.fixture.generated.DataTypeAdapter.parseDateTime" printMethod="au.com.scds.chats.fixture.generated.DataTypeAdapter.printDateTime" />
+				<jaxb:javaType name="java.util.Date" xmlType="xsd:date" parseMethod="au.com.scds.chats.fixture.generated.DataTypeAdapter.parseDate" printMethod="au.com.scds.chats.fixture.generated.DataTypeAdapter.printDate" />
+			</jaxb:globalBindings>
+			<jaxb:schemaBindings>
+				<jaxb:package name="au.com.scds.chats.fixture.generated"></jaxb:package>
+			</jaxb:schemaBindings>
+		</xsd:appinfo>
+	</xsd:annotation>
+	<xsd:complexType name="ChatsActivity">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="codeName" type="xsd:string" maxOccurs="1" minOccurs="0"></xsd:element>
+			<xsd:element name="description" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+			<xsd:element name="start" type="xsd:dateTime" maxOccurs="1" minOccurs="1"></xsd:element>
+			<xsd:element name="end" type="xsd:dateTime" maxOccurs="1" minOccurs="0"></xsd:element>
+			<xsd:element name="participation" type="c:ChatsParticipation" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+			<xsd:element name="waitListed" type="c:ChatsParticipant" minOccurs="0" maxOccurs="unbounded" />
+
+
+			<xsd:element name="attendance" type="c:ChatsAttendance" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Organisation">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="sheduledEvent" type="c:ChatsActivity" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="eventFacilitator" type="c:Volunteer" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="contactor" type="xsd:string" minOccurs="1" maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Volunteer">
+		<xsd:sequence>
+			<xsd:element name="person" type="c:ChatsPerson" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="callAllocation" maxOccurs="unbounded" minOccurs="0">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="participant" type="c:ChatsParticipant" maxOccurs="1" minOccurs="1"></xsd:element>
+						<xsd:element name="indicativeCallTime" type="xsd:time" maxOccurs="1" minOccurs="0"></xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="call" maxOccurs="unbounded" minOccurs="0">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="participant" type="c:ChatsParticipant" maxOccurs="1" minOccurs="1"></xsd:element>
+						<xsd:element name="start" type="xsd:dateTime" maxOccurs="1" minOccurs="1"></xsd:element>
+						<xsd:element name="end" type="xsd:dateTime" maxOccurs="1" minOccurs="1"></xsd:element>
+						<xsd:element name="notes" type="xsd:string" maxOccurs="1" minOccurs="0"></xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+
+	<xsd:element name="allocations">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="allocation" type="xsd:string" maxOccurs="unbounded" minOccurs="1"></xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="ChatsParticipation">
+		<xsd:sequence>
+
+			<xsd:element name="participant" type="c:ChatsParticipant"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="activities">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="activity" type="c:ChatsActivity" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="ChatsRecurringActivity">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="codeName" type="xsd:string" maxOccurs="1" minOccurs="0"></xsd:element>
+			<xsd:element name="description" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+			<xsd:element name="start" type="xsd:dateTime" maxOccurs="1" minOccurs="1"></xsd:element>
+			<xsd:element name="end" type="xsd:dateTime" maxOccurs="1" minOccurs="0"></xsd:element>
+			<xsd:element name="participation" type="c:ChatsParticipation" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+			<xsd:element name="waitListed" type="c:ChatsParticipant" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="childEvent" type="c:ChatsParentedActivity" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="recurringActivities">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="recurringActivity" type="c:ChatsRecurringActivity" maxOccurs="unbounded" minOccurs="1"></xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="ChatsParentedActivity">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="codeName" type="xsd:string" maxOccurs="1" minOccurs="0"></xsd:element>
+			<xsd:element name="description" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+			<xsd:element name="start" type="xsd:dateTime" maxOccurs="1" minOccurs="1"></xsd:element>
+			<xsd:element name="end" type="xsd:dateTime" maxOccurs="1" minOccurs="0"></xsd:element>
+			<xsd:element name="participation" type="c:ChatsParticipation" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+			<xsd:element name="waitListed" type="c:ChatsParticipant" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="attendance" type="c:ChatsAttendance" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="ChatsEntity">
+		<xsd:sequence>
+			<xsd:element name="createdOn" type="xsd:dateTime"></xsd:element>
+			<xsd:element name="createdBy" type="c:ApplicationUser"></xsd:element>
+			<xsd:element name="modifiedOn" type="xsd:dateTime"></xsd:element>
+
+			<xsd:element name="modifiedBy" type="c:ApplicationUser"></xsd:element>
+			<xsd:element name="region" type="c:Region"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ChatsPerson">
+		<xsd:sequence>
+			<xsd:element name="firstname" type="xsd:string" maxOccurs="1" minOccurs="1"></xsd:element>
+			<xsd:element name="surname" type="xsd:string" maxOccurs="1" minOccurs="1"></xsd:element>
+			<xsd:element name="dateOfBirth" type="xsd:date" maxOccurs="1" minOccurs="1"></xsd:element>
+			<xsd:element name="sex" maxOccurs="1" minOccurs="1">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="MALE"></xsd:enumeration>
+						<xsd:enumeration value="FEMALE"></xsd:enumeration>
+						<xsd:enumeration value="UNSPECIFIED"></xsd:enumeration>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="ApplicationUser">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="ClientNote">
+		<xsd:sequence>
+			<xsd:element name="note" type="xsd:string"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="Disability">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="CallAllocation">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	
+
+	<xsd:complexType name="ChatsParticipant">
+		<xsd:sequence>
+			<xsd:element name="person" type="c:ChatsPerson" maxOccurs="1" minOccurs="1"/>
+			<xsd:element name="status" maxOccurs="1" minOccurs="1">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="ACTIVE"></xsd:enumeration>
+						<xsd:enumeration value="INACTIVE"></xsd:enumeration>
+						<xsd:enumeration value="EXITED"></xsd:enumeration>
+						<xsd:enumeration value="TO_EXIT"></xsd:enumeration>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+            <xsd:element name="clientNote" type="xsd:string" maxOccurs="unbounded" minOccurs="0" />
+			<xsd:element name="disability" type="xsd:string" maxOccurs="unbounded" minOccurs="0" />            <xsd:element name="mobility" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="limitingHealthIssues" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="otherLimitingFactors" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="driversLicence" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="drivingAbility" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="drivingConfidence" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="placeOfOrigin" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="yearOfSettlement" type="xsd:int" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="closeRelatives" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="closeRlFrCount" type="xsd:int" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="proximityOfRelatives" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="proximityOfFriends" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="involvementGC" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="involvementIH" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="lifeStory" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="lifeExperiences" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="hobbies" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="interests" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="loneliness" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="consentToProvideDetails" type="xsd:boolean" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="consentedForFutureContacts" type="xsd:boolean" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="hasCarer" type="xsd:boolean" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="countryOfBirth" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="languageSpokenAtHome" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="aboriginalOrTorresStraitIslanderOrigin" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="accommodationType" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="dvaCardStatus" type="xsd:string" maxOccurs="1" minOccurs="0" />
+			<xsd:element name="householdComposition" type="xsd:string" maxOccurs="1" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ChatsAttendance">
+		<xsd:sequence>
+			<xsd:element name="participant" type="c:ChatsParticipant"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="Suburb">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"></xsd:element>
+			<xsd:element name="postcode" type="xsd:int"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="suburbs">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="suburb" type="c:Suburb" maxOccurs="unbounded" minOccurs="1"></xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="participants">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="participant" type="c:ChatsParticipant" maxOccurs="unbounded" minOccurs="1"></xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="volunteers">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="volunteer" type="c:Volunteer" maxOccurs="unbounded" minOccurs="1"></xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:simpleType name="Region">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="NORTH"></xsd:enumeration>
+			<xsd:enumeration value="SOUTH"></xsd:enumeration>
+			<xsd:enumeration value="NORTH-WEST"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="Sex">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="MALE"></xsd:enumeration>
+			<xsd:enumeration value="FEMALE"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="Periodicity">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="WEEKLY"></xsd:enumeration>
+			<xsd:enumeration value="FORTNIGHTLY"></xsd:enumeration>
+			<xsd:enumeration value="MONTHLY"></xsd:enumeration>
+			<xsd:enumeration value="BIMONTHLY"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="TransportType">
+		<xsd:restriction base="xsd:string"></xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="ContactType">
+		<xsd:restriction base="xsd:string"></xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

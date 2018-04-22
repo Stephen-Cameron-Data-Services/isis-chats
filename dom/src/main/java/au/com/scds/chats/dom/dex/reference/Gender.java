@@ -11,5 +11,9 @@ import javax.jdo.annotations.Query;
 @Discriminator(value = "Gender")
 @Query(name="all", language="JDOQL", value="SELECT FROM au.com.scds.chats.dom.dex.reference.Gender ORDER BY orderNumber ASC;")
 public class Gender extends AbstractDexReferenceItem {
+
+	public Gender(String name, String description, int orderNumber) {
+		super(name, description, orderNumber);
+	}
 	
 }

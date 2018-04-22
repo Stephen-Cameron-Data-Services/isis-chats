@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mb3:menuBars
+	xsi:schemaLocation="http://isis.apache.org/applib/layout/menubars/bootstrap3 http://isis.apache.org/applib/layout/menubars/bootstrap3/menubars.xsd http://isis.apache.org/applib/layout/component http://isis.apache.org/applib/layout/component/component.xsd http://isis.apache.org/applib/layout/links http://isis.apache.org/applib/layout/links/links.xsd"
+	xmlns:cpt="http://isis.apache.org/applib/layout/component" xmlns:lnk="http://isis.apache.org/applib/layout/links" xmlns:mb3="http://isis.apache.org/applib/layout/menubars/bootstrap3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<mb3:primary>
+		<mb3:menu>
+			<mb3:named>Activities</mb3:named>
+			<mb3:section>
+				<mb3:serviceAction objectType="ChatsActivityMenu" id="createChatsRecurringActivity">
+					<cpt:named>Create Chats Recurring Activity</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="ChatsActivityMenu" id="createOneOffActivity">
+					<cpt:named>Create One Off Activity</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="ChatsActivityMenu" id="findChatsRecurringActivityByName">
+					<cpt:named>Find Chats Recurring Activity By Name</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="ChatsActivityMenu" id="findActivityByName">
+					<cpt:named>Find Activity By Name</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="ChatsActivityMenu" id="listAllRecurringActivities">
+					<cpt:named>List All Recurring Activities</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="ChatsActivityMenu" id="listAllFutureActivities">
+					<cpt:named>List All Future Activities</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="ChatsActivityMenu" id="listActivitiesInPeriod">
+					<cpt:named>List Activities In Period</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+		</mb3:menu>
+		<mb3:menu>
+			<mb3:named>Participants</mb3:named>
+			<mb3:section>
+				<mb3:serviceAction objectType="Participants" id="create">
+					<cpt:named>Create Participant</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="Participants" id="findActiveChatsParticipant">
+					<cpt:named>Find Active Chats Participant</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="Participants" id="findBySurname">
+					<cpt:named>Find By Surname</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="Participants" id="findFutureParticipation">
+					<cpt:named>Find Future Participation</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="Participants" id="listActiveChatsParticipants">
+					<cpt:named>List Active Chats Participants</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="Participants" id="listExitedChatsParticipants">
+					<cpt:named>List Exited Chats Participants</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="Participants" id="listInactiveChatsParticipants">
+					<cpt:named>List Inactive Chats Participants</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="Participants" id="listToExitChatsParticipants">
+					<cpt:named>List To Exit Chats Participants</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+		</mb3:menu>
+		<mb3:menu>
+			<mb3:named>Volunteers</mb3:named>
+			<mb3:section>
+				<mb3:serviceAction objectType="chats.volunteers" id="create">
+					<cpt:named>Create</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="chats.volunteers" id="findActiveVolunteer">
+					<cpt:named>Find Active Volunteer</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="chats.volunteers" id="findBySurname">
+					<cpt:named>Find By Surname</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="chats.volunteers" id="listActiveVolunteers">
+					<cpt:named>List Active Volunteers</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="chats.volunteers" id="listInactiveVolunteers">
+					<cpt:named>List Inactive Volunteers</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="chats.volunteers" id="listToExitVolunteers">
+					<cpt:named>List To Exit Volunteers</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+		</mb3:menu>
+		<mb3:menu>
+			<mb3:named>Calls</mb3:named>
+			<mb3:section>
+				<mb3:serviceAction objectType="chats.calls" id="create">
+					<cpt:named>Create</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="chats.calls" id="findScheduledCalls">
+					<cpt:named>Find Scheduled Calls</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="chats.calls" id="listCallsInPeriod">
+					<cpt:named>List Calls In Period</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+		</mb3:menu>
+		<mb3:menu>
+			<mb3:named>Notes</mb3:named>
+			<mb3:section>
+				<mb3:serviceAction objectType="chats.notes" id="findNotes">
+					<cpt:named>Find Notes</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="chats.notes" id="allNotes">
+					<cpt:named>All Notes</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+		</mb3:menu>
+		<mb3:menu unreferencedActions="true">
+			<mb3:named>Other</mb3:named>
+			<mb3:section>
+				<mb3:serviceAction objectType="chats.Persons" id="listAllPersons">
+					<cpt:named>List All Persons</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="chats.Persons" id="findPersonBySurname">
+					<cpt:named>Find Person By Surname</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="chats.Persons" id="findPersonBySLK">
+					<cpt:named>Find Person By SLK</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="chats.Persons" id="changeRegionOfPerson">
+					<cpt:named>Change Region Of Person</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="chats.Persons" id="resetPersonIdentity">
+					<cpt:named>Reset Person Identity</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="chats.namesadmin" id="nameLists">
+					<cpt:named>Name Lists</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="chats.exitedadministration" id="exitAllToExitParticipants">
+					<cpt:named>Exit All To Exit Participants</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="chats.exitedadministration" id="exitAllToExitVolunteers">
+					<cpt:named>Exit All To Exit Volunteers</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="chats.exitedadministration" id="reactivateParticipant">
+					<cpt:named>Reactivate Participant</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="chats.exitedadministration" id="reactivateVolunteer">
+					<cpt:named>Reactivate Volunteer</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+		</mb3:menu>
+		<mb3:menu>
+			<mb3:named>Security</mb3:named>
+			<mb3:section>
+				<mb3:serviceAction objectType="isissecurity.ApplicationUserMenu" id="findUsers">
+					<cpt:named>Find Users</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isissecurity.ApplicationUserMenu" id="newDelegateUser">
+					<cpt:named>New Delegate User</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isissecurity.ApplicationUserMenu" id="newLocalUser">
+					<cpt:named>New Local User</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isissecurity.ApplicationUserMenu" id="allUsers">
+					<cpt:named>All Users</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="isissecurity.ApplicationRoleMenu" id="findRoles">
+					<cpt:named>Find Roles</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isissecurity.ApplicationRoleMenu" id="newRole">
+					<cpt:named>New Role</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isissecurity.ApplicationRoleMenu" id="allRoles">
+					<cpt:named>All Roles</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="isissecurity.ApplicationTenancyMenu" id="findTenancies">
+					<cpt:named>Find Tenancies</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isissecurity.ApplicationTenancyMenu" id="newTenancy">
+					<cpt:named>New Tenancy</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isissecurity.ApplicationTenancyMenu" id="allTenancies">
+					<cpt:named>All Tenancies</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="isissecurity.ApplicationFeatureViewModels" id="allPackages">
+					<cpt:named>All Packages</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isissecurity.ApplicationFeatureViewModels" id="allClasses">
+					<cpt:named>All Classes</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isissecurity.ApplicationFeatureViewModels" id="allActions">
+					<cpt:named>All Actions</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isissecurity.ApplicationFeatureViewModels" id="allProperties">
+					<cpt:named>All Properties</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isissecurity.ApplicationFeatureViewModels" id="allCollections">
+					<cpt:named>All Collections</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="isissecurity.ApplicationPermissionMenu" id="findOrphanedPermissions">
+					<cpt:named>Find Orphaned Permissions</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isissecurity.ApplicationPermissionMenu" id="allPermissions">
+					<cpt:named>All Permissions</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+		</mb3:menu>
+	</mb3:primary>
+	<mb3:secondary>
+		<mb3:menu>
+			<mb3:named>Prototyping</mb3:named>
+			<mb3:section>
+				<mb3:serviceAction objectType="isisApplib.FixtureScriptsDefault" id="runFixtureScript">
+					<cpt:named>Run Fixture Script</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isisApplib.FixtureScriptsDefault" id="runFixtureScriptWithAutoComplete">
+					<cpt:named>Run Fixture Script</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isisApplib.FixtureScriptsDefault" id="recreateObjectsAndReturnFirst">
+					<cpt:named>Recreate Objects And Return First</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="isisApplib.LayoutServiceMenu" id="downloadLayouts">
+					<cpt:named>Download Object Layouts (ZIP)</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isisApplib.LayoutServiceMenu" id="downloadMenuBarsLayout">
+					<cpt:named>Download Menu Bars Layout (XML)</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="isisApplib.MetaModelServicesMenu" id="downloadMetaModel">
+					<cpt:named>Download Meta Model (CSV)</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="isisApplib.SwaggerServiceMenu" id="openSwaggerUi">
+					<cpt:named>Open Swagger Ui</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isisApplib.SwaggerServiceMenu" id="openRestApi">
+					<cpt:named>Open Rest Api</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isisApplib.SwaggerServiceMenu" id="downloadSwaggerSchemaDefinition">
+					<cpt:named>Download Swagger Schema Definition</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="isisApplib.TranslationServicePoMenu" id="downloadTranslations">
+					<cpt:named>Download Translations</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isisApplib.TranslationServicePoMenu" id="resetTranslationCache">
+					<cpt:named>Clear translation cache</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isisApplib.TranslationServicePoMenu" id="switchToReadingTranslations">
+					<cpt:named>Switch To Reading Translations</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="isisApplib.TranslationServicePoMenu" id="switchToWritingTranslations">
+					<cpt:named>Switch To Writing Translations</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="isisApplib.HsqlDbManagerMenu" id="hsqlDbManager">
+					<cpt:named>HSQL DB Manager</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+		</mb3:menu>
+	</mb3:secondary>
+	<mb3:tertiary>
+		<mb3:menu>
+			<mb3:named>Configuration Service Menu</mb3:named>
+			<mb3:section>
+				<mb3:serviceAction objectType="isisApplib.ConfigurationServiceMenu" id="configuration">
+					<cpt:named>Configuration</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+		</mb3:menu>
+	</mb3:tertiary>
+</mb3:menuBars>

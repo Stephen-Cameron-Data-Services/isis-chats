@@ -3,10 +3,10 @@
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/jdo/jdo
         http://xmlns.jcp.org/xml/ns/jdo/jdo_3_0.xsd">
-    <package name="org.incode.module.note.dom.impl.notablelink">
+    <package name="org.incode.example.note.dom.impl.notablelink">
             <class name="NotableLink" schema="chats"/>
     </package>
-    <package name="org.incode.module.note.dom.impl.note">
+    <package name="org.incode.example.note.dom.impl.note">
             <class name="Note" schema="chats"/>
     </package>
 </jdo>

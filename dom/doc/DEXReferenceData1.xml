@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:DexReferenceData xmlns:tns="http://www.example.org/DEXReferenceData/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/DEXReferenceData/ DEXReferenceData.xsd ">
+  <ReferenceDataItems>
+    <Item>
+      <CodeValue>CodeValue</CodeValue>
+      <CodeDescription>CodeDescription</CodeDescription>
+      <OrderNumber>0</OrderNumber>
+    </Item>
+  </ReferenceDataItems>
+  <AssessmentReferenceDataItems>
+    <AssessmentReferenceDataItem>
+      <ScoreType>ScoreType</ScoreType>
+      <ApplicableFor>ApplicableFor</ApplicableFor>
+      <Domains>
+        <Domain>
+          <DomainCode>DomainCode</DomainCode>
+          <DomainDescription>DomainDescription</DomainDescription>
+          <Scores/>
+        </Domain>
+      </Domains>
+    </AssessmentReferenceDataItem>
+  </AssessmentReferenceDataItems>
+</tns:DexReferenceData>

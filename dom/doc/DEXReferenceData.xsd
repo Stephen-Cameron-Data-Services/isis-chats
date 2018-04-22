@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+xmlns:tns="http://dex.dss.gov.au/DEXReferenceData" 
+targetNamespace="http://dex.dss.gov.au/DEXReferenceData"
+elementFormDefault="qualified">
+	<complexType name="DEXReferenceDataType">
+		<sequence>
+			<element name="ReferenceDataItems" maxOccurs="unbounded" minOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="Item" type="tns:RefenceDataItemType" maxOccurs="unbounded" minOccurs="1"></element>
+					</sequence>
+					<attribute name="CodeType" type="string"></attribute>
+				</complexType>
+			</element>
+			<element name="AssessmentReferenceDataItems" maxOccurs="unbounded" minOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="AssessmentReferenceDataItem" type="tns:AssessmentRefenceDataItemType" maxOccurs="unbounded" minOccurs="1"></element>
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="RefenceDataItemType">
+		<sequence>
+			<element name="CodeValue" type="string"></element>
+			<element name="CodeDescription" type="string"></element>
+			<element name="OrderNumber" type="int"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="AssessmentRefenceDataItemType">
+		<sequence>
+			<element name="ScoreType" type="string"></element>
+			<element name="ApplicableFor" type="string"></element>
+			<element name="Domains">
+				<complexType>
+					<sequence>
+						<element name="Domain" type="tns:DomainType" maxOccurs="unbounded" minOccurs="0"></element>
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="DomainType">
+		<sequence>
+			<element name="DomainCode" type="string"></element>
+			<element name="DomainDescription" type="string"></element>
+			<element name="Scores">
+				<complexType>
+					<sequence>
+						<element name="Score" type="tns:ScoreType" maxOccurs="unbounded" minOccurs="0"></element>
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="ScoreType">
+		<sequence>
+			<element name="ScoreCode" type="string"></element>
+			<element name="Description" type="string"></element>
+		</sequence>
+	</complexType>
+
+	<element name="DEXReferenceData" type="tns:DEXReferenceDataType"></element>
+</schema>

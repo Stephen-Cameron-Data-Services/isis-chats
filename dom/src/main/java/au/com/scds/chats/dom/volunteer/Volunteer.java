@@ -18,6 +18,7 @@
  */
 package au.com.scds.chats.dom.volunteer;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 //import java.util.Date;
@@ -29,14 +30,11 @@ import javax.inject.Inject;
 import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.Identifier;
-//import org.apache.isis.applib.DomainObjectContainer;
-//import org.apache.isis.applib.Identifier;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
-import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.MinLength;
 import org.apache.isis.applib.annotation.Optionality;
@@ -44,28 +42,30 @@ import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
-import org.apache.isis.applib.annotation.RenderType;
-//import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.annotation.Where;
-//import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
 import org.apache.isis.applib.services.i18n.TranslatableString;
 import org.apache.isis.applib.services.message.MessageService;
+import org.apache.isis.applib.services.timestamp.Timestampable;
+import org.isisaddons.module.security.dom.tenancy.HasAtPath;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-import au.com.scds.chats.dom.AbstractChatsDomainEntity;
-import au.com.scds.chats.dom.call.CalendarDayCallSchedule;
-import au.com.scds.chats.dom.call.Calls;
-import au.com.scds.chats.dom.call.RegularScheduledCallAllocation;
-import au.com.scds.chats.dom.call.ScheduledCall;
-import au.com.scds.chats.dom.general.Person;
+import au.com.scds.chats.dom.ChatsDomainEntitiesService;
+import au.com.scds.chats.dom.ChatsEntity;
+import au.com.scds.chats.dom.activity.AgeGroup;
+import au.com.scds.chats.dom.activity.ChatsParticipant;
+import au.com.scds.chats.dom.activity.ParticipantMenu;
+import au.com.scds.chats.dom.call.CallsMenu;
+import au.com.scds.chats.dom.call.ChatsCallAllocation;
+import au.com.scds.chats.dom.call.ChatsScheduledCall;
+import au.com.scds.chats.dom.call.ChatsCallAllocation;
+import au.com.scds.chats.dom.general.ChatsPerson;
 import au.com.scds.chats.dom.general.Status;
-import au.com.scds.chats.dom.participant.AgeGroup;
-import au.com.scds.chats.dom.participant.Participant;
-import au.com.scds.chats.dom.participant.Participant;
-import au.com.scds.chats.dom.participant.Participants;
+import au.com.scds.chats.dom.general.names.Region;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="volunteer")
@@ -82,21 +82,40 @@ import au.com.scds.chats.dom.participant.Participants;
 
 @Unique(name = "Volunteer_UNQ", members = { "person", "region" })
 @DomainObject()
-public class Volunteer extends AbstractChatsDomainEntity implements /* Locatable */ Comparable<Volunteer> {
+public class Volunteer implements Comparable<Volunteer>, ChatsEntity, Timestampable, HasAtPath {
 
-	private Person person;
+	@Column(allowsNull="false")
+	@Getter
+	@Setter
+	private ChatsPerson person;
+	@Column(allowsNull="false")
+	@Getter
+	@Setter
 	private Status status = Status.ACTIVE;
+	@Column(allowsNull="true")
+	@Getter
+	@Setter
 	private String username;
-	@Persistent(mappedBy = "allocatedVolunteer")
-	private SortedSet<CalendarDayCallSchedule> callSchedules = new TreeSet<>();
 	@Persistent(mappedBy = "volunteer")
 	@Order(column = "v_idx")
+	@Getter
+	@Setter
 	private List<VolunteeredTime> volunteeredTimes = new ArrayList<>();
 	@Join()
+	@Getter
+	@Setter
 	private List<VolunteerRole> volunteerRoles = new ArrayList<>();
 	@Persistent(mappedBy = "volunteer")
 	@Order(column = "v_idx")
-	protected List<RegularScheduledCallAllocation> callAllocations = new ArrayList<>();
+	@Getter
+	@Setter
+	protected List<ChatsCallAllocation> callAllocations = new ArrayList<>();
+
+	private Volunteer(){};
+	
+	public Volunteer(ChatsPerson person) {
+		setPerson(person);
+	}
 
 	public String title() {
 		String title = getPerson().getFullname();
@@ -109,42 +128,24 @@ public class Volunteer extends AbstractChatsDomainEntity implements /* Locatable
 		return (getStatus().equals(Status.EXITED)) ? "EXITED Volunteers cannot be changed" : null;
 	}
 
-	@Column(allowsNull = "true", length = 20)
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	@CollectionLayout(render = RenderType.EAGERLY)
-	public List<RegularScheduledCallAllocation> getCallAllocations() {
-		return callAllocations;
-	}
-
-	public void setCallAllocations(List<RegularScheduledCallAllocation> callAllocations) {
-		this.callAllocations = callAllocations;
-	}
-
 	public Volunteer addAllocatedCallParticipant(
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") Participant participant,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") ChatsParticipant participant,
 			@Parameter(optionality = Optionality.OPTIONAL, regexPattern = "\\d{1,2}:\\d{2}\\s+(AM|PM)", regexPatternReplacement = "HH:MM AM|PM") @ParameterLayout(named = "Approx. Call Time") String time) {
-		RegularScheduledCallAllocation allocation = schedulesRepo.createRegularScheduledCallAllocation(this,
+		ChatsCallAllocation allocation = schedulesRepo.createChatsCallAllocation(this,
 				participant);
 		if (time != null)
 			allocation.setApproximateCallTime(time);
 		return this;
 	}
 
-	public List<Participant> autoComplete0AddAllocatedCallParticipant(@MinLength(3) String search) {
-		List<Participant> list1 = participantsRepo.listActiveParticipantIdentities(AgeGroup.All, search);
-		List<Participant> list2 = new ArrayList<>();
+	public List<ChatsParticipant> autoComplete0AddAllocatedCallParticipant(@MinLength(3) String search) {
+		List<ChatsParticipant> list1 = participantsRepo.listActiveChatsParticipants(AgeGroup.All, search);
+		List<ChatsParticipant> list2 = new ArrayList<>();
 		boolean allocated = false;
-		for (Participant p : list1) {
+		for (ChatsParticipant p : list1) {
 			allocated = false;
 			if (getCallAllocations().size() > 0) {
-				for (RegularScheduledCallAllocation allocation : getCallAllocations()) {
+				for (ChatsCallAllocation allocation : getCallAllocations()) {
 					if (allocation.getParticipant().equals(p)) {
 						allocated = true;
 					}
@@ -156,73 +157,34 @@ public class Volunteer extends AbstractChatsDomainEntity implements /* Locatable
 		return list2;
 	}
 
-	public Volunteer removeAllocatedCallParticipant(RegularScheduledCallAllocation allocation) {
-		schedulesRepo.deleteRegularScheduledCallAllocation(allocation);
+	public Volunteer removeAllocatedCallParticipant(ChatsCallAllocation allocation) {
+		schedulesRepo.deleteChatsCallAllocation(allocation);
 		return this;
 	}
 
-	public List<RegularScheduledCallAllocation> choices0RemoveAllocatedCallParticipant() {
+	public List<ChatsCallAllocation> choices0RemoveAllocatedCallParticipant() {
 		return getCallAllocations();
-	}
-
-	@Action
-	public Volunteer buildScheduleFromAllocated(LocalDate date) {
-		buildSchedule(date);
-		return this;
-	}
-
-	@Programmatic
-	public CalendarDayCallSchedule buildSchedule(LocalDate date) {
-		CalendarDayCallSchedule schedule = findCallSchedule(date);
-		if (schedule == null) {
-			schedule = schedulesRepo.createCalendarDayCallSchedule(date, this, true);
-		}
-		return schedule;
-	}
-
-	@Programmatic
-	public CalendarDayCallSchedule findCallSchedule(LocalDate date) {
-		for (CalendarDayCallSchedule schedule : getScheduled()) {
-			if (schedule.getCalendarDate().equals(date))
-				return schedule;
-		}
-		return null;
-	}
-
-	@CollectionLayout(render = RenderType.EAGERLY)
-	public SortedSet<CalendarDayCallSchedule> getScheduled() {
-		return callSchedules;
-	}
-
-	public void setScheduledCalls(final SortedSet<CalendarDayCallSchedule> callSchedules) {
-		this.callSchedules = callSchedules;
 	}
 
 	@Action()
 	public Volunteer addScheduledCall(
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") final Participant participant,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") final ChatsParticipant participant,
 			@Parameter(optionality = Optionality.MANDATORY) final DateTime dateTime) {
-		try {
-			schedulesRepo.createScheduledCall(this, participant, dateTime);
-		} catch (Exception e) {
-			messageService.warnUser(e.getMessage());
-		}
+		this.createScheduledCall(participant, dateTime);
 		return this;
 	}
-
-	public List<Participant> autoComplete0AddScheduledCall(@MinLength(3) String search) {
-		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All, search);
+	
+	public ChatsScheduledCall createScheduledCall( final ChatsParticipant participant, final DateTime dateTime) {
+		try {
+			return schedulesRepo.createScheduledCall(this, participant, dateTime);
+		} catch (Exception e) {
+			messageService.warnUser(e.getMessage());
+			return null;
+		}
 	}
 
-	@Property(editing = Editing.DISABLED)
-	@Column(allowsNull = "false")
-	public Person getPerson() {
-		return person;
-	}
-
-	public void setPerson(final Person person) {
-		if (this.person == null && person != null)
-			this.person = person;
+	public List<ChatsParticipant> autoComplete0AddScheduledCall(@MinLength(3) String search) {
+		return participantsRepo.listActiveChatsParticipants(AgeGroup.All, search);
 	}
 
 	@Property(editing = Editing.DISABLED, editingDisabledReason = "Displayed from Person record")
@@ -262,15 +224,6 @@ public class Volunteer extends AbstractChatsDomainEntity implements /* Locatable
 		return getPerson().getEmailAddress();
 	}
 
-	@Column(allowsNull = "false")
-	public Status getStatus() {
-		return status;
-	}
-
-	public void setStatus(final Status status) {
-		this.status = status;
-	}
-
 	public List<Status> choicesStatus() {
 		ArrayList<Status> statuses = new ArrayList<>();
 		statuses.add(Status.ACTIVE);
@@ -284,27 +237,10 @@ public class Volunteer extends AbstractChatsDomainEntity implements /* Locatable
 		return getPerson().getLocation();
 	}
 
-	public List<VolunteeredTime> getVolunteeredTimes() {
-		return volunteeredTimes;
-	}
-
-	public void setVolunteeredTimes(List<VolunteeredTime> volunteeredTimes) {
-		this.volunteeredTimes = volunteeredTimes;
-	}
-
 	@Programmatic
 	public void addVolunteeredTime(VolunteeredTime time) {
 		if (time != null)
 			getVolunteeredTimes().add(time);
-	}
-
-	@CollectionLayout(render = RenderType.EAGERLY)
-	public List<VolunteerRole> getVolunteerRoles() {
-		return volunteerRoles;
-	}
-
-	public void setVolunteerRoles(List<VolunteerRole> volunteerRoles) {
-		this.volunteerRoles = volunteerRoles;
 	}
 
 	@Action()
@@ -335,15 +271,54 @@ public class Volunteer extends AbstractChatsDomainEntity implements /* Locatable
 	}
 
 	@Inject
-	protected Volunteers volunteers;
+	protected VolunteerMenu volunteers;
 
 	@Inject
-	protected Calls schedulesRepo;
+	protected CallsMenu schedulesRepo;
 
 	@Inject
-	protected Participants participantsRepo;
+	protected ParticipantMenu participantsRepo;
 	
 	@Inject
 	protected MessageService messageService;
+	
+	@Column(allowsNull = "true")
+	@Getter
+	@Setter
+	private String createdBy;
+	@Column(allowsNull = "true")
+	@Getter
+	@Setter
+	private DateTime createdOn;
+	@Column(allowsNull = "true")
+	@Getter
+	@Setter
+	private DateTime lastModifiedOn;
+	@Column(allowsNull = "true")
+	@Getter
+	@Setter
+	private String lastModifiedBy;
+	@Column(allowsNull = "true")
+	@Getter
+	@Setter
+	private Region region;
+
+	@Override
+	public void setUpdatedBy(String updatedBy) {
+		chatsService.setUpdatedBy(this, updatedBy);
+	}
+
+	@Override
+	public void setUpdatedAt(Timestamp updatedAt) {
+		chatsService.setUpdatedAt(this, updatedAt);
+	}
+
+	@Override
+	public String getAtPath() {
+		return chatsService.getAtPath(this);
+	}
+
+	@Inject
+	ChatsDomainEntitiesService chatsService;
 
 }

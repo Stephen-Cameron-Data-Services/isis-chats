@@ -19,38 +19,57 @@
 package au.com.scds.chats.dom.activity;
 
 import org.apache.isis.applib.annotation.DomainObject;
-import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Nature;
-import org.apache.isis.applib.annotation.Property;
-import org.apache.isis.applib.annotation.PropertyLayout;
-import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.util.TitleBuffer;
-import org.isisaddons.wicket.gmap3.cpt.applib.Location;
-import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import au.com.scds.chats.dom.general.Address;
 import au.com.scds.chats.dom.general.names.TransportType;
-import au.com.scds.chats.dom.participant.Participant;
-import au.com.scds.chats.dom.participant.Participation;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.VolunteeredTimeForActivity;
+import au.com.scds.eventschedule.base.impl.Address;
+import au.com.scds.eventschedule.base.impl.activity.ActivityEvent;
+import lombok.Getter;
+import lombok.Setter;
 
 @DomainObject(objectType = "chats.transportview", nature = Nature.VIEW_MODEL)
 public class TransportView {
 
+	@Getter
+	@Setter
 	private String activityDetails;
+	@Getter
+	@Setter
 	private String role;
+	@Getter
+	@Setter
 	private String name;
+	@Getter
+	@Setter
 	private String homePhone;
+	@Getter
+	@Setter
 	private String mobilePhone;
+	@Getter
+	@Setter
 	private String address;
+	@Getter
+	@Setter
 	private String postcode;
+	@Getter
+	@Setter
 	private String notes;
+	@Getter
+	@Setter
 	private String pickupTime;
+	@Getter
+	@Setter
 	private String dropoffTime;
+	@Getter
+	@Setter
 	private TransportType arrivingTransportType;
+	@Getter
+	@Setter
 	private TransportType departingTransportType;
 
 	private static DateTimeFormatter fmt = DateTimeFormat.forPattern("dd MMM yyyy HH:mm");
@@ -58,15 +77,14 @@ public class TransportView {
 	public TransportView() {
 	}
 
-	public TransportView(Participation participation) {
+	public TransportView(ChatsParticipation participation) {
 		if (participation == null)
 			return;
-		Participant p = participation.getParticipant();
-		Activity a = participation.getActivity();
+		ChatsParticipant p = participation.getParticipant();
+		ActivityEvent a = participation.getActivity();
 		this.role = "Participant";
-		this.activityDetails = a.getName() + " -- "
-				+ ((a.getAddressLocationName() != null) ? a.getAddressLocationName() + ", " : "") + a.getStreetAddress()
-				+ " -- " + fmt.print(a.getStartDateTime());
+		this.activityDetails = a.getName() + " -- " + ((a.getLocationName() != null) ? a.getLocationName() + ", " : "")
+				+ a.getStreetAddress() + " -- " + fmt.print(a.getStart());
 		this.name = p.getPerson().getKnownAsName();
 		if (p.getPerson().getStreetAddress() != null) {
 			Address address = p.getPerson().getStreetAddress();
@@ -91,11 +109,11 @@ public class TransportView {
 		if (volunteeredTime == null)
 			return;
 		Volunteer v = volunteeredTime.getVolunteer();
-		Activity a = volunteeredTime.getActivity();
+		ActivityEvent a = volunteeredTime.getActivity();
 		this.role = volunteeredTime.getVolunteerRoleName();
 		this.activityDetails = a.getName() + " -- "
-				+ ((a.getAddressLocationName() != null) ? a.getAddressLocationName() + ", " : "") + a.getStreetAddress()
-				+ " -- " + fmt.print(a.getStartDateTime());
+				+ ((a.getLocationName() != null) ? a.getLocationName() + ", " : "") + a.getStreetAddress()
+				+ " -- " + fmt.print(a.getStart());
 		this.name = v.getPerson().getKnownAsName();
 		if (v.getPerson().getStreetAddress() != null) {
 			Address address = v.getPerson().getStreetAddress();
@@ -110,108 +128,14 @@ public class TransportView {
 		this.homePhone = v.getHomePhoneNumber();
 	}
 
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getHomePhone() {
-		return homePhone;
-	}
-
-	public void setHomePhone(String homePhone) {
-		this.homePhone = homePhone;
-	}
-
-	public String getMobilePhone() {
-		return mobilePhone;
-	}
-
-	public void setMobilePhone(String mobilePhone) {
-		this.mobilePhone = mobilePhone;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getNotes() {
-		return notes;
-	}
-
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
-
-	public String getPickupTime() {
-		return pickupTime;
-	}
-
-	public void setPickupTime(String pickupTime) {
-		this.pickupTime = pickupTime;
-	}
-
-	public String getDropoffTime() {
-		return dropoffTime;
-	}
-
-	public void setDropoffTime(String dropoffTime) {
-		this.dropoffTime = dropoffTime;
-	}
-
-	public TransportType getArrivingTransportType() {
-		return arrivingTransportType;
-	}
-
-	public void setArrivingTransportType(TransportType arrivingTransportType) {
-		this.arrivingTransportType = arrivingTransportType;
-	}
-
 	public String getArrivingTransportTypeName() {
 		return (getArrivingTransportType() != null) ? getArrivingTransportType().getName() : null;
 	}
 
-	public TransportType getDepartingTransportType() {
-		return departingTransportType;
-	}
-
-	public void setDepartingTransportType(TransportType departingTransportType) {
-		this.departingTransportType = departingTransportType;
-	}
 
 	public String getDepartingTransportTypeName() {
 		return (getDepartingTransportType() != null) ? getDepartingTransportType().getName() : null;
 	}
 
-	public String getActivityDetails() {
-		return activityDetails;
-	}
-
-	public void setActivityDetails(String activityDetails) {
-		this.activityDetails = activityDetails;
-	}
-
-	public String getPostcode() {
-		return postcode;
-	}
-
-	public void setPostcode(String postcode) {
-		this.postcode = postcode;
-	}
 
 }

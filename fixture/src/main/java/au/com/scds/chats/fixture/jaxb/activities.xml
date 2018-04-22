@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<tns:activities xmlns:tns="http://scds.com.au/chats/fixture/jaxb/generated"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://scds.com.au/chats/fixture/jaxb/generated ChatsFixtures.xsd ">
-	<tns:activity>
-		<tns:name>tns:name</tns:name>
-		<tns:startDateTime>2001-12-31T12:00:00</tns:startDateTime>
-	</tns:activity>
-</tns:activities>

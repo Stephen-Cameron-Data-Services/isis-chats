@@ -16,4 +16,8 @@ import javax.jdo.annotations.Query;
 	@Query(name = "allDescriptions", language = "JDOQL", value = "SELECT description FROM au.com.scds.chats.dom.dex.reference.DVACardStatus ORDER BY orderNumber ASC")})
 public class DVACardStatus extends AbstractDexReferenceItem {
 
+	public DVACardStatus(String name, String description, int orderNumber) {
+		super(name, description, orderNumber);
+	}
+
 }

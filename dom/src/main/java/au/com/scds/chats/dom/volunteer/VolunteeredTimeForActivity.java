@@ -34,13 +34,13 @@ import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.DomainObjectLayout;
 import org.apache.isis.applib.annotation.Editing;
-import org.apache.isis.applib.annotation.MemberGroupLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
+import org.joda.time.DateTime;
 
-import au.com.scds.chats.dom.activity.Activity;
+import au.com.scds.eventschedule.base.impl.activity.ActivityEvent;
 
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
@@ -48,16 +48,21 @@ import au.com.scds.chats.dom.activity.Activity;
 @DomainObject()
 public class VolunteeredTimeForActivity extends VolunteeredTime {
 	
-	private Activity activity;
+	private ActivityEvent activity;
 	private VolunteerRole volunteerRole;
+	
+	public VolunteeredTimeForActivity(Volunteer volunteer, ActivityEvent activity, DateTime start, DateTime end){
+		super(volunteer, start, end);
+		setActivity(activity);
+	}
 
 	@Property(editing=Editing.DISABLED)
 	@Column(allowsNull="false")
-	public Activity getActivity() {
+	public ActivityEvent getActivity() {
 		return activity;
 	}
 
-	public void setActivity(Activity activity) {
+	public void setActivity(ActivityEvent activity) {
 		this.activity = activity;
 	}
 

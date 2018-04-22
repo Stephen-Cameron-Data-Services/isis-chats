@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<grid
+	xsi:schemaLocation="http://isis.apache.org/applib/layout/component http://isis.apache.org/applib/layout/component/component.xsd http://isis.apache.org/applib/layout/grid/bootstrap3 http://isis.apache.org/applib/layout/grid/bootstrap3/bootstrap3.xsd"
+	xmlns="http://isis.apache.org/applib/layout/grid/bootstrap3" xmlns:ns2="http://isis.apache.org/applib/layout/component" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<row>
+		<col span="12" unreferencedActions="true">
+			<ns2:domainObject bookmarking="AS_ROOT" />
+		</col>
+	</row>
+	<row>
+		<col span="12">
+			<tabGroup>
+				<tab name="General">
+					<row>
+						<col span="6">
+							<ns2:fieldSet name="General" id="general" unreferencedProperties="true">
+								<ns2:property id="person" hidden="ALL_TABLES">
+									<ns2:describedAs>A Chats Participant is a role of a person in this App., this is the underlying Person record</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="volunteer" hidden="ALL_TABLES">
+									<ns2:describedAs>A Chats Volunteer is a role of a person in this App., this is the related Volunteer record if a dual role person.</ns2:describedAs>
+									<ns2:action id="makeParticipantIntoVolunteer" position="BELOW">
+										<ns2:named>Make a Volunteer too</ns2:named>
+										<ns2:describedAs>Make this Chats Participant (person) have a Chats Volunteer role too.</ns2:describedAs>
+									</ns2:action>
+								</ns2:property>
+								<ns2:property id="fullName" typicalLength="30" hidden="OBJECT_FORMS" />
+								<ns2:property id="age" typicalLength="2" />
+								<ns2:property id="sex" typicalLength="5" />
+								<ns2:property id="status" typicalLength="5" />
+							</ns2:fieldSet>
+							<ns2:fieldSet name="Mobility" id="mobility">
+								<ns2:property id="mobility" hidden="ALL_TABLES" multiLine="2">
+									<ns2:describedAs>Notes on the mobility of the Participant. Any text added here is placed onto Activity Transport List (joined with Activity specific notes in Participation records)</ns2:describedAs>
+								</ns2:property>
+							</ns2:fieldSet>
+						</col>
+						<col span="6">
+							<ns2:fieldSet name="Contact" id="contact">
+								<ns2:property id="homePhoneNumber" typicalLength="10">
+									<ns2:describedAs>Home phone number of the underlying Person (update on the Person record).</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="mobilePhoneNumber" typicalLength="10">
+									<ns2:describedAs>Mobile phone number of the underlying Person (update on the Person record).</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="emailAddress" typicalLength="20">
+									<ns2:describedAs>Email address of the underlying Person (update on the Person record).</ns2:describedAs>
+								</ns2:property>
+							</ns2:fieldSet>
+							<ns2:fieldSet name="Address" id="address">
+								<ns2:property id="streetAddress" typicalLength="40">
+									<ns2:describedAs>Street address of the underlying Person (update on the Person record).</ns2:describedAs>
+								</ns2:property>
+								<ns2:property id="mailAddress" hidden="ALL_TABLES">
+									<ns2:describedAs>Mail address of the underlying Person (update on the Person record).</ns2:describedAs>
+								</ns2:property>
+							</ns2:fieldSet>
+							<ns2:collection id="callAllocations">
+								<ns2:named>Call Volunteers allocated</ns2:named>
+							</ns2:collection>
+						</col>
+					</row>
+				</tab>
+				<tab name="Participation">
+					<row>
+						<col span="12">
+							<ns2:collection id="participations" hidden="EVERYWHERE" />
+							<ns2:collection id="participationViews">
+								<ns2:action id="showFutureParticipation">
+									<ns2:named>Show Future Participation</ns2:named>
+									<ns2:describedAs>Shows all future participation in One-off Activities and children of Recurring Activities.</ns2:describedAs>
+								</ns2:action>
+							</ns2:collection>
+						</col>
+					</row>
+				</tab>
+				<tab name="Life History">
+					<row>
+						<col span="6">
+							<ns2:fieldSet id="LSTO" name="Life History">
+								<ns2:property id="lifeStory" multiLine="5" labelPosition="NONE" hidden="ALL_TABLES" />
+							</ns2:fieldSet>
+							<ns2:fieldSet id="EXPE" name="Experiences">
+								<ns2:property id="lifeExperiences" multiLine="5" labelPosition="NONE" hidden="ALL_TABLES" />
+							</ns2:fieldSet>
+						</col>
+						<col span="6">
+							<ns2:fieldSet id="HOBB" name="Hobbies">
+								<ns2:property id="hobbies" multiLine="5" labelPosition="NONE" hidden="ALL_TABLES" />
+							</ns2:fieldSet>
+							<ns2:fieldSet id="INTE" name="Interests">
+								<ns2:property id="interests" multiLine="5" labelPosition="NONE" hidden="ALL_TABLES" />
+							</ns2:fieldSet>
+						</col>
+					</row>
+				</tab>
+				<tab name="Social Factors">
+					<row>
+						<col span="6">
+							<ns2:fieldSet id="origin" name="Origin">
+								<ns2:property id="placeOfOrigin" hidden="ALL_TABLES" />
+								<ns2:property id="yearOfSettlement" hidden="ALL_TABLES" />
+							</ns2:fieldSet>
+							<ns2:fieldSet id="involvement" name="Involvement">
+								<ns2:property id="involvementInGroupsClubs" hidden="ALL_TABLES" />
+								<ns2:property id="involvementInInterestsHobbies" hidden="ALL_TABLES" />
+							</ns2:fieldSet>
+							<ns2:fieldSet id="friendsandRelatives" name="Friends and Relatives">
+								<ns2:property id="closeRelatives" hidden="ALL_TABLES" />
+								<ns2:property id="closeRelativeAndFriendCount" hidden="ALL_TABLES" />
+								<ns2:property id="proximityOfRelatives" hidden="ALL_TABLES" />
+								<ns2:property id="proximityOfFriends" hidden="ALL_TABLES" />
+							</ns2:fieldSet>
+						</col>
+						<col span="6">
+							<ns2:fieldSet id="limitations" name="Limitations">
+								<ns2:property id="limitingHealthIssues" hidden="ALL_TABLES" />
+								<ns2:property id="otherLimitingFactors" hidden="ALL_TABLES" />
+							</ns2:fieldSet>
+							<ns2:fieldSet id="driving" name="Driving">
+								<ns2:property id="driversLicence" hidden="ALL_TABLES" />
+								<ns2:property id="drivingAbility" hidden="ALL_TABLES" />
+								<ns2:property id="drivingConfidence" hidden="ALL_TABLES" />
+							</ns2:fieldSet>
+						</col>
+					</row>
+				</tab>
+				<tab name="Loneliness">
+					<row>
+						<col span="6">
+							<ns2:fieldSet id="LONE" name="Loneliness">
+								<ns2:property id="loneliness" multiLine="5" labelPosition="NONE" hidden="ALL_TABLES" />
+							</ns2:fieldSet>
+						</col>
+					</row>
+				</tab>
+				<tab name="DSS Data">
+					<row>
+						<col span="12">
+							<ns2:fieldSet id="DSS" name="DSS (DEX) Data">
+								<ns2:action id="updateDexData">
+									<ns2:named>Update</ns2:named>
+									<ns2:describedAs>Set or Update all DSS (DEX) Data properties at once</ns2:describedAs>
+								</ns2:action>
+								<ns2:property id="consentToProvideDetails" hidden="ALL_TABLES" />
+								<ns2:property id="consentedForFutureContacts" hidden="ALL_TABLES" />
+								<ns2:property id="usingPsuedonym" hidden="ALL_TABLES" />
+								<ns2:property id="birthDateAnEstimate" hidden="EVERYWHERE" />
+								<ns2:property id="hasCarer" hidden="ALL_TABLES" />
+								<ns2:property id="countryOfBirth" hidden="EVERYWHERE" />
+								<ns2:property id="countryOfBirthDescription" hidden="ALL_TABLES">
+									<ns2:named>Country Of Birth</ns2:named>
+								</ns2:property>
+								<ns2:property id="languageSpokenAtHome" hidden="EVERYWHERE" />
+								<ns2:property id="languageSpokenAtHomeDescription" hidden="ALL_TABLES">
+									<ns2:named>Language Spoken at Home</ns2:named>
+								</ns2:property>
+								<ns2:property id="aboriginalOrTorresStraitIslanderOrigin" hidden="EVERYWHERE" />
+								<ns2:property id="aboriginalOrTorresStraitIslanderOriginDescription" hidden="ALL_TABLES">
+									<ns2:named>Aboriginal or Torres Strait Islander Origin</ns2:named>
+								</ns2:property>
+								<ns2:property id="householdComposition" hidden="EVERYWHERE" />
+								<ns2:property id="householdCompositionDescription" hidden="ALL_TABLES">
+									<ns2:named>Household Composition</ns2:named>
+								</ns2:property>
+								<ns2:property id="accommodationType" hidden="EVERYWHERE" />
+								<ns2:property id="accommodationTypeDescription" hidden="ALL_TABLES">
+									<ns2:named>Accommodation Type</ns2:named>
+								</ns2:property>
+								<ns2:property id="dvaCardStatus" hidden="EVERYWHERE" />
+								<ns2:property id="dvaCardStatusDescription" hidden="ALL_TABLES">
+									<ns2:named>DVA Card Status</ns2:named>
+								</ns2:property>
+							</ns2:fieldSet>
+							<ns2:collection id="disabilities" hidden="EVERYWHERE">
+							</ns2:collection>
+							<ns2:collection id="disabilitiesDescriptions">
+								<ns2:named>Disabilities</ns2:named>
+								<ns2:action id="addDisability">
+									<ns2:named>Add</ns2:named>
+									<ns2:describedAs>Add a disability type code to the list.</ns2:describedAs>
+								</ns2:action>
+								<ns2:action id="removeDisability">
+									<ns2:named>Remove</ns2:named>
+									<ns2:describedAs>Remove a disability type code to the list.</ns2:describedAs>
+								</ns2:action>
+							</ns2:collection>
+						</col>
+					</row>
+				</tab>
+				<tab name="Client Notes">
+					<row>
+						<col span="12">
+							<ns2:collection id="clientNotes">
+								<ns2:action id="addClientNote">
+									<ns2:named>Add</ns2:named>
+									<ns2:describedAs>Add a Client Note for this Participant client.</ns2:describedAs>
+								</ns2:action>
+								<ns2:action id="removeClientNote">
+									<ns2:named>Remove</ns2:named>
+									<ns2:describedAs>Remove a Client Note for this Participant client.</ns2:describedAs>
+								</ns2:action>
+							</ns2:collection>
+						</col>
+					</row>
+				</tab>
+				<tab name="Calendar Notes">
+					<row>
+						<col span="12">
+							<ns2:collection id="notes">
+								<ns2:named>Calendar Notes</ns2:named>
+							</ns2:collection>
+						</col>
+					</row>
+				</tab>
+				<tab name="Other">
+					<row>
+						<col span="4">
+							<ns2:fieldSet name="Admin" id="other">
+								<ns2:action id="clearHints" position="PANEL_DROPDOWN" />
+								<ns2:action id="downloadLayoutXml" position="PANEL_DROPDOWN" />
+								<ns2:action id="downloadJdoMetadata" position="PANEL_DROPDOWN" />
+								<ns2:action id="rebuildMetamodel" position="PANEL_DROPDOWN" />
+								<ns2:property id="datanucleusIdLong" hidden="ALL_TABLES" />
+								<ns2:property id="datanucleusVersionLong" hidden="ALL_TABLES" />
+								<ns2:property id="datanucleusVersionTimestamp" hidden="ALL_TABLES" />
+								<ns2:property id="createdBy" hidden="ALL_TABLES" />
+								<ns2:property id="createdOn" hidden="ALL_TABLES" />
+								<ns2:property id="lastModifiedBy" hidden="ALL_TABLES" />
+								<ns2:property id="lastModifiedOn" hidden="ALL_TABLES" />
+								<ns2:property id="region" hidden="EVERYWHERE" />
+								<ns2:property id="regionName" />
+								<ns2:property id="location" hidden="ALL_TABLES" />
+							</ns2:fieldSet>
+						</col>
+						<col span="8" unreferencedCollections="true">
+							<ns2:collection id="bookings" hidden="EVERYWHERE">
+							</ns2:collection>
+							<ns2:collection id="attendances" hidden="EVERYWHERE">
+							</ns2:collection>
+						</col>
+					</row>
+				</tab>
+			</tabGroup>
+		</col>
+	</row>
+</grid>
