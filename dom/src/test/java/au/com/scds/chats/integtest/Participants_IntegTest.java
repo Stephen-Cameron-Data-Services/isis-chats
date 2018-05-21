@@ -48,9 +48,9 @@ public class Participants_IntegTest extends IntegTestAbstract {
 	@Before
 	public void setUp() throws Exception {
 		// given
-		CreateDexReferenceData fs1 = new CreateDexReferenceData ();
+		//CreateDexReferenceData fs1 = new CreateDexReferenceData ();
 		CreateChatsParticipant fs2 = new CreateChatsParticipant();
-		fixtureScripts.runFixtureScript(fs1, null);
+		//fixtureScripts.runFixtureScript(fs1, null);
 		fixtureScripts.runFixtureScript(fs2, null);
 		transactionService.nextTransaction();
 		participants = fs2.getParticipants();
