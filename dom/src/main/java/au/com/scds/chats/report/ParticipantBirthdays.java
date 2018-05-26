@@ -5,10 +5,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.DomainService;
-import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
@@ -18,8 +16,8 @@ import org.joda.time.LocalDate;
 import au.com.scds.chats.dom.general.ChatsPerson;
 import au.com.scds.chats.report.view.MailMergeData;
 
-import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
+import org.apache.isis.applib.services.repository.RepositoryService;
 
 @DomainService(nature = NatureOfService.VIEW_MENU_ONLY)
 public class ParticipantBirthdays {
@@ -32,7 +30,7 @@ public class ParticipantBirthdays {
 			return null;
 		// reset start day to the day before the period of interest
 		periodStart = periodStart.minusDays(1);
-		List<MailMergeData> actives = container
+		List<MailMergeData> actives = repositoryService
 				.allMatches(new QueryDefault<>(MailMergeData.class, "listActiveParticipantMailMergeData"));
 		List<MailMergeData> valids = new ArrayList<>();
 		for (MailMergeData p : actives) {
@@ -52,6 +50,6 @@ public class ParticipantBirthdays {
 	}
 
 	@Inject
-	DomainObjectContainer container;
+	RepositoryService repositoryService;
 
 }

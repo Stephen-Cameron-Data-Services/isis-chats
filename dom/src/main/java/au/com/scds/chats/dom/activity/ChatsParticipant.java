@@ -82,7 +82,7 @@ import lombok.Setter;
 				+ "FROM au.com.scds.chats.dom.activity.ChatsParticipant  "
 				+ "WHERE status == :status && (person.surname.toUpperCase().startsWith(:start) || person.firstname.toUpperCase().startsWith(:start)) "),
 		@Query(name = "findParticipantForPerson", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.activity.ChatsParticipant  " + "WHERE person == :person"),
+				+ "FROM au.com.scds.chats.dom.activity.ChatsParticipant WHERE person == :person"),
 		@Query(name = "findNewOrModifiedParticipantsByPeriodAndRegion", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.activity.ChatsParticipant "
 				+ "WHERE ((person.createdOn >= :startDate && person.createdOn < :startDate) "

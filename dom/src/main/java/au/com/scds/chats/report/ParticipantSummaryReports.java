@@ -8,16 +8,14 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.DomainService;
-import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MinLength;
 import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.ParameterLayout;
-import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
+import org.apache.isis.applib.services.repository.RepositoryService;
 import org.joda.time.LocalDate;
 import au.com.scds.chats.dom.activity.AgeGroup;
 import au.com.scds.chats.dom.activity.ChatsParticipant;
@@ -35,7 +33,7 @@ public class ParticipantSummaryReports {
 			@ParameterLayout(named = "Participant") ChatsParticipant identity,
 			@ParameterLayout(named = "Start Date") LocalDate startDate,
 			@ParameterLayout(named = "End Date") LocalDate endDate) {
-		return container.allMatches(
+		return repositoryService.allMatches(
 				new QueryDefault<>(ParticipantCallOrAttendance.class, "allCallOrAttendanceForParticipantInPeriod",
 						"participantId", identity, "startDate", startDate.toDate(), "endDate", endDate.plusDays(1).toDate()));
 	}
@@ -52,15 +50,15 @@ public class ParticipantSummaryReports {
 
 		switch (ageGroup) {
 		case All:
-			return container.allMatches(
+			return repositoryService.allMatches(
 					new QueryDefault<>(ParticipantCallOrAttendance.class, "allParticipantCallOrAttendanceInPeriod",
 							"startDate", startDate.toDate(), "endDate", endDate.plusDays(1).toDate()));
 		case Under_Sixty_Five:
-			return container.allMatches(new QueryDefault<>(ParticipantCallOrAttendance.class,
+			return repositoryService.allMatches(new QueryDefault<>(ParticipantCallOrAttendance.class,
 					"allParticipantCallOrAttendanceInPeriodAgedUnder", "startDate", startDate.toDate(), "endDate",
 					endDate.plusDays(1).toDate(), "lessThanAge", 65));
 		case Sixty_Five_and_Over:
-			return container.allMatches(new QueryDefault<>(ParticipantCallOrAttendance.class,
+			return repositoryService.allMatches(new QueryDefault<>(ParticipantCallOrAttendance.class,
 					"allParticipantCallOrAttendanceInPeriodAgedOver", "startDate", startDate.toDate(), "endDate",
 					endDate.plusDays(1).toDate(), "greaterThanAge", 64));
 		default:
@@ -77,17 +75,17 @@ public class ParticipantSummaryReports {
 		Map<String, ParticipantCallOrAttendanceSummary> sums = new HashMap<>();
 		switch (ageGroup) {
 		case All:
-			list = container.allMatches(
+			list = repositoryService.allMatches(
 					new QueryDefault<>(ParticipantCallOrAttendance.class, "allParticipantCallOrAttendanceInPeriod",
 							"startDate", startDate.toDate(), "endDate", endDate.plusDays(1).toDate()));
 			break;
 		case Under_Sixty_Five:
-			list = container.allMatches(new QueryDefault<>(ParticipantCallOrAttendance.class,
+			list = repositoryService.allMatches(new QueryDefault<>(ParticipantCallOrAttendance.class,
 					"allParticipantCallOrAttendanceInPeriodAgedUnder", "startDate", startDate.toDate(), "endDate",
 					endDate.plusDays(1).toDate(), "lessThanAge", 65));
 			break;
 		case Sixty_Five_and_Over:
-			list = container.allMatches(new QueryDefault<>(ParticipantCallOrAttendance.class,
+			list = repositoryService.allMatches(new QueryDefault<>(ParticipantCallOrAttendance.class,
 					"allParticipantCallOrAttendanceInPeriodAgedOver", "startDate", startDate.toDate(), "endDate",
 					endDate.plusDays(1).toDate(), "greaterThanAge", 64));
 			break;
@@ -116,7 +114,7 @@ public class ParticipantSummaryReports {
 	}
 
 	@Inject
-	DomainObjectContainer container;
+	RepositoryService repositoryService;
 
 	@Inject
 	ParticipantsMenu participantsRepo;

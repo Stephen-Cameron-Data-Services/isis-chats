@@ -21,22 +21,16 @@ package au.com.scds.chats.report;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.jdo.annotations.Query;
 
-import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.DomainService;
-import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
-import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
+import org.apache.isis.applib.services.repository.RepositoryService;
 
-import au.com.scds.chats.dom.general.ChatsPerson;
-import au.com.scds.chats.dom.activity.ChatsParticipant;
-import au.com.scds.chats.dom.activity.ParticipantsMenu;
 import au.com.scds.chats.report.view.MailMergeData;
 
 //Report
@@ -48,13 +42,13 @@ public class MailMerge {
 	MailMergeGroup group){
 		switch (group){
 		case Active_Participants:
-			return container.allMatches(new QueryDefault<>(MailMergeData.class,"listActiveParticipantMailMergeData"));
+			return repositoryService.allMatches(new QueryDefault<>(MailMergeData.class,"listActiveParticipantMailMergeData"));
 		case Active_Volunteers:
-			return container.allMatches(new QueryDefault<>(MailMergeData.class,"listActiveVolunteerMailMergeData"));
+			return repositoryService.allMatches(new QueryDefault<>(MailMergeData.class,"listActiveVolunteerMailMergeData"));
 		case Inactive_Participants:
-			return container.allMatches(new QueryDefault<>(MailMergeData.class,"listInactiveParticipantMailMergeData"));
+			return repositoryService.allMatches(new QueryDefault<>(MailMergeData.class,"listInactiveParticipantMailMergeData"));
 		case Inactive_Volunteers:
-			return container.allMatches(new QueryDefault<>(MailMergeData.class,"listInactiveVolunteerMailMergeData"));
+			return repositoryService.allMatches(new QueryDefault<>(MailMergeData.class,"listInactiveVolunteerMailMergeData"));
 		}
 		return null;
 	}
@@ -64,6 +58,6 @@ public class MailMerge {
 	}
 	
 	@Inject
-	DomainObjectContainer container;
+	RepositoryService repositoryService;
 	
 }

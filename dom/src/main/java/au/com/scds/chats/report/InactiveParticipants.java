@@ -24,7 +24,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.MinLength;
@@ -33,6 +32,7 @@ import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.query.QueryDefault;
+import org.apache.isis.applib.services.repository.RepositoryService;
 
 import au.com.scds.chats.dom.general.ChatsPerson;
 import au.com.scds.chats.dom.activity.AgeGroup;
@@ -46,7 +46,7 @@ public class InactiveParticipants {
 
 	@Action
 	public List<InactiveParticipant> findMostInactiveParticipants() {
-		List<InactiveParticipant> list = container
+		List<InactiveParticipant> list = repositoryService
 				.allMatches(new QueryDefault<>(InactiveParticipant.class, "findInactiveParticipants"));
 		Map<Long, InactiveParticipant> map = new HashMap<>();
 		// search for the most recent attendance of each active participant
@@ -72,7 +72,7 @@ public class InactiveParticipants {
 		if (participant == null)
 			return null;
 		ChatsPerson p = participant.getPerson();
-		return container.allMatches(new QueryDefault<>(InactiveParticipant.class, "getParticipantActivity", "firstname",
+		return repositoryService.allMatches(new QueryDefault<>(InactiveParticipant.class, "getParticipantActivity", "firstname",
 				p.getFirstname(), "surname", p.getSurname(), "birthdate", p.getBirthdate()));
 	}
 
@@ -81,7 +81,7 @@ public class InactiveParticipants {
 	}
 	
 	@Inject
-	DomainObjectContainer container;
+	RepositoryService repositoryService;
 
 	@Inject
 	ParticipantsMenu participantsMenu;

@@ -6,11 +6,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 import javax.jdo.PersistenceManager;
-import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.query.QueryDefault;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
 import org.apache.isis.applib.services.repository.RepositoryService;
@@ -37,7 +35,6 @@ import au.com.scds.chats.report.view.ActivityAttendanceSummary;
 import au.com.scds.chats.report.view.ActivityParticipantAttendance;
 import au.com.scds.chats.report.view.ActivityVolunteerVolunteeredTime;
 import au.com.scds.chats.report.view.CallsDurationByParticipantAndDayForDEX;
-import au.com.scds.chats.report.view.ParticipantActivityByMonthForDEX;
 
 public class DEXBulkUploadReport2 {
 
@@ -77,7 +74,6 @@ public class DEXBulkUploadReport2 {
 	private String regionName;
 
 	// domain services (injected via constructor)
-	private DomainObjectContainer container;
 	private RepositoryService repository;
 	private ParticipantsMenu participants;
 	private IsisJdoSupport isisJdoSupport;
