@@ -29,18 +29,16 @@ import javax.jdo.annotations.Query;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
-import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
-import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
 import org.isisaddons.module.security.dom.tenancy.HasAtPath;
 import org.joda.time.DateTime;
 
 @ViewModel
-@DomainObject(editing = Editing.DISABLED)
+@DomainObject(objectType="ParticipantPerson", editing = Editing.DISABLED)
 @PersistenceCapable(
 		identityType = IdentityType.NONDURABLE,
-		table = "ParticipantPerson",
+		table = "ParticipantPerson"/*,
 		extensions = { @Extension(
 				vendorName = "datanucleus",
 				key = "view-definition",
@@ -89,9 +87,9 @@ import org.joda.time.DateTime;
 						+ "ON "
 						+ "  location.location_id =  person.streetaddress_location_id "
 						+ "ORDER BY "
-						+ "  person.surname, person.firstname;") })
+						+ "  person.surname, person.firstname;") }*/)
 @Queries({
-		@Query(name = "getParticipantPerson", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantPerson WHERE activityName == :activity && startDateTime == :datetime && region == :region") })
+		@Query(name = "getParticipantPerson", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ParticipantPerson WHERE activityName == :activity && startDateTime == :datetime && region == :region") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ParticipantPerson implements HasAtPath{
 

@@ -21,14 +21,14 @@ package au.com.scds.chats.integtest;
 
 import org.junit.BeforeClass;
 
-import au.com.scds.chats.dom.ChatsDomModule;
+import au.com.scds.chats.ChatsModule;
 
 import org.apache.isis.core.integtestsupport.IntegrationTestAbstract3;
 
 public abstract class IntegTestAbstract extends IntegrationTestAbstract3 {
 
 	public IntegTestAbstract() {
-		super(new ChatsDomModule()
+		super(new ChatsModule()
 				.withConfigurationProperty("isis.objects.editing", "true")
 				.withConfigurationProperty("isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionDriverName",
 						"org.hsqldb.jdbcDriver")

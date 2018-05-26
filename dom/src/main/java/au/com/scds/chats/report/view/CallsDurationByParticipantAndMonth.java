@@ -39,10 +39,10 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 @ViewModel
-@DomainObject(editing = Editing.DISABLED)
+@DomainObject(objectType="CallsDurationByParticipantAndMonth",editing = Editing.DISABLED)
 @PersistenceCapable(
 		identityType = IdentityType.NONDURABLE,
-		table = "CallsDurationByParticipantAndMonth",
+		table = "CallsDurationByParticipantAndMonth"/*,
 		extensions = { @Extension(
 				vendorName = "datanucleus",
 				key = "view-definition",
@@ -81,14 +81,14 @@ import org.joda.time.LocalDate;
 						+ "  person.person_id = participant.person_person_id "							
 						+ "GROUP BY "
 						+ "  participant.participant_id, "
-						+ "  EXTRACT(YEAR_MONTH FROM telephonecall.startdatetime);") })
+						+ "  EXTRACT(YEAR_MONTH FROM telephonecall.startdatetime);") }*/)
 @Queries({
 	@Query(name = "allCallsDurationByParticipantAndMonth",
 			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth"),
+			value = "SELECT FROM au.com.scds.chats.report.view.CallsDurationByParticipantAndMonth"),
 	@Query(name = "allCallsDurationByParticipantForMonthAndRegion",
 			language = "JDOQL",
-			value = "SELECT FROM au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndMonth cd "
+			value = "SELECT FROM au.com.scds.chats.report.view.CallsDurationByParticipantAndMonth cd "
 			+ "WHERE cd.yearMonth == :yearMonth && cd.regionName == :region"),})
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class CallsDurationByParticipantAndMonth implements HasAtPath{

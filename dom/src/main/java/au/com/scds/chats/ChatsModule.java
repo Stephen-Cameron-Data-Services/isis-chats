@@ -1,14 +1,16 @@
-package au.com.scds.chats.dom;
+package au.com.scds.chats;
 
-import au.com.scds.eventschedule.base.EventScheduleBaseModule;
 import java.util.Set;
+
 import org.apache.isis.applib.Module;
 import org.apache.isis.applib.ModuleAbstract;
 import org.isisaddons.module.security.SecurityModule;
 
 import com.google.common.collect.Sets;
 
-public class ChatsDomModule extends ModuleAbstract {
+import au.com.scds.eventschedule.base.EventScheduleBaseModule;
+
+public class ChatsModule extends ModuleAbstract {
 	
 	@Override
     public Set<Module> getDependencies() {
@@ -19,4 +21,5 @@ public class ChatsDomModule extends ModuleAbstract {
     public Set<Class<?>> getAdditionalModules() {
         return Sets.newHashSet(SecurityModule.class);
     }
+
 }

@@ -18,33 +18,17 @@
 */
 package au.com.scds.chats.report.viewmodel;
 
-import java.math.BigInteger;
-import java.util.Date;
-
-import javax.jdo.annotations.Extension;
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.Inheritance;
-import javax.jdo.annotations.InheritanceStrategy;
-import javax.jdo.annotations.NotPersistent;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Queries;
-import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.annotation.DomainObject;
-import org.apache.isis.applib.annotation.Editing;
-import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Programmatic;
-import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
-import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
 import org.isisaddons.module.security.dom.tenancy.HasAtPath;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 
 import au.com.scds.chats.report.dex.DEXBulkUploadReport2;
 import au.com.scds.chats.report.view.ParticipantCallOrAttendance;
 
 @ViewModel
+@DomainObject(objectType="ParticipantCallOrAttendanceSummary")
 public class ParticipantCallOrAttendanceSummary implements HasAtPath {
 
 	private Long participantId;

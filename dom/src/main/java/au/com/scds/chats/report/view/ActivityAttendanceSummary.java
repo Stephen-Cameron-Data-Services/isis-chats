@@ -15,8 +15,8 @@ import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.ViewModel;
 
 @ViewModel
-//@DomainObject(editing = Editing.DISABLED)
-@PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "ActivityAttendanceSummary", extensions = {
+@DomainObject(objectType="ActivityAttendanceSummary", editing = Editing.DISABLED)
+@PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "ActivityAttendanceSummary"/*, extensions = {
 		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW ActivityAttendanceSummary "
 				+ "( " + "  {this.activityId}, "
 				+ "  {this.activityName}, "
@@ -47,10 +47,10 @@ import org.apache.isis.applib.annotation.ViewModel;
 				+ "WHERE "				
 				+ "  activity.classifier <> 'RECURRING_ACTIVITY' "
 				+ "GROUP BY "
-				+ "  activity.activity_id") })
+				+ "  activity.activity_id") }*/)
 @Queries({
-		@Query(name = "allActivityAttendanceSummary", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityAttendanceSummary"),
-		@Query(name = "allActivityAttendanceSummaryForPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityAttendanceSummary pa "
+		@Query(name = "allActivityAttendanceSummary", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ActivityAttendanceSummary"),
+		@Query(name = "allActivityAttendanceSummaryForPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ActivityAttendanceSummary pa "
 				+ "WHERE pa.startDateTime >= :startDateTime && pa.startDateTime <= :endDateTime && pa.regionName == :region"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ActivityAttendanceSummary implements Comparable<ActivityAttendanceSummary> {

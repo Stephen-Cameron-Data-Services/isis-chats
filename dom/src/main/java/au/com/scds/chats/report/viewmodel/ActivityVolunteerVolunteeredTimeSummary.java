@@ -1,13 +1,14 @@
 package au.com.scds.chats.report.viewmodel;
 
+import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.ViewModel;
-import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
 import org.isisaddons.module.security.dom.tenancy.HasAtPath;
 
 import au.com.scds.chats.report.view.ActivityVolunteerVolunteeredTime;
 
 @ViewModel
+@DomainObject(objectType="ActivityVolunteerVolunteeredTimeSummary")
 public class ActivityVolunteerVolunteeredTimeSummary implements HasAtPath {
 
 	private Long volunteerId;

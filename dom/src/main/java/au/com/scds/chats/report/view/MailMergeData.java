@@ -41,10 +41,10 @@ import org.isisaddons.module.security.dom.tenancy.HasAtPath;
 import org.joda.time.LocalDate;
 
 @ViewModel
-@DomainObject(editing = Editing.DISABLED)
+@DomainObject(objectType="MailMergeData", editing = Editing.DISABLED)
 @PersistenceCapable(
 		identityType = IdentityType.NONDURABLE,
-		table = "MailMergeData",
+		table = "MailMergeData"/*,
 		extensions = { @Extension(
 				vendorName = "datanucleus",
 				key = "view-definition",
@@ -99,13 +99,13 @@ import org.joda.time.LocalDate;
 						+ "LEFT OUTER JOIN "
 						+ "  location "
 						+ "ON "
-						+ "  location.location_id = person.mailaddress_location_id; ") })
+						+ "  location.location_id = person.mailaddress_location_id; ") }*/)
 @Queries({
-		@Query(name = "listMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.MailMergeData "),
-		@Query(name = "listActiveParticipantMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.MailMergeData WHERE participantStatus == 'ACTIVE'"),
-		@Query(name = "listActiveVolunteerMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.MailMergeData WHERE volunteerStatus == 'ACTIVE'"),
-		@Query(name = "listInactiveParticipantMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.MailMergeData WHERE participantStatus == 'INACTIVE'"),
-		@Query(name = "listInactiveVolunteerMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.MailMergeData WHERE volunteerStatus == 'INACTIVE'")})
+		@Query(name = "listMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.MailMergeData "),
+		@Query(name = "listActiveParticipantMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.MailMergeData WHERE participantStatus == 'ACTIVE'"),
+		@Query(name = "listActiveVolunteerMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.MailMergeData WHERE volunteerStatus == 'ACTIVE'"),
+		@Query(name = "listInactiveParticipantMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.MailMergeData WHERE participantStatus == 'INACTIVE'"),
+		@Query(name = "listInactiveVolunteerMailMergeData", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.MailMergeData WHERE volunteerStatus == 'INACTIVE'")})
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class MailMergeData implements HasAtPath{
 

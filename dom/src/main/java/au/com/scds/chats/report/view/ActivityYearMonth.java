@@ -25,10 +25,10 @@ import org.isisaddons.module.security.dom.tenancy.HasAtPath;
  * 
  */
 @ViewModel
-@DomainObject(editing = Editing.DISABLED)
+@DomainObject(objectType="ActivityYearMonth", editing = Editing.DISABLED)
 @PersistenceCapable(
 		identityType = IdentityType.NONDURABLE,
-		table = "ActivityYearMonth",
+		table = "ActivityYearMonth"/*,
 		extensions = { @Extension(
 				vendorName = "datanucleus",
 				key = "view-definition",
@@ -48,9 +48,9 @@ import org.isisaddons.module.security.dom.tenancy.HasAtPath;
 						+ "GROUP BY "
 						+ "  activity.name, "
 						+ "  activity.region_name, "
-						+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime);") })
+						+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime);") }*/)
 @Queries({
-		@Query(name = "findActivityYearMonth", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityYearMonth ") })
+		@Query(name = "findActivityYearMonth", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ActivityYearMonth ") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ActivityYearMonth  implements HasAtPath {
 	private String activityName;

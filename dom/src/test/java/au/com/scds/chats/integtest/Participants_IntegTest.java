@@ -28,6 +28,7 @@ import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.fixture.scenarios.CreateChatsActivities;
 import au.com.scds.chats.fixture.scenarios.CreateChatsParticipant;
 import au.com.scds.chats.fixture.scenarios.CreateDexReferenceData;
+import au.com.scds.chats.fixture.scenarios.TearDownDexReferenceData;
 
 import org.apache.isis.applib.fixturescripts.FixtureScripts;
 import org.apache.isis.applib.services.xactn.TransactionService;
@@ -48,12 +49,12 @@ public class Participants_IntegTest extends IntegTestAbstract {
 	@Before
 	public void setUp() throws Exception {
 		// given
-		//CreateDexReferenceData fs1 = new CreateDexReferenceData ();
-		CreateChatsParticipant fs2 = new CreateChatsParticipant();
-		//fixtureScripts.runFixtureScript(fs1, null);
-		fixtureScripts.runFixtureScript(fs2, null);
+		fixtureScripts.runFixtureScript(new TearDownDexReferenceData(), null);
+		fixtureScripts.runFixtureScript(new CreateDexReferenceData(), null);
+		CreateChatsParticipant fs1 = new CreateChatsParticipant();
+		fixtureScripts.runFixtureScript(fs1, null);
 		transactionService.nextTransaction();
-		participants = fs2.getParticipants();
+		participants = fs1.getParticipants();
 		assertThat(participants).isNotNull();
 	}
 

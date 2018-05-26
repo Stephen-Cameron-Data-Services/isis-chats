@@ -76,7 +76,7 @@ public class InactiveParticipants {
 				p.getFirstname(), "surname", p.getSurname(), "birthdate", p.getBirthdate()));
 	}
 
-	public List<ChatsParticipant> autoComplete0FindActiveChatsParticipant(@MinLength(3) String search) {
+	public List<ChatsParticipant> autoComplete0FindParticipantActivity(@MinLength(3) String search) {
 		return participantsMenu.listActiveChatsParticipants(AgeGroup.All, search);
 	}
 	

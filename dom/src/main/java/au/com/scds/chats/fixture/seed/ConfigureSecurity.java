@@ -31,6 +31,8 @@ public class ConfigureSecurity extends FixtureScript {
 						"org.apache.isis.applib.services.layout");
 				role.addPackage(ApplicationPermissionRule.ALLOW, ApplicationPermissionMode.CHANGING,
 						"org.apache.isis.applib.services.fixturespec");
+				role.addPackage(ApplicationPermissionRule.ALLOW, ApplicationPermissionMode.CHANGING,
+						"org.apache.isis.applib.services.hsqldb");
 				role.addPackage(ApplicationPermissionRule.VETO, ApplicationPermissionMode.VIEWING,
 						"au.com.scds.eventschedule.base.menu");
 			}

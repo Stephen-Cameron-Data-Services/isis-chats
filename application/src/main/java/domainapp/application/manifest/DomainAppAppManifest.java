@@ -20,7 +20,6 @@ package domainapp.application.manifest;
 
 import org.apache.isis.applib.AppManifestAbstract2;
 
-import au.com.scds.chats.fixture.ChatsFixtureModule;
 import domainapp.application.DomainAppApplicationModule;
 
 /**

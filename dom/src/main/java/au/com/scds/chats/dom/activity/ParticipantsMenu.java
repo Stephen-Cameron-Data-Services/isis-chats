@@ -180,7 +180,7 @@ public class ParticipantsMenu {
 	public List<ChatsParticipant> findBySurname(@ParameterLayout(named = "Surname") final String surname,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Status") final Status status) {
 		List<ChatsParticipant> list1 = repositoryService
-				.allMatches(new QueryDefault<>(ChatsParticipant.class, "findParticipantsBySurname", "surname", surname));
+				.allMatches(new QueryDefault<>(ChatsParticipant.class, "findParticipantsByUpperCaseSurnameLike", "surname", surname.toUpperCase()));
 		List<ChatsParticipant> list2 = new ArrayList<>(list1);
 		if (status != null) {
 			for (ChatsParticipant p : list1) {
@@ -240,7 +240,7 @@ public class ParticipantsMenu {
 		String n2 = surname.trim();
 		// check of existing ChatsParticipant
 		List<ChatsParticipant> participants = repositoryService
-				.allMatches(new QueryDefault<>(ChatsParticipant.class, "findParticipantsBySurname", "surname", n2));
+				.allMatches(new QueryDefault<>(ChatsParticipant.class, "findParticipantsByUpperCaseSurnameEquals", "surname", n2.toUpperCase()));
 		for (ChatsParticipant participant : participants) {
 			if (participant.getPerson().getFirstname().equalsIgnoreCase(n1)
 					&& participant.getPerson().getBirthdate().equals(dob)

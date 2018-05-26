@@ -19,7 +19,7 @@ import au.com.scds.chats.report.view.MailMergeData;
 import org.apache.isis.applib.query.QueryDefault;
 import org.apache.isis.applib.services.repository.RepositoryService;
 
-@DomainService(nature = NatureOfService.VIEW_MENU_ONLY)
+@DomainService(objectType="ParticipantBirthdays", nature = NatureOfService.VIEW_MENU_ONLY)
 public class ParticipantBirthdays {
 
 	@Action

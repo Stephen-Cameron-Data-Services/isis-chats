@@ -18,10 +18,8 @@
 */
 package au.com.scds.chats.report.view;
 
-import java.math.BigInteger;
 import java.util.Date;
 
-import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
@@ -32,21 +30,15 @@ import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
-import org.apache.isis.applib.annotation.MemberOrder;
-import org.apache.isis.applib.annotation.Programmatic;
-import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
-import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
 import org.isisaddons.module.security.dom.tenancy.HasAtPath;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.LocalDate;
+
 
 import au.com.scds.chats.report.dex.DEXBulkUploadReport2;
 
 @ViewModel
-@DomainObject(editing = Editing.DISABLED)
-@PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "CombinedCallAndAttendance", extensions = {
+@DomainObject(objectType="ParticipantCallOrAttendance", editing = Editing.DISABLED)
+@PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "CombinedCallAndAttendance"/*, extensions = {
 		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW CombinedCallAndAttendance "
 				+ "( " + "  {this.personId}, " + "  {this.surname}, " + "  {this.firstName}, " + "  {this.birthDate}, "
 				+ "  {this.age}, " + "  {this.slk}, " + "  {this.participantId}, " + "  {this.regionName}, "
@@ -66,15 +58,15 @@ import au.com.scds.chats.report.dex.DEXBulkUploadReport2;
 				+ "  activityAbbreviatedName AS abbreviatedName, " + "  startDateTime AS startDateTime, "
 				+ "  minutesAttended AS minutes, " + "  arrivingTransportType AS arrivingTransport, "
 				+ "  departingTransportType AS departingTransport " + "FROM " + "  activityparticipantattendance "
-				+ "WHERE " + "  (attended = TRUE))") })
+				+ "WHERE " + "  (attended = TRUE))") }*/)
 @Queries({
-		@Query(name = "allCallOrAttendanceForParticipantInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
+		@Query(name = "allCallOrAttendanceForParticipantInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ParticipantCallOrAttendance "
 				+ "WHERE participantId == :participantId && startDateTime >= :startDate && startDateTime < :endDate"),
-		@Query(name = "allParticipantCallOrAttendanceInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
+		@Query(name = "allParticipantCallOrAttendanceInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ParticipantCallOrAttendance "
 				+ "WHERE startDateTime >= :startDate && startDateTime < :endDate"),
-		@Query(name = "allParticipantCallOrAttendanceInPeriodAgedUnder", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
+		@Query(name = "allParticipantCallOrAttendanceInPeriodAgedUnder", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ParticipantCallOrAttendance "
 				+ "WHERE startDateTime >= :startDate && startDateTime < :endDate && age < :lessThanAge"),
-		@Query(name = "allParticipantCallOrAttendanceInPeriodAgedOver", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantCallOrAttendance "
+		@Query(name = "allParticipantCallOrAttendanceInPeriodAgedOver", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ParticipantCallOrAttendance "
 				+ "WHERE startDateTime >= :startDate && startDateTime < :endDate && age > :greaterThanAge"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ParticipantCallOrAttendance implements HasAtPath {

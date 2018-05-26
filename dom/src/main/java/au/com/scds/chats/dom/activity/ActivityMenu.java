@@ -42,15 +42,12 @@ import au.com.scds.eventschedule.base.impl.activity.ActivityEvent;
 
 @DomainService(nature=NatureOfService.VIEW_MENU_ONLY, 
 objectType = "ChatsActivityMenu", repositoryFor = ActivityEvent.class)
-@DomainServiceLayout(named = "Activities", menuOrder = "10")
 public class ActivityMenu {
 
 	public ActivityMenu() {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "1")
 	public ChatsRecurringActivity createChatsRecurringActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
 			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25, regexPattern = "^[\\p{IsAlphabetic}\\p{IsDigit}]+$", regexPatternReplacement = "Must be Alpha-Numeric") @ParameterLayout(named = "DEX 'Case' Name") final String abbreviatedName,
@@ -94,23 +91,17 @@ public class ActivityMenu {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "5")
 	public List<ChatsRecurringActivity> listAllRecurringActivities() {
 		return repositoryService.allInstances(ChatsRecurringActivity.class);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "3")
 	public List<ChatsRecurringActivity> findChatsRecurringActivityByName(@ParameterLayout(named = "Name") final String name) {
 		return repositoryService
 				.allMatches(new QueryDefault<>(ChatsRecurringActivity.class, "findRecurringActivityByName", "name", name));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "2")
 	public ChatsActivity createOneOffActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
 			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25, regexPattern = "^[\\p{IsAlphabetic}\\p{IsDigit}]+$", regexPatternReplacement = "Must be Alpha-Numeric") @ParameterLayout(named = "DEX 'Case' Id") final String abbreviatedName,
@@ -224,15 +215,11 @@ public class ActivityMenu {
 
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "4")
 	public List<ActivityEvent> findActivityByName(@ParameterLayout(named = "Name") final String name) {
-		return repositoryService.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivityByName", "name", name));
+		return repositoryService.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivityByUpperCaseName", "name", name.toUpperCase()));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "6")
 	public List<ActivityEvent> listAllFutureActivities() {
 		return repositoryService.allMatches(
 				new QueryDefault<>(ActivityEvent.class, "findAllFutureActivities", "currentDateTime", new DateTime()));
@@ -250,8 +237,6 @@ public class ActivityMenu {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "7")
 	public List<ActivityEvent> listActivitiesInPeriod(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Period") LocalDate start,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "End Period") LocalDate end) {
@@ -273,7 +258,7 @@ public class ActivityMenu {
 	protected ApplicationUserRepository userRepository;
 	
 	@Inject
-	ChatsDomainEntitiesService chatsEntities;
+	protected ChatsDomainEntitiesService chatsEntities;
 
 	@Inject
 	protected UserService userService;

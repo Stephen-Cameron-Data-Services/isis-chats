@@ -30,7 +30,7 @@
 	<name>Chats DOM Module</name>
 
 	<properties>
-		<isis-maven-plugin.validate.appManifest>au.com.scds.chats.dom.ChatsDomManifest</isis-maven-plugin.validate.appManifest>
+		<isis-maven-plugin.validate.appManifest>au.com.scds.chats.ChatsManifest</isis-maven-plugin.validate.appManifest>
 
 		<maven-checkstyle-plugin.configLocation>${project.parent.basedir}/_checks/checkstyle.xml</maven-checkstyle-plugin.configLocation>
 		<maven-pmd-plugin.ruleset>${project.parent.basedir}/_checks/pmd.xml</maven-pmd-plugin.ruleset>

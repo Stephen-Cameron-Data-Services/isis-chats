@@ -22,9 +22,7 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 
-import au.com.scds.chats.dom.ChatsDomModule;
-import au.com.scds.chats.fixture.ChatsFixtureModule;
-import au.com.scds.chats.report.ChatsReportsModule;
+import au.com.scds.chats.ChatsModule;
 
 import org.apache.isis.applib.Module;
 import org.apache.isis.applib.ModuleAbstract;
@@ -33,8 +31,7 @@ public class DomainAppApplicationModule extends ModuleAbstract {
 
 	@Override
 	public Set<Module> getDependencies() {
-		return Sets.<Module>newHashSet(new ChatsDomModule(), new ChatsReportsModule(),
-				new ChatsFixtureModule());
+		return Sets.<Module>newHashSet(new ChatsModule());
 	}
 
 }

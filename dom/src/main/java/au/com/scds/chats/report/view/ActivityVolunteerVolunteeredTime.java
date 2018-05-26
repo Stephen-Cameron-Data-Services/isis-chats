@@ -24,8 +24,8 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 @ViewModel
-@DomainObject(editing = Editing.DISABLED)
-@PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "ActivityVolunteerVolunteeredTime", extensions = {
+@DomainObject(objectType="ActivityVolunteerVolunteeredTime", editing = Editing.DISABLED)
+@PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "ActivityVolunteerVolunteeredTime"/*, extensions = {
 		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW ActivityVolunteerVolunteeredTime "
 				+ "( " + "  {this.personId}, " + "  {this.surname}, " + "  {this.firstName}, " + "  {this.birthDate}, "
 				+ "  {this.ageAtDateOfActivity}, " + "  {this.slk}, " + "  {this.activityId}, "
@@ -50,18 +50,18 @@ import org.joda.time.LocalDate;
 				+ "  person.person_id = volunteer.person_person_id " + "LEFT OUTER JOIN " + "  participant " + "ON "
 				+ "  participant.volunteer_volunteer_id = volunteeredtime.volunteer_volunteer_id " + "WHERE "
 				+ "  volunteeredtime.role = 'VTACTIVITY' " + "ORDER BY "
-				+ "  activity.startdatetime, activity.abbreviatedname, activity.region_name; ") })
+				+ "  activity.startdatetime, activity.abbreviatedname, activity.region_name; ") }*/)
 @Queries({
-		@Query(name = "allActivityVolunteerVolunteeredTime", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime"),
+		@Query(name = "allActivityVolunteerVolunteeredTime", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ActivityVolunteerVolunteeredTime"),
 		// :endDateTime value is set by e.g. endDate.plusDays(1).toDate()
-		@Query(name = "allActivityVolunteerVolunteeredTimeForPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime vt "
+		@Query(name = "allActivityVolunteerVolunteeredTimeForPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ActivityVolunteerVolunteeredTime vt "
 				+ "WHERE vt.volunteerId == :volunteerId && vt.startDateTime >= :startDateTime && vt.startDateTime < :endDateTime"),
 		// :endDateTime value is set by e.g. endDate.plusDays(1).toDate()
-		@Query(name = "allActivityVolunteeredTimeForPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime vt "
+		@Query(name = "allActivityVolunteeredTimeForPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ActivityVolunteerVolunteeredTime vt "
 				+ "WHERE vt.startDateTime >= :startDateTime && vt.startDateTime < :endDateTime"),
-		@Query(name = "allActivityVolunteerVolunteeredTimeForPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime vt "
+		@Query(name = "allActivityVolunteerVolunteeredTimeForPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ActivityVolunteerVolunteeredTime vt "
 				+ "WHERE vt.startDateTime >= :startDateTime && vt.startDateTime < :endDateTime && vt.includeAsParticipation == :includeAsParticipation && vt.regionName == :region"),
-		@Query(name = "allActivityVolunteerVolunteeredTimeForPeriodAndRegionForDEX", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime vt "
+		@Query(name = "allActivityVolunteerVolunteeredTimeForPeriodAndRegionForDEX", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ActivityVolunteerVolunteeredTime vt "
 				+ "WHERE vt.startDateTime >= :startDateTime && vt.startDateTime < :endDateTime && vt.includeAsParticipation == true && vt.regionName == :region && vt.ageAtDateOfActivity > 64"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ActivityVolunteerVolunteeredTime

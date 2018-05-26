@@ -43,10 +43,10 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 @ViewModel
-@DomainObject(editing = Editing.DISABLED)
+@DomainObject(objectType="InactiveParticipant", editing = Editing.DISABLED)
 @PersistenceCapable(
 		identityType = IdentityType.NONDURABLE,
-		table = "InactiveParticipant",
+		table = "InactiveParticipant"/*,
 		extensions = { @Extension(
 				vendorName = "datanucleus",
 				key = "view-definition",
@@ -84,10 +84,10 @@ import org.joda.time.LocalDate;
 						+ "  participant.status = 'ACTIVE' "
 						+ "  attend.attended = true "
 						+ "ORDER BY "
-						+ "  daysSinceLastAttended ASC;") })
+						+ "  daysSinceLastAttended ASC;") }*/)
 @Queries({
-		@Query(name = "findInactiveParticipants", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.InactiveParticipant "),
-		@Query(name = "getParticipantActivity", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.InactiveParticipant WHERE firstName == :firstname && surname == :surname && birthDate == :birthdate") })
+		@Query(name = "findInactiveParticipants", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.InactiveParticipant "),
+		@Query(name = "getParticipantActivity", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.InactiveParticipant WHERE firstName == :firstname && surname == :surname && birthDate == :birthdate") })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class InactiveParticipant implements HasAtPath {
 

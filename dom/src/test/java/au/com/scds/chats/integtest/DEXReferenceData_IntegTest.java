@@ -31,6 +31,7 @@ import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.fixture.scenarios.CreateChatsActivities;
 import au.com.scds.chats.fixture.scenarios.CreateChatsPerson;
 import au.com.scds.chats.fixture.scenarios.CreateDexReferenceData;
+import au.com.scds.chats.fixture.scenarios.TearDownDexReferenceData;
 
 import org.apache.isis.applib.fixturescripts.FixtureScripts;
 import org.apache.isis.applib.services.xactn.TransactionService;
@@ -49,6 +50,7 @@ public class DEXReferenceData_IntegTest extends IntegTestAbstract {
 	    @Before
 	    public void setUp() throws Exception {
 	        // given
+	    	fixtureScripts.runFixtureScript(new TearDownDexReferenceData(), null);
 	        CreateDexReferenceData fs = new CreateDexReferenceData();
 	        fixtureScripts.runFixtureScript(fs, null);
 	        transactionService.nextTransaction();

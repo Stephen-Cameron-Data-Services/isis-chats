@@ -14,6 +14,7 @@ import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
+import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
 import org.apache.isis.applib.services.jaxb.JaxbService;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
@@ -33,7 +34,7 @@ import au.com.scds.chats.report.view.ParticipantActivityByMonthForDEX;
 @DomainService(objectType = "DEXReporting", nature = NatureOfService.VIEW_MENU_ONLY)
 public class DEXReporting {
 
-	@Action
+	@Action(semantics=SemanticsOf.SAFE)
 	public List<ParticipantActivityByMonthForDEX> listAttendanceByYearMonthAndRegion(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Year-Month (YYYYMM)") Integer yearMonth,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Region") String region) {

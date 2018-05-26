@@ -24,7 +24,7 @@ import org.apache.isis.applib.fixturescripts.FixtureScripts;
 import org.apache.isis.applib.services.fixturespec.FixtureScriptsSpecification;
 import org.apache.isis.applib.services.fixturespec.FixtureScriptsSpecificationProvider;
 
-import au.com.scds.chats.fixture.ChatsFixtureModule;
+import au.com.scds.chats.ChatsModule;
 import au.com.scds.chats.fixture.scenarios.CreateChatsPerson;
 import domainapp.application.fixture.scenarios.DomainAppDemo;
 
@@ -37,7 +37,7 @@ import domainapp.application.fixture.scenarios.DomainAppDemo;
 public class DomainAppFixtureScriptsSpecificationProvider implements FixtureScriptsSpecificationProvider {
     public FixtureScriptsSpecification getSpecification() {
         return FixtureScriptsSpecification
-                .builder(ChatsFixtureModule.class)
+                .builder(ChatsModule.class)
                 .with(FixtureScripts.MultipleExecutionStrategy.EXECUTE)
                 .withRunScriptDefault(CreateChatsPerson.class)
                 .withRunScriptDropDown(FixtureScriptsSpecification.DropDownPolicy.CHOICES)

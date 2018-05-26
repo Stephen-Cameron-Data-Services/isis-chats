@@ -16,9 +16,23 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package domainapp.dom;
+package au.com.scds.chats;
 
-public final class DomainAppDomainModule {
+import org.apache.isis.applib.AppManifestAbstract2;
 
+/**
+ * Used by <code>isis-maven-plugin</code> (build-time validation of the module) and also by module-level integration tests.
+ */
+public class ChatsManifest extends AppManifestAbstract2 {
+
+    public static final Builder BUILDER = Builder.forModule(new ChatsModule())
+            .withConfigurationProperty("isis.persistor.datanucleus.impl.datanucleus.schema.autoCreateAll","true")
+            .withConfigurationProperty("isis.persistor.datanucleus.impl.datanucleus.identifier.case","MixedCase")
+            //.withAdditionalServices(org.isisaddons.module.security.dom.role.ApplicationRoleRepository);
+            ;
+
+    public ChatsManifest() {
+        super(BUILDER);
+    }
 
 }

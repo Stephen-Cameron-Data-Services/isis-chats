@@ -41,8 +41,8 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 @ViewModel
-@DomainObject(editing = Editing.DISABLED)
-@PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "CallsDurationByParticipantAndDayForDEX", extensions = {
+@DomainObject(objectType="CallsDurationByParticipantAndDayForDEX", editing = Editing.DISABLED)
+@PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "CallsDurationByParticipantAndDayForDEX"/*, extensions = {
 		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW CallsDurationByParticipantAndDayForDEX "
 				+ "( " + "  {this.personId}, " + "  {this.surname}, " + "  {this.firstName}, " + "  {this.birthDate}, "
 				+ "  {this.slk}, " + "  {this.ageAtDateOfCall}, " + "  {this.participantId}, " + "  {this.regionName}, "
@@ -56,10 +56,10 @@ import org.joda.time.LocalDate;
 				+ "FROM " + "  telephonecall, " + "  participant, " + "  person " + "WHERE "
 				+ "  participant.participant_id = telephonecall.participant_participant_id AND "
 				+ "  person.person_id = participant.person_person_id " + "GROUP BY " + "  participant.participant_id, "
-				+ "  DATE(telephonecall.startdatetime);") })
+				+ "  DATE(telephonecall.startdatetime);") }*/)
 @Queries({
-		@Query(name = "allCallsDurationByParticipantAndDay", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX"),
-		@Query(name = "allCallsDurationByParticipantAndDayAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX "
+		@Query(name = "allCallsDurationByParticipantAndDay", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.CallsDurationByParticipantAndDayForDEX"),
+		@Query(name = "allCallsDurationByParticipantAndDayAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.CallsDurationByParticipantAndDayForDEX "
 				+ "WHERE date >= :startDate && date <= :endDate && regionName == :region && ageAtDateOfCall > 64"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class CallsDurationByParticipantAndDayForDEX implements HasAtPath {

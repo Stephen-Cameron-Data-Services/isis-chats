@@ -34,7 +34,7 @@ import org.apache.isis.applib.services.repository.RepositoryService;
 import au.com.scds.chats.report.view.MailMergeData;
 
 //Report
-@DomainService(nature=NatureOfService.VIEW_MENU_ONLY)
+@DomainService(objectType="MailMerge", nature=NatureOfService.VIEW_MENU_ONLY)
 public class MailMerge {
 	
 	@Action

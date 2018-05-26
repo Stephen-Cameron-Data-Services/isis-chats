@@ -75,9 +75,12 @@ import lombok.Setter;
 		@Query(name = "listParticipantsByStatusAndBirthdateBetween", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.activity.ChatsParticipant  WHERE status == :status "
 				+ "&& person.birthdate > :lowerLimit && person.birthdate < :upperLimit "),
-		@Query(name = "findParticipantsBySurname", language = "JDOQL", value = "SELECT "
+		@Query(name = "findParticipantsByUpperCaseSurnameEquals", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.activity.ChatsParticipant  "
-				+ "WHERE person.surname.indexOf(:surname) >= 0"),
+				+ "WHERE person.surname.toUpperCase() == :surname"),
+		@Query(name = "findParticipantsByUpperCaseSurnameLike", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.activity.ChatsParticipant  "
+				+ "WHERE person.surname.toUpperCase().indexOf(:surname) >= 0 "),
 		@Query(name = "findParticipantsByStatusAndToUpperCaseNameStart", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.activity.ChatsParticipant  "
 				+ "WHERE status == :status && (person.surname.toUpperCase().startsWith(:start) || person.firstname.toUpperCase().startsWith(:start)) "),

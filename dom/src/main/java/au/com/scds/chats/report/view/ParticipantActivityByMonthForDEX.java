@@ -29,18 +29,15 @@ import javax.jdo.annotations.Query;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
 import org.apache.isis.applib.annotation.MemberOrder;
-import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.ViewModel;
 import org.apache.isis.applib.annotation.Where;
-import org.isisaddons.module.security.dom.tenancy.ApplicationTenancy;
 import org.isisaddons.module.security.dom.tenancy.HasAtPath;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 @ViewModel
-@DomainObject(editing = Editing.DISABLED)
-@PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "ParticipantActivityByMonthForDEX", extensions = {
+@DomainObject(objectType="ParticipantActivityByMonthForDEX", editing = Editing.DISABLED)
+@PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "ParticipantActivityByMonthForDEX"/*, extensions = {
 		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW ParticipantActivityByMonthForDEX "
 				+ "( " + "  {this.personId}, " 
 				+ "  {this.surname}, " 
@@ -82,10 +79,10 @@ import org.joda.time.LocalDate;
 				+ "  participant.participant_id, " 
 				+ "  activity.abbreviatedName, " 
 				+ "  activity.region_name, "
-				+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime);") })
+				+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime);") }*/)
 @Queries({
-		@Query(name = "allParticipantActivityByMonthForDEX", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX"),
-		@Query(name = "allParticipantActivityByMonthForDEXForMonthAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ParticipantActivityByMonthForDEX pa "
+		@Query(name = "allParticipantActivityByMonthForDEX", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ParticipantActivityByMonthForDEX"),
+		@Query(name = "allParticipantActivityByMonthForDEXForMonthAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ParticipantActivityByMonthForDEX pa "
 				+ "WHERE pa.yearMonth == :yearMonth && pa.regionName == :region"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ParticipantActivityByMonthForDEX implements HasAtPath {

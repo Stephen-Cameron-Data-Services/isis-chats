@@ -41,8 +41,8 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 @ViewModel
-@DomainObject(editing = Editing.DISABLED)
-@PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "ActivityParticipantAttendance", extensions = {
+@DomainObject(objectType="ActivityParticipantAttendance", editing = Editing.DISABLED)
+@PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "ActivityParticipantAttendance"/*, extensions = {
 		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW ActivityParticipantAttendance "
 				+ "( " + "  {this.personId}, "
 				+ "  {this.surname}, "
@@ -95,16 +95,15 @@ import org.joda.time.LocalDate;
 				+ "  person.person_id = participant.person_person_id AND "
 				+ "  activity.cancelled = false "
 				+ "ORDER BY"
-				+ "  activity.startdatetime, activity.abbreviatedname") })
+				+ "  activity.startdatetime, activity.abbreviatedname") }*/)
 @Queries({
-		@Query(name = "allActivityParticipantAttendance", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityParticipantAttendance"),
-		@Query(name = "allParticipantActivityForPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityParticipantAttendance pa "
+		@Query(name = "allActivityParticipantAttendance", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ActivityParticipantAttendance"),
+		@Query(name = "allParticipantActivityForPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ActivityParticipantAttendance pa "
 				+ "WHERE pa.startDateTime >= :startDateTime && pa.startDateTime <= :endDateTime && pa.attended == :attended && pa.regionName == :region"),
-		@Query(name = "allParticipantActivityForPeriodAndRegionForDEX", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityParticipantAttendance pa "
+		@Query(name = "allParticipantActivityForPeriodAndRegionForDEX", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ActivityParticipantAttendance pa "
 				+ "WHERE pa.startDateTime >= :startDateTime && pa.startDateTime <= :endDateTime && pa.attended == :attended && pa.regionName == :region && pa.ageAtDayOfActivity > 64"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-public class ActivityParticipantAttendance
-		/* implements WithApplicationTenancy */ implements Comparable<ActivityParticipantAttendance> {
+public class ActivityParticipantAttendance implements Comparable<ActivityParticipantAttendance> {
 
 	private Long personId;
 	private Long participantId;
