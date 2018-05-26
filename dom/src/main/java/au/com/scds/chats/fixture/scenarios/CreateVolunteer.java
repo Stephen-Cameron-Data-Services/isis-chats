@@ -14,9 +14,9 @@ import org.apache.isis.applib.fixturescripts.FixtureScript;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-import au.com.scds.chats.dom.activity.ParticipantMenu;
+import au.com.scds.chats.dom.activity.ParticipantsMenu;
 import au.com.scds.chats.dom.general.Sex;
-import au.com.scds.chats.dom.volunteer.VolunteerMenu;
+import au.com.scds.chats.dom.volunteer.VolunteersMenu;
 import au.com.scds.chats.fixture.generated.Volunteer;
 import au.com.scds.chats.fixture.generated.Volunteers;
 import au.com.scds.chats.fixture.generated.ChatsParticipant;
@@ -74,9 +74,9 @@ public class CreateVolunteer  extends FixtureScript {
 	}
 
 	@Inject
-	VolunteerMenu volunteerMenu;
+	VolunteersMenu volunteerMenu;
 	
 	@Inject
-	ParticipantMenu participantMenu;
+	ParticipantsMenu participantMenu;
 
 }

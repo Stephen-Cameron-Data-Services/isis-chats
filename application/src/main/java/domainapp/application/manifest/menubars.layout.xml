@@ -6,25 +6,25 @@
 		<mb3:menu>
 			<mb3:named>Activities</mb3:named>
 			<mb3:section>
-				<mb3:serviceAction objectType="ChatsActivityMenu" id="createChatsRecurringActivity">
+				<mb3:serviceAction objectType="ChatsActivityMenu" id="createChatsRecurringActivity" bookmarking="NEVER">
 					<cpt:named>Create Chats Recurring Activity</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="ChatsActivityMenu" id="createOneOffActivity">
+				<mb3:serviceAction objectType="ChatsActivityMenu" id="createOneOffActivity" bookmarking="NEVER">
 					<cpt:named>Create One Off Activity</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="ChatsActivityMenu" id="findChatsRecurringActivityByName">
+				<mb3:serviceAction objectType="ChatsActivityMenu" id="findChatsRecurringActivityByName" bookmarking="NEVER">
 					<cpt:named>Find Chats Recurring Activity By Name</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="ChatsActivityMenu" id="findActivityByName">
+				<mb3:serviceAction objectType="ChatsActivityMenu" id="findActivityByName" bookmarking="NEVER">
 					<cpt:named>Find Activity By Name</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="ChatsActivityMenu" id="listAllRecurringActivities">
+				<mb3:serviceAction objectType="ChatsActivityMenu" id="listAllRecurringActivities" bookmarking="NEVER">
 					<cpt:named>List All Recurring Activities</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="ChatsActivityMenu" id="listAllFutureActivities">
+				<mb3:serviceAction objectType="ChatsActivityMenu" id="listAllFutureActivities" bookmarking="NEVER">
 					<cpt:named>List All Future Activities</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="ChatsActivityMenu" id="listActivitiesInPeriod">
+				<mb3:serviceAction objectType="ChatsActivityMenu" id="listActivitiesInPeriod" bookmarking="NEVER">
 					<cpt:named>List Activities In Period</cpt:named>
 				</mb3:serviceAction>
 			</mb3:section>
@@ -32,28 +32,28 @@
 		<mb3:menu>
 			<mb3:named>Participants</mb3:named>
 			<mb3:section>
-				<mb3:serviceAction objectType="Participants" id="create">
+				<mb3:serviceAction objectType="ParticipantsMenu" id="create" bookmarking="NEVER">
 					<cpt:named>Create Participant</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="Participants" id="findActiveChatsParticipant">
+				<mb3:serviceAction objectType="ParticipantsMenu" id="findActiveChatsParticipant" bookmarking="NEVER">
 					<cpt:named>Find Active Chats Participant</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="Participants" id="findBySurname">
+				<mb3:serviceAction objectType="ParticipantsMenu" id="findBySurname" bookmarking="NEVER">
 					<cpt:named>Find By Surname</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="Participants" id="findFutureParticipation">
+				<mb3:serviceAction objectType="ParticipantsMenu" id="findFutureParticipation" bookmarking="NEVER">
 					<cpt:named>Find Future Participation</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="Participants" id="listActiveChatsParticipants">
+				<mb3:serviceAction objectType="ParticipantsMenu" id="listActiveChatsParticipants" bookmarking="NEVER">
 					<cpt:named>List Active Chats Participants</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="Participants" id="listExitedChatsParticipants">
+				<mb3:serviceAction objectType="ParticipantsMenu" id="listExitedChatsParticipants" bookmarking="NEVER">
 					<cpt:named>List Exited Chats Participants</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="Participants" id="listInactiveChatsParticipants">
+				<mb3:serviceAction objectType="ParticipantsMenu" id="listInactiveChatsParticipants" bookmarking="NEVER">
 					<cpt:named>List Inactive Chats Participants</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="Participants" id="listToExitChatsParticipants">
+				<mb3:serviceAction objectType="ParticipantsMenu" id="listToExitChatsParticipants" bookmarking="NEVER">
 					<cpt:named>List To Exit Chats Participants</cpt:named>
 				</mb3:serviceAction>
 			</mb3:section>
@@ -61,22 +61,22 @@
 		<mb3:menu>
 			<mb3:named>Volunteers</mb3:named>
 			<mb3:section>
-				<mb3:serviceAction objectType="chats.volunteers" id="create">
+				<mb3:serviceAction objectType="VolunteersMenu" id="create" bookmarking="NEVER">
 					<cpt:named>Create</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="chats.volunteers" id="findActiveVolunteer">
+				<mb3:serviceAction objectType="VolunteersMenu" id="findActiveVolunteer" bookmarking="NEVER">
 					<cpt:named>Find Active Volunteer</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="chats.volunteers" id="findBySurname">
+				<mb3:serviceAction objectType="VolunteersMenu" id="findBySurname" bookmarking="NEVER">
 					<cpt:named>Find By Surname</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="chats.volunteers" id="listActiveVolunteers">
+				<mb3:serviceAction objectType="VolunteersMenu" id="listActiveVolunteers" bookmarking="NEVER">
 					<cpt:named>List Active Volunteers</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="chats.volunteers" id="listInactiveVolunteers">
+				<mb3:serviceAction objectType="VolunteersMenu" id="listInactiveVolunteers" bookmarking="NEVER">
 					<cpt:named>List Inactive Volunteers</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="chats.volunteers" id="listToExitVolunteers">
+				<mb3:serviceAction objectType="VolunteersMenu" id="listToExitVolunteers" bookmarking="NEVER">
 					<cpt:named>List To Exit Volunteers</cpt:named>
 				</mb3:serviceAction>
 			</mb3:section>
@@ -84,66 +84,62 @@
 		<mb3:menu>
 			<mb3:named>Calls</mb3:named>
 			<mb3:section>
-				<mb3:serviceAction objectType="chats.calls" id="create">
+				<mb3:serviceAction objectType="CallsMenu" id="create"  bookmarking="NEVER">
 					<cpt:named>Create</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="chats.calls" id="findScheduledCalls">
+				<mb3:serviceAction objectType="CallsMenu" id="findScheduledCalls"  bookmarking="NEVER">
 					<cpt:named>Find Scheduled Calls</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="chats.calls" id="listCallsInPeriod">
+				<mb3:serviceAction objectType="CallsMenu" id="listCallsInPeriod"  bookmarking="NEVER">
 					<cpt:named>List Calls In Period</cpt:named>
 				</mb3:serviceAction>
 			</mb3:section>
 		</mb3:menu>
 		<mb3:menu>
-			<mb3:named>Notes</mb3:named>
+			<mb3:named>Reports</mb3:named>
 			<mb3:section>
-				<mb3:serviceAction objectType="chats.notes" id="findNotes">
-					<cpt:named>Find Notes</cpt:named>
+				<mb3:serviceAction objectType="ParticipantSummaryReports" id="findParticipantsCallsAndAttendances"  bookmarking="NEVER">
+					<cpt:named>Find Participant's Calls And Attendances</cpt:named>
 				</mb3:serviceAction>
-				<mb3:serviceAction objectType="chats.notes" id="allNotes">
-					<cpt:named>All Notes</cpt:named>
+				<mb3:serviceAction objectType="ParticipantSummaryReports" id="listParticipantInvolvementInPeriod"  bookmarking="NEVER">
+					<cpt:named>List Participant Involvement In Period</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="ParticipantSummaryReports" id="listParticipantInvolvementInPeriodTotals"  bookmarking="NEVER">
+					<cpt:named>List Participant Involvement In Period Totals</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="VolunteerSummaryReports" id="allActivityVolunteerVolunteeredTimeForPeriod"  bookmarking="NEVER">
+					<cpt:named>Find Volunteer's Times</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="VolunteerSummaryReports" id="listVolunteerInvolvementInPeriod"  bookmarking="NEVER">
+					<cpt:named>List Volunteer Involvement In Period</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="VolunteerSummaryReports" id="listVolunteerInvolvementInPeriodTotals"  bookmarking="NEVER">
+					<cpt:named>List Volunteer Involvement In Period Totals</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="InactiveParticipants" id="findMostInactiveParticipants"  bookmarking="NEVER">
+					<cpt:named>Find Most Inactive Participants</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="InactiveParticipants" id="findParticipantActivity"  bookmarking="NEVER">
+					<cpt:named>Find Participant Activity</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="MailMerge" id="listMailMergeData"  bookmarking="NEVER">
+					<cpt:named>List Mail Merge Data</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="ParticipantBirthdays" id="findParticipantsWithBirthdayBetween"  bookmarking="NEVER">
+					<cpt:named>Find Participants With Birthday Between</cpt:named>
 				</mb3:serviceAction>
 			</mb3:section>
 		</mb3:menu>
 		<mb3:menu unreferencedActions="true">
 			<mb3:named>Other</mb3:named>
-			<mb3:section>
-				<mb3:serviceAction objectType="chats.Persons" id="listAllPersons">
-					<cpt:named>List All Persons</cpt:named>
-				</mb3:serviceAction>
-				<mb3:serviceAction objectType="chats.Persons" id="findPersonBySurname">
-					<cpt:named>Find Person By Surname</cpt:named>
-				</mb3:serviceAction>
-				<mb3:serviceAction objectType="chats.Persons" id="findPersonBySLK">
-					<cpt:named>Find Person By SLK</cpt:named>
-				</mb3:serviceAction>
-				<mb3:serviceAction objectType="chats.Persons" id="changeRegionOfPerson">
-					<cpt:named>Change Region Of Person</cpt:named>
-				</mb3:serviceAction>
-				<mb3:serviceAction objectType="chats.Persons" id="resetPersonIdentity">
-					<cpt:named>Reset Person Identity</cpt:named>
-				</mb3:serviceAction>
-			</mb3:section>
-			<mb3:section>
-				<mb3:serviceAction objectType="chats.namesadmin" id="nameLists">
-					<cpt:named>Name Lists</cpt:named>
-				</mb3:serviceAction>
-			</mb3:section>
-			<mb3:section>
-				<mb3:serviceAction objectType="chats.exitedadministration" id="exitAllToExitParticipants">
-					<cpt:named>Exit All To Exit Participants</cpt:named>
-				</mb3:serviceAction>
-				<mb3:serviceAction objectType="chats.exitedadministration" id="exitAllToExitVolunteers">
-					<cpt:named>Exit All To Exit Volunteers</cpt:named>
-				</mb3:serviceAction>
-				<mb3:serviceAction objectType="chats.exitedadministration" id="reactivateParticipant">
-					<cpt:named>Reactivate Participant</cpt:named>
-				</mb3:serviceAction>
-				<mb3:serviceAction objectType="chats.exitedadministration" id="reactivateVolunteer">
-					<cpt:named>Reactivate Volunteer</cpt:named>
-				</mb3:serviceAction>
-			</mb3:section>
 		</mb3:menu>
 		<mb3:menu>
 			<mb3:named>Security</mb3:named>
@@ -265,6 +261,56 @@
 			<mb3:section>
 				<mb3:serviceAction objectType="isisApplib.HsqlDbManagerMenu" id="hsqlDbManager">
 					<cpt:named>HSQL DB Manager</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+		</mb3:menu>
+		<mb3:menu>
+			<mb3:named>Administration</mb3:named>
+			<mb3:section>
+				<mb3:serviceAction objectType="ChatsPersons" id="listAllPersons"  bookmarking="NEVER">
+					<cpt:named>List All Persons</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="ChatsPersons" id="findPersonBySurname"  bookmarking="NEVER">
+					<cpt:named>Find Person By Surname</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="ChatsPersons" id="findPersonBySLK"  bookmarking="NEVER">
+					<cpt:named>Find Person By SLK</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="ChatsPersons" id="changeRegionOfPerson"  bookmarking="NEVER">
+					<cpt:named>Change Region Of Person</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="ChatsPersons" id="resetPersonIdentity"  bookmarking="NEVER">
+					<cpt:named>Reset Person Identity</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="NamesAdmin" id="nameLists"  bookmarking="NEVER">
+					<cpt:named>Name Lists</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="DEXReporting" id="checkAttendanceDataForMonth"  bookmarking="NEVER">
+					<cpt:named>Check Attendance Data For Month</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="DEXReporting" id="createDexReportForMonth"  bookmarking="NEVER">
+					<cpt:named>Create Dex Report For Month</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="DEXReporting" id="listCallTotalsByMonth"  bookmarking="NEVER">
+					<cpt:named>List Call Totals By Month</cpt:named>
+				</mb3:serviceAction>
+			</mb3:section>
+			<mb3:section>
+				<mb3:serviceAction objectType="ExitedAdministration" id="exitAllToExitParticipants"  bookmarking="NEVER">
+					<cpt:named>Exit All To Exit Participants</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="ExitedAdministration" id="exitAllToExitVolunteers"  bookmarking="NEVER">
+					<cpt:named>Exit All To Exit Volunteers</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="ExitedAdministration" id="reactivateParticipant"  bookmarking="NEVER">
+					<cpt:named>Reactivate Participant</cpt:named>
+				</mb3:serviceAction>
+				<mb3:serviceAction objectType="ExitedAdministration" id="reactivateVolunteer"  bookmarking="NEVER">
+					<cpt:named>Reactivate Volunteer</cpt:named>
 				</mb3:serviceAction>
 			</mb3:section>
 		</mb3:menu>

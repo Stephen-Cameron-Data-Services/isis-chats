@@ -52,7 +52,7 @@ import au.com.scds.chats.dom.general.ChatsPerson;
 import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.volunteer.Volunteer;
-import au.com.scds.chats.dom.volunteer.VolunteerMenu;
+import au.com.scds.chats.dom.volunteer.VolunteersMenu;
 import au.com.scds.eventschedule.base.impl.Attendee;
 import au.com.scds.eventschedule.base.impl.Person;
 import au.com.scds.eventschedule.base.impl.activity.ActivityEvent;
@@ -670,10 +670,10 @@ public class ChatsParticipant extends Attendee implements ChatsEntity, Timestamp
 	}
 
 	@Inject
-	protected ParticipantMenu participantsRepo;
+	protected ParticipantsMenu participantsRepo;
 
 	@Inject
-	protected VolunteerMenu volunteersRepo;
+	protected VolunteersMenu volunteersRepo;
 
 	@Inject
 	protected CallsMenu schedulesRepo;

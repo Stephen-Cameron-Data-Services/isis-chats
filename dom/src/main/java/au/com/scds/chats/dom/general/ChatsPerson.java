@@ -412,7 +412,7 @@ public class ChatsPerson extends Person implements ChatsEntity, Timestampable, H
 	}
 
 	@Inject
-	private Persons persons;
+	private ChatsPersons persons;
 
 	@Inject
 	private Salutations salutations;

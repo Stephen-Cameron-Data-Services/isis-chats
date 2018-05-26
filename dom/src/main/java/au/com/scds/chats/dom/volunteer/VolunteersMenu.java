@@ -28,7 +28,6 @@ import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainService;
-import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.MinLength;
 import org.apache.isis.applib.annotation.NatureOfService;
@@ -51,9 +50,9 @@ import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.ChatsDomainEntitiesService;
 import au.com.scds.chats.dom.activity.ChatsParticipant;
-import au.com.scds.chats.dom.activity.ParticipantMenu;
+import au.com.scds.chats.dom.activity.ParticipantsMenu;
 import au.com.scds.chats.dom.general.ChatsPerson;
-import au.com.scds.chats.dom.general.Persons;
+import au.com.scds.chats.dom.general.ChatsPersons;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.dom.general.names.Region;
@@ -61,9 +60,8 @@ import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.eventschedule.base.impl.activity.ActivityEvent;
 
-@DomainService(objectType = "chats.volunteers", repositoryFor = Volunteer.class, nature = NatureOfService.VIEW_MENU_ONLY)
-@DomainServiceLayout(menuOrder = "30")
-public class VolunteerMenu {
+@DomainService(objectType = "VolunteersMenu", repositoryFor = Volunteer.class, nature = NatureOfService.VIEW_MENU_ONLY)
+public class VolunteersMenu {
 
 	@Programmatic
 	public List<Volunteer> listAll() {
@@ -71,32 +69,24 @@ public class VolunteerMenu {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "3")
 	public List<Volunteer> listActiveVolunteers() {
 		return repositoryService
 				.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.ACTIVE));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "4")
 	public List<Volunteer> listInactiveVolunteers() {
 		return repositoryService
 				.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.INACTIVE));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "5")
 	public List<Volunteer> listToExitVolunteers() {
 		return repositoryService
 				.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status", Status.TO_EXIT));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "2.2")
 	public List<Volunteer> findBySurname(@ParameterLayout(named = "Surname") final String search,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Status") final Status status) {
 		List<Volunteer> list1 = repositoryService.allMatches(new QueryDefault<>(Volunteer.class,
@@ -117,8 +107,6 @@ public class VolunteerMenu {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "2.1")
 	public Volunteer findActiveVolunteer(@ParameterLayout(named = "Volunteer") Volunteer volunteer) {
 		return getVolunteer(volunteer);
 	}
@@ -128,8 +116,6 @@ public class VolunteerMenu {
 	}
 
 	@Action()
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
-	@MemberOrder(sequence = "1")
 	public Volunteer create(final @Parameter(maxLength = 100) @ParameterLayout(named = "First name") String firstname,
 			final @Parameter(maxLength = 100) @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob, Sex sex) {
@@ -151,8 +137,7 @@ public class VolunteerMenu {
 	public Volunteer getVolunteer(Volunteer identity) {
 		if (identity == null)
 			return null;
-		return null;// isisJdoSupport.getJdoPersistenceManager().getObjectById(Volunteer.class,
-					// identity.getJdoObjectId());
+		return null;
 	}
 
 	@Programmatic
@@ -343,10 +328,10 @@ public class VolunteerMenu {
 	protected MessageService messageService;
 
 	@Inject
-	protected Persons persons;
+	protected ChatsPersons persons;
 
 	@Inject
-	protected ParticipantMenu participantsRepo;
+	protected ParticipantsMenu participantsRepo;
 
 	@Inject
 	protected VolunteerRoles volunteerRoles;

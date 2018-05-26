@@ -20,7 +20,7 @@ import au.com.scds.chats.dom.dex.reference.Disability;
 import au.com.scds.eventschedule.base.impl.Address;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.activity.ChatsParticipant;
-import au.com.scds.chats.dom.activity.ParticipantMenu;
+import au.com.scds.chats.dom.activity.ParticipantsMenu;
 import au.com.scds.chats.report.dex.model.generated.Case;
 import au.com.scds.chats.report.dex.model.generated.CaseClient;
 import au.com.scds.chats.report.dex.model.generated.CaseClients;
@@ -79,7 +79,7 @@ public class DEXBulkUploadReport2 {
 	// domain services (injected via constructor)
 	private DomainObjectContainer container;
 	private RepositoryService repository;
-	private ParticipantMenu participants;
+	private ParticipantsMenu participants;
 	private IsisJdoSupport isisJdoSupport;
 	private PersistenceManager persistenceManager;
 
@@ -95,7 +95,7 @@ public class DEXBulkUploadReport2 {
 	private DEXBulkUploadReport2() {
 	}
 
-	public DEXBulkUploadReport2(RepositoryService repository, IsisJdoSupport isisJdoSupport, ParticipantMenu participants,
+	public DEXBulkUploadReport2(RepositoryService repository, IsisJdoSupport isisJdoSupport, ParticipantsMenu participants,
 			Integer year, Integer month, String regionName, ClientIdGenerationMode2 nameMode) {
 
 		this.fileUpload = new DEXFileUpload();

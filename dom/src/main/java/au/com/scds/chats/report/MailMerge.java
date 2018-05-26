@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.DomainObjectContainer;
+import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.NatureOfService;
@@ -35,14 +36,15 @@ import org.apache.isis.applib.query.QueryDefault;
 
 import au.com.scds.chats.dom.general.ChatsPerson;
 import au.com.scds.chats.dom.activity.ChatsParticipant;
-import au.com.scds.chats.dom.activity.ParticipantMenu;
+import au.com.scds.chats.dom.activity.ParticipantsMenu;
 import au.com.scds.chats.report.view.MailMergeData;
 
+//Report
 @DomainService(nature=NatureOfService.VIEW_MENU_ONLY)
-@DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.10")
-public class MailMergeInputData {
+public class MailMerge {
 	
-	public List<MailMergeData> mailMergeData(@Parameter(optionality=Optionality.MANDATORY)  @ParameterLayout(named="Mail Merge Data Group")
+	@Action
+	public List<MailMergeData> listMailMergeData(@Parameter(optionality=Optionality.MANDATORY)  @ParameterLayout(named="Mail Merge Data Group")
 	MailMergeGroup group){
 		switch (group){
 		case Active_Participants:

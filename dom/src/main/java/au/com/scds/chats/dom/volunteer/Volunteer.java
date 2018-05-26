@@ -56,7 +56,7 @@ import au.com.scds.chats.dom.ChatsDomainEntitiesService;
 import au.com.scds.chats.dom.ChatsEntity;
 import au.com.scds.chats.dom.activity.AgeGroup;
 import au.com.scds.chats.dom.activity.ChatsParticipant;
-import au.com.scds.chats.dom.activity.ParticipantMenu;
+import au.com.scds.chats.dom.activity.ParticipantsMenu;
 import au.com.scds.chats.dom.call.CallsMenu;
 import au.com.scds.chats.dom.call.ChatsCallAllocation;
 import au.com.scds.chats.dom.call.ChatsScheduledCall;
@@ -271,13 +271,13 @@ public class Volunteer implements Comparable<Volunteer>, ChatsEntity, Timestampa
 	}
 
 	@Inject
-	protected VolunteerMenu volunteers;
+	protected VolunteersMenu volunteers;
 
 	@Inject
 	protected CallsMenu schedulesRepo;
 
 	@Inject
-	protected ParticipantMenu participantsRepo;
+	protected ParticipantsMenu participantsRepo;
 	
 	@Inject
 	protected MessageService messageService;

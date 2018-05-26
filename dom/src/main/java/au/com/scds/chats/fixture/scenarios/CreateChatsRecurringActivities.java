@@ -15,7 +15,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.activity.ActivityMenu;
-import au.com.scds.chats.dom.activity.ParticipantMenu;
+import au.com.scds.chats.dom.activity.ParticipantsMenu;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.fixture.generated.ChatsAttendance;
 import au.com.scds.chats.fixture.generated.ChatsParentedActivity;
@@ -117,5 +117,5 @@ public class CreateChatsRecurringActivities extends FixtureScript {
 	ActivityMenu activityMenu;
 
 	@Inject
-	ParticipantMenu participantMenu;
+	ParticipantsMenu participantMenu;
 }

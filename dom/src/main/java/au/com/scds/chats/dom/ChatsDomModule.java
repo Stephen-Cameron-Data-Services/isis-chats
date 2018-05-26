@@ -4,7 +4,6 @@ import au.com.scds.eventschedule.base.EventScheduleBaseModule;
 import java.util.Set;
 import org.apache.isis.applib.Module;
 import org.apache.isis.applib.ModuleAbstract;
-import org.incode.example.note.dom.NoteModule;
 import org.isisaddons.module.security.SecurityModule;
 
 import com.google.common.collect.Sets;

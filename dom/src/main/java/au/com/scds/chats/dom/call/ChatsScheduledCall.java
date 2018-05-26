@@ -31,7 +31,7 @@ import au.com.scds.chats.dom.activity.ChatsParticipant;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.VolunteerRole;
-import au.com.scds.chats.dom.volunteer.VolunteerMenu;
+import au.com.scds.chats.dom.volunteer.VolunteersMenu;
 import au.com.scds.eventschedule.base.impl.Contactor;
 import au.com.scds.eventschedule.base.impl.ScheduledContact;
 import lombok.AccessLevel;
@@ -148,7 +148,7 @@ public class ChatsScheduledCall extends ScheduledContact implements ChatsEntity,
 	CallsMenu callsRepo;
 
 	@Inject()
-	VolunteerMenu volunteersRepo;
+	VolunteersMenu volunteersRepo;
 
 	@Column(allowsNull = "true")
 	@Getter

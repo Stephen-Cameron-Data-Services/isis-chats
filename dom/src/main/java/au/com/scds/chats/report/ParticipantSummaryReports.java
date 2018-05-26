@@ -21,12 +21,12 @@ import org.apache.isis.applib.query.QueryDefault;
 import org.joda.time.LocalDate;
 import au.com.scds.chats.dom.activity.AgeGroup;
 import au.com.scds.chats.dom.activity.ChatsParticipant;
-import au.com.scds.chats.dom.activity.ParticipantMenu;
+import au.com.scds.chats.dom.activity.ParticipantsMenu;
 import au.com.scds.chats.report.view.ParticipantCallOrAttendance;
 import au.com.scds.chats.report.viewmodel.ParticipantCallOrAttendanceSummary;
 
-@DomainService(nature = NatureOfService.VIEW_MENU_ONLY)
-@DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.0")
+//Reports
+@DomainService(objectType="ParticipantSummaryReports", nature = NatureOfService.VIEW_MENU_ONLY)
 public class ParticipantSummaryReports {
 
 	@Action()
@@ -119,5 +119,5 @@ public class ParticipantSummaryReports {
 	DomainObjectContainer container;
 
 	@Inject
-	ParticipantMenu participantsRepo;
+	ParticipantsMenu participantsRepo;
 }

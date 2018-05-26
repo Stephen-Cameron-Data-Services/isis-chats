@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import org.apache.isis.applib.fixturescripts.FixtureScript;
 import org.joda.time.LocalDate;
 import au.com.scds.chats.dom.general.ChatsPerson;
-import au.com.scds.chats.dom.general.Persons;
+import au.com.scds.chats.dom.general.ChatsPersons;
 import au.com.scds.chats.dom.general.Sex;
 
 public class CreateChatsPerson extends FixtureScript {
@@ -31,6 +31,6 @@ public class CreateChatsPerson extends FixtureScript {
 	}
 
 	@Inject
-	Persons personsMenu;
+	ChatsPersons personsMenu;
 
 }

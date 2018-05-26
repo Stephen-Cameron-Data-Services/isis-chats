@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
 import org.apache.isis.applib.fixturescripts.FixtureScript;
 import org.joda.time.LocalDate;
 
-import au.com.scds.chats.dom.activity.ParticipantMenu;
+import au.com.scds.chats.dom.activity.ParticipantsMenu;
 import au.com.scds.chats.dom.dex.DexReferenceData;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.fixture.generated.CallAllocation;
@@ -103,7 +103,7 @@ public class CreateChatsParticipant extends FixtureScript {
 	}
 
 	@Inject
-	ParticipantMenu participantMenu;
+	ParticipantsMenu participantMenu;
 	
 	@Inject
 	protected DexReferenceData dexRefData;

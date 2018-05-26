@@ -18,7 +18,6 @@
 package au.com.scds.chats.report;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +25,10 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.apache.isis.applib.DomainObjectContainer;
+import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.DomainService;
-import org.apache.isis.applib.annotation.DomainServiceLayout;
 import org.apache.isis.applib.annotation.MinLength;
 import org.apache.isis.applib.annotation.NatureOfService;
-import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
@@ -39,13 +37,14 @@ import org.apache.isis.applib.query.QueryDefault;
 import au.com.scds.chats.dom.general.ChatsPerson;
 import au.com.scds.chats.dom.activity.AgeGroup;
 import au.com.scds.chats.dom.activity.ChatsParticipant;
-import au.com.scds.chats.dom.activity.ParticipantMenu;
+import au.com.scds.chats.dom.activity.ParticipantsMenu;
 import au.com.scds.chats.report.view.InactiveParticipant;
 
-@DomainService(nature = NatureOfService.VIEW_MENU_ONLY)
-@DomainServiceLayout(menuBar = MenuBar.PRIMARY, named = "Reports", menuOrder = "70.5")
-public class InactiveParticipantsByMonthsInactive {
+//Reports
+@DomainService(objectType="InactiveParticipants", nature = NatureOfService.VIEW_MENU_ONLY)
+public class InactiveParticipants {
 
+	@Action
 	public List<InactiveParticipant> findMostInactiveParticipants() {
 		List<InactiveParticipant> list = container
 				.allMatches(new QueryDefault<>(InactiveParticipant.class, "findInactiveParticipants"));
@@ -67,6 +66,7 @@ public class InactiveParticipantsByMonthsInactive {
 		return temp;
 	}
 
+	@Action
 	public List<InactiveParticipant> findParticipantActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Participant") ChatsParticipant participant) {
 		if (participant == null)
@@ -84,6 +84,6 @@ public class InactiveParticipantsByMonthsInactive {
 	DomainObjectContainer container;
 
 	@Inject
-	ParticipantMenu participantsMenu;
+	ParticipantsMenu participantsMenu;
 
 }

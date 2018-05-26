@@ -43,12 +43,11 @@ import org.joda.time.LocalTime;
 
 import au.com.scds.chats.dom.activity.AgeGroup;
 import au.com.scds.chats.dom.activity.ChatsParticipant;
-import au.com.scds.chats.dom.activity.ParticipantMenu;
+import au.com.scds.chats.dom.activity.ParticipantsMenu;
 import au.com.scds.chats.dom.volunteer.Volunteer;
-import au.com.scds.chats.dom.volunteer.VolunteerMenu;
+import au.com.scds.chats.dom.volunteer.VolunteersMenu;
 
-@DomainService(objectType = "chats.calls", nature = NatureOfService.VIEW_MENU_ONLY, repositoryFor = ChatsScheduledCall.class)
-@DomainServiceLayout(named = "Calls", menuOrder = "50")
+@DomainService(objectType = "CallsMenu", nature = NatureOfService.VIEW_MENU_ONLY, repositoryFor = ChatsScheduledCall.class)
 public class CallsMenu {
 
 	@Action(semantics = SemanticsOf.IDEMPOTENT)
@@ -185,13 +184,13 @@ public class CallsMenu {
 	}
 
 	@Inject
-	protected VolunteerMenu volunteersRepo;
+	protected VolunteersMenu volunteersRepo;
 	
 	@Inject
 	protected CallsMenu callsRepo;
 
 	@Inject
-	protected ParticipantMenu participantsRepo;
+	protected ParticipantsMenu participantsRepo;
 
 	@Inject
 	protected RepositoryService repositoryService;

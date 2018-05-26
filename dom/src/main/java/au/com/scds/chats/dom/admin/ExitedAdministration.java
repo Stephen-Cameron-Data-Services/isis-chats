@@ -15,13 +15,12 @@ import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.SemanticsOf;
 
 import au.com.scds.chats.dom.activity.ChatsParticipant;
-import au.com.scds.chats.dom.activity.ParticipantMenu;
+import au.com.scds.chats.dom.activity.ParticipantsMenu;
 import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.dom.volunteer.Volunteer;
-import au.com.scds.chats.dom.volunteer.VolunteerMenu;
+import au.com.scds.chats.dom.volunteer.VolunteersMenu;
 
-@DomainService(objectType = "chats.exitedadministration", nature=NatureOfService.VIEW_MENU_ONLY)
-@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "400.1")
+@DomainService(objectType = "ExitedAdministration", nature=NatureOfService.VIEW_MENU_ONLY)
 public class ExitedAdministration {
 
 	@Action(semantics = SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE)
@@ -72,9 +71,9 @@ public class ExitedAdministration {
 	}
 
 	@Inject()
-	ParticipantMenu participantsRepo;
+	ParticipantsMenu participantsRepo;
 
 	@Inject()
-	VolunteerMenu volunteersRepo;
+	VolunteersMenu volunteersRepo;
 
 }

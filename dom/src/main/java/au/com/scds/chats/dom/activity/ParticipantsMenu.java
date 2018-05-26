@@ -48,16 +48,15 @@ import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.ChatsDomainEntitiesService;
 import au.com.scds.chats.dom.general.ChatsPerson;
-import au.com.scds.chats.dom.general.Persons;
+import au.com.scds.chats.dom.general.ChatsPersons;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.eventschedule.base.impl.activity.ActivityEvent;
 
-@DomainService(objectType="Participants", repositoryFor = ChatsParticipant.class, nature=NatureOfService.VIEW_MENU_ONLY)
-@DomainServiceLayout(named = "ChatsParticipants", menuOrder = "20")
-public class ParticipantMenu {
+@DomainService(objectType="ParticipantsMenu", repositoryFor = ChatsParticipant.class, nature=NatureOfService.VIEW_MENU_ONLY)
+public class ParticipantsMenu {
 
 	@Programmatic
 	public List<ChatsParticipant> listAll() {
@@ -318,7 +317,7 @@ public class ParticipantMenu {
 	}
 
 	@Inject
-	protected Persons persons;
+	protected ChatsPersons persons;
 
 	@Inject
 	protected RepositoryService repositoryService;

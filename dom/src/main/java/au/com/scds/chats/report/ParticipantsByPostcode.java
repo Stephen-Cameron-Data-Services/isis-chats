@@ -33,7 +33,7 @@ import org.apache.isis.applib.query.QueryDefault;
 
 import au.com.scds.chats.dom.general.ChatsPerson;
 import au.com.scds.chats.dom.activity.ChatsParticipant;
-import au.com.scds.chats.dom.activity.ParticipantMenu;
+import au.com.scds.chats.dom.activity.ParticipantsMenu;
 
 public class ParticipantsByPostcode {
 

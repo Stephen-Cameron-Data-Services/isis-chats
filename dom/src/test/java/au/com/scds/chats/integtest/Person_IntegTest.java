@@ -26,7 +26,7 @@ import org.junit.Test;
 
 import au.com.scds.chats.dom.activity.ChatsActivity;
 import au.com.scds.chats.dom.general.ChatsPerson;
-import au.com.scds.chats.dom.general.Persons;
+import au.com.scds.chats.dom.general.ChatsPersons;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.fixture.scenarios.CreateChatsActivities;
 import au.com.scds.chats.fixture.scenarios.CreateChatsPerson;

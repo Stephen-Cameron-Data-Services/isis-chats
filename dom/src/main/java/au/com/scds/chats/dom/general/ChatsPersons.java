@@ -51,7 +51,7 @@ import au.com.scds.chats.dom.general.names.Regions;
 @DomainService(objectType = "ChatsPersons", 
 nature = NatureOfService.VIEW_MENU_ONLY, 
 repositoryFor = ChatsPerson.class)
-public class Persons {
+public class ChatsPersons {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	public List<ChatsPerson> listAllPersons() {
