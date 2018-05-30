@@ -69,6 +69,10 @@ public class Activities_IntegTest extends IntegTestAbstract {
 	        	activity.moveWaitListed(activity.getWaitListed().first());
 	        	assertThat(activity.getWaitListed().size()).isEqualTo(0);
 	        	assertThat(activity.getParticipations().size()).isEqualTo(2);
+	        	activity.createAttendancesFromParticipants();
+	        	assertThat(activity.getAttendances().size()).isEqualTo(3);
+	        	activity.createAttendancesFromParticipants();
+	        	assertThat(activity.getAttendances().size()).isEqualTo(3);
 	        }
 	    }
 	}

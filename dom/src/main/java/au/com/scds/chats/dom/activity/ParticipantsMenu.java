@@ -55,7 +55,7 @@ import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.eventschedule.base.impl.activity.ActivityEvent;
 
-@DomainService(objectType="ParticipantsMenu", repositoryFor = ChatsParticipant.class, nature=NatureOfService.VIEW_MENU_ONLY)
+@DomainService(objectType = "ParticipantsMenu", repositoryFor = ChatsParticipant.class, nature = NatureOfService.VIEW_MENU_ONLY)
 public class ParticipantsMenu {
 
 	@Programmatic
@@ -64,7 +64,8 @@ public class ParticipantsMenu {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	public List<ChatsParticipant> listActiveChatsParticipants(@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup) {
+	public List<ChatsParticipant> listActiveChatsParticipants(
+			@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup) {
 		switch (ageGroup) {
 		case All:
 			return repositoryService.allMatches(
@@ -100,8 +101,8 @@ public class ParticipantsMenu {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	public List<ChatsParticipant> listExitedChatsParticipants() {
-		return repositoryService
-				.allMatches(new QueryDefault<>(ChatsParticipant.class, "listParticipantsByStatus", "status", Status.EXITED));
+		return repositoryService.allMatches(
+				new QueryDefault<>(ChatsParticipant.class, "listParticipantsByStatus", "status", Status.EXITED));
 	}
 
 	@Programmatic
@@ -109,8 +110,8 @@ public class ParticipantsMenu {
 			@Parameter(optionality = Optionality.MANDATORY) AgeGroup ageGroup, String search) {
 		if (search != null) {
 			// search by name then filter by age
-			List<ChatsParticipant> temp = repositoryService
-					.allMatches(new QueryDefault<>(ChatsParticipant.class, "findParticipantsByStatusAndToUpperCaseNameStart",
+			List<ChatsParticipant> temp = repositoryService.allMatches(
+					new QueryDefault<>(ChatsParticipant.class, "findParticipantsByStatusAndToUpperCaseNameStart",
 							"status", Status.ACTIVE, "start", search.toUpperCase()));
 			ArrayList<ChatsParticipant> temp2 = new ArrayList<>();
 			LocalDate lowerLimit = LocalDate.now().minusYears(65);
@@ -131,17 +132,17 @@ public class ParticipantsMenu {
 			// filter by age on database
 			switch (ageGroup) {
 			case All:
-				return repositoryService.allMatches(new QueryDefault<>(ChatsParticipant.class, "listParticipantsByStatus", "status",
-						Status.ACTIVE));
+				return repositoryService.allMatches(new QueryDefault<>(ChatsParticipant.class,
+						"listParticipantsByStatus", "status", Status.ACTIVE));
 			case Under_Sixty_Five:
 				LocalDate lowerLimit = LocalDate.now().minusYears(65);
-				return repositoryService
-						.allMatches(new QueryDefault<>(ChatsParticipant.class, "listParticipantsByStatusAndBirthdateAbove",
+				return repositoryService.allMatches(
+						new QueryDefault<>(ChatsParticipant.class, "listParticipantsByStatusAndBirthdateAbove",
 								"status", Status.ACTIVE, "lowerLimit", lowerLimit));
 			case Sixty_Five_and_Over:
 				LocalDate upperLimit = LocalDate.now().minusYears(65).plusDays(1);
-				return repositoryService
-						.allMatches(new QueryDefault<>(ChatsParticipant.class, "listParticipantsByStatusAndBirthdateBelow",
+				return repositoryService.allMatches(
+						new QueryDefault<>(ChatsParticipant.class, "listParticipantsByStatusAndBirthdateBelow",
 								"status", Status.ACTIVE, "upperLimit", upperLimit));
 			default:
 				return null;
@@ -151,16 +152,16 @@ public class ParticipantsMenu {
 
 	@Programmatic
 	public List<ChatsParticipant> listInactiveChatsParticipantIdentities(String search) {
-		return repositoryService
-				.allMatches(new QueryDefault<>(ChatsParticipant.class, "findParticipantsByStatusAndToUpperCaseNameStart",
-						"status", Status.INACTIVE, "start", search.toUpperCase()));
+		return repositoryService.allMatches(
+				new QueryDefault<>(ChatsParticipant.class, "findParticipantsByStatusAndToUpperCaseNameStart", "status",
+						Status.INACTIVE, "start", search.toUpperCase()));
 	}
 
 	@Programmatic
 	public List<ChatsParticipant> listAllExitedChatsParticipantIdentities(String search) {
-		return repositoryService
-				.allMatches(new QueryDefault<>(ChatsParticipant.class, "findParticipantsByStatusAndToUpperCaseNameStart",
-						"status", Status.EXITED, "start", search.toUpperCase()));
+		return repositoryService.allMatches(
+				new QueryDefault<>(ChatsParticipant.class, "findParticipantsByStatusAndToUpperCaseNameStart", "status",
+						Status.EXITED, "start", search.toUpperCase()));
 	}
 
 	@Programmatic
@@ -179,8 +180,8 @@ public class ParticipantsMenu {
 	@Action(semantics = SemanticsOf.SAFE)
 	public List<ChatsParticipant> findBySurname(@ParameterLayout(named = "Surname") final String surname,
 			@Parameter(optionality = Optionality.OPTIONAL) @ParameterLayout(named = "Status") final Status status) {
-		List<ChatsParticipant> list1 = repositoryService
-				.allMatches(new QueryDefault<>(ChatsParticipant.class, "findParticipantsByUpperCaseSurnameLike", "surname", surname.toUpperCase()));
+		List<ChatsParticipant> list1 = repositoryService.allMatches(new QueryDefault<>(ChatsParticipant.class,
+				"findParticipantsByUpperCaseSurnameLike", "surname", surname.toUpperCase()));
 		List<ChatsParticipant> list2 = new ArrayList<>(list1);
 		if (status != null) {
 			for (ChatsParticipant p : list1) {
@@ -215,7 +216,8 @@ public class ParticipantsMenu {
 	}
 
 	@Action(semantics = SemanticsOf.NON_IDEMPOTENT)
-	public ChatsParticipant create(final @Parameter(maxLength = 100) @ParameterLayout(named = "First name") String firstname,
+	public ChatsParticipant create(
+			final @Parameter(maxLength = 100) @ParameterLayout(named = "First name") String firstname,
 			final @Parameter(maxLength = 100) @ParameterLayout(named = "Family name") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob,
 			final @ParameterLayout(named = "Sex") Sex sex) {
@@ -223,24 +225,28 @@ public class ParticipantsMenu {
 		UserMemento user = userService.getUser();
 		Region region = null;
 		if (user != null) {
-			String name = user.getName();
-			ApplicationUser appUser = userRepository.findByUsername(name);
-			if (appUser != null) {
-				String regionName = chatsEntities.regionNameOfApplicationUser(appUser);
-				region = regionsRepo.regionForName(regionName);
+			if (!user.getName().equals("tester")) {
+				String name = user.getName();
+				ApplicationUser appUser = userRepository.findByUsername(name);
+				if (appUser != null) {
+					String regionName = chatsEntities.regionNameOfApplicationUser(appUser);
+					region = regionsRepo.regionForName(regionName);
+				}
+			} else {
+				region = regionsRepo.regionForName("TEST");
 			}
 		}
 		return newChatsParticipant(firstname, surname, dob, sex, region);
 	}
 
 	@Programmatic
-	public ChatsParticipant newChatsParticipant(final String firstname, final String surname, final LocalDate dob, final Sex sex,
-			final Region region) {
+	public ChatsParticipant newChatsParticipant(final String firstname, final String surname, final LocalDate dob,
+			final Sex sex, final Region region) {
 		String n1 = firstname.trim();
 		String n2 = surname.trim();
 		// check of existing ChatsParticipant
-		List<ChatsParticipant> participants = repositoryService
-				.allMatches(new QueryDefault<>(ChatsParticipant.class, "findParticipantsByUpperCaseSurnameEquals", "surname", n2.toUpperCase()));
+		List<ChatsParticipant> participants = repositoryService.allMatches(new QueryDefault<>(ChatsParticipant.class,
+				"findParticipantsByUpperCaseSurnameEquals", "surname", n2.toUpperCase()));
 		for (ChatsParticipant participant : participants) {
 			if (participant.getPerson().getFirstname().equalsIgnoreCase(n1)
 					&& participant.getPerson().getBirthdate().equals(dob)
@@ -263,8 +269,9 @@ public class ParticipantsMenu {
 		if (person == null) {
 			try {
 				person = persons.createPerson(n1, n2, dob, sex);
+				person.setRegion(region);
 			} catch (Exception e) {
-				System.out.print(e.getMessage());
+				e.printStackTrace();
 			}
 		}
 		final ChatsParticipant participant = new ChatsParticipant(person);
@@ -287,7 +294,7 @@ public class ParticipantsMenu {
 	public ChatsParticipation createParticipation(ActivityEvent event, ChatsParticipant participant) {
 		ChatsParticipation p = new ChatsParticipation(event, participant);
 		serviceRegistry.injectServicesInto(p);
-		//event.addParticipation(p);
+		// event.addParticipation(p);
 		participant.getParticipations().add(p);
 		repositoryService.persistAndFlush(p);
 		return p;
@@ -321,10 +328,10 @@ public class ParticipantsMenu {
 
 	@Inject
 	protected RepositoryService repositoryService;
-	
+
 	@Inject
 	protected ServiceRegistry2 serviceRegistry;
-	
+
 	@Inject
 	protected MessageService messageService;
 
@@ -339,7 +346,7 @@ public class ParticipantsMenu {
 
 	@Inject
 	protected UserService userService;
-	
+
 	@Inject
 	ChatsDomainEntitiesService chatsEntities;
 

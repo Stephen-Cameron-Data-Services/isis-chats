@@ -143,6 +143,9 @@
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:element>
+			<xsd:element name="region" maxOccurs="1" minOccurs="1" type="c:Region">
+
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 

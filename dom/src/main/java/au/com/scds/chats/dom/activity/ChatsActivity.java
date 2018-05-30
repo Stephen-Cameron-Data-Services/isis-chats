@@ -94,12 +94,17 @@ public class ChatsActivity extends ActivityEvent implements ChatsEntity, Timesta
 		super.createAttendanceSetFromParticipantSet();
 		return this;
 	}
-
-	public String disableCreateAttendancesFromParticipants() {
-		if (this.getParticipations().size() > 0 && this.getAttendancesSet().size() == 0) {
-			return null;
-		} else {
-			return "Attendance-List already created for this Activity";
+	
+	@Action()
+	@Override
+	protected void createAttendanceSetFromParticipantSet() {
+		for (Participation participation : getParticipations()) {
+			Attendee attendee = participation.getAttendee();
+			if (!hasAttendance(attendee)) {
+				ChatsAttendance attendance = this.createAttendance(attendee);
+				attendance.setArrivingTransportType(((ChatsParticipation) participation).getArrivingTransportType());
+				attendance.setDepartingTransportType(((ChatsParticipation) participation).getDepartingTransportType());
+			}
 		}
 	}
 

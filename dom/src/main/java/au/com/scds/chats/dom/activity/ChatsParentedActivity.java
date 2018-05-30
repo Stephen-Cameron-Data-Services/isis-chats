@@ -23,6 +23,7 @@ import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.eventschedule.base.impl.Attendee;
 import au.com.scds.eventschedule.base.impl.activity.ActivityEvent;
 import au.com.scds.eventschedule.base.impl.activity.ParentedActivityEvent;
+import au.com.scds.eventschedule.base.impl.activity.Participation;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -60,6 +61,19 @@ public class ChatsParentedActivity extends ParentedActivityEvent implements Chat
 		ChatsAttendance participation = activitiesRepo.createAttendance(this, (ChatsParticipant) attendee);
 		this.getAttendancesSet().add(participation);
 		return participation;
+	}
+	
+	@Action()
+	@Override
+	protected void createAttendanceSetFromParticipantSet() {
+		for (Participation participation : getParticipations()) {
+			Attendee attendee = participation.getAttendee();
+			if (!hasAttendance(attendee)) {
+				ChatsAttendance attendance = this.createAttendance(attendee);
+				attendance.setArrivingTransportType(((ChatsParticipation) participation).getArrivingTransportType());
+				attendance.setDepartingTransportType(((ChatsParticipation) participation).getDepartingTransportType());
+			}
+		}
 	}
 	
 	@Inject
