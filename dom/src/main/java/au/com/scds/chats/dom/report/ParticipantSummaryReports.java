@@ -1,4 +1,4 @@
-package au.com.scds.chats.report;
+package au.com.scds.chats.dom.report;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -102,18 +102,22 @@
 							<ns2:collection id="participations">
 								<ns2:describedAs>Participations link a Participant to the
 									Activity and hold Activity specific participation information</ns2:describedAs>
-								<ns2:action id="addParticipant">
+								<ns2:action id="addParticipation">
+									<ns2:named>Add Participant</ns2:named>
 									<ns2:describedAs>Add a Participation (with existing Chats Participant) to the Activity</ns2:describedAs>
 								</ns2:action>
 								<ns2:action id="addNewParticipant">
 									<ns2:describedAs>Add a Participation (and create a new Chats Participant) to the Activity</ns2:describedAs>
 								</ns2:action>
-								<ns2:action id="removeParticipant">
+								<ns2:action id="removeParticipation">
+								<ns2:named>Remove Participant</ns2:named>
 									<ns2:describedAs>Remove a Participation (unlink a Participant) from the Activity</ns2:describedAs>
 								</ns2:action>
 								<ns2:action id="showTransportList">
 									<ns2:describedAs>Show the 'transport list' of Participants (and Volunteers), participating in the Activity. Click, then from display options on right, select 'Excel' to download.</ns2:describedAs>
 								</ns2:action>
+								<ns2:action id="addBooking" hidden="EVERYWHERE"/>
+								<ns2:action id="removeBooking" hidden="EVERYWHERE"/>
 							</ns2:collection>
 						</col>
 					</row>
@@ -122,15 +126,15 @@
 					<row>
 						<col span="12">
 							<ns2:collection id="waitListed">
-								<ns2:action id="addWaitListedParticipant">
+								<ns2:action id="addWaitListed">
 									<ns2:named>Add</ns2:named>
 									<ns2:describedAs>Add a Participant to a the wait-list for the Activity.</ns2:describedAs>
 								</ns2:action>
-								<ns2:action id="removeWaitListedParticipant">
+								<ns2:action id="removeWaitListed">
 									<ns2:named>Remove</ns2:named>
 									<ns2:describedAs>Remove a Participant from the wait-list for the Activity.</ns2:describedAs>
 								</ns2:action>
-								<ns2:action id="moveWaitListedParticipant">
+								<ns2:action id="moveWaitListed">
 									<ns2:named>Move Across</ns2:named>
 									<ns2:describedAs>Transfer a Participant selected from those wait-listed to the Participations list for the Activity.</ns2:describedAs>
 								</ns2:action>
@@ -141,7 +145,7 @@
 				<tab name="Attendance">
 					<row>
 						<col span="12">
-							<ns2:collection id="attends">
+							<ns2:collection id="attendances">
 								<ns2:named>Attendances</ns2:named>
 								<ns2:action id="createAttendancesFromParticipants">
 									<ns2:named>Create Attendances</ns2:named>
@@ -154,7 +158,11 @@
 								<ns2:action id="showAttendanceList">
 									<ns2:describedAs>Go at an Attendance List containing these Attendances, provides more options (such as adding other Participants than those with Participations)</ns2:describedAs>
 								</ns2:action>
-								<ns2:action id="removeAttend">
+								<ns2:action id="addAttendance">
+									<ns2:named>Add</ns2:named>
+									<ns2:describedAs>Add an Attendance</ns2:describedAs>
+								</ns2:action>
+								<ns2:action id="removeAttendance">
 									<ns2:named>Remove</ns2:named>
 									<ns2:describedAs>Remove an Attendance</ns2:describedAs>
 								</ns2:action>

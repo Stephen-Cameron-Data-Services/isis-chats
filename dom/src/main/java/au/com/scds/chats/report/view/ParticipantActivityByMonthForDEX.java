@@ -35,8 +35,8 @@ import org.apache.isis.applib.annotation.Where;
 import org.isisaddons.module.security.dom.tenancy.HasAtPath;
 import org.joda.time.LocalDate;
 
-@ViewModel
-@DomainObject(objectType="ParticipantActivityByMonthForDEX", editing = Editing.DISABLED)
+@ViewModel()
+@DomainObject(objectType="ParticipantActivityByMonthForDEX")
 @PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "ParticipantActivityByMonthForDEX"/*, extensions = {
 		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW ParticipantActivityByMonthForDEX "
 				+ "( " + "  {this.personId}, " 
@@ -64,22 +64,22 @@ import org.joda.time.LocalDate;
 				+ "  participant.participant_id AS participantId, " 
 				+ "  participant.status AS participantStatus, "
 				+ "	 EXTRACT(YEAR_MONTH FROM activity.startdatetime) as yearMonth, "
-				+ "	 ROUND(SUM(TIMESTAMPDIFF(MINUTE,attend.startdatetime,attend.enddatetime))/60,1) as hoursAttended "
+				+ "	 ROUND(SUM(TIMESTAMPDIFF(MINUTE,attendance.start,attendance.end))/60,1) as hoursAttended "
 				+ "FROM " 
-				+ "  activity, " 
-				+ "  attend, " 
-				+ "  participant, " 
-				+ "  person " 
+				+ "  event_schedule.event as activity, " 
+				+ "  event_schedule.attendance as attendance, "
+				+ "  event_schedule.attendee as participant, " 
+				+ "  event_schedule.person as person " 
 				+ "WHERE "
-				+ "  attend.activity_activity_id = activity.activity_id AND "
-				+ "  participant.participant_id = attend.participant_participant_id AND "
-				+ "  person.person_id = participant.person_person_id AND " 
-				+ "  attend.attended = true " 
+				+ "  attendance.event_event_ID_OID = activity.event_ID AND "
+				+ "  participant.attendee_ID = attendance.attendee_attendee_ID_OID AND "
+				+ "  person.person_ID = participant.person_person_ID_OID AND " 
+				+ "  attendance.attended = true " 
 				+ "GROUP BY "
-				+ "  participant.participant_id, " 
-				+ "  activity.abbreviatedName, " 
-				+ "  activity.region_name, "
-				+ "  EXTRACT(YEAR_MONTH FROM activity.startdatetime);") }*/)
+				+ "  participant.attendee_id, " 
+				+ "  activity.codeName, " 
+				+ "  activity.region_name_OID, "
+				+ "  EXTRACT(YEAR_MONTH FROM activity.start);") }*/)
 @Queries({
 		@Query(name = "allParticipantActivityByMonthForDEX", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ParticipantActivityByMonthForDEX"),
 		@Query(name = "allParticipantActivityByMonthForDEXForMonthAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.report.view.ParticipantActivityByMonthForDEX pa "
@@ -98,7 +98,7 @@ public class ParticipantActivityByMonthForDEX implements HasAtPath {
 	public String activityAbbreviatedName;
 	public String participantStatus;
 	public Integer yearMonth;
-	public Float hoursAttended;
+	public Double hoursAttended;
 
 	public String title() {
 		return "Attendance: " + getFirstName() + " " + getSurname() + " @ " + getActivityAbbreviatedName() + " " + getYearMonth();
@@ -216,11 +216,11 @@ public class ParticipantActivityByMonthForDEX implements HasAtPath {
 
 	@Property()
 	@MemberOrder(sequence = "8")
-	public Float getHoursAttended() {
+	public Double getHoursAttended() {
 		return hoursAttended;
 	}
 
-	public void setHoursAttended(Float hoursAttended) {
+	public void setHoursAttended(Double hoursAttended) {
 		this.hoursAttended = hoursAttended;
 	}
 

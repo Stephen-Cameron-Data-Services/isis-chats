@@ -1,10 +1,14 @@
-package au.com.scds.chats.report;
+package au.com.scds.chats.dom.report;
 
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.inject.Inject;
 
@@ -21,8 +25,15 @@ import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
 import org.apache.isis.applib.services.repository.RepositoryService;
 import org.apache.isis.applib.value.Clob;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
 
+import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
+import au.com.scds.chats.dom.activity.ChatsParentedActivity;
+import au.com.scds.chats.dom.activity.ChatsParticipant;
+import au.com.scds.chats.dom.activity.ChatsActivity;
+import au.com.scds.chats.dom.activity.ChatsAttendance;
 import au.com.scds.chats.dom.activity.ParticipantsMenu;
 import au.com.scds.chats.report.dex.DEXBulkUploadReport2;
 import au.com.scds.chats.report.dex.DEXBulkUploadReport2.ClientIdGenerationMode2;
@@ -30,16 +41,116 @@ import au.com.scds.chats.report.dex.DEXBulkUploadReport2.DEXFileUploadWrapper2;
 import au.com.scds.chats.report.view.ActivityAttendanceSummary;
 import au.com.scds.chats.report.view.CallsDurationByParticipantAndMonth;
 import au.com.scds.chats.report.view.ParticipantActivityByMonthForDEX;
+import au.com.scds.eventschedule.base.impl.Attendee;
+import au.com.scds.eventschedule.base.impl.activity.ActivityEvent;
+import au.com.scds.eventschedule.base.impl.activity.Attendance;
 
 @DomainService(objectType = "DEXReporting", nature = NatureOfService.VIEW_MENU_ONLY)
 public class DEXReporting {
 
-	@Action(semantics=SemanticsOf.SAFE)
+	@Action(semantics = SemanticsOf.SAFE)
 	public List<ParticipantActivityByMonthForDEX> listAttendanceByYearMonthAndRegion(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Year-Month (YYYYMM)") Integer yearMonth,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Region") String region) {
 		return repositoryService.allMatches(new QueryDefault<>(ParticipantActivityByMonthForDEX.class,
 				"allParticipantActivityByMonthForDEXForMonthAndRegion", "yearMonth", yearMonth, "region", region));
+	}
+
+	@Action(semantics = SemanticsOf.SAFE)
+	public List<ParticipantActivityByMonthForDEX> listAttendanceByYearMonthAndRegion2(
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Year-Month (YYYYMM)") String yearMonth,
+			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Region") Region region) {
+
+		int year = Integer.parseInt(yearMonth.substring(0, 3));
+		int month = Integer.parseInt(yearMonth.substring(4, 5));
+		Calendar c = Calendar.getInstance();
+		// get end of last day of month before for start
+		c.set(year, month - 1, 1, 0, 0);
+		c.add(Calendar.DATE, -1);
+		c.add(Calendar.HOUR, 23);
+		c.add(Calendar.MINUTE, 59);
+		Date start = c.getTime();
+		// get first day of month after for end
+		c.set(year, month, 1, 0, 0);
+		Date end = c.getTime();
+		
+		// get the ActivityEvents in the period 
+		List<ActivityEvent> activities = repositoryService.allMatches(
+				new QueryDefault<>(ActivityEvent.class, "findActivitiesBetween", "start", start, "end", end));
+		List<ActivityEvent> temp = new ArrayList<>();
+		Map<ActivityEvent, Map<Attendee, Map<String, List<Attendance>>>> attendees1 = new TreeMap<>();
+		// see if its in the right region
+		for (ActivityEvent activity : activities) {
+			if (activity instanceof ChatsActivity) {
+				if (((ChatsActivity) activity).getRegion().equals(region)) {
+					attendees1.put(activity, new TreeMap<Attendee, Map<String, List<Attendance>>>());
+					temp.add(activity);
+				}
+			}
+			if (activity instanceof ChatsParentedActivity) {
+				if (((ChatsParentedActivity) activity).getRegion().equals(region)) {
+					attendees1.put(activity, new TreeMap<Attendee, Map<String, List<Attendance>>>());
+					temp.add(activity);
+				}
+			}
+		}
+		// for each activity get attendances and so find attendee(participant)
+		// Need to consider codeName if same activity in the one month
+		for (ActivityEvent activity : attendees1.keySet()) {
+			Map<Attendee, Map<String, List<Attendance>>> attendeesMap = attendees1.get(activity);
+			for (Attendance attendance : activity.getAttendances()) {
+				if (attendance.getAttended()) {
+					Attendee attendee = attendance.getAttendee();
+					//use the DEX 'abbreviated name' as hash key
+					String key = (activity.getCodeName() != null) ? activity.getCodeName() : "";
+					if (!attendeesMap.containsKey(attendee)) {
+						List<Attendance> list = new ArrayList<>();
+						list.add(attendance);
+						Map<String, List<Attendance>> map = new HashMap<>();
+						map.put(key, list);
+						attendeesMap.put(attendee, map);
+					} else if (!attendeesMap.get(attendee).containsKey(key)) {
+						List<Attendance> list = new ArrayList<>();
+						list.add(attendance);
+						attendeesMap.get(attendee).put(key, list);
+					} else {
+						attendeesMap.get(attendee).get(key).add(attendance);
+					}
+				}
+			}
+		}
+		//create the report
+		List<ParticipantActivityByMonthForDEX> times = new ArrayList<>();
+		for (ActivityEvent activity : attendees1.keySet()) {
+			Map<Attendee, Map<String, List<Attendance>>> attendeesMap = attendees1.get(activity);
+			for (Attendee attendee : attendeesMap.keySet()) {
+				Map<String, List<Attendance>> attendancesMap = attendeesMap.get(attendee);
+				for (String activityKey : attendancesMap.keySet()) {
+					long minutes = 0L;
+					for(Attendance attendance : attendancesMap.get(activityKey)){
+						ChatsAttendance chatsAttendance = (ChatsAttendance) attendance;
+						Duration d = new Duration(chatsAttendance.getStart(), chatsAttendance.getEnd());
+						minutes += d.getStandardMinutes();
+					}
+					ChatsParticipant p = (ChatsParticipant) attendee; 
+					ParticipantActivityByMonthForDEX d = new ParticipantActivityByMonthForDEX();
+					//d.setPersonId(1L);
+					//d.setParticipantId(1L);
+					d.setSurname(p.getPerson().getSurname());
+					d.setFirstName(p.getPerson().getFirstname());
+					d.setBirthDate(p.getPerson().getBirthdate());
+					d.setSlk(p.getPerson().getSlk());
+					d.setAge(p.getPerson().getAge(null));
+					d.setRegionName(p.getRegion().getName());
+					d.setActivityAbbreviatedName(activityKey);
+					d.setParticipantStatus(p.getStatus().name());
+					d.setYearMonth(Integer.valueOf(yearMonth));
+					double hrs = Math.round((Double.valueOf(minutes)/60)*10)/10;
+					d.setHoursAttended(hrs);
+				}
+			}
+		}
+		return null;
 	}
 
 	public List<String> choices1ListAttendanceByYearMonthAndRegion() {
@@ -58,8 +169,8 @@ public class DEXReporting {
 			@ParameterLayout(named = "Client Id Generation") ClientIdGenerationMode2 nameMode) throws Exception {
 		System.out
 				.println("Starting DEX report: Year=" + year + ",Month=" + month.getValue() + ",region=" + regionName);
-		DEXBulkUploadReport2 report1 = new DEXBulkUploadReport2(repositoryService, isisJdoSupport, participantMenu, year,
-				month.getValue(), regionName, nameMode);
+		DEXBulkUploadReport2 report1 = new DEXBulkUploadReport2(repositoryService, isisJdoSupport, participantMenu,
+				year, month.getValue(), regionName, nameMode);
 
 		DEXFileUploadWrapper2 wrapped = report1.build();
 		if (wrapped.hasErrors()) {

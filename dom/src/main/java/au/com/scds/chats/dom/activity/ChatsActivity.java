@@ -122,23 +122,23 @@ public class ChatsActivity extends ActivityEvent implements ChatsEntity, Timesta
 	@Inject
 	ActivityMenu activityRepo;
 
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "true", name="createdby")
 	@Getter
 	@Setter
 	private String createdBy;
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "true", name="createdon")
 	@Getter
 	@Setter
 	private DateTime createdOn;
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "true", name="lastmodifiedon")
 	@Getter
 	@Setter
 	private DateTime lastModifiedOn;
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "true", name="lastmodifiedby")
 	@Getter
 	@Setter
 	private String lastModifiedBy;
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "true", name="region_name")
 	@Getter
 	@Setter
 	private Region region;

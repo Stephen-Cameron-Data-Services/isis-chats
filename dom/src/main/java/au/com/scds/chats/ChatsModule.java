@@ -7,14 +7,13 @@ import org.apache.isis.applib.ModuleAbstract;
 import org.isisaddons.module.security.SecurityModule;
 
 import com.google.common.collect.Sets;
-
 import au.com.scds.eventschedule.base.EventScheduleBaseModule;
 
 public class ChatsModule extends ModuleAbstract {
 	
 	@Override
     public Set<Module> getDependencies() {
-        return Sets.newHashSet(new EventScheduleBaseModule());
+        return Sets.<Module>newHashSet(new EventScheduleBaseModule());
     }
 	
 	@Override

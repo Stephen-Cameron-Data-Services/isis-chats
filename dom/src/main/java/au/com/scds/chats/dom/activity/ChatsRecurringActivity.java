@@ -46,7 +46,7 @@ import lombok.Setter;
 @DomainObject(objectType = "ChatsRecurringActivity")
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
-@Discriminator(value = "RECURRING_ACTIVITY")
+@Discriminator(value = "ChatsRecurringActivity")
 public class ChatsRecurringActivity extends RecurringActivityEvent 
 implements ChatsEntity, Timestampable, HasAtPath {
 
@@ -157,23 +157,23 @@ implements ChatsEntity, Timestampable, HasAtPath {
 	@Inject
 	protected MessageService messageService;
 
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "true", name="createdby")
 	@Getter
 	@Setter
 	private String createdBy;
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "true", name="createdon")
 	@Getter
 	@Setter
 	private DateTime createdOn;
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "true", name="lastmodifiedon")
 	@Getter
 	@Setter
 	private DateTime lastModifiedOn;
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "true", name="lastmodifiedby")
 	@Getter
 	@Setter
 	private String lastModifiedBy;
-	@Column(allowsNull = "true")
+	@Column(allowsNull = "true", name="region_name")
 	@Getter
 	@Setter
 	private Region region;

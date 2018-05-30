@@ -109,7 +109,7 @@
 				</mb3:serviceAction>
 			</mb3:section>
 			<mb3:section>
-				<mb3:serviceAction objectType="VolunteerSummaryReports" id="allActivityVolunteerVolunteeredTimeForPeriod"  bookmarking="NEVER">
+				<mb3:serviceAction objectType="VolunteerSummaryReports" id="findVolunteersActivityTimes"  bookmarking="NEVER">
 					<cpt:named>Find Volunteer's Times</cpt:named>
 				</mb3:serviceAction>
 				<mb3:serviceAction objectType="VolunteerSummaryReports" id="listVolunteerInvolvementInPeriod"  bookmarking="NEVER">

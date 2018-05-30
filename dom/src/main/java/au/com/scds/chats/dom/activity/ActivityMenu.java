@@ -222,13 +222,13 @@ public class ActivityMenu {
 	@Action(semantics = SemanticsOf.SAFE)
 	public List<ActivityEvent> listAllFutureActivities() {
 		return repositoryService.allMatches(
-				new QueryDefault<>(ActivityEvent.class, "findAllFutureActivities", "currentDateTime", new DateTime()));
+				new QueryDefault<>(ActivityEvent.class, "findActivitiesAfter", "date", new DateTime()));
 	}
 
 	@Programmatic
 	public List<ActivityEvent> listAllPastActivities() {
 		return repositoryService.allMatches(
-				new QueryDefault<>(ActivityEvent.class, "findAllPastActivities", "currentDateTime", new DateTime()));
+				new QueryDefault<>(ActivityEvent.class, "findActivitiesBefore", "date", new DateTime()));
 	}
 
 	@Programmatic

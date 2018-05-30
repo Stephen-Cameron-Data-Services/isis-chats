@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package au.com.scds.chats.dom.report;
+package au.com.scds.chats.dom;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ import org.apache.isis.applib.services.repository.RepositoryService;
 import au.com.scds.chats.report.view.MailMergeData;
 
 //Report
-@DomainService(objectType="MailMerge", nature=NatureOfService.VIEW_MENU_ONLY)
+@DomainService(objectType="MailMerge2", nature=NatureOfService.VIEW_MENU_ONLY)
 public class MailMerge {
 	
 	@Action
