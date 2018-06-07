@@ -50,29 +50,21 @@ public class DEXReporting {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	public List<ParticipantActivityByMonthForDEX> listAttendanceByYearMonthAndRegion(
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Year-Month (YYYYMM)") Integer yearMonth,
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Region") String region) {
-		return repositoryService.allMatches(new QueryDefault<>(ParticipantActivityByMonthForDEX.class,
-				"allParticipantActivityByMonthForDEXForMonthAndRegion", "yearMonth", yearMonth, "region", region));
-	}
-
-	@Action(semantics = SemanticsOf.SAFE)
-	public List<ParticipantActivityByMonthForDEX> listAttendanceByYearMonthAndRegion2(
-			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Year-Month (YYYYMM)") String yearMonth,
+			@Parameter(optionality = Optionality.MANDATORY, regexPattern="^[0-9]{6}$", regexPatternReplacement="YYYYMM") @ParameterLayout(named = "Year-Month (YYYYMM)") String yearMonth,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Region") Region region) {
 
-		int year = Integer.parseInt(yearMonth.substring(0, 3));
-		int month = Integer.parseInt(yearMonth.substring(4, 5));
+		int year = Integer.parseInt(yearMonth.substring(0, 4));
+		int month = Integer.parseInt(yearMonth.substring(4, 6));
 		Calendar c = Calendar.getInstance();
 		// get end of last day of month before for start
 		c.set(year, month - 1, 1, 0, 0);
 		c.add(Calendar.DATE, -1);
 		c.add(Calendar.HOUR, 23);
 		c.add(Calendar.MINUTE, 59);
-		Date start = c.getTime();
+		DateTime start = new DateTime(c.getTime());
 		// get first day of month after for end
 		c.set(year, month, 1, 0, 0);
-		Date end = c.getTime();
+		DateTime end = new DateTime(c.getTime());
 		
 		// get the ActivityEvents in the period 
 		List<ActivityEvent> activities = repositoryService.allMatches(
@@ -133,24 +125,25 @@ public class DEXReporting {
 						minutes += d.getStandardMinutes();
 					}
 					ChatsParticipant p = (ChatsParticipant) attendee; 
-					ParticipantActivityByMonthForDEX d = new ParticipantActivityByMonthForDEX();
+					ParticipantActivityByMonthForDEX pa = new ParticipantActivityByMonthForDEX();
 					//d.setPersonId(1L);
 					//d.setParticipantId(1L);
-					d.setSurname(p.getPerson().getSurname());
-					d.setFirstName(p.getPerson().getFirstname());
-					d.setBirthDate(p.getPerson().getBirthdate());
-					d.setSlk(p.getPerson().getSlk());
-					d.setAge(p.getPerson().getAge(null));
-					d.setRegionName(p.getRegion().getName());
-					d.setActivityAbbreviatedName(activityKey);
-					d.setParticipantStatus(p.getStatus().name());
-					d.setYearMonth(Integer.valueOf(yearMonth));
+					pa.setSurname(p.getPerson().getSurname());
+					pa.setFirstName(p.getPerson().getFirstname());
+					pa.setBirthDate(p.getPerson().getBirthdate());
+					pa.setSlk(p.getPerson().getSlk());
+					pa.setAge(p.getPerson().getAge(null));
+					pa.setRegionName(p.getRegion().getName());
+					pa.setActivityAbbreviatedName(activityKey);
+					pa.setParticipantStatus(p.getStatus().name());
+					pa.setYearMonth(Integer.valueOf(yearMonth));
 					double hrs = Math.round((Double.valueOf(minutes)/60)*10)/10;
-					d.setHoursAttended(hrs);
+					pa.setHoursAttended(hrs);
+					times.add(pa);
 				}
 			}
 		}
-		return null;
+		return times;
 	}
 
 	public List<String> choices1ListAttendanceByYearMonthAndRegion() {

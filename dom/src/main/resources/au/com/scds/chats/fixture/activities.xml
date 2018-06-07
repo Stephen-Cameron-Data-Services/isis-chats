@@ -6,6 +6,7 @@
 		<c:description>c:description</c:description>
 		<c:start>2001-12-31T12:00:00</c:start>
 		<c:end>2001-12-31T12:00:00</c:end>
+		<c:region>SOUTH</c:region>
 		<c:participation>
 			<c:participant>
 				<c:person>

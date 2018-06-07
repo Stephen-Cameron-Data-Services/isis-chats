@@ -19,10 +19,9 @@
 			<xsd:element name="description" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
 			<xsd:element name="start" type="xsd:dateTime" maxOccurs="1" minOccurs="1"></xsd:element>
 			<xsd:element name="end" type="xsd:dateTime" maxOccurs="1" minOccurs="0"></xsd:element>
+			<xsd:element name="region" type="xsd:string" maxOccurs="1" minOccurs="1"></xsd:element>
 			<xsd:element name="participation" type="c:ChatsParticipation" maxOccurs="unbounded" minOccurs="0"></xsd:element>
 			<xsd:element name="waitListed" type="c:ChatsParticipant" minOccurs="0" maxOccurs="unbounded" />
-
-
 			<xsd:element name="attendance" type="c:ChatsAttendance" maxOccurs="unbounded" minOccurs="0"></xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
