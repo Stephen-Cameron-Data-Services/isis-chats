@@ -29,6 +29,8 @@ import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Queries;
+import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.DomainObject;
@@ -39,13 +41,17 @@ import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 
 import au.com.scds.eventschedule.base.impl.activity.ActivityEvent;
 
+@DomainObject()
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
-@Discriminator(value = "VTACTIVITY")
-@DomainObject()
+@Discriminator(value = "VolunteeredTimeForActivity")
+@Queries({
+	@Query(name = "findForActivity", language = "JDOQL", value = "SELECT "
+			+ "FROM au.com.scds.chats.dom.volunteer.VolunteeredTimeForActivity WHERE activity == :activity ")})
 public class VolunteeredTimeForActivity extends VolunteeredTime {
 	
 	private ActivityEvent activity;
@@ -88,6 +94,16 @@ public class VolunteeredTimeForActivity extends VolunteeredTime {
 		return volunteerRoles.allNames();
 	}
 	
+	public Integer getMinutesAttended() {
+		if (getStart() != null && getEnd() != null) {
+			Duration duration = new Duration(getStart(), getEnd());
+			return (int) duration.getStandardMinutes();
+		} else
+			return null;
+	}
+	
 	@Inject
 	private VolunteerRoles volunteerRoles;
+
+
 }

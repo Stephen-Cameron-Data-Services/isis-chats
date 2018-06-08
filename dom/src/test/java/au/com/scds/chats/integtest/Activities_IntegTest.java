@@ -18,13 +18,15 @@ package au.com.scds.chats.integtest;
  *  under the License.
  */
 
-
 import javax.inject.Inject;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import au.com.scds.chats.dom.activity.ChatsActivity;
+import au.com.scds.chats.dom.volunteer.VolunteersForChatsActivityEventMixins.ActivityEvent_removeVolunteeredTime;
+import au.com.scds.chats.dom.volunteer.VolunteersForChatsActivityEventMixins.ActivityEvent_volunteeredTimes;
+import au.com.scds.chats.dom.volunteer.VolunteersMenu;
 import au.com.scds.chats.fixture.scenarios.CreateChatsActivities;
 
 import org.apache.isis.applib.fixturescripts.FixtureScripts;
@@ -36,26 +38,28 @@ import java.util.List;
 
 public class Activities_IntegTest extends IntegTestAbstract {
 
-	   @Inject
-	    FixtureScripts fixtureScripts;
-	    @Inject
-	    TransactionService transactionService;
-	    
-	    List<ChatsActivity> activities  =  null;
+	@Inject
+	FixtureScripts fixtureScripts;
+	@Inject
+	TransactionService transactionService;
+	@Inject
+	VolunteersMenu volunteers;
 
-	    @Before
-	    public void setUp() throws Exception {
-	        // given
-	        CreateChatsActivities fs = new CreateChatsActivities();
-	        fixtureScripts.runFixtureScript(fs, null);
-	        transactionService.nextTransaction();
-	        activities = fs.getActivities();
-	        assertThat(activities).isNotNull();
-	    }
+	List<ChatsActivity> activities = null;
 
-	    public static class Activities extends Activities_IntegTest {
+	@Before
+	public void setUp() throws Exception {
+		// given
+		CreateChatsActivities fs = new CreateChatsActivities();
+		fixtureScripts.runFixtureScript(fs, null);
+		transactionService.nextTransaction();
+		activities = fs.getActivities();
+		assertThat(activities).isNotNull();
+	}
 
-	        @Test
+	public static class Activities extends Activities_IntegTest {
+
+		@Test
 	        public void accessible() throws Exception {
 	            // then
 	        	assertThat(activities.get(0)).isNotNull();
@@ -73,6 +77,15 @@ public class Activities_IntegTest extends IntegTestAbstract {
 	        	assertThat(activity.getAttendances().size()).isEqualTo(3);
 	        	activity.createAttendancesFromParticipants();
 	        	assertThat(activity.getAttendances().size()).isEqualTo(3);
+	        	
+	        	//volunteered time mixins
+	        	ActivityEvent_volunteeredTimes times = new ActivityEvent_volunteeredTimes(activity);
+	        	times.volunteersRepo = volunteers;
+	        	assertThat(times.$$().size()).isEqualTo(1);
+	        	ActivityEvent_removeVolunteeredTime remove = new ActivityEvent_removeVolunteeredTime(activity);
+	        	remove.volunteersRepo = volunteers;
+	        	remove.$$(times.$$().get(0));
+	        	assertThat(times.$$().size()).isEqualTo(0);
 	        }
-	    }
 	}
+}

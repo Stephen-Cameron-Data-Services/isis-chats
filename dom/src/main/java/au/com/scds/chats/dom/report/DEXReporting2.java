@@ -58,10 +58,11 @@ public class DEXReporting2 {
 			@ParameterLayout(named = "Client Id Generation") ClientIdGenerationMode2 nameMode) throws Exception {
 		System.out
 				.println("Starting DEX report: Year=" + year + ",Month=" + month.getValue() + ",region=" + regionName);
+		
 		DEXBulkUploadReport2 report1 = new DEXBulkUploadReport2(repositoryService, isisJdoSupport, participantMenu, year,
 				month.getValue(), regionName, nameMode);
-
 		DEXFileUploadWrapper2 wrapped = report1.build();
+		
 		if (wrapped.hasErrors()) {
 			String report = wrapped.getErrors();
 			Clob clob = new Clob("DexReportingERRORSFor" + regionName + "_" + month + "_" + year + ".txt", "text/plain",

@@ -38,5 +38,18 @@
 				</c:person>
 			</c:participant>
 		</c:attendance>
+		<c:volunteeredTime>
+			<c:volunteer>
+				<c:person>
+					<c:firstname>c:firstname</c:firstname>
+					<c:surname>c:surname</c:surname>
+					<c:dateOfBirth>2001-01-01</c:dateOfBirth>
+					<c:sex>MALE</c:sex>
+					<c:region>NORTH</c:region>
+				</c:person>
+			</c:volunteer>
+			<c:start>2001-12-31T12:00:00</c:start>
+			<c:end>2001-12-31T12:10:00</c:end>
+		</c:volunteeredTime>
 	</c:activity>
 </c:activities>

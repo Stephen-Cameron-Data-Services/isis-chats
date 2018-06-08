@@ -54,15 +54,6 @@ public class CreateVolunteer  extends FixtureScript {
 							LocalDate.fromDateFields(_person.getDateOfBirth()), Sex.valueOf(_person.getSex()));
 					volunteer.addAllocatedCallParticipant(participant, _allocation.getIndicativeCallTime().toString());
 				}
-				for(Volunteer.Call _call : _volunteer.getCall()){
-					_person = _call.getParticipant().getPerson();
-					au.com.scds.chats.dom.activity.ChatsParticipant participant =  participantMenu.create(
-							_person.getFirstname(), _person.getSurname(),
-							LocalDate.fromDateFields(_person.getDateOfBirth()), Sex.valueOf(_person.getSex()));
-					au.com.scds.chats.dom.call.ChatsScheduledCall call = volunteer.createScheduledCall(participant, new DateTime(_call.getStart()) );
-					call.updateEndDateTime(new DateTime(_call.getEnd()));
-					call.setSummaryNotes(_call.getNotes());
-				}
 			}
 		} catch (JAXBException e) {
 			e.printStackTrace();

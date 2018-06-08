@@ -54,7 +54,7 @@ public class CallsMenu {
 	public ChatsScheduledCall create(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "ChatsParticipant") final ChatsParticipant participant,
 			@Parameter(optionality = Optionality.MANDATORY) final Volunteer volunteer,
-			@Parameter(optionality = Optionality.OPTIONAL) final DateTime dateTime) throws Exception {
+			@Parameter(optionality = Optionality.OPTIONAL) final DateTime dateTime) {
 		return createScheduledCall(volunteer, participant, dateTime);
 	}
 
@@ -97,8 +97,8 @@ public class CallsMenu {
 	public List<ChatsScheduledCall> listCallsInPeriod(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Period") LocalDate start,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "End Period") LocalDate end) {
-		return repositoryService.allMatches(new QueryDefault<>(ChatsScheduledCall.class, "findCallsInPeriod",
-				"start", start.toDateTimeAtStartOfDay(), "end", end.toDateTime(new LocalTime(23, 59))));
+		return repositoryService.allMatches(new QueryDefault<>(ChatsScheduledCall.class, "findCallsInPeriod", "start",
+				start.toDateTimeAtStartOfDay(), "end", end.toDateTime(new LocalTime(23, 59))));
 	}
 
 	@Programmatic
@@ -111,13 +111,9 @@ public class CallsMenu {
 
 	@Programmatic
 	public ChatsScheduledCall createScheduledCall(final Volunteer volunteer, final ChatsParticipant participant,
-			final DateTime dateTime) throws Exception {
-		if (volunteer == null)
-			throw new IllegalArgumentException("volunteer is a mandatory argument");
-		if (participant == null)
-			throw new IllegalArgumentException("participant is a mandatory argument");
-		if (dateTime == null)
-			throw new IllegalArgumentException("dateTime is a mandatory argument");
+			final DateTime dateTime) {
+		if (volunteer == null || participant == null || dateTime == null)
+			return null;
 		ChatsScheduledCall call = new ChatsScheduledCall(findOrCreateChatsCaller(volunteer),
 				findOrCreateChatsCallee(participant), dateTime);
 		serviceRegistry.injectServicesInto(call);
@@ -133,23 +129,22 @@ public class CallsMenu {
 
 	@Programmatic
 	private ChatsCallee findOrCreateChatsCallee(ChatsParticipant participant) {
-		ChatsCallee contactee = repositoryService.uniqueMatch(
-				new QueryDefault<>(ChatsCallee.class, "findForParticipant", "participant", participant));
+		ChatsCallee contactee = repositoryService
+				.uniqueMatch(new QueryDefault<>(ChatsCallee.class, "findForParticipant", "participant", participant));
 		if (contactee == null) {
 			contactee = new ChatsCallee(participant);
 			repositoryService.persist(contactee);
 		}
 		return contactee;
 	}
-	
-	public List<ChatsCaller> listAllChatsCallers(){
+
+	public List<ChatsCaller> listAllChatsCallers() {
 		return repositoryService.allInstances(ChatsCaller.class);
 	}
-	
-	public List<ChatsCallee> listAllChatsCallees(){
+
+	public List<ChatsCallee> listAllChatsCallees() {
 		return repositoryService.allInstances(ChatsCallee.class);
 	}
-	
 
 	@Programmatic
 	private ChatsCaller findOrCreateChatsCaller(Volunteer volunteer) {
@@ -163,13 +158,10 @@ public class CallsMenu {
 	}
 
 	@Programmatic
-	public ChatsCallAllocation createChatsCallAllocation(Volunteer volunteer,
-			ChatsParticipant participant) {
-		if (volunteer == null)
-			throw new IllegalArgumentException("volunteer is a mandatory argument");
-		if (participant == null)
-			throw new IllegalArgumentException("participant is a mandatory argument");
-		ChatsCallAllocation allocation = new ChatsCallAllocation(this.findOrCreateChatsCaller(volunteer), 
+	public ChatsCallAllocation createChatsCallAllocation(Volunteer volunteer, ChatsParticipant participant) {
+		if (volunteer == null || participant == null)
+			return null;
+		ChatsCallAllocation allocation = new ChatsCallAllocation(this.findOrCreateChatsCaller(volunteer),
 				this.findOrCreateChatsCallee(participant));
 		serviceRegistry.injectServicesInto(allocation);
 		repositoryService.persist(allocation);
@@ -185,7 +177,7 @@ public class CallsMenu {
 
 	@Inject
 	protected VolunteersMenu volunteersRepo;
-	
+
 	@Inject
 	protected CallsMenu callsRepo;
 

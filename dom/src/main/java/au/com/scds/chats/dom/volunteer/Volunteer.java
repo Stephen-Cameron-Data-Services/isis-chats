@@ -73,9 +73,9 @@ import lombok.Setter;
 @Queries({
 		@Query(name = "listVolunteersByStatus", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer WHERE status == :status"),
-		@Query(name = "findVolunteersByToUpperCaseNameStart", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer WHERE person.surname.toUpperCase().startsWith(:start)"),
-		@Query(name = "findVolunteersByStatusAndToUpperCaseNameStart", language = "JDOQL", value = "SELECT "
+		@Query(name = "findVolunteersByUpperCaseSurnameEquals", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer WHERE person.surname.toUpperCase() == :surname"),
+		@Query(name = "findVolunteersByStatusAndUpperCaseNameStart", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer WHERE status == :status && (person.surname.toUpperCase().startsWith(:start) || person.firstname.toUpperCase().startsWith(:start)) "),
 		@Query(name = "findVolunteerByApplicationUsername", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer WHERE username == :username"), })

@@ -76,7 +76,8 @@ public class VolunteeredTime extends BaseEvent implements Comparable<Volunteered
 	
 	public VolunteeredTime(Volunteer volunteer, DateTime start, DateTime end){
 		super(start, end);
-		setVolunteer(volunteer);
+		this.setIncludeAsParticipation(false);
+		this.setVolunteer(volunteer);
 	}
 
 	public String title() {

@@ -219,6 +219,15 @@ public class ChatsAttendance extends Attendance implements ChatsEntity, Timestam
 			return null;
 	}
 
+	@NotPersistent
+	public Integer getMinutesAttended() {
+		if (getStart() != null && getEnd() != null) {
+			Duration duration = new Duration(getStart(), getEnd());
+			return (int) duration.getStandardMinutes();
+		} else
+			return null;
+	}
+
 	@Inject
 	TransportTypes transportTypes;
 

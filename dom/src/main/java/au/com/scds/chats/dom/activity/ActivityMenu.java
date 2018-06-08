@@ -240,8 +240,8 @@ public class ActivityMenu {
 	public List<ActivityEvent> listActivitiesInPeriod(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Period") LocalDate start,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "End Period") LocalDate end) {
-		return repositoryService.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivitiesInPeriod", "startDateTime",
-				start.toDateTimeAtStartOfDay(), "endDateTime", end.toDateTime(new LocalTime(23, 59))));
+		return repositoryService.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivitiesBetween", "start",
+				start.toDateTimeAtStartOfDay(), "end", end.toDateTime(new LocalTime(23, 59))));
 	}
 
 	public String validateListActivitiesInPeriod(LocalDate start, LocalDate end) {

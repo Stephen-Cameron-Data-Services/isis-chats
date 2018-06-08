@@ -69,20 +69,17 @@ public class DEXReporting {
 		// get the ActivityEvents in the period 
 		List<ActivityEvent> activities = repositoryService.allMatches(
 				new QueryDefault<>(ActivityEvent.class, "findActivitiesBetween", "start", start, "end", end));
-		List<ActivityEvent> temp = new ArrayList<>();
 		Map<ActivityEvent, Map<Attendee, Map<String, List<Attendance>>>> attendees1 = new TreeMap<>();
 		// see if its in the right region
 		for (ActivityEvent activity : activities) {
 			if (activity instanceof ChatsActivity) {
 				if (((ChatsActivity) activity).getRegion().equals(region)) {
 					attendees1.put(activity, new TreeMap<Attendee, Map<String, List<Attendance>>>());
-					temp.add(activity);
 				}
 			}
 			if (activity instanceof ChatsParentedActivity) {
 				if (((ChatsParentedActivity) activity).getRegion().equals(region)) {
 					attendees1.put(activity, new TreeMap<Attendee, Map<String, List<Attendance>>>());
-					temp.add(activity);
 				}
 			}
 		}

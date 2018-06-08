@@ -33,7 +33,7 @@ import lombok.Setter;
 @Discriminator(value = "ChatsParentedActivity")
 @Queries({ @Query(name = "findParentedActivityByUpperCaseName", language = "JDOQL", value = "SELECT "
 		+ "FROM au.com.scds.chats.dom.activity.ChatsParentedActivity WHERE name.trim().toUpperCase() == :name") })
-public class ChatsParentedActivity extends ParentedActivityEvent implements ChatsEntity, Timestampable, HasAtPath {
+public class ChatsParentedActivity extends ParentedActivityEvent implements IChatsActivity, ChatsEntity, Timestampable, HasAtPath {
 
 	@SuppressWarnings("unused")
 	private ChatsParentedActivity() {

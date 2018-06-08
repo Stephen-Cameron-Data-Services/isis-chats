@@ -153,7 +153,7 @@ public class VolunteersMenu {
 	public List<Volunteer> listActiveVolunteers(String search) {
 		if (search != null)
 			return repositoryService
-					.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByStatusAndToUpperCaseNameStart",
+					.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByStatusAndUpperCaseNameStart",
 							"status", Status.ACTIVE.toString(), "start", search.toUpperCase()));
 		else
 			return repositoryService.allMatches(
@@ -164,7 +164,7 @@ public class VolunteersMenu {
 	public List<Volunteer> listAllInactiveVolunteers(String search) {
 		if (search != null)
 			return repositoryService
-					.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByStatusAndToUpperCaseNameStart",
+					.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByStatusAndUpperCaseNameStart",
 							"status", Status.INACTIVE.toString(), "start", search.toUpperCase()));
 		else
 			return repositoryService.allMatches(new QueryDefault<>(Volunteer.class, "listVolunteersByStatus", "status",
@@ -175,7 +175,7 @@ public class VolunteersMenu {
 	public List<Volunteer> listAllExitedVolunteers(String search) {
 		if (search != null)
 			return repositoryService
-					.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByStatusAndToUpperCaseNameStart",
+					.allMatches(new QueryDefault<>(Volunteer.class, "findVolunteersByStatusAndUpperCaseNameStart",
 							"status", Status.EXITED.toString(), "start", search.toUpperCase()));
 		else
 			return repositoryService.allMatches(
@@ -189,10 +189,11 @@ public class VolunteersMenu {
 		String n2 = surname.trim();
 		// check of existing Volunteer
 		List<Volunteer> volunteers = repositoryService.allMatches(
-				new QueryDefault<>(Volunteer.class, "findVolunteersByToUpperCaseNameStart", "start", n2.toUpperCase()));
+				new QueryDefault<>(Volunteer.class, "findVolunteersByUpperCaseSurnameEquals", "surname", n2.toUpperCase()));
 		for (Volunteer volunteer : volunteers) {
 			if (volunteer.getPerson().getFirstname().equalsIgnoreCase(n1)
-					&& volunteer.getPerson().getBirthdate().equals(dob) && volunteer.getPerson().getSex().equals(sex)) {
+					&& volunteer.getPerson().getBirthdate().equals(dob) 
+					&& volunteer.getPerson().getSex().equals(sex)) {
 				if (region != null) {
 					if (region.equals(volunteer.getRegion())) {
 						messageService.informUser(
@@ -212,17 +213,19 @@ public class VolunteersMenu {
 		if (person == null) {
 			try {
 				person = persons.createPerson(n1, n2, dob, sex);
+				person.setRegion(region);
 			} catch (Exception e) {
-				// discard as validating SLK inputs
+				e.printStackTrace();
 			}
 		} else {
-			// person so probably a Participant
+			// existing person so probably a Participant
 			participant = participantsRepo.getChatsParticipant(person);
 		}
 		final Volunteer volunteer = new Volunteer(person);
 		serviceRegistry.injectServicesInto(volunteer);
 		volunteer.setPerson(person);
-		repositoryService.persist(volunteer);
+		repositoryService.persistAndFlush(volunteer);
+		//link ChatsParticipant to Volunteer
 		if (participant != null)
 			participant.setVolunteer(volunteer);
 		return volunteer;
@@ -231,7 +234,7 @@ public class VolunteersMenu {
 	@Programmatic
 	public Volunteer create(ChatsPerson chatsPerson) {
 		final Volunteer volunteer = new Volunteer(chatsPerson);
-		repositoryService.persist(volunteer);
+		repositoryService.persistAndFlush(volunteer);
 		return volunteer;
 	}
 
@@ -242,7 +245,7 @@ public class VolunteersMenu {
 		serviceRegistry.injectServicesInto(volunteer);
 		volunteer.setPerson(person);
 		volunteer.setRegion(region);
-		repositoryService.persist(volunteer);
+		repositoryService.persistAndFlush(volunteer);
 		return volunteer;
 	}
 
@@ -254,7 +257,7 @@ public class VolunteersMenu {
 		serviceRegistry.injectServicesInto(time);
 		time.setVolunteer(volunteer);
 		volunteer.addVolunteeredTime(time);
-		repositoryService.persist(time);
+		repositoryService.persistAndFlush(time);
 		return time;
 	}
 
@@ -267,9 +270,7 @@ public class VolunteersMenu {
 		serviceRegistry.injectServicesInto(time);
 		if (volunteer.getVolunteerRoles().size() == 1)
 			time.setVolunteerRole(volunteer.getVolunteerRoles().get(0));
-		//volunteer.addVolunteeredTime(time);
-		//activity.addVolunteeredTime(time);
-		repositoryService.persist(time);
+		repositoryService.persistAndFlush(time);
 		return time;
 	}
 
@@ -279,14 +280,13 @@ public class VolunteersMenu {
 	}
 
 	@Programmatic
-	public VolunteeredTimeForCalls createVolunteeredTimeForCalls(Volunteer volunteer, DateTime start,
-			DateTime end) {
+	public VolunteeredTimeForCalls createVolunteeredTimeForCalls(Volunteer volunteer, DateTime start, DateTime end) {
 		if (volunteer == null)
 			return null;
 		VolunteeredTimeForCalls time = new VolunteeredTimeForCalls(volunteer, start, end);
 		serviceRegistry.injectServicesInto(time);
-		//volunteer.addVolunteeredTime(time);
-		repositoryService.persist(time);
+		// volunteer.addVolunteeredTime(time);
+		repositoryService.persistAndFlush(time);
 		return time;
 	}
 
@@ -311,8 +311,8 @@ public class VolunteersMenu {
 	}
 
 	public List<VolunteeredTimeForActivity> listVolunteeredTimeForActivity(ActivityEvent activity) {
-		// TODO Auto-generated method stub
-		return null;
+		return repositoryService.allMatches(
+				new QueryDefault<>(VolunteeredTimeForActivity.class, "findForActivity", "activity", activity));
 	}
 
 	@Inject

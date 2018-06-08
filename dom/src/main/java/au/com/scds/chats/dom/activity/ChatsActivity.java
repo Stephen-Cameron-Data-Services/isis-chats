@@ -46,22 +46,7 @@ import lombok.Setter;
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "ChatsActivity")
-@Queries({
-		@Query(name = "findActivities", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.activity.ChatsActivity "),
-		@Query(name = "findActivityByName", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.activity.ChatsActivity WHERE name.indexOf(:name) >= 0 "),
-		@Query(name = "findActivitiesWithoutAttendanceList", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.activity.ChatsActivity WHERE attendances == null "),
-		@Query(name = "findAllFutureActivities", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.activity.ChatsActivity WHERE start > :currentDateTime "),
-		@Query(name = "findAllPastActivities", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.activity.ChatsActivity WHERE start <= :currentDateTime "),
-		@Query(name = "findActivitiesInPeriod", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.activity.ChatsActivity "
-				+ "WHERE start >= :start && start <= :endDateTime ORDER BY start DESC"), })
-
-public class ChatsActivity extends ActivityEvent implements ChatsEntity, Timestampable, HasAtPath {
+public class ChatsActivity extends ActivityEvent implements IChatsActivity, ChatsEntity, Timestampable, HasAtPath {
 
 	private ChatsActivity() {
 		super();

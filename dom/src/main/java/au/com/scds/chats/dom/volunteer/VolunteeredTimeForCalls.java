@@ -22,18 +22,22 @@ import javax.jdo.annotations.Discriminator;
 import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Queries;
+import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.annotation.DomainObject;
 import org.joda.time.DateTime;
 
+@DomainObject()
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
-@Discriminator(value = "CALLS")
-@DomainObject()
+@Discriminator(value = "VolunteeredTimeForCalls")
+@Queries({
+	@Query(name = "findForVolunteer", language = "JDOQL", value = "SELECT "
+			+ "FROM au.com.scds.chats.dom.volunteer.VolunteeredTimeForCalls WHERE volunteer == :volunteer ")})
 public class VolunteeredTimeForCalls extends VolunteeredTime {
 	
 	public VolunteeredTimeForCalls(Volunteer volunteer, DateTime start, DateTime end){
 		super(volunteer, start, end);
 	}
-
 }

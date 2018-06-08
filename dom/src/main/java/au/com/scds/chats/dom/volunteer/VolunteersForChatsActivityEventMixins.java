@@ -38,7 +38,7 @@ public class VolunteersForChatsActivityEventMixins {
 		}
 
 		@Inject
-		protected VolunteersMenu volunteersRepo;
+		public VolunteersMenu volunteersRepo;
 	}
 	
 	@Mixin
@@ -66,7 +66,7 @@ public class VolunteersForChatsActivityEventMixins {
 		}
 
 		@Inject
-		protected VolunteersMenu volunteersRepo;
+		public VolunteersMenu volunteersRepo;
 	}
 	
 	@Mixin
@@ -90,7 +90,7 @@ public class VolunteersForChatsActivityEventMixins {
 		}
 
 		@Inject
-		protected VolunteersMenu volunteersRepo;
+		public VolunteersMenu volunteersRepo;
 	}
 	
 	@Mixin
@@ -113,7 +113,7 @@ public class VolunteersForChatsActivityEventMixins {
 		}
 	    
 		@Inject
-		protected VolunteersMenu volunteersRepo;
+		public VolunteersMenu volunteersRepo;
 	}
 	
 	@Mixin
@@ -139,6 +139,6 @@ public class VolunteersForChatsActivityEventMixins {
 		}
 	    
 		@Inject
-		protected VolunteersMenu volunteersRepo;
+		public VolunteersMenu volunteersRepo;
 	}
 }

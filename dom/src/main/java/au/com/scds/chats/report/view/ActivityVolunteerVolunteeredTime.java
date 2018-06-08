@@ -158,14 +158,6 @@ public class ActivityVolunteerVolunteeredTime
 		this.cancelled = cancelled;
 	}
 
-	public String getParticipantStatus() {
-		return volunteerStatus;
-	}
-
-	public void setParticipantStatus(String volunteerStatus) {
-		this.volunteerStatus = volunteerStatus;
-	}
-
 	public Integer getMinutes() {
 		return minutes;
 	}

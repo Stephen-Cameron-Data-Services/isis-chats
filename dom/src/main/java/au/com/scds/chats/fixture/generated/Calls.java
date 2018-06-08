@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="allocation" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded"/&gt;
+ *         &lt;element name="call" type="{http://lifelinetasmania.org.au/chats}ChatsCall" maxOccurs="unbounded"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -38,41 +38,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "allocation"
+    "call"
 })
-@XmlRootElement(name = "allocations")
-public class Allocations {
+@XmlRootElement(name = "calls")
+public class Calls {
 
     @XmlElement(required = true)
-    protected List<String> allocation;
+    protected List<ChatsCall> call;
 
     /**
-     * Gets the value of the allocation property.
+     * Gets the value of the call property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the allocation property.
+     * This is why there is not a <CODE>set</CODE> method for the call property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getAllocation().add(newItem);
+     *    getCall().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * {@link ChatsCall }
      * 
      * 
      */
-    public List<String> getAllocation() {
-        if (allocation == null) {
-            allocation = new ArrayList<String>();
+    public List<ChatsCall> getCall() {
+        if (call == null) {
+            call = new ArrayList<ChatsCall>();
         }
-        return this.allocation;
+        return this.call;
     }
 
 }
