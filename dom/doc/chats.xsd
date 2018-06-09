@@ -61,7 +61,9 @@
 	<xsd:complexType name="ChatsParticipation">
 		<xsd:sequence>
 
-			<xsd:element name="participant" type="c:ChatsParticipant"></xsd:element>
+			<xsd:element name="participant" type="c:ChatsParticipant" maxOccurs="1" minOccurs="1"></xsd:element>
+			<xsd:element name="arrivingTransportType" type="c:TransportType" maxOccurs="1" minOccurs="0"></xsd:element>
+			<xsd:element name="departingTransportType" type="c:TransportType" maxOccurs="1" minOccurs="0"></xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -216,7 +218,9 @@
 
 	<xsd:complexType name="ChatsAttendance">
 		<xsd:sequence>
-			<xsd:element name="participant" type="c:ChatsParticipant"></xsd:element>
+			<xsd:element name="participant" type="c:ChatsParticipant" maxOccurs="1" minOccurs="1"></xsd:element>
+			<xsd:element name="arrivingTransportType" type="c:TransportType" maxOccurs="1" minOccurs="0"></xsd:element>
+			<xsd:element name="departingTransportType" type="c:TransportType" maxOccurs="1" minOccurs="0"></xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 

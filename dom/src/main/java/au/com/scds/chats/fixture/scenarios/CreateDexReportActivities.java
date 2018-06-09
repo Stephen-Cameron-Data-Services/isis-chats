@@ -31,9 +31,9 @@ import au.com.scds.chats.fixture.generated.ObjectFactory;
 import au.com.scds.chats.fixture.generated.VolunteeredTime;
 import lombok.Getter;
 
-public class CreateChatsActivities extends FixtureScript {
+public class CreateDexReportActivities extends FixtureScript {
 
-	public CreateChatsActivities() {
+	public CreateDexReportActivities() {
 		withDiscoverability(Discoverability.DISCOVERABLE);
 	}
 
@@ -45,7 +45,7 @@ public class CreateChatsActivities extends FixtureScript {
 
 		try {
 			// import object graph from XML
-			InputStream is = this.getClass().getResourceAsStream("/au/com/scds/chats/fixture/activities.xml");
+			InputStream is = this.getClass().getResourceAsStream("/au/com/scds/chats/fixture/dex_activities.xml");
 			JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			jaxbUnmarshaller.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
@@ -57,18 +57,7 @@ public class CreateChatsActivities extends FixtureScript {
 				activity.updateEndDateTime(new DateTime(_activity.getStart()));
 				au.com.scds.chats.dom.activity.ChatsParticipant participant = null;
 				au.com.scds.chats.dom.volunteer.Volunteer volunteer = null;
-				for (ChatsParticipation _participation : _activity.getParticipation()) {
-					ChatsPerson _person = _participation.getParticipant().getPerson();
-					participant = participantMenu.create(_person.getFirstname(), _person.getSurname(),
-							LocalDate.fromDateFields(_person.getDateOfBirth()), Sex.valueOf(_person.getSex()));
-					activity.addParticipation(participant);
-				}
-				for (ChatsParticipant _participant : _activity.getWaitListed()) {
-					ChatsPerson _person = _participant.getPerson();
-					participant = participantMenu.create(_person.getFirstname(), _person.getSurname(),
-							LocalDate.fromDateFields(_person.getDateOfBirth()), Sex.valueOf(_person.getSex()));
-					activity.addWaitListed(participant);
-				}
+				//create attendances only
 				for (ChatsAttendance _attendance : _activity.getAttendance()) {
 					ChatsPerson _person = _attendance.getParticipant().getPerson();
 					participant = participantMenu.create(_person.getFirstname(), _person.getSurname(),

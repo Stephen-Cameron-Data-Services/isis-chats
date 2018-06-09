@@ -35,9 +35,9 @@ import au.com.scds.chats.dom.activity.ChatsParticipant;
 import au.com.scds.chats.dom.activity.ChatsActivity;
 import au.com.scds.chats.dom.activity.ChatsAttendance;
 import au.com.scds.chats.dom.activity.ParticipantsMenu;
-import au.com.scds.chats.report.dex.DEXBulkUploadReport2;
-import au.com.scds.chats.report.dex.DEXBulkUploadReport2.ClientIdGenerationMode2;
-import au.com.scds.chats.report.dex.DEXBulkUploadReport2.DEXFileUploadWrapper2;
+import au.com.scds.chats.report.dex.DEXBulkUploadReport3;
+import au.com.scds.chats.report.dex.DEXBulkUploadReport3.ClientIdGenerationMode;
+import au.com.scds.chats.report.dex.DEXBulkUploadReport3.DEXFileUploadWrapper;
 import au.com.scds.chats.report.view.ActivityAttendanceSummary;
 import au.com.scds.chats.report.view.CallsDurationByParticipantAndMonth;
 import au.com.scds.chats.report.view.ParticipantActivityByMonthForDEX;
@@ -156,13 +156,13 @@ public class DEXReporting {
 	@Action
 	public Clob createDexReportForMonth(@ParameterLayout(named = "Year") Integer year,
 			@ParameterLayout(named = "Month") Month month, @ParameterLayout(named = "Region") String regionName,
-			@ParameterLayout(named = "Client Id Generation") ClientIdGenerationMode2 nameMode) throws Exception {
+			@ParameterLayout(named = "Client Id Generation") ClientIdGenerationMode nameMode) throws Exception {
 		System.out
 				.println("Starting DEX report: Year=" + year + ",Month=" + month.getValue() + ",region=" + regionName);
-		DEXBulkUploadReport2 report1 = new DEXBulkUploadReport2(repositoryService, isisJdoSupport, participantMenu,
+		DEXBulkUploadReport3 report1 = new DEXBulkUploadReport3(repositoryService, isisJdoSupport, participantMenu,
 				year, month.getValue(), regionName, nameMode);
 
-		DEXFileUploadWrapper2 wrapped = report1.build();
+		DEXFileUploadWrapper wrapped = report1.build();
 		if (wrapped.hasErrors()) {
 			String report = wrapped.getErrors();
 			Clob clob = new Clob("DexReportingERRORSFor" + regionName + "_" + month + "_" + year + ".txt", "text/plain",
@@ -184,18 +184,17 @@ public class DEXReporting {
 		return Arrays.asList("SOUTH", "NORTH", "NORTH-WEST");
 	}
 
-	public ClientIdGenerationMode2 default3CreateDexReportForMonth() {
-		return ClientIdGenerationMode2.SLK_KEY;
+	public ClientIdGenerationMode default3CreateDexReportForMonth() {
+		return ClientIdGenerationMode.SLK_KEY;
 	}
 
 	@Action
 	public List<ActivityAttendanceSummary> checkAttendanceDataForMonth(@ParameterLayout(named = "Year") Integer year,
 			@ParameterLayout(named = "Month") Month month, @ParameterLayout(named = "Region") String regionName) {
-		DateTime start = new DateTime(year, month.getValue(), 1, 0, 0).withTimeAtStartOfDay();
-		DateTime end = start.plusDays(start.dayOfMonth().getMaximumValue() - 1).withTime(23, 59, 59, 999);
-		return repositoryService.allMatches(
-				new QueryDefault<>(ActivityAttendanceSummary.class, "allActivityAttendanceSummaryForPeriodAndRegion",
-						"startDateTime", start.toDate(), "endDateTime", end.toDate(), "region", regionName));
+		
+		DEXBulkUploadReport3 report = new DEXBulkUploadReport3(repositoryService, isisJdoSupport, participantMenu,
+				year, month.getValue(), regionName, ClientIdGenerationMode.NAME_KEY);
+		return report.findAttendanceSummary();
 	}
 
 	public List<String> choices2CheckAttendanceDataForMonth() {

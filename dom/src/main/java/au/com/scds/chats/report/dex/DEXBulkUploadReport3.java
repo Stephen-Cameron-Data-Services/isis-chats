@@ -3,6 +3,7 @@ package au.com.scds.chats.report.dex;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import javax.jdo.PersistenceManager;
 import org.apache.isis.applib.query.QueryDefault;
 import org.apache.isis.applib.services.jdosupport.IsisJdoSupport;
 import org.apache.isis.applib.services.repository.RepositoryService;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.dex.reference.Disability;
@@ -31,6 +33,7 @@ import au.com.scds.chats.dom.activity.ChatsParentedActivity;
 import au.com.scds.chats.dom.activity.ChatsParticipant;
 import au.com.scds.chats.dom.activity.IChatsActivity;
 import au.com.scds.chats.dom.activity.ParticipantsMenu;
+import au.com.scds.chats.dom.call.ChatsScheduledCall;
 import au.com.scds.chats.report.dex.model.generated.Case;
 import au.com.scds.chats.report.dex.model.generated.CaseClient;
 import au.com.scds.chats.report.dex.model.generated.CaseClients;
@@ -61,14 +64,14 @@ public class DEXBulkUploadReport3 {
 	private final boolean IGNORE_AGE = false;
 
 	// flag for client id generation
-	public enum ClientIdGenerationMode2 {
+	public enum ClientIdGenerationMode {
 		NAME_KEY, SLK_KEY
 	}
 
 	// the XML report file object
 	private DEXFileUpload fileUpload;
 	// wrapper for the above
-	private DEXFileUploadWrapper3 fileUploadWrapper;
+	private DEXFileUploadWrapper fileUploadWrapper;
 
 	// xml report root node children
 	private Clients clients;
@@ -90,7 +93,7 @@ public class DEXBulkUploadReport3 {
 
 	// data variables etc.
 	private int outletActivityId;
-	private ClientIdGenerationMode2 mode;
+	private ClientIdGenerationMode mode;
 	private Boolean validationMode;
 
 	// utility
@@ -102,10 +105,10 @@ public class DEXBulkUploadReport3 {
 
 	public DEXBulkUploadReport3(RepositoryService repository, IsisJdoSupport isisJdoSupport,
 			ParticipantsMenu participants, Integer year, Integer month, String regionName,
-			ClientIdGenerationMode2 nameMode) {
+			ClientIdGenerationMode nameMode) {
 
 		this.fileUpload = new DEXFileUpload();
-		this.fileUploadWrapper = new DEXFileUploadWrapper3();
+		this.fileUploadWrapper = new DEXFileUploadWrapper();
 		this.fileUploadWrapper.setFileUpload(this.fileUpload);
 		this.clients = new Clients();
 		this.cases = new Cases();
@@ -158,7 +161,7 @@ public class DEXBulkUploadReport3 {
 
 	}
 
-	public DEXFileUploadWrapper3 build() throws Exception {
+	public DEXFileUploadWrapper build() throws Exception {
 
 		// start views replacements
 		// verion2 used db views, now these are replaced with local methods
@@ -330,11 +333,11 @@ public class DEXBulkUploadReport3 {
 		return fileUploadWrapper;
 	}
 
-	private List<ActivityAttendanceSummary> findAttendanceSummary() {
+	public List<ActivityAttendanceSummary> findAttendanceSummary() {
 
 		// get the ActivityEvents in the period
 		List<ActivityEvent> activities = repository.allMatches(new QueryDefault<>(ActivityEvent.class,
-				"findActivitiesBetween", "start", this.startDate, "end", this.endDate));
+				"findActivitiesBetween", "start", new DateTime(this.startDate), "end", new DateTime(this.endDate)));
 		// see if its in the right region
 		List<ActivityAttendanceSummary> summaries = new ArrayList<>();
 		ActivityAttendanceSummary summary = null;
@@ -361,6 +364,7 @@ public class DEXBulkUploadReport3 {
 								summary.setMinTimeDiff(diff);
 								summary.setMaxTimeDiff(diff);
 							} else {
+								summary.setHasStartAndEndDateTimesCount(summary.getHasStartAndEndDateTimesCount() + 1);
 								if (summary.getMinTimeDiff() > diff)
 									summary.setMinTimeDiff(diff);
 								if (summary.getMaxTimeDiff() < diff)
@@ -399,6 +403,7 @@ public class DEXBulkUploadReport3 {
 								summary.setHasArrivingAndDepartingTransportCount(0);
 							}
 						}
+						count++;
 					}
 				}
 			}
@@ -406,10 +411,10 @@ public class DEXBulkUploadReport3 {
 		return summaries;
 	}
 
-	private List<ActivityParticipantAttendance> findAttendances() {
+	public List<ActivityParticipantAttendance> findAttendances() {
 
 		List<ActivityEvent> activities = repository.allMatches(new QueryDefault<>(ActivityEvent.class,
-				"findActivitiesBetween", "start", this.startDate, "end", this.endDate));
+				"findActivitiesBetween", "start", new DateTime(this.startDate), "end", new DateTime(this.endDate)));
 		List<ActivityParticipantAttendance> summaries = new ArrayList<>();
 		ActivityParticipantAttendance summary = null;
 		ChatsParticipant participant = null;
@@ -447,10 +452,10 @@ public class DEXBulkUploadReport3 {
 		return summaries;
 	}
 
-	private List<ActivityVolunteerVolunteeredTime> findVolunteeredTimes() {
-		
+	public List<ActivityVolunteerVolunteeredTime> findVolunteeredTimes() {
+
 		List<ActivityEvent> activities = repository.allMatches(new QueryDefault<>(ActivityEvent.class,
-				"findActivitiesBetween", "start", this.startDate, "end", this.endDate));
+				"findActivitiesBetween", "start", new DateTime(this.startDate), "end", new DateTime(this.endDate)));
 		List<ActivityVolunteerVolunteeredTime> summaries = new ArrayList<>();
 		ActivityVolunteerVolunteeredTime summary = null;
 		Volunteer volunteer = null;
@@ -459,8 +464,8 @@ public class DEXBulkUploadReport3 {
 			if (a instanceof IChatsActivity) {
 				IChatsActivity activity = (IChatsActivity) a;
 				if (activity.getRegion().getName().equals(this.regionName)) {
-					List<VolunteeredTimeForActivity> times = repository.allMatches(new QueryDefault<>(VolunteeredTimeForActivity.class,
-							"findForActivity", "activity", a));
+					List<VolunteeredTimeForActivity> times = repository.allMatches(
+							new QueryDefault<>(VolunteeredTimeForActivity.class, "findForActivity", "activity", a));
 					for (VolunteeredTimeForActivity time : times) {
 						summary = new ActivityVolunteerVolunteeredTime();
 						summary.setActivityName(activity.getName());
@@ -486,26 +491,41 @@ public class DEXBulkUploadReport3 {
 		return summaries;
 	}
 
-	private List<CallsDurationByParticipantAndDayForDEX> findCalls() {
+	public List<CallsDurationByParticipantAndDayForDEX> findCalls() {
 
-		String temp = "CREATE VIEW CallsDurationByParticipantAndDayForDEX " + "( " + "  {this.personId}, "
-				+ "  {this.surname}, " + "  {this.firstName}, " + "  {this.birthDate}, " + "  {this.slk}, "
-				+ "  {this.ageAtDateOfCall}, " + "  {this.participantId}, " + "  {this.regionName}, "
-				+ "  {this.participantStatus}, " + "  {this.date}, " + "  {this.callMinutesTotal} " + ") AS "
-				+ "SELECT " + "  person.person_id AS personId, " + "  person.surname, "
-				+ "  person.firstname AS firstName, " + "  person.birthdate AS birthDate, " + "  person.slk, "
-				+ "  timestampdiff(year,person.birthdate,curdate()) AS ageAtDateOfCall, "
-				+ "  participant.participant_id AS participantId, " + "  participant.region_name AS regionName, "
-				+ "  participant.status AS participantStatus, " + "	 DATE(telephonecall.startdatetime) as date, "
-				+ "	 CAST(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime)) AS UNSIGNED) as callMinutesTotal "
-				+ "FROM " + "  telephonecall, " + "  participant, " + "  person " + "WHERE "
-				+ "  participant.participant_id = telephonecall.participant_participant_id AND "
-				+ "  person.person_id = participant.person_person_id " + "GROUP BY " + "  participant.participant_id, "
-				+ "  DATE(telephonecall.startdatetime);";
-
-		return repository.allMatches(new QueryDefault(CallsDurationByParticipantAndDayForDEX.class,
-				"allCallsDurationByParticipantAndDayAndRegion", "startDate", this.startDate, "endDate", this.endDate,
-				"region", this.regionName));
+		List<ChatsScheduledCall> calls = repository.allMatches(new QueryDefault<>(ChatsScheduledCall.class,
+				"findCallsInPeriod", "start", this.startDate, "end", this.endDate));
+		Map<String, CallsDurationByParticipantAndDayForDEX> summaries = new TreeMap<>();
+		List<CallsDurationByParticipantAndDayForDEX> summaries2 = new ArrayList<>();
+		CallsDurationByParticipantAndDayForDEX summary = null;
+		ChatsParticipant participant = null;
+		ChatsPerson person = null;
+		for (ChatsScheduledCall call : calls) {
+			if (call.getRegion().getName().equals(this.regionName)) {
+				// construct a key from participant.person.slk and date
+				if (call.getParticipant() != null) {
+					participant = call.getParticipant();
+					if (participant.getPerson() != null) {
+						person = participant.getPerson();
+						String key = person.getSlk() + call.getStart().toLocalDate().toString();
+						if (summaries.containsKey(key)) {
+							summary = new CallsDurationByParticipantAndDayForDEX();
+							// summary.setActivityName(activity.getName());
+							// summary.setActivityAbbreviatedName(activity.getCodeName());
+							summary.setRegionName(this.regionName);
+							summary.setCallMinutesTotal(call.getIntervalLengthInMinutes());
+							summaries.put(key, summary);
+							summaries2.add(summary);
+						} else {
+							summary = summaries.get(key);
+							summary.setCallMinutesTotal(
+									summary.getCallMinutesTotal() + call.getIntervalLengthInMinutes());
+						}
+					}
+				}
+			}
+		}
+		return summaries2;
 	}
 
 	public static Integer adjustTimeForTransport(final Integer minutesAttended, final String arrivingTransportType,
@@ -575,7 +595,7 @@ public class DEXBulkUploadReport3 {
 	private SessionWrapper buildNewSession(String sessionKey, ActivityParticipantAttendance a) {
 		Session session = new Session();
 		this.sessions.getSession().add(session);
-		if (this.mode.equals(ClientIdGenerationMode2.SLK_KEY)) {
+		if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
 			session.setSessionId(
 					(String.format("%1$-12s", Math.abs(sessionKey.hashCode())) + formatter.format(a.getStartDateTime()))
 							.replace(" ", "0"));
@@ -594,7 +614,7 @@ public class DEXBulkUploadReport3 {
 	private SessionWrapper buildNewSession(String sessionKey, ActivityVolunteerVolunteeredTime v) {
 		Session session = new Session();
 		this.sessions.getSession().add(session);
-		if (this.mode.equals(ClientIdGenerationMode2.SLK_KEY)) {
+		if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
 			session.setSessionId(
 					(String.format("%1$-12s", Math.abs(sessionKey.hashCode())) + formatter.format(v.getStartDateTime()))
 							.replace(" ", "0"));
@@ -615,7 +635,7 @@ public class DEXBulkUploadReport3 {
 		Session session = new Session();
 		this.sessions.getSession().add(session);
 		session.setCaseId(createCaseId("ChatsSocialCalls"));
-		if (this.mode.equals(ClientIdGenerationMode2.SLK_KEY)) {
+		if (this.mode.equals(ClientIdGenerationMode.SLK_KEY)) {
 			session.setSessionId(
 					(String.format("%1$-12s", Math.abs(sessionKey.hashCode())) + formatter.format(c.getDate()))
 							.replace(" ", "0"));
@@ -841,7 +861,7 @@ public class DEXBulkUploadReport3 {
 	}
 
 	/** Class used to report all Client/Participant errors to user **/
-	public class DEXFileUploadWrapper3 {
+	public class DEXFileUploadWrapper {
 
 		private DEXFileUpload fileUpload;
 		private List<String> errors = new ArrayList<>();

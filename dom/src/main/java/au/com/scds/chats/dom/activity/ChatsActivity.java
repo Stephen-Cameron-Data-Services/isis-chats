@@ -69,9 +69,10 @@ public class ChatsActivity extends ActivityEvent implements IChatsActivity, Chat
 	
 	@Override
 	protected ChatsAttendance createAttendance(Attendee attendee) {
-		ChatsAttendance participation = activityRepo.createAttendance(this, (ChatsParticipant) attendee);
-		this.getAttendancesSet().add(participation);
-		return participation;
+		ChatsAttendance attendance = activityRepo.createAttendance(this, (ChatsParticipant) attendee);
+		attendance.updateDatesAndTimesFromActivity();
+		this.getAttendancesSet().add(attendance);
+		return attendance;
 	}
 
 	@Action()
