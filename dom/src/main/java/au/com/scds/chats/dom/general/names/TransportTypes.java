@@ -74,6 +74,13 @@ public class TransportTypes {
 		return names;
 	}
 
+	public TransportType findOrCreateTransportType(String name) {
+		TransportType type = this.transportTypeForName(name);
+		if (type == null)
+			type = create(name);
+		return type;
+	}
+
 	@Programmatic
 	public TransportType transportTypeForName(String name) {
 		if (name == null)
@@ -85,7 +92,7 @@ public class TransportTypes {
 
 	@Inject
 	protected RepositoryService repositoryService;
-	
+
 	@Inject
 	protected ServiceRegistry2 serviceRegistry;
 }

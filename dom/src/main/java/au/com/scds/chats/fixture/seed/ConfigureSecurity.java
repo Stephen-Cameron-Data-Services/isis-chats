@@ -35,6 +35,8 @@ public class ConfigureSecurity extends FixtureScript {
 						"org.apache.isis.applib.services.hsqldb");
 				role.addPackage(ApplicationPermissionRule.VETO, ApplicationPermissionMode.VIEWING,
 						"au.com.scds.eventschedule.base.menu");
+				//role.addAction(ApplicationPermissionRule.VETO, ApplicationPermissionMode.VIEWING,
+				//		"org.isisaddons.module.security.app.user", "MeService", "me");
 			}
 			
 			//create user sven

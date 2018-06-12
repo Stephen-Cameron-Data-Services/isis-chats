@@ -50,22 +50,23 @@ public class ChatsParentedActivity extends ParentedActivityEvent implements ICha
 	}
 	
 	@Override
-	protected ChatsParticipation createParticipation(Attendee attendee) {
+	public ChatsParticipation createParticipation(Attendee attendee) {
 		ChatsParticipation participation = participantRepo.createParticipation(this, (ChatsParticipant) attendee);
 		this.getBookingSet().add(participation);
 		return participation;
 	}
 	
 	@Override
-	protected ChatsAttendance createAttendance(Attendee attendee) {
-		ChatsAttendance participation = activitiesRepo.createAttendance(this, (ChatsParticipant) attendee);
-		this.getAttendancesSet().add(participation);
-		return participation;
+	public ChatsAttendance createAttendance(Attendee attendee) {
+		ChatsAttendance attendance = activitiesRepo.createAttendance(this, (ChatsParticipant) attendee);
+		attendance.updateDatesAndTimesFromActivity();
+		this.getAttendancesSet().add(attendance);
+		return attendance;
 	}
 	
 	@Action()
 	@Override
-	protected void createAttendanceSetFromParticipantSet() {
+	public void createAttendanceSetFromParticipantSet() {
 		for (Participation participation : getParticipations()) {
 			Attendee attendee = participation.getAttendee();
 			if (!hasAttendance(attendee)) {

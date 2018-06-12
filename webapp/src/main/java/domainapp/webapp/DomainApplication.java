@@ -62,7 +62,7 @@ public class DomainApplication extends IsisWicketApplication {
         settings.setThemeProvider(new BootswatchThemeProvider(BootswatchTheme.Flatly));
     }
 
-    private static final String APP_NAME = "Simple App";
+    private static final String APP_NAME = "Chats App";
 
     @Override
     protected Module newIsisWicketModule() {

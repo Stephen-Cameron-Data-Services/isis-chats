@@ -280,7 +280,15 @@
 	</xsd:simpleType>
 
 	<xsd:simpleType name="TransportType">
-		<xsd:restriction base="xsd:string"></xsd:restriction>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Chats Share"></xsd:enumeration>
+			<xsd:enumeration value="Community Transport"></xsd:enumeration>
+			<xsd:enumeration value="Lifeline Vehicle"></xsd:enumeration>
+			<xsd:enumeration value="Outsource"></xsd:enumeration>
+			<xsd:enumeration value="Self Travel"></xsd:enumeration>
+			<xsd:enumeration value="Taxi"></xsd:enumeration>
+			<xsd:enumeration value="Unknown"></xsd:enumeration>
+		</xsd:restriction>
 	</xsd:simpleType>
 
 	<xsd:simpleType name="ContactType">

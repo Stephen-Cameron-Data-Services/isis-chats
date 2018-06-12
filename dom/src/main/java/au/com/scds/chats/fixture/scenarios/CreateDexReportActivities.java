@@ -18,14 +18,12 @@ import au.com.scds.chats.dom.activity.ActivityMenu;
 import au.com.scds.chats.dom.activity.ParticipantsMenu;
 import au.com.scds.chats.dom.general.Sex;
 import au.com.scds.chats.dom.general.names.Regions;
+import au.com.scds.chats.dom.general.names.TransportTypes;
 import au.com.scds.chats.dom.volunteer.VolunteersForChatsActivityEventMixins.ActivityEvent_addVolunteeredTime;
 import au.com.scds.chats.dom.volunteer.VolunteersMenu;
 import au.com.scds.chats.fixture.generated.Activities;
 import au.com.scds.chats.fixture.generated.ChatsActivity;
 import au.com.scds.chats.fixture.generated.ChatsAttendance;
-import au.com.scds.chats.fixture.generated.ChatsCall;
-import au.com.scds.chats.fixture.generated.ChatsParticipant;
-import au.com.scds.chats.fixture.generated.ChatsParticipation;
 import au.com.scds.chats.fixture.generated.ChatsPerson;
 import au.com.scds.chats.fixture.generated.ObjectFactory;
 import au.com.scds.chats.fixture.generated.VolunteeredTime;
@@ -57,12 +55,16 @@ public class CreateDexReportActivities extends FixtureScript {
 				activity.updateEndDateTime(new DateTime(_activity.getStart()));
 				au.com.scds.chats.dom.activity.ChatsParticipant participant = null;
 				au.com.scds.chats.dom.volunteer.Volunteer volunteer = null;
-				//create attendances only
+				// create attendances only
 				for (ChatsAttendance _attendance : _activity.getAttendance()) {
 					ChatsPerson _person = _attendance.getParticipant().getPerson();
 					participant = participantMenu.create(_person.getFirstname(), _person.getSurname(),
 							LocalDate.fromDateFields(_person.getDateOfBirth()), Sex.valueOf(_person.getSex()));
-					activity.addAttendance(participant);
+					au.com.scds.chats.dom.activity.ChatsAttendance att = activity.createAttendance(participant);
+					att.setArrivingTransportType(
+							transportTypes.transportTypeForName(_attendance.getArrivingTransportType()));
+					att.setDepartingTransportType(
+							transportTypes.transportTypeForName(_attendance.getDepartingTransportType()));
 				}
 				ActivityEvent_addVolunteeredTime mixin = new ActivityEvent_addVolunteeredTime(activity);
 				mixin.volunteersRepo = volunteerMenu;
@@ -91,6 +93,9 @@ public class CreateDexReportActivities extends FixtureScript {
 
 	@Inject
 	VolunteersMenu volunteerMenu;
+
+	@Inject
+	TransportTypes transportTypes;
 
 	@Inject
 	Regions regions;

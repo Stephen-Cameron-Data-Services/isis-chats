@@ -1,4 +1,4 @@
-package au.com.scds.chats.fixture.scenarios;
+package au.com.scds.chats.fixture.seed;
 
 import java.io.InputStream;
 

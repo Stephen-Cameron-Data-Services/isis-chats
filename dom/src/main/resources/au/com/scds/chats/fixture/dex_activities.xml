@@ -17,8 +17,8 @@
 					<c:region>SOUTH</c:region>
 				</c:person>
 			</c:participant>
-			<c:arrivingTransportType>c:arrivingTransportType</c:arrivingTransportType>
-			<c:departingTransportType>c:departingTransportType</c:departingTransportType>
+			<c:arrivingTransportType>Lifeline Vehicle</c:arrivingTransportType>
+			<c:departingTransportType>Lifeline Vehicle</c:departingTransportType>
 		</c:attendance>
 		<c:attendance>
 			<c:participant>
@@ -30,8 +30,8 @@
 					<c:region>SOUTH</c:region>
 				</c:person>
 			</c:participant>
-			<c:arrivingTransportType>c:arrivingTransportType</c:arrivingTransportType>
-			<c:departingTransportType>c:departingTransportType</c:departingTransportType>
+			<c:arrivingTransportType>Lifeline Vehicle</c:arrivingTransportType>
+			<c:departingTransportType>Lifeline Vehicle</c:departingTransportType>
 		</c:attendance>
 		<c:attendance>
 			<c:participant>
@@ -43,8 +43,8 @@
 					<c:region>SOUTH</c:region>
 				</c:person>
 			</c:participant>
-			<c:arrivingTransportType>c:arrivingTransportType</c:arrivingTransportType>
-			<c:departingTransportType>c:departingTransportType</c:departingTransportType>
+			<c:arrivingTransportType>Lifeline Vehicle</c:arrivingTransportType>
+			<c:departingTransportType>Lifeline Vehicle</c:departingTransportType>
 		</c:attendance>
 		<c:volunteeredTime>
 			<c:volunteer>
@@ -103,8 +103,8 @@
 					<c:region>SOUTH</c:region>
 				</c:person>
 			</c:participant>
-			<c:arrivingTransportType>c:arrivingTransportType</c:arrivingTransportType>
-			<c:departingTransportType>c:departingTransportType</c:departingTransportType>
+			<c:arrivingTransportType>Lifeline Vehicle</c:arrivingTransportType>
+			<c:departingTransportType>Lifeline Vehicle</c:departingTransportType>
 		</c:attendance>
 		<c:attendance>
 			<c:participant>
@@ -116,8 +116,7 @@
 					<c:region>SOUTH</c:region>
 				</c:person>
 			</c:participant>
-			<c:arrivingTransportType>c:arrivingTransportType</c:arrivingTransportType>
-			<c:departingTransportType>c:departingTransportType</c:departingTransportType>
+			<c:departingTransportType>Lifeline Vehicle</c:departingTransportType>
 		</c:attendance>
 		<c:attendance>
 			<c:participant>
@@ -129,8 +128,7 @@
 					<c:region>SOUTH</c:region>
 				</c:person>
 			</c:participant>
-			<c:arrivingTransportType>c:arrivingTransportType</c:arrivingTransportType>
-			<c:departingTransportType>c:departingTransportType</c:departingTransportType>
+			<c:arrivingTransportType>Lifeline Vehicle</c:arrivingTransportType>
 		</c:attendance>
 		<c:volunteeredTime>
 			<c:volunteer>

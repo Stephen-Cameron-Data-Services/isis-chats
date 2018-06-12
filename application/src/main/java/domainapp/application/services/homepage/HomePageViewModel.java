@@ -18,30 +18,34 @@
  */
 package domainapp.application.services.homepage;
 
-import java.util.List;
-
 import org.apache.isis.applib.annotation.DomainObject;
-import org.apache.isis.applib.annotation.Nature;
-import org.apache.isis.applib.services.i18n.TranslatableString;
+import org.apache.isis.applib.annotation.ViewModel;
 
-//import domainapp.modules.simple.dom.impl.SimpleObject;
-//import domainapp.modules.simple.dom.impl.SimpleObjects;
-
-@DomainObject(
-        nature = Nature.VIEW_MODEL,
-        objectType = "domainapp.application.services.homepage.HomePageViewModel"
-)
+@ViewModel
+@DomainObject(objectType="HomePage")
 public class HomePageViewModel {
 
-    public TranslatableString title() {
-        //return TranslatableString.tr("{num} objects", "num", getObjects().size());
-    	return TranslatableString.tr("{num} objects", "num", 1000000);
-    }
+	// region > title
+	public String title() {
+		return "Chats Application";
+		//noteRepository.allNotes().size() + " notes";
+	}
 
-   /* public List<SimpleObject> getObjects() {
-        return simpleObjects.listAll();
-    }
+	// endregion
 
-    @javax.inject.Inject
-    SimpleObjects simpleObjects;*/
+	// region > object (collection)
+	//@HomePage
+	//@CollectionLayout(render = RenderType.EAGERLY, paged = 10)
+	//public List<Note> getNotes() {
+	//	return noteRepository.allNotes();
+	//}
+
+	// endregion
+
+	// region > injected services
+
+	//@javax.inject.Inject
+	//NoteRepository noteRepository;
+
+	// endregion
 }

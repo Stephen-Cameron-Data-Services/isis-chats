@@ -66,14 +66,14 @@ implements ChatsEntity, Timestampable, HasAtPath {
 	}
 	
 	@Override
-	protected ChatsParticipation createParticipation(Attendee attendee) {
+	public ChatsParticipation createParticipation(Attendee attendee) {
 		ChatsParticipation participation = participantRepo.createParticipation(this, (ChatsParticipant) attendee);
 		this.getBookingSet().add(participation);
 		return participation;
 	}
 	
 	@Override
-	protected ChatsAttendance createAttendance(Attendee attendee) {
+	public ChatsAttendance createAttendance(Attendee attendee) {
 		ChatsAttendance participation = activitiesRepo.createAttendance(this, (ChatsParticipant) attendee);
 		this.getAttendancesSet().add(participation);
 		return participation;
