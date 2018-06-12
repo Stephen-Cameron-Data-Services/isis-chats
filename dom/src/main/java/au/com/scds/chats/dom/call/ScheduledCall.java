@@ -18,17 +18,25 @@
  */
 package au.com.scds.chats.dom.call;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.jdo.annotations.*;
 
+import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.services.clock.ClockService;
 import org.apache.isis.applib.util.ObjectContracts;
+import org.incode.module.note.dom.api.notable.Notable;
+//import org.incode.module.note.dom.api.notable.Notable;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.Period;
 
+import au.com.scds.chats.dom.StartAndFinishDateTime;
+import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.VolunteerRole;
 
@@ -43,8 +51,7 @@ import au.com.scds.chats.dom.volunteer.VolunteerRole;
  * 
  * @author stevec
  */
-@PersistenceCapable()
-@Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Discriminator(value = "SCHEDULED")
 @Queries({
 		@Query(name = "findScheduledCalls", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.ScheduledCall "),
@@ -52,14 +59,24 @@ import au.com.scds.chats.dom.volunteer.VolunteerRole;
 		@Query(name = "findScheduledCallsByParticipant", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.ScheduledCall WHERE participant == :participant ORDER BY startDateTime DESC"),
 		@Query(name = "findScheduledCallsByParticipantAndVolunteer", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.ScheduledCall WHERE participant == :participant && allocatedVolunteer == :volunteer "),
 		@Query(name = "findCompletedScheduledCallsInPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.call.ScheduledCall WHERE isCompleted == true && startDateTime >= :startDateTime && startDateTime <= :endDateTime && region == :region ORDER BY startDateTime ASC"), })
-@DomainObject()
-public class ScheduledCall extends Call implements Comparable<ScheduledCall> {
+@DomainObject(objectType = "SCHEDULED_CALL")
+@DomainObjectLayout(bookmarking = BookmarkPolicy.AS_ROOT)
+@MemberGroupLayout(columnSpans = { 6, 6, 0, 12 }, left = { "General" }, middle = { "Admin" })
+public class ScheduledCall extends Call implements Comparable<ScheduledCall>, Notable {
 
 	private static final String CALLS_VOLUNTEER = "Calls Volunteer";
 
 	private Volunteer allocatedVolunteer;
 	private CalendarDayCallSchedule callSchedule;
 	private DateTime scheduledDateTime;
+	// private ScheduledCallStatus status; //not needed
+
+	public ScheduledCall() {
+	}
+
+	public ScheduledCall(DomainObjectContainer container) {
+		this.container = container;
+	}
 
 	public String title() {
 		return "Call to: " + getParticipant().getFullName();
@@ -101,6 +118,29 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> {
 		this.callSchedule = callSchedule;
 	}
 
+	/*
+	 * @Property(editing = Editing.DISABLED)
+	 * 
+	 * @Column(allowsNull = "false") public ScheduledCallStatus getStatus() {
+	 * return status; }
+	 * 
+	 * public void setStatus(ScheduledCallStatus status) { this.status = status;
+	 * }
+	 */
+
+	/*
+	 * @Action() public ScheduledCall
+	 * updateStatus(@Parameter(optionality=Optionality.MANDATORY)
+	 * ScheduledCallStatus status) { if (status != null) setStatus(status);
+	 * return this; }
+	 * 
+	 * public List<ScheduledCallStatus> choices0UpdateStatus() {
+	 * List<ScheduledCallStatus> list = new ArrayList<>(); for
+	 * (ScheduledCallStatus status : ScheduledCallStatus.values()) { if
+	 * (getStatus() != null) { if (getStatus() != status) list.add(status); }
+	 * else { list.add(status); } } return list; }
+	 */
+
 	@Action()
 	public ScheduledCall startCall() {
 		if (getStartDateTime() == null)
@@ -119,6 +159,7 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> {
 	public ScheduledCall endCall() {
 		if (getStartDateTime() != null && getEndDateTime() == null) {
 			setEndDateTime(trimSeconds(clockService.nowAsDateTime()));
+			// updateStatus(ScheduledCallStatus.Completed);
 		}
 		return this;
 	}
@@ -157,6 +198,8 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> {
 	}
 
 	public String disableMoveCall() {
+		// if(getStatus() != null &&
+		// getStatus().equals(ScheduledCallStatus.Completed))
 		if (getIsCompleted())
 			return "Cannot move a Scheduled Call with status of Completed ";
 		else
@@ -187,4 +230,8 @@ public class ScheduledCall extends Call implements Comparable<ScheduledCall> {
 
 	@Inject()
 	ClockService clockService;
+
+	@Inject()
+	DomainObjectContainer container;
+
 }

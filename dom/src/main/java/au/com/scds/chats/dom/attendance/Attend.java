@@ -45,9 +45,7 @@ import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 import org.apache.isis.applib.annotation.Where;
 import org.apache.isis.applib.services.actinvoc.ActionInvocationContext;
-import org.apache.isis.applib.services.message.MessageService;
-import org.apache.isis.applib.services.registry.ServiceRegistry2;
-import org.apache.isis.applib.services.repository.RepositoryService;
+
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Period;
@@ -61,7 +59,7 @@ import au.com.scds.chats.dom.general.names.TransportTypes;
 import au.com.scds.chats.dom.participant.Participant;
 
 @DomainObject()
-@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="attend")
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Queries({
 		@Query(name = "findAttendsByActivityName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.Attend WHERE activity.name.indexOf(:name) >= 0 ORDER BY activity.startDateTime DESC"),
 		@Query(name = "findAttendsInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.attendance.Attend WHERE activity.startDateTime >= :startDateTime && activity.startDateTime <= :endDateTime ORDER BY activity.startDateTime DESC"),
@@ -75,6 +73,13 @@ public class Attend extends StartAndFinishDateTime implements Comparable<Attend>
 	private TransportType arrivingTransportType;
 	private TransportType departingTransportType;
 
+	public Attend() {
+		super();
+	}
+
+	public Attend(DomainObjectContainer container) {
+		this.container = container;
+	}
 
 	public String title() {
 		return getParticipant().getFullName();

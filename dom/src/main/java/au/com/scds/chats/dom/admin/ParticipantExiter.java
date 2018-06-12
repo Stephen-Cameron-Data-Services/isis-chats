@@ -1,15 +1,13 @@
 package au.com.scds.chats.dom.admin;
 
 import org.apache.isis.applib.annotation.Action;
-import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.InvokeOn;
-import org.apache.isis.applib.annotation.Nature;
 import org.apache.isis.applib.annotation.ViewModel;
 
 import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.dom.participant.Participant;
 
-@DomainObject(objectType = "chats.participantexiter", nature=Nature.VIEW_MODEL)
+@ViewModel
 public class ParticipantExiter{
 	
 	private Participant participant;

@@ -36,9 +36,6 @@ import javax.inject.Inject;
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.services.i18n.TranslatableString;
-import org.apache.isis.applib.services.message.MessageService;
-import org.apache.isis.applib.services.registry.ServiceRegistry2;
-import org.apache.isis.applib.services.repository.RepositoryService;
 import org.apache.isis.applib.util.ObjectContracts;
 
 import com.google.common.collect.ComparisonChain;
@@ -60,6 +57,7 @@ import au.com.scds.chats.dom.general.names.Regions;
 import au.com.scds.chats.dom.general.names.TransportTypes;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
+import au.com.scds.chats.dom.participant.ParticipantIdentity;
 import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.participant.Participation;
 import au.com.scds.chats.dom.participant.WaitListedParticipant;
@@ -67,21 +65,29 @@ import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.VolunteeredTimeForActivity;
 import au.com.scds.chats.dom.volunteer.Volunteers;
 
-@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table = "activity" )
+@PersistenceCapable(table = "activity", identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
+// @Unique(name = "Activity_UNQ", members = { "name", "startDateTime", "region"
+// })
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "classifier", value = "_ACTIVITY")
 @Queries({
 		@Query(name = "findActivityByUpperCaseName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.Activity WHERE name.trim().toUpperCase() == :name") })
 public abstract class Activity extends StartAndFinishDateTime implements /* Locatable, */ Comparable<Activity> {
 
-	private Long oldId;
+	private Long oldId; // id copied from old system
 	protected String name;
 	protected String abbreviatedName;
+	// protected Provider provider;
 	protected ActivityType activityType;
+	// protected DateTime approximateEndDateTime;
+	// protected Long copiedFromActivityId;
 	protected String costForParticipant;
 	protected Integer cutoffLimit;
 	protected String description;
+	// protected DateTime startDateTime;
 	protected Address address;
+	// protected Boolean isRestricted;
+	// protected Long scheduleId;
 	@Persistent(mappedBy = "activity")
 	protected SortedSet<Participation> participations = new TreeSet<>();
 	@Persistent(mappedBy = "activity")
@@ -93,6 +99,16 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 	private static DateTimeFormatter titleFormatter = DateTimeFormat.forPattern("dd-MMM-yyyy");
 
 	public Activity() {
+	}
+
+	public Activity(DomainObjectContainer container, Activities activities, Participants participants,
+			Volunteers volunteers, ActivityTypes activityTypes, Locations locations) {
+		this.container = container;
+		this.activitiesRepo = activities;
+		this.participantsRepo = participants;
+		this.volunteersRepo = volunteers;
+		this.activityTypesRepo = activityTypes;
+		this.locationsRepo = locations;
 	}
 
 	public String title() {
@@ -110,6 +126,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 	}
 
 	@Property(hidden = Where.NOWHERE)
+	// @MemberOrder(sequence = "1")
 	@Column(allowsNull = "false")
 	public String getName() {
 		return name;
@@ -172,6 +189,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Activity Type")
+	// @MemberOrder(sequence = "5")
 	@NotPersistent
 	public String getActivityTypeName() {
 		return getActivityType() != null ? this.getActivityType().getName() : null;
@@ -185,9 +203,22 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 		return activityTypesRepo.allNames();
 	}
 
-
+	/*
+	 * @Property(hidden = Where.ALL_TABLES)
+	 * 
+	 * @PropertyLayout(named = "Approx. End Date & Time")
+	 * // @MemberOrder(sequence = "6")
+	 * 
+	 * @Column(allowsNull = "true") public DateTime getApproximateEndDateTime()
+	 * { return approximateEndDateTime; }
+	 * 
+	 * public void setApproximateEndDateTime(final DateTime
+	 * approximateEndDateTime) { this.approximateEndDateTime =
+	 * approximateEndDateTime; }
+	 */
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Cost For Participant")
+	// @MemberOrder(sequence = "8")
 	@Column(allowsNull = "true")
 	public String getCostForParticipant() {
 		return costForParticipant;
@@ -215,6 +246,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 	}
 
 	@Property(hidden = Where.ALL_TABLES, maxLength = 1000)
+	// @MemberOrder(sequence = "9")
 	@Column(allowsNull = "true")
 	public String getDescription() {
 		return description;
@@ -251,6 +283,19 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 		return getDescription();
 	}
 
+	/*
+	 * public String default3UpdateGeneral() { return (getActivityType() !=
+	 * null) ? getActivityType().getName() : null; }
+	 * 
+	 * public List<String> choices3UpdateGeneral() { return
+	 * activityTypesRepo.allNames(); }
+	 * 
+	 * public DateTime default4UpdateGeneral() { return getStartDateTime(); }
+	 * 
+	 * public DateTime default5UpdateGeneral() { if (getApproximateEndDateTime()
+	 * != null) return getApproximateEndDateTime(); else return
+	 * getStartDateTime(); }
+	 */
 	public String default3UpdateGeneral() {
 		return getCostForParticipant();
 	}
@@ -274,6 +319,8 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 	}
 
 	@Property(hidden = Where.EVERYWHERE)
+	// @PropertyLayout(hidden = Where.ALL_TABLES)
+	// //@MemberOrder(name = "Location", sequence = "11")
 	@Column(allowsNull = "true")
 	public Address getAddress() {
 		return address;
@@ -330,6 +377,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 
 	@Property()
 	@PropertyLayout(named = "Location Name")
+	// @MemberOrder(name = "Location", sequence = "1")
 	@NotPersistent
 	public String getAddressLocationName() {
 		return (getAddress() != null) ? getAddress().getName() : null;
@@ -337,6 +385,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 
 	@Property()
 	@PropertyLayout(named = "Address", hidden = Where.ALL_TABLES)
+	// @MemberOrder(name = "Location", sequence = "2")
 	@NotPersistent
 	public String getStreetAddress() {
 		return (getAddress() != null) ? getAddress().getFullStreetAddress() : null;
@@ -344,6 +393,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 
 	@Property(hidden = Where.ALL_TABLES)
 	@PropertyLayout(named = "Lat-Long")
+	// @MemberOrder(name = "Location", sequence = "3")
 	@NotPersistent
 	public org.isisaddons.wicket.gmap3.cpt.applib.Location getLocation() {
 		return (getAddress() != null) ? getAddress().getLocation() : null;
@@ -459,6 +509,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 	}
 
 	@Property()
+	// @MemberOrder(sequence = "100")
 	@CollectionLayout(named = "Participation", render = RenderType.EAGERLY)
 	public SortedSet<Participation> getParticipations() {
 		return participations;
@@ -520,7 +571,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 		if (!hasParticipant(participant)) {
 			participantsRepo.createParticipation(this, participant);
 		} else {
-			messageService.informUser("A Participant (" + participant.getFullName()
+			container.informUser("A Participant (" + participant.getFullName()
 					+ ") is already participating or wait-listed in this Activity");
 		}
 		return;
@@ -528,9 +579,13 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 
 	@Action()
 	@ActionLayout(named = "Add")
-	public Activity addParticipant(@ParameterLayout(named = "Participant") final Participant participant,
+	// @MemberOrder(name = "participations", sequence = "1")
+	public Activity addParticipant(@ParameterLayout(named = "Participant") final ParticipantIdentity identity,
 			@ParameterLayout(named = "Arriving Transport") @Parameter(optionality = Optionality.OPTIONAL) String arrivingTransportTypeName,
 			@ParameterLayout(named = "Departing Transport") @Parameter(optionality = Optionality.OPTIONAL) String departingTransportTypeName) {
+		if (identity == null)
+			return this;
+		Participant participant = participantsRepo.getParticipant(identity);
 		if (participant != null) {
 			if (!hasParticipant(participant)) {
 				Participation participation = participantsRepo.createParticipation(this, participant);
@@ -539,15 +594,15 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 				if (departingTransportTypeName != null)
 					participation.setDepartingTransportTypeName(departingTransportTypeName);
 			} else {
-				messageService.informUser("A Participant (" + participant.getFullName()
+				container.informUser("A Participant (" + participant.getFullName()
 						+ ") is already participating or wait-listed in this Activity");
 			}
 		}
 		return this;
 	}
 
-	public List<Participant> autoComplete0AddParticipant(@MinLength(3) String search) {
-		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All, search);
+	public List<ParticipantIdentity> choices0AddParticipant() {
+		return participantsRepo.listActiveParticipantIdentities(AgeGroup.All);
 	}
 
 	public List<String> choices1AddParticipant() {
@@ -568,6 +623,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 
 	@Action()
 	@ActionLayout(named = "Add New")
+	// @MemberOrder(name = "participations", sequence = "2")
 	public Activity addNewParticipant(final @ParameterLayout(named = "First name") String firstname,
 			final @ParameterLayout(named = "Surname") String surname,
 			final @ParameterLayout(named = "Date of Birth") LocalDate dob,
@@ -586,6 +642,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 
 	@Action()
 	@ActionLayout(named = "Remove")
+	// @MemberOrder(name = "participations", sequence = "3")
 	public Activity removeParticipant(final Participant participant) {
 		if (participant == null)
 			return this;
@@ -616,7 +673,7 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 			WaitListedParticipant waitListed = participantsRepo.createWaitListedParticipant(this, participant);
 			getWaitListed().add(waitListed);
 		} else {
-			messageService.informUser("A Participant (" + participant.getFullName()
+			container.informUser("A Participant (" + participant.getFullName()
 					+ ") is already participating or wait-listed in this Activity");
 		}
 		return this;
@@ -683,6 +740,8 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 		getVolunteeredTimes().add(time);
 	}
 
+	@Inject
+	protected DomainObjectContainer container;
 
 	@Inject
 	protected Participants participantsRepo;
@@ -704,14 +763,5 @@ public abstract class Activity extends StartAndFinishDateTime implements /* Loca
 
 	@Inject
 	protected TransportTypes transportTypes;
-	
-	@Inject
-	protected RepositoryService repositoryService;
-	
-	@Inject
-	protected ServiceRegistry2 serviceRegistry;
-	
-	@Inject
-	protected MessageService messageService;
 
 }

@@ -28,7 +28,7 @@ import au.com.scds.chats.dom.participant.Participants;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.VolunteerRoles;
 
-@DomainService(objectType = "chats.callsvolunteers", nature = NatureOfService.VIEW_MENU_ONLY)
+@DomainService(nature=NatureOfService.VIEW_MENU_ONLY)
 @DomainServiceLayout(menuOrder = "30")
 public class CallsVolunteers {
 
@@ -36,25 +36,24 @@ public class CallsVolunteers {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	public Volunteer findVolunteer() {
-		return container.firstMatch(new QueryDefault<>(Volunteer.class, "findVolunteerByApplicationUsername",
-				"username", userService.getUser().getName()));
+		return container.firstMatch(new QueryDefault<>(Volunteer.class, "findVolunteerByApplicationUsername", "username", userService.getUser().getName()));
 	}
-
+	
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
-	public CalendarDayCallSchedule createSchedule() {
+	public CalendarDayCallSchedule createSchedule(){
 		Volunteer volunteer = findVolunteer();
-		if (volunteer != null) {
-			return volunteer.buildSchedule(clockService.now());
-		} else {
+		if(volunteer != null){
+			return volunteer.buildSchedule(clockService.now());	
+		}else{
 			return null;
 		}
 	}
-
+	
 	@Inject
 	protected DomainObjectContainer container;
-
+	
 	@Inject()
 	protected ClockService clockService;
 

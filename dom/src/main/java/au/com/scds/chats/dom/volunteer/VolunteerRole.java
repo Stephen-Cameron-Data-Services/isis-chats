@@ -20,14 +20,12 @@ package au.com.scds.chats.dom.volunteer;
 
 import javax.jdo.annotations.*;
 
-import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.PropertyLayout;
 
 import au.com.scds.chats.dom.general.names.ClassificationValue;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION, schema="chats", table="volunteerrole")
-@Inheritance(strategy=InheritanceStrategy.NEW_TABLE)
+@PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Queries({
 	@Query(name = "findVolunteerRoleByName", language = "JDOQL", value = "SELECT "
 			+ "FROM au.com.scds.chats.dom.volunteer.VolunteerRole "
@@ -35,7 +33,6 @@ import au.com.scds.chats.dom.general.names.ClassificationValue;
 	@Query(name = "findAllVolunteerRoles", language = "JDOQL", value = "SELECT "
 			+ "FROM  au.com.scds.chats.dom.volunteer.VolunteerRole "
 			+ "ORDER BY name")})
-@DomainObject()
 public class VolunteerRole extends ClassificationValue{
 
 	public VolunteerRole() {

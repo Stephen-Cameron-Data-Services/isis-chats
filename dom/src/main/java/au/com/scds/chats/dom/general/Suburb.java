@@ -25,7 +25,7 @@ import org.apache.isis.applib.annotation.PropertyLayout;
 
 import au.com.scds.chats.dom.general.names.ClassificationValue;
 
-@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="suburb")
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Unique(name = "Suburb_UNQ", members = { "name", "postcode" })
 @Queries({
 		@Query(name = "findSuburbByNameAndPostcode", language = "JDOQL", value = "SELECT "

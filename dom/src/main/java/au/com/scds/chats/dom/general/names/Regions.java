@@ -20,23 +20,20 @@ package au.com.scds.chats.dom.general.names;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
-
 import org.apache.isis.applib.annotation.*;
+import org.apache.isis.applib.DomainObjectContainer;
+import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
-import org.apache.isis.applib.services.message.MessageService;
-import org.apache.isis.applib.services.registry.ServiceRegistry2;
-import org.apache.isis.applib.services.repository.RepositoryService;
 
 @DomainService(nature = NatureOfService.DOMAIN,repositoryFor = Region.class)
+//@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.8")
 public class Regions {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	public List<Region> listAllRegions() {
-		List<Region> list = repositoryService.allMatches(new QueryDefault<>(Region.class, "findAllRegions"));
+		List<Region> list = container.allMatches(new QueryDefault<>(Region.class, "findAllRegions"));
 		return list;
 	}
 
@@ -44,10 +41,10 @@ public class Regions {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
 	public Region createRegion(final @ParameterLayout(named = "Region Name") String name) {
-		final Region obj = new Region();
-		serviceRegistry.injectServicesInto(obj);
+		final Region obj = container.newTransientInstance(Region.class);
 		obj.setName(name);
-		repositoryService.persist(obj);
+		container.persistIfNotAlready(obj);
+		container.flush();
 		return obj;
 	}
 
@@ -71,7 +68,7 @@ public class Regions {
 		if (name == null)
 			return null;
 		else
-			return repositoryService.firstMatch(new QueryDefault<>(Region.class, "findRegionByName", "name", name));
+			return container.firstMatch(new QueryDefault<>(Region.class, "findRegionByName", "name", name));
 	}
 
 	@Programmatic
@@ -86,12 +83,7 @@ public class Regions {
 	}
 
 	@javax.inject.Inject
-	protected RepositoryService repositoryService;
-	
-	@Inject
-	protected ServiceRegistry2 serviceRegistry;
-	
-	@Inject
-	protected MessageService messageService;
+	DomainObjectContainer container;
+
 
 }

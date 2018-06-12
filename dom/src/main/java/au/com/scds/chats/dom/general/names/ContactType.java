@@ -24,8 +24,7 @@ import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.PropertyLayout;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION, schema="chats", table="contacttype")
-@Inheritance(strategy=InheritanceStrategy.NEW_TABLE)
+@PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Queries({
 	@Query(name = "findContactTypeByName", language = "JDOQL", value = "SELECT "
 			+ "FROM au.com.scds.chats.dom.general.names.ContactType "

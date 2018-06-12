@@ -9,6 +9,7 @@ import javax.jdo.annotations.Queries;
 import javax.jdo.annotations.Query;
 
 import org.apache.isis.applib.annotation.DomainObject;
+import org.incode.module.note.dom.api.notable.Notable;
 
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)

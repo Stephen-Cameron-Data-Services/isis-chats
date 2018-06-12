@@ -24,7 +24,8 @@ import java.util.Map;
 import org.apache.isis.applib.annotation.DomainService;
 import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.Programmatic;
-import org.incode.module.note.dom.spi.CalendarNameRepository;
+import org.incode.module.note.dom.api.notable.Notable;
+import org.incode.module.note.dom.spi.calendarname.CalendarNameRepository;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEventable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -53,7 +54,7 @@ public class CalendarNameRepositoryForChats implements CalendarNameRepository {
 	}
 
 	@Override
-	public Collection<String> calendarNamesFor(Object notable) {
+	public Collection<String> calendarNamesFor(Notable notable) {
 		return namesByClass.get(notable.getClass());
 	}
 	
@@ -61,5 +62,4 @@ public class CalendarNameRepositoryForChats implements CalendarNameRepository {
 		List<String> names = namesByClass.get(eventable.getClass());
 		return (names != null && names.get(0) != null) ? names.get(0) : null ;
 	}
-
 }

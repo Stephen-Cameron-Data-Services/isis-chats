@@ -12,7 +12,6 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import org.apache.isis.applib.annotation.CollectionLayout;
-import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.RenderType;
@@ -21,7 +20,6 @@ import org.apache.isis.applib.util.ObjectContracts;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
-@DomainObject(objectType="chats.assessmentdomain")
 public class AssessmentDomain implements Comparable<AssessmentDomain>{
 
     private AssessmentScoreType scoreType;

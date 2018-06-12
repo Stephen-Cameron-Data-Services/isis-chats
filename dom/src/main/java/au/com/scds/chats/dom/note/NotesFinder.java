@@ -1,9 +1,8 @@
 package au.com.scds.chats.dom.note;
 
-import org.apache.isis.applib.annotation.DomainObject;
-import org.apache.isis.applib.annotation.Nature;
+import org.apache.isis.applib.annotation.ViewModel;
 
-@DomainObject(objectType="chats.notesfinder", nature=Nature.VIEW_MODEL)
+@ViewModel
 public class NotesFinder {
 	
 	public String title(){

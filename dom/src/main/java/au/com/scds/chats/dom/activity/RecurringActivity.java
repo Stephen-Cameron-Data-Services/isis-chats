@@ -24,12 +24,11 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.inject.Inject;
 import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
-import org.apache.isis.applib.services.message.MessageService;
+import org.incode.module.note.dom.api.notable.Notable;
 import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.general.Locations;
@@ -50,13 +49,14 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
  * occurring, that is a series of calendar events make up a recurring activity.
  * 
  */
-@DomainObject()
+@DomainObject(objectType = "RECURRING_ACTIVITY")
 @PersistenceCapable()
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
 @Discriminator(value = "RECURRING_ACTIVITY")
 @Queries({
 		@Query(name = "findRecurringActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.RecurringActivity "),
 		@Query(name = "findRecurringActivityByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.RecurringActivity WHERE name.indexOf(:name) >= 0 ") })
+// @Unique(name = "RecurringActivity_UNQ", members = { "name", "region" })
 public class RecurringActivity extends Activity {
 
 	private Periodicity periodicity = Periodicity.WEEKLY;
@@ -65,6 +65,12 @@ public class RecurringActivity extends Activity {
 
 	public RecurringActivity() {
 		super();
+	}
+
+	// used for testing only
+	public RecurringActivity(DomainObjectContainer container, Activities activitiesRepo, Participants participantsRepo,
+			Volunteers volunteersRepo, ActivityTypes activityTypes, Locations locations) {
+		super(container, activitiesRepo, participantsRepo, volunteersRepo, activityTypes, locations);
 	}
 
 	@Override
@@ -96,8 +102,10 @@ public class RecurringActivity extends Activity {
 	}
 
 	/**
-	 * Provides a list of currently scheduled activities sorted sooner to later
+	 * Provides a list of currently scheduled activities sorted soonest to
+	 * latest
 	 */
+	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<ParentedActivityEvent> getFutureActivities() {
 		ArrayList<ParentedActivityEvent> temp = new ArrayList<>();
 		for (ParentedActivityEvent event : getChildActivities()) {
@@ -109,6 +117,7 @@ public class RecurringActivity extends Activity {
 		return temp;
 	}
 
+	@CollectionLayout(render = RenderType.EAGERLY)
 	public List<ParentedActivityEvent> getCompletedActivities() {
 		ArrayList<ParentedActivityEvent> temp = new ArrayList<>();
 		for (ParentedActivityEvent event : getChildActivities()) {
@@ -134,7 +143,7 @@ public class RecurringActivity extends Activity {
 	public DateTime default0AddNextScheduledActivity() {
 		if (getChildActivities().size() == 0) {
 			if (getStartDateTime() == null) {
-				messageService.warnUser(
+				container.warnUser(
 						"Please set 'Start date time' for this Recurring Activity (as starting time from which to schedule more activity events)");
 				return null;
 			} else {
@@ -157,7 +166,35 @@ public class RecurringActivity extends Activity {
 		}
 		return null;
 	}
-	
-	@Inject
-	MessageService messageService;
+
+	/*
+	 * To remove a participation we need to see if its been ignored by any of
+	 * the children and remove that link
+	 */
+	@Programmatic
+	@Override
+	public void removeParticipation(Participation participation) {
+		if (participation == null)
+			return;
+		for (ParentedActivityEvent activity : getChildActivities()) {
+			if (activity.getIgnored().contains(participation)) {
+				activity.getIgnored().remove(participation);
+			}
+		}
+		super.removeParticipation(participation);
+	}
+
+	@Programmatic
+	public ParentedActivityEvent createActivity(String name, DateTime startDateTime, Region region) {
+		ParentedActivityEvent obj = container.newTransientInstance(ParentedActivityEvent.class);
+		obj.setParentActivity(this);
+		obj.setName(name);
+		obj.setAbbreviatedName("TO-DO");
+		obj.setStartDateTime(startDateTime);
+		obj.setRegion(region);
+		getChildActivities().add(obj);
+		container.persistIfNotAlready(obj);
+		container.flush();
+		return obj;
+	}
 }

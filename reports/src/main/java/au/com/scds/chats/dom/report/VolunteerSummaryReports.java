@@ -21,7 +21,7 @@ import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime;
 import au.com.scds.chats.dom.report.viewmodel.ActivityVolunteerVolunteeredTimeSummary;
-import au.com.scds.chats.dom.volunteer.XVolunteerIdentity;
+import au.com.scds.chats.dom.volunteer.VolunteerIdentity;
 import au.com.scds.chats.dom.volunteer.Volunteers;
 
 @DomainService(nature = NatureOfService.VIEW_MENU_ONLY)
@@ -31,7 +31,7 @@ public class VolunteerSummaryReports {
 	@Action()
 	@ActionLayout(named="Find Volunteer's Times")
 	public List<ActivityVolunteerVolunteeredTime> findVolunteersActivityTimes(
-			@ParameterLayout(named = "Volunteer") XVolunteerIdentity identity,
+			@ParameterLayout(named = "Volunteer") VolunteerIdentity identity,
 			@ParameterLayout(named = "Start Date") LocalDate startDate,
 			@ParameterLayout(named = "End Date") LocalDate endDate) {
 		return container.allMatches(
@@ -39,7 +39,7 @@ public class VolunteerSummaryReports {
 						"volunteerId", identity.getVolunteerId(), "startDateTime", startDate.toDate(), "endDateTime", endDate.plusDays(1).toDate()));
 	}
 
-	public List<XVolunteerIdentity> choices0FindVolunteersActivityTimes() {
+	public List<VolunteerIdentity> choices0FindVolunteersActivityTimes() {
 		return volunteersRepo.listVolunteerIdentities();
 	}
 

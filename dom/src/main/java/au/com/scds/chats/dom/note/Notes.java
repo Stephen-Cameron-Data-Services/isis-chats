@@ -27,7 +27,7 @@ import org.incode.module.note.dom.impl.note.Note;
 import org.incode.module.note.dom.impl.note.NoteRepository;
 
 
-@DomainService(objectType="chats.notes", nature=NatureOfService.VIEW_MENU_ONLY)
+@DomainService()
 @DomainServiceLayout(named = "Notes", menuOrder = "80")
 public class Notes {
 	

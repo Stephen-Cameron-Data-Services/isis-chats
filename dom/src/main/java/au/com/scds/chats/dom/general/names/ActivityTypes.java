@@ -20,25 +20,21 @@ package au.com.scds.chats.dom.general.names;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
-
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
-import org.apache.isis.applib.services.message.MessageService;
-import org.apache.isis.applib.services.registry.ServiceRegistry2;
-import org.apache.isis.applib.services.repository.RepositoryService;
 
 @DomainService(nature = NatureOfService.DOMAIN, repositoryFor = ActivityType.class)
+// @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration",
+// menuOrder = "100.1")
 public class ActivityTypes {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	public List<ActivityType> listAllActivityTypes() {
-		List<ActivityType> list = repositoryService.allMatches(new QueryDefault<>(ActivityType.class, "findAllActivityTypes"));
+		List<ActivityType> list = container.allMatches(new QueryDefault<>(ActivityType.class, "findAllActivityTypes"));
 		return list;
 	}
 
@@ -52,10 +48,10 @@ public class ActivityTypes {
 
 	@Programmatic
 	public ActivityType create(String name) {
-		final ActivityType obj = new ActivityType();
-		serviceRegistry.injectServicesInto(obj);
+		final ActivityType obj = container.newTransientInstance(ActivityType.class);
 		obj.setName(name);
-		repositoryService.persist(obj);
+		container.persistIfNotAlready(obj);
+		container.flush();
 		return obj;
 	}
 
@@ -79,13 +75,10 @@ public class ActivityTypes {
 		if (name == null)
 			return null;
 		else
-			return repositoryService.firstMatch(new QueryDefault<>(ActivityType.class, "findActivityTypeByName", "name", name));
+			return container.firstMatch(new QueryDefault<>(ActivityType.class, "findActivityTypeByName", "name", name));
 	}
 
-	@Inject
-	protected RepositoryService repositoryService;
-	
-	@Inject
-	protected ServiceRegistry2 serviceRegistry;
+	@javax.inject.Inject
+	DomainObjectContainer container;
 
 }

@@ -38,9 +38,9 @@ import org.apache.isis.applib.util.TitleBuffer;
 
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 
-@PersistenceCapable()
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Inheritance(strategy = InheritanceStrategy.SUPERCLASS_TABLE)
-@Discriminator(value = "ADDRESS")
+@Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, value = "ADDRESS")
 @Queries({
 		@Query(name = "findAddressByName", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.Address WHERE name == :name"),
 		@Query(name = "findAllAddresses", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.general.Address"),

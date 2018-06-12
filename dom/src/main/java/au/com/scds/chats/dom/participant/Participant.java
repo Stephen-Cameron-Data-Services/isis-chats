@@ -30,6 +30,7 @@ import javax.jdo.annotations.*;
 import org.apache.isis.applib.Identifier;
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.services.i18n.TranslatableString;
+import org.incode.module.note.dom.api.notable.Notable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 import org.joda.time.LocalDate;
@@ -56,8 +57,8 @@ import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.Volunteers;
 
-@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="participant")
-@Inheritance(strategy=InheritanceStrategy.NEW_TABLE)
+@DomainObject(objectType = "PARTICIPANT")
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
 @Unique(name = "Participant_UNQ", members = { "person", "region" })
 @Queries({
 		@Query(name = "listParticipantsByStatus", language = "JDOQL", value = "SELECT "
@@ -70,22 +71,18 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 				+ "&& person.birthdate > :lowerLimit"),
 		@Query(name = "listParticipantsByStatusAndBirthdateBetween", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.participant.Participant  WHERE status == :status "
-				+ "&& person.birthdate > :lowerLimit && person.birthdate < :upperLimit "),
+				+ "&& person.birthdate > :lowerLimit " + "&& person.birthdate < :upperLimit "),
 		@Query(name = "findParticipantsBySurname", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.participant.Participant  "
 				+ "WHERE person.surname.indexOf(:surname) >= 0"),
-		@Query(name = "findParticipantsByStatusAndToUpperCaseNameStart", language = "JDOQL", value = "SELECT "
-				+ "FROM au.com.scds.chats.dom.participant.Participant  "
-				+ "WHERE status == :status && (person.surname.toUpperCase().startsWith(:start) || person.firstname.toUpperCase().startsWith(:start)) "),		
 		@Query(name = "findParticipantForPerson", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.participant.Participant  " + "WHERE person == :person"),
 		@Query(name = "findNewOrModifiedParticipantsByPeriodAndRegion", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.participant.Participant "
-				+ "WHERE ((person.createdOn >= :startDate && person.createdOn < :startDate) "
-				+ "|| (person.modifiedOn >= :startDate && person.modifiedOn < :startDate)) && region = :region"), })
-@DomainObject()
+				+ "WHERE ((person.createdOn >= :startDate AND person.createdOn < :startDate) "
+				+ "OR (person.modifiedOn >= :startDate AND person.modifiedOn < :startDate)) AND region = :region"), })
 public class Participant extends AbstractChatsDomainEntity
-		implements Comparable<Participant> {
+		implements /* Locatable, */ Notable, Comparable<Participant> {
 
 	// general
 	private Person person;

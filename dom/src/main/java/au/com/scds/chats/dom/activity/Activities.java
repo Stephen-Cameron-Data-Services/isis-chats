@@ -18,16 +18,17 @@
  */
 package au.com.scds.chats.dom.activity;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.jdo.annotations.Query;
 
+import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
+import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
 import org.apache.isis.applib.security.UserMemento;
-import org.apache.isis.applib.services.message.MessageService;
-import org.apache.isis.applib.services.registry.ServiceRegistry2;
-import org.apache.isis.applib.services.repository.RepositoryService;
 import org.apache.isis.applib.services.user.UserService;
 import org.isisaddons.module.security.dom.user.ApplicationUser;
 import org.isisaddons.module.security.dom.user.ApplicationUserRepository;
@@ -49,11 +50,16 @@ import au.com.scds.chats.dom.general.names.Regions;
  * @author stevec
  *
  */
-@DomainService(objectType = "chats.activities", repositoryFor = ActivityEvent.class)
+@DomainService(repositoryFor = ActivityEvent.class)
 @DomainServiceLayout(named = "Activities", menuOrder = "10")
 public class Activities {
 
 	public Activities() {
+	}
+
+	// used for testing
+	public Activities(DomainObjectContainer container) {
+		this.container = container;
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
@@ -61,11 +67,11 @@ public class Activities {
 	@MemberOrder(sequence = "1")
 	public RecurringActivity createRecurringActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
-			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25, regexPattern = "^[\\p{IsAlphabetic}\\p{IsDigit}]+$", regexPatternReplacement = "Must be Alpha-Numeric") @ParameterLayout(named = "DEX 'Case' Name") final String abbreviatedName,
+			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25, regexPattern = "^[\\p{IsAlphabetic}\\p{IsDigit}]+$",regexPatternReplacement="Must be Alpha-Numeric") @ParameterLayout(named = "DEX 'Case' Name") final String abbreviatedName,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start date time") final DateTime startDateTime) {
 		Activity a = findActivity(name, startDateTime);
 		if (a != null) {
-			messageService.informUser("Activity with same Name, Start Date Time and Region exists");
+			container.informUser("Activity with same Name, Start Date Time and Region exists");
 			if (a instanceof RecurringActivity) {
 				return ((RecurringActivity) a);
 			} else {
@@ -73,11 +79,10 @@ public class Activities {
 			}
 		}
 		if (findActivity(name, startDateTime) != null) {
-			messageService.informUser("Activity with same Name, Start Date Time and Region exists");
+			container.informUser("Activity with same Name, Start Date Time and Region exists");
 			return null;
 		}
-		final RecurringActivity obj = new RecurringActivity();
-		serviceRegistry.injectServicesInto(obj);
+		final RecurringActivity obj = container.newTransientInstance(RecurringActivity.class);
 		obj.setName(name);
 		if (abbreviatedName != null) {
 			obj.setAbbreviatedName(abbreviatedName);
@@ -87,20 +92,20 @@ public class Activities {
 				obj.setAbbreviatedName(obj.getAbbreviatedName().substring(0, 25));
 		}
 		obj.setStartDateTime(startDateTime);
-		repositoryService.persist(obj);
+		container.persistIfNotAlready(obj);
+		container.flush();
 		return obj;
 	}
 
 	@Programmatic
 	public RecurringActivity createRecurringActivity(final String name, final DateTime startDateTime,
 			final Region region) {
-		
-		final RecurringActivity obj = new RecurringActivity();
-		serviceRegistry.injectServicesInto(obj);
+		final RecurringActivity obj = container.newTransientInstance(RecurringActivity.class);
 		obj.setName(name);
 		obj.setStartDateTime(startDateTime);
 		obj.setRegion(region);
-		repositoryService.persist(obj);
+		container.persistIfNotAlready(obj);
+		container.flush();
 		return obj;
 	}
 
@@ -108,14 +113,14 @@ public class Activities {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "5")
 	public List<RecurringActivity> listAllRecurringActivities() {
-		return repositoryService.allInstances(RecurringActivity.class);
+		return container.allInstances(RecurringActivity.class);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "3")
 	public List<RecurringActivity> findRecurringActivityByName(@ParameterLayout(named = "Name") final String name) {
-		return repositoryService
+		return container
 				.allMatches(new QueryDefault<>(RecurringActivity.class, "findRecurringActivityByName", "name", name));
 	}
 
@@ -124,11 +129,11 @@ public class Activities {
 	@MemberOrder(sequence = "2")
 	public ActivityEvent createOneOffActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
-			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25, regexPattern = "^[\\p{IsAlphabetic}\\p{IsDigit}]+$", regexPatternReplacement = "Must be Alpha-Numeric") @ParameterLayout(named = "DEX 'Case' Id") final String abbreviatedName,
+			@Parameter(optionality = Optionality.OPTIONAL, maxLength = 25, regexPattern = "^[\\p{IsAlphabetic}\\p{IsDigit}]+$",regexPatternReplacement="Must be Alpha-Numeric") @ParameterLayout(named = "DEX 'Case' Id") final String abbreviatedName,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start date time") final DateTime startDateTime) {
 		Activity a = findActivity(name, startDateTime);
 		if (a != null) {
-			messageService.informUser("Activity with same Name, Start Date Time and Region exists");
+			container.informUser("Activity with same Name, Start Date Time and Region exists");
 			if (a instanceof ActivityEvent) {
 				return ((ActivityEvent) a);
 			} else {
@@ -136,8 +141,7 @@ public class Activities {
 			}
 		}
 		// create the new ActivityEvent
-		final ActivityEvent obj = new ActivityEvent();
-		serviceRegistry.injectServicesInto(obj);
+		final ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 		obj.setName(name);
 		if (abbreviatedName != null) {
 			obj.setAbbreviatedName(abbreviatedName);
@@ -147,7 +151,8 @@ public class Activities {
 				obj.setAbbreviatedName(obj.getAbbreviatedName().substring(0, 25));
 		}
 		obj.setStartDateTime(startDateTime);
-		repositoryService.persist(obj);
+		container.persistIfNotAlready(obj);
+		container.flush();
 		return obj;
 	}
 
@@ -166,7 +171,7 @@ public class Activities {
 				}
 			}
 			// see if there is already an existing Activity
-			List<Activity> activities = repositoryService.allMatches(new QueryDefault<>(Activity.class,
+			List<Activity> activities = container.allMatches(new QueryDefault<>(Activity.class,
 					"findActivityByUpperCaseName", "name", name.trim().toUpperCase()));
 			for (Activity activity : activities) {
 				if (activity.getStartDateTime().getDayOfYear() == startDateTime.getDayOfYear()
@@ -192,7 +197,7 @@ public class Activities {
 			}
 		}
 		// see if there is already an existing ParentedActivityEvent
-		List<ParentedActivityEvent> activities = repositoryService.allMatches(new QueryDefault<>(ParentedActivityEvent.class,
+		List<ParentedActivityEvent> activities = container.allMatches(new QueryDefault<>(ParentedActivityEvent.class,
 				"findParentedActivityByUpperCaseName", "name", name.trim().toUpperCase()));
 		for (ParentedActivityEvent activity : activities) {
 			if (activity.getStartDateTime().equals(startDateTime) && activity.getRegion().equals(region)) {
@@ -203,17 +208,15 @@ public class Activities {
 	}
 
 	@Programmatic
-	public ParentedActivityEvent createParentedActivity(RecurringActivity parent, final DateTime startDateTime,
-			final DateTime endDateTime) {
+	public ParentedActivityEvent createParentedActivity(RecurringActivity parent, final DateTime startDateTime, final DateTime endDateTime) {
 		if (parent == null || startDateTime == null) {
 			return null;
 		}
 		if (findParentedActivity(parent.getName(), startDateTime) != null) {
-			messageService.informUser("Parented Activity with same Name, Start Date Time and Region exists");
+			container.informUser("Parented Activity with same Name, Start Date Time and Region exists");
 			return null;
 		}
-		final ParentedActivityEvent obj = new ParentedActivityEvent();
-		serviceRegistry.injectServicesInto(obj);
+		final ParentedActivityEvent obj = container.newTransientInstance(ParentedActivityEvent.class);
 		obj.setName(parent.getName());
 		if (parent.getAbbreviatedName() != null) {
 			obj.setAbbreviatedName(parent.getAbbreviatedName());
@@ -222,23 +225,24 @@ public class Activities {
 		}
 		obj.setParentActivity(parent);
 		obj.setStartDateTime(startDateTime);
-		if (endDateTime != null) {
+		if(endDateTime != null){
 			obj.setEndDateTime(endDateTime);
 		}
-		repositoryService.persist(obj);
+		container.persistIfNotAlready(obj);
+		container.flush();
 		return obj;
 	}
 
 	// used for data-migration
 	@Programmatic
 	public ActivityEvent createOneOffActivity(String name, DateTime startDateTime, Region region) {
-		final ActivityEvent obj = new ActivityEvent();
-		serviceRegistry.injectServicesInto(obj);
+		final ActivityEvent obj = container.newTransientInstance(ActivityEvent.class);
 		obj.setName(name);
 		obj.setAbbreviatedName("TO-DO");
 		obj.setStartDateTime(startDateTime);
 		obj.setRegion(region);
-		repositoryService.persist(obj);
+		container.persistIfNotAlready(obj);
+		container.flush();
 		return obj;
 	}
 
@@ -262,26 +266,29 @@ public class Activities {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "4")
 	public List<ActivityEvent> findActivityByName(@ParameterLayout(named = "Name") final String name) {
-		return repositoryService.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivityByName", "name", name));
+		return container.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivityByName", "name", name));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "6")
 	public List<ActivityEvent> listAllFutureActivities() {
-		return repositoryService.allMatches(
+		return container.allMatches(
 				new QueryDefault<>(ActivityEvent.class, "findAllFutureActivities", "currentDateTime", new DateTime()));
 	}
 
+	// @Action(semantics = SemanticsOf.SAFE)
+	// @ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	// @MemberOrder(sequence = "7")
 	@Programmatic
 	public List<ActivityEvent> listAllPastActivities() {
-		return repositoryService.allMatches(
+		return container.allMatches(
 				new QueryDefault<>(ActivityEvent.class, "findAllPastActivities", "currentDateTime", new DateTime()));
 	}
 
 	@Programmatic
 	public List<ActivityEvent> allActivities() {
-		return repositoryService.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivities"));
+		return container.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivities"));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
@@ -290,7 +297,7 @@ public class Activities {
 	public List<ActivityEvent> listActivitiesInPeriod(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Start Period") LocalDate start,
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "End Period") LocalDate end) {
-		return repositoryService.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivitiesInPeriod", "startDateTime",
+		return container.allMatches(new QueryDefault<>(ActivityEvent.class, "findActivitiesInPeriod", "startDateTime",
 				start.toDateTimeAtStartOfDay(), "endDateTime", end.toDateTime(new LocalTime(23, 59))));
 	}
 
@@ -311,11 +318,6 @@ public class Activities {
 	protected UserService userService;
 
 	@Inject
-	protected RepositoryService repositoryService;
-	
-	@Inject
-	protected ServiceRegistry2 serviceRegistry;
-	
-	@Inject
-	protected MessageService messageService;
+	DomainObjectContainer container;
+
 }

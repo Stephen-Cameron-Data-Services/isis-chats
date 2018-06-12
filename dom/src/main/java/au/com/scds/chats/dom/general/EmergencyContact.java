@@ -2,8 +2,6 @@ package au.com.scds.chats.dom.general;
 
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.Inheritance;
-import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 
 import org.apache.isis.applib.annotation.BookmarkPolicy;
@@ -12,9 +10,9 @@ import org.apache.isis.applib.annotation.DomainObjectLayout;
 
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 
-@DomainObject()
-@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="emergencycontact")
-@Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
+@DomainObject(objectType = "EMERGENCY_CONTACT")
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
+@DomainObjectLayout(bookmarking = BookmarkPolicy.NEVER)
 public class EmergencyContact extends AbstractChatsDomainEntity {
 
 	private Person person;

@@ -21,8 +21,6 @@ package au.com.scds.chats.dom.general.names;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
@@ -36,18 +34,16 @@ import org.apache.isis.applib.annotation.NatureOfService;
 import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
-import org.apache.isis.applib.services.message.MessageService;
-import org.apache.isis.applib.services.registry.ServiceRegistry2;
-import org.apache.isis.applib.services.repository.RepositoryService;
 
 @DomainService(nature = NatureOfService.DOMAIN,repositoryFor = ContactType.class)
+//@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.2")
 public class ContactTypes {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	public List<ContactType> listAllContactTypes() {
-		List<ContactType> list = repositoryService.allMatches(new QueryDefault<>(ContactType.class, "findAllContactTypes"));
+		List<ContactType> list = container.allMatches(new QueryDefault<>(ContactType.class, "findAllContactTypes"));
 		return list;
 	}
 
@@ -55,10 +51,10 @@ public class ContactTypes {
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "2")
 	public ContactType createContactType(final @ParameterLayout(named = "ContactType Name") String name) {
-		final ContactType obj = new ContactType();
-		serviceRegistry.injectServicesInto(obj);
+		final ContactType obj = container.newTransientInstance(ContactType.class);
 		obj.setName(name);
-		repositoryService.persist(obj);
+		container.persistIfNotAlready(obj);
+		container.flush();
 		return obj;
 	}
 
@@ -82,15 +78,9 @@ public class ContactTypes {
 		if (name == null)
 			return null;
 		else
-			return repositoryService.firstMatch(new QueryDefault<>(ContactType.class, "findContactTypeByName", "name", name));
+			return container.firstMatch(new QueryDefault<>(ContactType.class, "findContactTypeByName", "name", name));
 	}
 
 	@javax.inject.Inject
-	protected RepositoryService repositoryService;
-	
-	@Inject
-	protected ServiceRegistry2 serviceRegistry;
-	
-	@Inject
-	protected MessageService messageService;
+	DomainObjectContainer container;
 }

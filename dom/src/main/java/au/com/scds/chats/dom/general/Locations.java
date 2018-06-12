@@ -36,72 +36,76 @@ import org.apache.isis.applib.annotation.ParameterLayout;
 import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.query.QueryDefault;
-import org.apache.isis.applib.services.message.MessageService;
-import org.apache.isis.applib.services.registry.ServiceRegistry2;
-import org.apache.isis.applib.services.repository.RepositoryService;
 import org.isisaddons.wicket.gmap3.cpt.service.LocationLookupService;
 
 @DomainService(repositoryFor = Location.class, nature=NatureOfService.DOMAIN)
 @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.9")
 public class Locations {
 	
+	public Locations(){}
+
+	//
+	public Locations(DomainObjectContainer container, LocationLookupService lookup) {
+		this.container = container;
+		this.locationLookupService = lookup;
+	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	public List<Location> listAllLocations() {
-		List<Location> list = repositoryService.allMatches(new QueryDefault<>(Location.class, "findAllLocations"));
+		List<Location> list = container.allMatches(new QueryDefault<>(Location.class, "findAllLocations"));
 		return list;
 	}
 
 	@MemberOrder(sequence = "2")
 	public List<Location> createLocation(final @ParameterLayout(named = "Location Name") String name) {
-		final Location obj = new Location();
-		serviceRegistry.injectServicesInto(obj);
+		final Location obj = container.newTransientInstance(Location.class);
 		obj.setName(name);
-		repositoryService.persist(obj);
+		container.persistIfNotAlready(obj);
+		container.flush();
 		return listAllLocations();
 	}
 	
 	@Programmatic()
 	public Location createNewLocation(String name) {
-		final Location obj = new Location();
-		serviceRegistry.injectServicesInto(obj);
+		final Location obj = container.newTransientInstance(Location.class);
 		obj.setName(name);
-		repositoryService.persist(obj);
+		container.persistIfNotAlready(obj);
+		container.flush();
 		return obj;
 	}
 	
 	@Programmatic()
 	public Address createAddress() {
-		final Address obj = new Address();
-		serviceRegistry.injectServicesInto(obj);
-		repositoryService.persist(obj);
+		final Address obj = container.newTransientInstance(Address.class);
+		container.persistIfNotAlready(obj);
+		container.flush();
 		return obj;
 	}
 	
 	@Programmatic()
 	public TransportHub createTransportHub() {
-		final TransportHub obj = new TransportHub();
-		serviceRegistry.injectServicesInto(obj);
-		repositoryService.persist(obj);
+		final TransportHub obj = container.newTransientInstance(TransportHub.class);
+		container.persistIfNotAlready(obj);
+		container.flush();
 		return obj;
 	}
 	
 	@Programmatic()
 	public List<Address> listAllNamedAddressLocations() {
-		List<Address> addresses = repositoryService.allMatches(new QueryDefault<>(Address.class, "findAllNamedAddresses"));
+		List<Address> addresses = container.allMatches(new QueryDefault<>(Address.class, "findAllNamedAddresses"));
 		return addresses;
 	}
 	
 	@Programmatic()
 	public List<TransportHub> listAllTransportHubs() {
-		List<TransportHub> hubs = repositoryService.allMatches(new QueryDefault<>(TransportHub.class, "findAllTransportHubs"));
+		List<TransportHub> hubs = container.allMatches(new QueryDefault<>(TransportHub.class, "findAllTransportHubs"));
 		return hubs;
 	}
 	
 	public List<TransportHub> listAllNamedTransportHubs() {
-		List<TransportHub> hubs = repositoryService.allMatches(new QueryDefault<>(TransportHub.class, "findAllNamedTransportHubs"));
+		List<TransportHub> hubs = container.allMatches(new QueryDefault<>(TransportHub.class, "findAllNamedTransportHubs"));
 		return hubs;
 	}
 
@@ -125,7 +129,7 @@ public class Locations {
 		if (name == null)
 			return null;
 		else
-			return repositoryService.firstMatch(new QueryDefault<>(Location.class, "findLocationByName", "name", name));
+			return container.firstMatch(new QueryDefault<>(Location.class, "findLocationByName", "name", name));
 	}
 	
 	@Programmatic 
@@ -134,14 +138,13 @@ public class Locations {
 	}
 
 	@Inject
-	RepositoryService repositoryService;
-	
-	@Inject
-	protected ServiceRegistry2 serviceRegistry;
-	
-	@Inject
-	protected MessageService messageService;
+	DomainObjectContainer container;
 	
 	@Inject
 	private LocationLookupService locationLookupService;
+
+
+
+
+
 }

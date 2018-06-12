@@ -22,8 +22,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
@@ -40,34 +38,40 @@ import org.apache.isis.applib.annotation.Programmatic;
 import org.apache.isis.applib.annotation.SemanticsOf;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
-import org.apache.isis.applib.services.registry.ServiceRegistry2;
-import org.apache.isis.applib.services.repository.RepositoryService;
 import org.joda.time.LocalDate;
 
 import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.names.Region;
 import au.com.scds.chats.dom.general.names.Regions;
 
-@DomainService(objectType = "chats.persons", nature = NatureOfService.VIEW_MENU_ONLY, repositoryFor = Person.class)
+@DomainService(nature=NatureOfService.VIEW_MENU_ONLY, repositoryFor = Person.class)
 @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100")
 public class Persons {
+
+	public Persons() {
+	}
+
+	// for testing only
+	public Persons(DomainObjectContainer container) {
+		this.container = container;
+	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@MemberOrder(sequence = "1")
 	public List<Person> listAllPersons() {
-		return repositoryService.allInstances(Person.class);
+		return container.allInstances(Person.class);
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@MemberOrder(sequence = "2")
 	public List<Person> findPersonBySurname(@ParameterLayout(named = "Surname") final String surname) {
-		return repositoryService.allMatches(new QueryDefault<>(Person.class, "findPersonsBySurname", "surname", surname));
+		return container.allMatches(new QueryDefault<>(Person.class, "findPersonsBySurname", "surname", surname));
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@MemberOrder(sequence = "3")
 	public List<Person> findPersonBySLK(@ParameterLayout(named = "SLK") final String slk) {
-		return repositoryService.allMatches(new QueryDefault<>(Person.class, "findPersonBySLK", "slk", slk));
+		return container.allMatches(new QueryDefault<>(Person.class, "findPersonBySLK", "slk", slk));
 	}
 
 	@Action(semantics = SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE)
@@ -78,42 +82,44 @@ public class Persons {
 			person.setRegion(region);
 		return person;
 	}
-
-	public List<Person> choices0ChangeRegionOfPerson() {
+	
+	public List<Person> choices0ChangeRegionOfPerson(){
 		return listAllPersons();
 	}
-
-	public List<Region> choices1ChangeRegionOfPerson() {
+	
+	public List<Region> choices1ChangeRegionOfPerson(){
 		return regions.listAllRegions();
 	}
-
-	// @Action(semantics = SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE)
+	
+	//@Action(semantics = SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE)
 	@Programmatic
 	public List<Result> resetAllSlks() {
 		List<Result> results = new ArrayList<>();
 		List<Person> persons = listAllPersons();
-		for (Person person : persons) {
-			try {
+		for(Person person : persons){
+			try{
 				person.buildSlk();
 				results.add(new Result("Reset " + person.getFullname()));
-			} catch (Exception e) {
-				results.add(new Result("ERROR (" + person.getFullname() + "): " + e.getMessage()));
+			}catch(Exception e){
+				results.add(new Result("ERROR ("+ person.getFullname() + "): " + e.getMessage()));
 			}
 		}
 		return results;
 	}
-
+	
+	
 	@Action(semantics = SemanticsOf.NON_IDEMPOTENT_ARE_YOU_SURE)
-	public Person resetPersonIdentity(final @Parameter(optionality = Optionality.MANDATORY) Person person,
-			final @Parameter(optionality = Optionality.MANDATORY, maxLength = 100) @ParameterLayout(named = "First name") String firstname,
-			final @Parameter(optionality = Optionality.MANDATORY, maxLength = 100) @ParameterLayout(named = "Family name") String surname,
-			final @ParameterLayout(named = "Date of Birth") LocalDate dob,
-			final @ParameterLayout(named = "Sex") Sex sex) throws Exception {
+	public Person resetPersonIdentity( 
+		final @Parameter(optionality=Optionality.MANDATORY) Person person,
+		final @Parameter(optionality=Optionality.MANDATORY,maxLength = 100) @ParameterLayout(named = "First name") String firstname,
+		final @Parameter(optionality=Optionality.MANDATORY,maxLength = 100) @ParameterLayout(named = "Family name") String surname,
+		final @ParameterLayout(named = "Date of Birth") LocalDate dob,
+		final @ParameterLayout(named = "Sex") Sex sex) throws Exception {
 		person.updateIdentity(firstname, surname, dob, sex);
 		return person;
 	}
-
-	public List<Person> choices0ResetPersonIdentity() {
+	
+	public List<Person> choices0ResetPersonIdentity(){
 		return listAllPersons();
 	}
 
@@ -129,14 +135,14 @@ public class Persons {
 		if (sex == null)
 			throw new Exception("sex is not set!");
 
-		Person person = new Person();
-		serviceRegistry.injectServicesInto(person);
+		Person person = container.newTransientInstance(Person.class);
 		person.setFirstname(firstname);
 		person.setSurname(surname);
 		person.setBirthdate(dob);
 		person.setSex(sex);
 		person.buildSlk();
-		repositoryService.persist(person);
+		container.persistIfNotAlready(person);
+		container.flush();
 		return person;
 	}
 
@@ -153,49 +159,48 @@ public class Persons {
 		if (region == null)
 			throw new Exception("region is not set!");
 
-		Person person = new Person();
-		serviceRegistry.injectServicesInto(person);
+		Person person = container.newTransientInstance(Person.class);
 		person.setFirstname(firstname);
 		person.setSurname(surname);
 		person.setBirthdate(dob);
 		person.setRegion(region);
-		repositoryService.persist(person);
+		container.persistIfNotAlready(person);
+		container.flush();
 		return person;
 	}
 
 	@Programmatic
 	public Person findPerson(String firstname, String surname, LocalDate dob) {
-		return repositoryService.firstMatch(new QueryDefault<>(Person.class, "findPerson", "firstname", firstname, "surname",
+		return container.firstMatch(new QueryDefault<>(Person.class, "findPerson", "firstname", firstname, "surname",
 				surname, "birthdate", dob));
 	}
 
 	// data migration
 	@Programmatic
 	public Person findPersonByOldId(BigInteger personId) {
-		return repositoryService.firstMatch(new QueryDefault<>(Person.class, "findPersonByOldId", "oldid", personId));
+		return container.firstMatch(new QueryDefault<>(Person.class, "findPersonByOldId", "oldid", personId));
 	}
-
+	
 	@Programmatic
 	public EmergencyContact createEmergencyContact(Person person) {
-		EmergencyContact contact = new EmergencyContact();
-		serviceRegistry.injectServicesInto(contact);
+		EmergencyContact contact = container.newTransientInstance(EmergencyContact.class);
 		contact.setPerson(person);
-		repositoryService.persist(contact);
+		container.persistIfNotAlready(contact);
+		container.flush();
 		return contact;
 	}
 
 	@Programmatic
 	public void deleteEmergencyContact(EmergencyContact contact) {
-		repositoryService.remove(contact);
+		container.removeIfNotAlready(contact);
+		container.flush();
 	}
 
 	@javax.inject.Inject
-	RepositoryService repositoryService;
-	
-	@Inject
-	protected ServiceRegistry2 serviceRegistry;
+	DomainObjectContainer container;
 	
 	@javax.inject.Inject
 	Regions regions;
+
 
 }

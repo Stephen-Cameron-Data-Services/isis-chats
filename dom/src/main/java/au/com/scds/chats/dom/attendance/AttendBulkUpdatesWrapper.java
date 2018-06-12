@@ -59,7 +59,7 @@ import au.com.scds.chats.dom.general.names.TransportType;
 import au.com.scds.chats.dom.general.names.TransportTypes;
 import au.com.scds.chats.dom.participant.Participant;
 
-@DomainObject(objectType = "chats.attendbulkupdateswrapper", nature = Nature.INMEMORY_ENTITY)
+@DomainObject(nature = Nature.INMEMORY_ENTITY)
 public class AttendBulkUpdatesWrapper {
 
 	private Attend wrapped;

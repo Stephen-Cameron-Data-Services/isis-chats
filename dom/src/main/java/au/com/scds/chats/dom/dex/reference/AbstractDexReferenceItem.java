@@ -13,7 +13,7 @@ import org.apache.isis.applib.annotation.MemberOrder;
 import org.apache.isis.applib.annotation.Property;
 import org.apache.isis.applib.annotation.Where;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION, schema="chats", table = "dexreferenceitem")
+@PersistenceCapable(identityType = IdentityType.APPLICATION, table = "DEXReferenceItem")
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @Discriminator(strategy = DiscriminatorStrategy.VALUE_MAP, column = "class", value = "AbstractItem")
 public abstract class AbstractDexReferenceItem {

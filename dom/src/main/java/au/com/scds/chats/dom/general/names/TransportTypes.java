@@ -20,24 +20,21 @@ package au.com.scds.chats.dom.general.names;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
-
 import org.apache.isis.applib.annotation.*;
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
-import org.apache.isis.applib.services.registry.ServiceRegistry2;
-import org.apache.isis.applib.services.repository.RepositoryService;
 
 @DomainService(nature = NatureOfService.DOMAIN, repositoryFor = TransportType.class)
+// @DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration",
+// menuOrder = "100.12")
 public class TransportTypes {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	public List<TransportType> listAllTransportTypes() {
-		List<TransportType> list = repositoryService
+		List<TransportType> list = container
 				.allMatches(new QueryDefault<>(TransportType.class, "findAllTransportTypes"));
 		return list;
 	}
@@ -52,10 +49,10 @@ public class TransportTypes {
 
 	@Programmatic
 	public TransportType create(String name) {
-		final TransportType obj = new TransportType();
-		serviceRegistry.injectServicesInto(obj);
+		final TransportType obj = container.newTransientInstance(TransportType.class);
 		obj.setName(name);
-		repositoryService.persist(obj);
+		container.persistIfNotAlready(obj);
+		container.flush();
 		return obj;
 	}
 
@@ -79,13 +76,10 @@ public class TransportTypes {
 		if (name == null)
 			return null;
 		else
-			return repositoryService
+			return container
 					.firstMatch(new QueryDefault<>(TransportType.class, "findTransportTypeByName", "name", name));
 	}
 
-	@Inject
-	protected RepositoryService repositoryService;
-	
-	@Inject
-	protected ServiceRegistry2 serviceRegistry;
+	@javax.inject.Inject
+	DomainObjectContainer container;
 }

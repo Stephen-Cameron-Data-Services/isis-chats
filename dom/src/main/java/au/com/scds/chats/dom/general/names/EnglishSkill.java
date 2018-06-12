@@ -20,12 +20,9 @@ package au.com.scds.chats.dom.general.names;
 
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.Inheritance;
-import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 
-@PersistenceCapable(identityType = IdentityType.DATASTORE, schema="chats", table="englishskill")
-@Inheritance(strategy=InheritanceStrategy.NEW_TABLE)
+@PersistenceCapable(identityType = IdentityType.DATASTORE)
 public class EnglishSkill {
 
 	private String name;

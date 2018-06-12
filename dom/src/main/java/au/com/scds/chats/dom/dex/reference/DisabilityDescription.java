@@ -1,9 +1,8 @@
 package au.com.scds.chats.dom.dex.reference;
 
-import org.apache.isis.applib.annotation.DomainObject;
-import org.apache.isis.applib.annotation.Nature;
+import org.apache.isis.applib.annotation.ViewModel;
 
-@DomainObject(objectType="chats.disabilitydescription", nature=Nature.VIEW_MODEL)
+@ViewModel
 public class DisabilityDescription {
 
 	private String description;

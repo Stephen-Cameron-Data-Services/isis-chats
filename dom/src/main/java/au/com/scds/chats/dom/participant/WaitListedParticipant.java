@@ -2,8 +2,6 @@ package au.com.scds.chats.dom.participant;
 
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.Inheritance;
-import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.Editing;
@@ -12,10 +10,8 @@ import org.apache.isis.applib.annotation.Property;
 import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.activity.Activity;
 
-
-@PersistenceCapable(identityType=IdentityType.DATASTORE, schema="chats", table="waitlistedparticipation")
-@Inheritance(strategy=InheritanceStrategy.NEW_TABLE)
-@DomainObject()
+@DomainObject(objectType = "WAITLISTED")
+@PersistenceCapable(identityType=IdentityType.DATASTORE)
 public class WaitListedParticipant extends AbstractChatsDomainEntity implements Comparable<WaitListedParticipant>{
 	
 	private Activity activity;

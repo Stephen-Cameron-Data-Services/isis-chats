@@ -20,24 +20,21 @@ package au.com.scds.chats.dom.volunteer;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
-
 import org.apache.isis.applib.annotation.*;
+import org.apache.isis.applib.DomainObjectContainer;
+import org.apache.isis.applib.annotation.DomainServiceLayout.MenuBar;
 import org.apache.isis.applib.query.QueryDefault;
-import org.apache.isis.applib.services.message.MessageService;
-import org.apache.isis.applib.services.registry.ServiceRegistry2;
-import org.apache.isis.applib.services.repository.RepositoryService;
 
 
 @DomainService(nature=NatureOfService.DOMAIN, repositoryFor = VolunteerRole.class)
+//@DomainServiceLayout(menuBar = MenuBar.SECONDARY, named = "Administration", menuOrder = "100.14")
 public class VolunteerRoles {
 
 	@Action(semantics = SemanticsOf.SAFE)
 	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
 	@MemberOrder(sequence = "1")
 	public List<VolunteerRole> listAllVolunteerRoles() {
-		List<VolunteerRole> list = repositoryService.allMatches(new QueryDefault<>(VolunteerRole.class, "findAllVolunteerRoles"));
+		List<VolunteerRole> list = container.allMatches(new QueryDefault<>(VolunteerRole.class, "findAllVolunteerRoles"));
 		return list;
 	}
 
@@ -51,10 +48,10 @@ public class VolunteerRoles {
 	
 	@Programmatic
 	protected VolunteerRole create(String name){
-		final VolunteerRole obj = new VolunteerRole();
-		serviceRegistry.injectServicesInto(obj);
+		final VolunteerRole obj = container.newTransientInstance(VolunteerRole.class);
 		obj.setName(name);
-		repositoryService.persist(obj);
+		container.persistIfNotAlready(obj);
+		container.flush();
 		return obj;		
 	}
 
@@ -78,15 +75,9 @@ public class VolunteerRoles {
 		if (name == null)
 			return null;
 		else
-			return repositoryService.firstMatch(new QueryDefault<>(VolunteerRole.class, "findVolunteerRoleByName", "name", name));
+			return container.firstMatch(new QueryDefault<>(VolunteerRole.class, "findVolunteerRoleByName", "name", name));
 	}
 
-	@Inject
-	protected RepositoryService repositoryService;
-	
-	@Inject
-	protected ServiceRegistry2 serviceRegistry;
-	
-	@Inject
-	protected MessageService messageService;
+	@javax.inject.Inject
+	DomainObjectContainer container;
 }

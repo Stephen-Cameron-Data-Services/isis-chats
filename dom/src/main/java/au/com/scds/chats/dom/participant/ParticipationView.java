@@ -21,12 +21,10 @@ package au.com.scds.chats.dom.participant;
 
 import java.util.Date;
 
-import org.apache.isis.applib.annotation.DomainObject;
-import org.apache.isis.applib.annotation.Nature;
-
+import org.apache.isis.applib.annotation.ViewModel;
 import au.com.scds.chats.dom.activity.Activity;
 
-@DomainObject(objectType="chats.participationview", nature=Nature.VIEW_MODEL)
+@ViewModel
 public class ParticipationView implements Comparable<ParticipationView>{
 
 	private Activity activity;

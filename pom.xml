@@ -35,7 +35,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     </prerequisites>
 
     <properties>
-        <isis.version>1.15.1</isis.version>
+        <isis.version>1.13.2</isis.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <assertj-core.version>2.4.0</assertj-core.version>
@@ -377,6 +377,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     <module>fixture</module>
     <!--module>integtests</module-->
     <module>webapp</module>
-    <!-- module>reports</module-->
+    <module>reports</module>
   </modules>
 </project>

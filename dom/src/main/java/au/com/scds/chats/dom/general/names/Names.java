@@ -10,9 +10,7 @@ import org.apache.isis.applib.annotation.Action;
 import org.apache.isis.applib.annotation.ActionLayout;
 import org.apache.isis.applib.annotation.BookmarkPolicy;
 import org.apache.isis.applib.annotation.CollectionLayout;
-import org.apache.isis.applib.annotation.DomainObject;
 import org.apache.isis.applib.annotation.MemberOrder;
-import org.apache.isis.applib.annotation.Nature;
 import org.apache.isis.applib.annotation.Optionality;
 import org.apache.isis.applib.annotation.Parameter;
 import org.apache.isis.applib.annotation.ParameterLayout;
@@ -28,7 +26,7 @@ import au.com.scds.chats.dom.general.Suburbs;
 import au.com.scds.chats.dom.volunteer.VolunteerRole;
 import au.com.scds.chats.dom.volunteer.VolunteerRoles;
 
-@DomainObject(objectType="chats.names", nature=Nature.VIEW_MODEL)
+@ViewModel()
 public class Names {
 	
 	public String title(){

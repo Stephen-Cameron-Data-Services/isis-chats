@@ -37,7 +37,7 @@ import au.com.scds.chats.dom.participant.Participation;
 import au.com.scds.chats.dom.volunteer.Volunteer;
 import au.com.scds.chats.dom.volunteer.VolunteeredTimeForActivity;
 
-@DomainObject(objectType = "chats.transportview", nature = Nature.VIEW_MODEL)
+@DomainObject(nature = Nature.VIEW_MODEL)
 public class TransportView {
 
 	private String activityDetails;
@@ -52,7 +52,7 @@ public class TransportView {
 	private String dropoffTime;
 	private TransportType arrivingTransportType;
 	private TransportType departingTransportType;
-
+	
 	private static DateTimeFormatter fmt = DateTimeFormat.forPattern("dd MMM yyyy HH:mm");
 
 	public TransportView() {
@@ -86,7 +86,7 @@ public class TransportView {
 		this.arrivingTransportType = participation.getArrivingTransportType();
 		this.departingTransportType = participation.getDepartingTransportType();
 	}
-
+	
 	public TransportView(VolunteeredTimeForActivity volunteeredTime) {
 		if (volunteeredTime == null)
 			return;
@@ -109,7 +109,7 @@ public class TransportView {
 		this.mobilePhone = v.getMobilePhoneNumber();
 		this.homePhone = v.getHomePhoneNumber();
 	}
-
+	
 	public String getRole() {
 		return role;
 	}
@@ -213,5 +213,6 @@ public class TransportView {
 	public void setPostcode(String postcode) {
 		this.postcode = postcode;
 	}
+
 
 }
