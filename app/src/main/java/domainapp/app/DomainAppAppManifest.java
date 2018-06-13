@@ -48,8 +48,7 @@ public class DomainAppAppManifest implements AppManifest {
                 DomainAppFixtureModule.class, // fixtures
                 DomainAppAppModule.class,     // home page service etc
                 org.isisaddons.module.security.SecurityModule.class,         // security 
-                org.isisaddons.wicket.gmap3.cpt.service.Gmap3ServiceModule.class, //Google Gmap Geocoding Service
-                org.incode.module.note.dom.NoteModule.class
+                org.isisaddons.wicket.gmap3.cpt.service.Gmap3ServiceModule.class //Google Gmap Geocoding Service
         		);
     }
 
