@@ -1,11 +1,21 @@
 
-
 = Chats Admin Application
 
 '''
+
+<<<
+
+<<Introduction,Introduction>>
+<<Implementation,Implementation>>
+<<ChatsAppBasics,Chats Application (App) Basics>>
+<<MainMenu,Main Menu>>
+<<ChatsDataEntities,Chats Data Entities>>
+<<Installation,Installation>>
+
+[#Introduction]
 == Introduction
 
-To start a brief introduction, before getting into details below: The Lifeline Chats Program aims to improve the well-being of elderly people in Tasmania by encouraging them to become more socially engaged, through the organising of Chats [underline]#activities# and then by enabling the participation of clients in those activities through organised transportation. 
+To start a brief introduction, before getting into details below: The Lifeline Chats Program aims to improve the well-being of elderly people in Tasmania by encouraging them to become more socially engaged, through the organising of Chats [underline]#activities#.
 
 This Chats Application (App) allows activities to be defined, and Chats [underline]#participants# to be booked for future activities. A key aspect of such participation is that some participant's transportation to and from the activity needs to be arranged, the Chats App enables that administrative action.
 
@@ -15,6 +25,7 @@ Social engagement is also assisted by means of regular telephone calls to Chats 
 
 There is also reporting functionality that the Chat App provides. 
 
+[#Implementation]
 == Implementation
 
 This application has been developed for Lifeline Tasmania for data management in its https://www.lifeline.org.au/tasmania/chats-program[Chats] social engagement program. 
@@ -25,6 +36,12 @@ For installation details see <<Installation,below>>.
 
 Version 2 of Chats App, based on a generic https://github.com/Stephen-Cameron-Data-Services/event-schedule[event-scheduling] app, is https://github.com/Stephen-Cameron-Data-Services/isis-chats/tree/chats2[available] but not as yet in use.
 
+[#MainMenu]
+== Main Menu
+
+{description of actions/options off the main menu}
+
+[#ChatsAppBasics]
 == Chats Application (App) Basics
 
 The Chats App has a conventional layout with menu bar across the top with a single row of menu items. Clicking on each of these gives a drop-down list of options each of which is described in sections below. These options in some cases are grouped into logical groupings via a dividing line.
@@ -41,6 +58,7 @@ Navigation in Chats App is via links and icons (both are hyperlinks). A link is 
 
 Another key concept in Chats App is that of [underline]#actions#. These are the grey 'buttons' that are placed in relevant locations within the page layout. They usually have a small icon and a name to indicate their function. Hovering over an action button will display a message describing the action in more detail. Actions are the means for Chats App users to interact with an data entity.
 
+[#ChatsDataEntities]
 == Chats Data Entities
 
 The following Chats data-model entities are described in sections below:
@@ -67,7 +85,9 @@ Activities have child [underline]#participations# and [underline]#attendances#, 
 ==== One-off Activities 
 image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/ActivityEvent.png[30,30] These kinds of activities are the base kind, they are created from the 'Activities' menu option 'Create One-off Activity'. 
 
-Enter a name and a date-time - two mandatory properties. Optionally enter a dfferent DEX 'Case' ID (name) for DEX reporting purposes, if you don't one will be created from the mandatory name. DEX has a limit of characters 30??? characters, but the prompt allows 25.
+Enter a name and a date-time - two mandatory properties. Optionally enter a dfferent DEX 'Case' ID (name) for DEX reporting purposes, if you don't one will be created from the mandatory name. DEX Case Id has a limit of 30??? characters, but the prompt allows 25.
+
+image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/OneoffActivity_GeneralTab.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/OneoffActivity_GeneralTab.png"]
 
 [#RecurringActivities]
 ==== Recurring Activities
@@ -94,6 +114,8 @@ image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom
 [#ChatsCalls]
 === Chats Calls
 
+////
+
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/activity-menu.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/activity-menu.png"]
 
 
@@ -111,6 +133,8 @@ image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/im
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/reports-menu.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/reports-menu.png"]
 
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/notes-menu.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/notes-menu.png"]
+
+////
 
 [#Installation]
 == Installation
