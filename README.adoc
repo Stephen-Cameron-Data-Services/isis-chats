@@ -65,11 +65,15 @@ Activities have child [underline]#participations# and [underline]#attendances#, 
 ==== One-off Activities 
 image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/ActivityEvent.png[30,30] These kinds of activities are the base kind, they are created from the 'Activities' menu option 'Create One-off Activity'. 
 
-Enter a name and a date-time - two mandatory properties. Optionally enter a dfferent name for DEX reporting purposes, if you don't one will be created from the mandatory name. DEX has a limit of characters 30??? characters, but the prompt allows 25.
+Enter a name and a date-time - two mandatory properties. Optionally enter a dfferent DEX 'Case' ID (name) for DEX reporting purposes, if you don't one will be created from the mandatory name. DEX has a limit of characters 30??? characters, but the prompt allows 25.
 
 [#RecurringActivities]
 ==== Recurring Activities
-image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/RecurringActivity.png[40,40]
+image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/RecurringActivity.png[40,40] test
+
+image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/RecurringActivity.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/RecurringActivity.png"]
+
+image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/RecurringActivity_ParticipationsTab.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/RecurringActivity_ParticipationsTab.png"]
 
 image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/ParentedActivityEvent.png[40,40]
 
@@ -90,7 +94,7 @@ image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom
 
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/activity-menu.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/activity-menu.png"]
 
-image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/recurring-activity.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/recurring-activity.png"]
+
 
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/recurring-activity-update-general.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/recurring-activity-update-general.png"]
 
