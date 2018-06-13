@@ -37,7 +37,9 @@ Underneath the menu bar is the body of the page, where, usually, a specific Chat
 
 On some types of entities, tabs are used to aid navigation within an entity. The tab labels are diplayed as a row under the entity title, clicking on a tab label reveals a different subset of the entities' data.
 
-Navigation in Chats App is via links and icons (both are hyperlinks). A link is seen as underlined (light-blue) text. Specific icons are used to represent different kinds or 'types' of data entities so providing a visual cue. Icon type hyperlinks are displayed on the left of all table rows to allow the user to 'drill down' to get a full display of the child data entity (partially displayed in the row).
+Navigation in Chats App is via links and icons (both are hyperlinks). A link is seen as underlined (light-blue) text. Specific icons are used to represent different kinds or 'types' of data entities so providing a visual cue. Icon type hyperlinks are displayed on the left of all table rows to allow the user to 'drill down' to get a full display of the child data entity (partially displayed in the row
+
+Another key concept in Chats App is that of [underline]#actions#. These are the grey 'buttons' that are placed in relevant locations within the page layout. They usually have a small icon and a name to indicate their function. Hovering over an action button will display a message describing the action in more detail. Actions are the means for Chats App users to interact with an data entity.
 
 == Chats Data Entities
 
@@ -69,7 +71,7 @@ Enter a name and a date-time - two mandatory properties. Optionally enter a dffe
 
 [#RecurringActivities]
 ==== Recurring Activities
-image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/RecurringActivity.png[40,40] test
+image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/RecurringActivity.png[40,40] In the screen capture image below a 'Meet & Make' recurring activity is shown with the 'General' tab content visible. There are four groups of data items with headings: 'General', 'Scheduling' 'Times' and 'Location'. Where possible these groups are standardised between entities to aid familiarity.
 
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/RecurringActivity.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/RecurringActivity.png"]
 
