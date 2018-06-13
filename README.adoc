@@ -1,16 +1,14 @@
 
 = Chats Admin Application
 
-'''
-
 <<<
 
-<<Introduction,Introduction>>
-<<Implementation,Implementation>>
-<<ChatsAppBasics,Chats Application (App) Basics>>
-<<MainMenu,Main Menu>>
-<<ChatsDataEntities,Chats Data Entities>>
-<<Installation,Installation>>
+* <<Introduction,Introduction>>
+* <<Implementation,Implementation>>
+* <<ChatsAppBasics,Chats Application (App) Basics>>
+* <<MainMenu,Main Menu>>
+* <<ChatsDataEntities,Chats Data Entities>>
+* <<Installation,Installation>>
 
 [#Introduction]
 == Introduction
