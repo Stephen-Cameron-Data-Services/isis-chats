@@ -1,6 +1,88 @@
 
 
-= CHATS PROGRAM ADMIN APPLICATION
+= Chats Admin Application
+
+'''
+== Introduction
+
+To start a brief introduction, before getting into details below: The Lifeline Chats Program aims to improve the well-being of elderly people in Tasmania by encouraging them to become more socially engaged, through the organising of Chats [underline]#activities# and then by enabling the participation of clients in those activities through organised transportation. 
+
+This Chats Application (App) allows activities to be defined, and Chats [underline]#participants# to be booked for future activities. A key aspect of such participation is that some participant's transportation to and from the activity needs to be arranged, the Chats App enables that administrative action.
+
+An aspect of the Chats program is that some of the activities are regular. These are referred to as [underline]#recurring activities#. A participant booked against a recurring activity intends to participate in the individual (actual) activies of that recurring activity.
+
+Social engagement is also assisted by means of regular telephone calls to Chats participants. Chats [underline]#calls# are scheduled and then completed when a telephone call is made. Often these calls are made by a Chats [underline]#volunteer#.
+
+There is also reporting functionality that the Chat App provides. 
+
+== Implementation
+
+This application has been developed for Lifeline Tasmania for data management in its https://www.lifeline.org.au/tasmania/chats-program[Chats] social engagement program. 
+
+It is a application developed on the open-source http://isis.apache.org/[Apache Isis] Java web-application framework.
+
+For installation details see <<Installation,below>>.
+
+Version 2 of Chats App, based on a generic https://github.com/Stephen-Cameron-Data-Services/event-schedule[event-scheduling] app, is https://github.com/Stephen-Cameron-Data-Services/isis-chats/tree/chats2[available] but not as yet in use.
+
+== Chats Application (App) Basics
+
+The Chats App has a conventional layout with menu bar across the top with a single row of menu items. Clicking on each of these gives a drop-down list of options each of which is described in sections below. These options in some cases are grouped into logical groupings via a dividing line.
+
+On the left hand side of the menu bar is a small vertical bar (aqua blue in the following image). Clicking on this bar gives a list of bookmarks, which are links to entities that the user has prevously visited in the current session.
+
+The top-left 'Chats App' text is a hyperlink back to the 'home' page.
+
+Underneath the menu bar is the body of the page, where, usually, a specific Chats data 'entity' is displayed. Each with an icon and title at the top, and then groups of data items and/or tables of child entities. Each such group and table also has a title at the top. The arrangement of items within groups, and column orders within tables, is called the 'page layout'. 
+
+On some types of entities, tabs are used to aid navigation within an entity. The tab labels are diplayed as a row under the entity title, clicking on a tab label reveals a different subset of the entities' data.
+
+Navigation in Chats App is via links and icons (both are hyperlinks). A link is seen as underlined (light-blue) text. Specific icons are used to represent different kinds or 'types' of data entities so providing a visual cue. Icon hyperlinks are displayed on the left of all table rows to allow the user to 'drill down' to get a full display of the child data entity (partially displayed in the row).
+
+== Chats Data Entities
+
+The following Chats data-model entities are described in sections below:
+
+* <<Activities, Activities>>
+** <<One-offActivities, One-off Activities>>
+** <<RecurringActivities, Recurring Activities>>
+* <<Participants, Participants>>
+** <<Participation, Participation>>
+** <<Attendance, Attendance>>
+* <<Volunteers, Volunteers>>
+* <<ChatsCalls, Chats Calls>>
+
+[#Activities]
+=== Activities
+
+Activities are scheduled by Chats Administrators in the Chats App. There are two ways to create an Activity, either as a [underline]#One-off Activity# or by first creating a [underline]#Recurring Activity# as a 'parent' and then by scheduling 'child' activities off that parent.
+
+When looking at a list of activities from a search, both the one-off and child activities are seen, as they are basically the same, but have a slightly different icon, more details below.
+
+[#One-offActivities]
+==== One-off Activities 
+image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/ActivityEvent.png[40,40] This 
+
+[#RecurringActivities]
+==== Recurring Activities
+image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/RecurringActivity.png[40,40]
+
+image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/ParentedActivityEvent.png[40,40]
+
+[#Participants]
+=== Participants
+
+[#Participation]
+==== Participation
+
+[#Attendance]
+==== Attendance
+
+[#Volunteers]
+=== Volunteers
+
+[#ChatsCalls]
+=== Chats Calls
 
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/activity-menu.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/activity-menu.png"]
 
@@ -19,3 +101,6 @@ image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/im
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/reports-menu.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/reports-menu.png"]
 
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/notes-menu.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/notes-menu.png"]
+
+[#Installation]
+== Installation
