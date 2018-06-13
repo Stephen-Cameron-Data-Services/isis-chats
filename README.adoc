@@ -37,7 +37,7 @@ Underneath the menu bar is the body of the page, where, usually, a specific Chat
 
 On some types of entities, tabs are used to aid navigation within an entity. The tab labels are diplayed as a row under the entity title, clicking on a tab label reveals a different subset of the entities' data.
 
-Navigation in Chats App is via links and icons (both are hyperlinks). A link is seen as underlined (light-blue) text. Specific icons are used to represent different kinds or 'types' of data entities so providing a visual cue. Icon hyperlinks are displayed on the left of all table rows to allow the user to 'drill down' to get a full display of the child data entity (partially displayed in the row).
+Navigation in Chats App is via links and icons (both are hyperlinks). A link is seen as underlined (light-blue) text. Specific icons are used to represent different kinds or 'types' of data entities so providing a visual cue. Icon type hyperlinks are displayed on the left of all table rows to allow the user to 'drill down' to get a full display of the child data entity (partially displayed in the row).
 
 == Chats Data Entities
 
@@ -57,11 +57,15 @@ The following Chats data-model entities are described in sections below:
 
 Activities are scheduled by Chats Administrators in the Chats App. There are two ways to create an Activity, either as a [underline]#One-off Activity# or by first creating a [underline]#Recurring Activity# as a 'parent' and then by scheduling 'child' activities off that parent.
 
-When looking at a list of activities from a search, both the one-off and child activities are seen, as they are basically the same, but have a slightly different icon, more details below.
+When looking at a list of activities from a search, both the one-off and child activities are seen, as they are basically the same, but have a slightly different icon, more details below. A separate search for recurring activities is provided.
+
+Activities have child [underline]#participations# and [underline]#attendances#, a participation is essentially an intention to attend an activity (a 'booking') and an attendance is essentially actual attendance by the participant at the activity. There are a few reasons for  separating these two, one reason is that recurring activity parents and children have participations but only children have attendances.
 
 [#One-offActivities]
 ==== One-off Activities 
-image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/ActivityEvent.png[40,40] This 
+image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/ActivityEvent.png[30,30] These kinds of activities are the base kind, they are created from the 'Activities' menu option 'Create One-off Activity'. 
+
+Enter a name and a date-time - two mandatory properties. Optionally enter a dfferent name for DEX reporting purposes, if you don't one will be created from the mandatory name. DEX has a limit of characters 30??? characters, but the prompt allows 25.
 
 [#RecurringActivities]
 ==== Recurring Activities

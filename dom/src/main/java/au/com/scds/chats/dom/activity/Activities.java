@@ -125,7 +125,7 @@ public class Activities {
 	}
 
 	@Action(semantics = SemanticsOf.SAFE)
-	@ActionLayout(bookmarking = BookmarkPolicy.NEVER)
+	@ActionLayout(bookmarking = BookmarkPolicy.NEVER, named="Create One-off Activity")
 	@MemberOrder(sequence = "2")
 	public ActivityEvent createOneOffActivity(
 			@Parameter(optionality = Optionality.MANDATORY) @ParameterLayout(named = "Activity name") final String name,
