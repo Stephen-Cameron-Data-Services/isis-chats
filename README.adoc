@@ -8,6 +8,7 @@
 * <<ChatsAppBasics,Chats Application (App) Basics>>
 * <<MainMenu,Main Menu>>
 * <<ChatsDataEntities,Chats Data Entities>>
+* <<Administration,Administration>>
 * <<Installation,Installation>>
 
 [#Introduction]
@@ -37,16 +38,14 @@ Version 2 of Chats App, based on a generic https://github.com/Stephen-Cameron-Da
 [#MainMenu]
 == Main Menu
 
-{description of actions/options off the main menu}
-
-[#ChatsAppBasics]
-== Chats Application (App) Basics
-
 The Chats App has a conventional layout with menu bar across the top with a single row of menu items. Clicking on each of these gives a drop-down list of options each of which is described in sections below. These options in some cases are grouped into logical groupings via a dividing line.
 
 On the left hand side of the menu bar is a small vertical bar (aqua blue in the following image). Clicking on this bar gives a list of bookmarks, which are links to entities that the user has prevously visited in the current session.
 
 The top-left 'Chats App' text is a hyperlink back to the 'home' page.
+
+[#ChatsAppBasics]
+== Chats Application (App) Basics
 
 Underneath the menu bar is the body of the page, where, usually, a specific Chats data 'entity' is displayed. Each with an icon and title at the top, and then groups of data items and/or tables of child entities. Each such group and table also has a title at the top. The arrangement of items within groups, and column orders within tables, is called the 'page layout'. 
 
@@ -61,6 +60,7 @@ Another key concept in Chats App is that of [underline]#actions#. These are the 
 
 The following Chats data-model entities are described in sections below:
 
+* <<Persons, Persons>>
 * <<Activities, Activities>>
 ** <<One-offActivities, One-off Activities>>
 ** <<RecurringActivities, Recurring Activities>>
@@ -68,14 +68,22 @@ The following Chats data-model entities are described in sections below:
 ** <<Participation, Participation>>
 ** <<Attendance, Attendance>>
 * <<Volunteers, Volunteers>>
+** <<VolunteeredTime, Volunteered Time>>
 * <<ChatsCalls, Chats Calls>>
+
+[#Persons]
+=== Persons
+
+image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/general/Person.png[30,30] A Person entity in Chats App holds the contact details, address and some other items relating to a specific individual person. A new person is created automatically when a participant or volunteer is created. Validation checks are done to see if a person with the same identifying details is present and if they are linked to an existing participant or volunteer.
+
+The key personal details of firstname, surname, date-of-birth and sex, which are entered at the time of creation of a new participant (or volunteer), are what are used to identify a unique person. The contact details and address of the person are displayed and can be updated from their participant record, along with the other data that is participant related. Other person data is needed but this described in the <<Administration,Administration>> section.
 
 [#Activities]
 === Activities
 
 Activities are scheduled by Chats Administrators in the Chats App. There are two ways to create an Activity, either as a [underline]#One-off Activity# or by first creating a [underline]#Recurring Activity# as a 'parent' and then by scheduling 'child' activities off that parent.
 
-When looking at a list of activities from a search, both the one-off and child activities are seen, as they are basically the same, but have a slightly different icon, more details below. A separate search for recurring activities is provided.
+When looking at a list of activities from a search, both the one-off and child activities are seen, as they are basically the same, but have a slightly different icon the 'parented' activities having a yellow background image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/ParentedActivityEvent.png[20,20] (more details below). A separate search for recurring activities is provided.
 
 Activities have child [underline]#participations# and [underline]#attendances#, a participation is essentially an intention to attend an activity (a 'booking') and an attendance is essentially actual attendance by the participant at the activity. There are a few reasons for  separating these two, one reason is that recurring activity parents and children have participations but only children have attendances.
 
@@ -109,8 +117,32 @@ image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom
 [#Volunteers]
 === Volunteers
 
+[#VolunteeredTime]
+==== Volunteered Time
+
 [#ChatsCalls]
 === Chats Calls
+
+[#Administration]
+== Administration
+
+[#RegionnAdministration]
+=== Regions
+
+Regions are an important part of the Chats App. Most Chats data entities have an assigned region (SOUTH, NORTH, NORTH-WEST) and these values get used to control what data is visible to Chats App users.
+
+The way this happens is through use of a security module installed as an extra "add-on" to the Apache Isis framework. Basically the framework determines a 'path' for each entity and compares that calculated path (essentially the region's name) to a path defined for each App user in the security module. If there is a match then the user is allowed to see that entity. See the <<UserAdministration, Users and Security>> section for more details.
+
+[#PersonAdministration]
+=== Persons
+
+[#StatusAdministration]
+=== Participant & Volunteer Status
+
+[#UserAdministration]
+=== Users and Security
+
+The http://platform.incode.org/modules/spi/security/spi-security.html[Incode Security Module], an add-on module for Apache Isis, is used by Chats App. It allows control of Users, Roles and Permissions. Chats App also makes use of its http://platform.incode.org/modules/spi/security/spi-security.html#_applicationtenancy_using_paths[Application Tenancy] via "paths" capability to restrict data visibility between Chats regions.
 
 ////
 
