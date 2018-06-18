@@ -113,10 +113,10 @@ the list. There are three standard display options: Table, Hide and Excel. Table
 the list items, Hide simply removes the list items from view (Table brings them back), Excel presents
 an action button 'Download as Excel' instead of the list, which if clicked then prompts to display or download 
 the data as spreadsheet (.xlsx) file (just of what is in the table view so if not a complete enough export
- a custom action is needed).
+a custom action is needed).
  
- Other actions may be present and grey in colour. Add and Remove buttons are commonly present to add a new entity into 
- the list and remove an entry from the list.
+Other actions may be present and grey in colour. Add and Remove buttons are commonly present to add a new entity into 
+the list and remove an entry from the list.
 
 [#MainMenu]
 == Main Menu Items
