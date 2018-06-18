@@ -8,6 +8,7 @@
 * <<ChatsAppBasics,Chats Application (App) Basics>>
 * <<MainMenu, Main Menu Items>>
 * <<ChatsDataEntities,Chats Data Entities>>
+* <<Reports,Reports>>
 * <<Administration,Administration>>
 * <<Installation,Installation>>
 
@@ -75,7 +76,8 @@ The top-left 'Chats App' text is a hyperlink back to the 'home' page.
 Underneath the menu bar is the body of the page, where, usually, a specific Chats data 'entity' is 
 displayed, each with an icon and title at the top, and then groups of data items and/or tables of 
 child entities. Each such group and table also has a title at the top. The arrangement of items within
-groups, and column orders within tables, is called the 'page layout'. 
+groups, and column orders within tables, is called the 'page layout'. The title of entities is commonly 
+used for options lists of the kind of entity.
 
 In searches, usually from a main menu option, a list is returned that fills the page body. Such lists may
 be lists of entities, one per row, or, in the case of some reports each row represents a view across 
@@ -104,12 +106,17 @@ in more detail. Actions are the means for Chats App users to interact with an da
 ==== Lists (collections)
 
 Other than the use of distinctive icons for navigation into lists mentioned above, another key aspect of
-lists is the left-most action button in the header of lists. This is always present and gives options to
-change the display of the list. There are three standard display options: Table, Hide and Excel. Table is 
-the standard view of the list items, Hide simply removes the list items from view (Table brings them back), 
-Excel offers another action button 'Download as Excel' which if clicked then prompts to display or download 
+lists is the action buttons that appear in the header bar of the list. 
+
+The left-most (special) blue action button is always present and gives options to change the display of
+the list. There are three standard display options: Table, Hide and Excel. Table is the standard view of
+the list items, Hide simply removes the list items from view (Table brings them back), Excel presents
+an action button 'Download as Excel' instead of the list, which if clicked then prompts to display or download 
 the data as spreadsheet (.xlsx) file (just of what is in the table view so if not a complete enough export
  a custom action is needed).
+ 
+ Other actions may be present and grey in colour. Add and Remove buttons are commonly present to add a new entity into 
+ the list and remove an entry from the list.
 
 [#MainMenu]
 == Main Menu Items
@@ -175,6 +182,7 @@ The menu items and their options are as follows:
 
 Descriptions of the menu options (actions) follow, with links to more detail.
 
+[#ActivitiesMenu]
 [#ActivitiesMenu_CreateRecurringActivity]
 ==== Activities -> Create Recurring Activity
 
@@ -199,7 +207,7 @@ The DEX Case Id will be created from the entered name if none is entered (by rem
 
 The region of the new One-off Activity is the region assigned to the Chats App user.
 
-[#<Menu_CreateOneoffActivity]
+[#<ActivitiesMenu_CreateOneoffActivity]
 ==== Activities -> Find Recurring Activity By Name
 
 To find Recurring Activity 'parents' enter a name (or a partial name). This is a case sensitive search.  Only shows 
@@ -220,17 +228,25 @@ Generates a paged listing of all parent Recurring Activities for the region of t
 [#ActivitiesMenu_ListAllFutureActivities]
 ==== Activities -> List All Future Activities
 
-Generates a paged listing of all actual activities whose start date-time is later than the current date-time. Only shows such
-future activities in the region of the current Chats App user.
+Generates a paged listing of all actual activities whose start date-time is later than the current date-time. Only 
+shows such future activities in the region of the current Chats App user.
 
 [#ActivitiesMenu_ListAllFutureActivitiesInPeriod]
 ==== Activities -> List All Future Activities In Period
 
-Generates a paged listing of all actual activities whose start date-time lies within the Start and End date-times entered. Only shows 
-the activities in the region of the current Chats App user.
+Generates a paged listing of all actual activities whose start date-time lies within the Start and End date-times 
+entered. Only shows the activities in the region of the current Chats App user.
 
+[#ParticipantsMenu]
 [#ParticipantsMenu_CreateParticipant]
 ==== Participants -> Create
+
+To create a new Participant the user is prompted for the Chats Participant's first-name, surname, date-of-birth 
+and sex. These data items are considered to uniquely identify a person (and are in fact the items used to calculate
+the Statistical Linkage Key (SLK) used in the <<DEX reports>>).
+
+[#Participants]
+=== Participants
 
 [#ParticipantsMenu_FindActiveParticipant]
 ==== Participants -> Find Active Participant
@@ -253,6 +269,8 @@ the activities in the region of the current Chats App user.
 [#ParticipantsMenu_ListToExitParticipants]
 ==== Participants -> List To Exit Participants
 
+[#VolunteersMenu]
+=== Volunteers
 
 [#VolunteersMenu_CreateVolunteer]
 ==== Volunteers -> Create
@@ -273,6 +291,9 @@ the activities in the region of the current Chats App user.
 ==== Volunteers -> List To Exit Volunteers
 
 
+[#AttendancesMenu]
+=== Attendances
+
 [#AttendancesMenu_ListAttendanceListsInPeriod]
 ==== Attendances -> List Attendance Lists In Period
 
@@ -291,6 +312,8 @@ the activities in the region of the current Chats App user.
 [#AttendancesMenu_RemoveAttendFromList]
 ==== Attendances -> Remove Attend From List
 
+[#CallsMenu]
+=== Calls
 
 [#CallsMenu_CreateCall]
 ==== Calls -> Create
@@ -318,6 +341,9 @@ the activities in the region of the current Chats App user.
 
 [#CallsMenu_CreateCalendarDayCallSchedule]
 ==== Calls -> Create Calendar Day Call Schedule
+
+[#ReportsMenu]
+=== Reports
 
 [#ReportsMenu_FindParticipantsCallsAndAttendances]
 ==== Reports -> Find Participants Call's And Attendances
@@ -348,9 +374,6 @@ the activities in the region of the current Chats App user.
 
 [#ReportsMenu_FindParticipantsWithBirthdayBetween]
 ==== Reports -> Find Participants With Birthday Between
-
-
-
 
 [#ChatsDataEntities]
 == Chats Data Entities
@@ -445,6 +468,13 @@ image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom
 [#ChatsCall]
 === Chats Calls
 
+[#Reports]
+== Reports
+
+Different Chats App report types are described under the <<ReportsMenu, Reports Menu>> section and its different report generation actions/options.
+
+The monthly reporting to the DSS DEX upload site is described in the following Administration / <<DEXAdministration, DSS DEX monthly reporting>> section.
+
 [#Administration]
 == Administration
 
@@ -456,9 +486,9 @@ Regions are an important part of the Chats App. Most Chats data entities have an
 
 The way this happens is through use of a security module installed as an extra "add-on" to the Apache 
 Isis framework. Basically the framework determines a 'path' for each entity and compares that calculated
- path (essentially the region's name) to a path defined for each App user in the security module. If 
- there is a match then the user is allowed to see that entity. See the <<UserAdministration, Users and
-  Security>> section for more details.
+path (essentially the region's name) to a path defined for each App user in the security module. If 
+there is a match then the user is allowed to see that entity. See the <<UserAdministration, Users and
+Security>> section for more details.
 
 [#PersonAdministration]
 === Persons
@@ -473,6 +503,22 @@ The http://platform.incode.org/modules/spi/security/spi-security.html[Incode Sec
 add-on module for Apache Isis, is used by Chats App. It allows control of Users, Roles and Permissions.
  Chats App also makes use of its 
  http://platform.incode.org/modules/spi/security/spi-security.html#_applicationtenancy_using_paths[Application Tenancy] via "paths" capability to restrict data visibility between Chats regions.
+
+[#DEXAdministration]
+=== DSS DEX monthly reporting
+
+Generate XML file on a regional basis for uploading via DEX web portal.
+Uploaded files can be rejected if contain invalid data, get an errors file link in response.
+Upload file generation finds likely errors and gives a list instead of upload XML file.
+
+==== Mapping Chats data to DEX 'Case', 'Client' and 'Session'
+
+Case = Activity (via DEX Case Id)
+Client = Participant (and volunteers via include as Participant)
+Session = Activity or a Chats Call (on a day) event
+
+==== Validating Chats data prior to report upload
+
 
 ////
 
