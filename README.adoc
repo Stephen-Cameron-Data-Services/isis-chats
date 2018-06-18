@@ -62,60 +62,207 @@ visited in the current session.
 
 The top-left 'Chats App' text is a hyperlink back to the 'home' page.
 
+=== Menu Items and Option (Action) Lists
+
 The menu items and their options are as follows:
 
 * *Activities*
-** *Create Recurring Activity* (<<Menu_CreateRecurringActivity, _details_>>)
-** *Create One-off Activity* (<<Menu_CreateOneoffActivity, _details_>>)
-** *Find Recurring Activity By Name*  (<<Menu_CreateOneoffActivity, _details_>>)
+** *Create Recurring Activity* (<<ActivitiesMenu_CreateRecurringActivity, _details_>>)
+** *Create One-off Activity* (<<ActivitiesMenu_CreateOneoffActivity, _details_>>)
+** *Find Recurring Activity By Name*  (<<ActivitiesMenu_CreateOneoffActivity, _details_>>)
 ** *Find Activity By Name*  (<<Menu_FindActivityByName, _details_>>)
-** *List All Recurring Activities*  (<<Menu_ListAllRecurringActivities, _details_>>)
-** *List All Future Activities*  (<<Menu_ListAllFutureActivities, _details_>>)
-** *List All Future Activities In Period*  (<<Menu_ListAllFutureActivitiesInPeriod, _details_>>)
+** *List All Recurring Activities*  (<<ActivitiesMenu_ListAllRecurringActivities, _details_>>)
+** *List All Future Activities*  (<<ActivitiesMenu_ListAllFutureActivities, _details_>>)
+** *List All Future Activities In Period*  (<<ActivitiesMenu_ListAllFutureActivitiesInPeriod, _details_>>)
 * *Participants*
-** *Create* (<<Menu_CreateParticipant, _details_>>)
-** *Find Active Participant* (<<Menu_FindActiveParticipant, _details_>>)
-** *Find By Surname* (<<Menu_FindBySurname, _details_>>)
-** *Find Future Participation* (<<Menu_FindFutureParticipation, _details_>>)
-** *List Active Participants* (<<Menu_ListActiveParticipants, _details_>>)
-** *List Exited Participants* (<<Menu_ListExitedParticipants, _details_>>)
-** *List Inactive Participants* (<<Menu_ListInactiveParticipants, _details_>>)
-** *List To Exit Participants* (<<Menu_ListToExitParticipants, _details_>>)
+** *Create* (<<ParticipantsMenu_CreateParticipant, _details_>>)
+** *Find Active Participant* (<<ParticipantsMenu_FindActiveParticipant, _details_>>)
+** *Find By Surname* (<<ParticipantsMenu_FindBySurname, _details_>>)
+** *Find Future Participation* (<<ParticipantsMenu_FindFutureParticipation, _details_>>)
+** *List Active Participants* (<<ParticipantsParticipantsMenu_ListActiveParticipants, _details_>>)
+** *List Exited Participants* (<<ParticipantsMenu_ListExitedParticipants, _details_>>)
+** *List Inactive Participants* (<<ParticipantsMenu_ListInactiveParticipants, _details_>>)
+** *List To Exit Participants* (<<ParticipantsMenu_ListToExitParticipants, _details_>>)
 * *Volunteers*
-** *Create*  (<<Menu_CreateVolunteer, _details_>>)
-** *Find Active Volunteer*  (<<Menu_FindActiveVolunteer, _details_>>)
-** *Find By Surname*  (<<Menu_FindVolunteerBySurname, _details_>>)
-** *List Active Volunteers*  (<<Menu_ListActiveVolunteers, _details_>>)
-** *List Inactive Volunteers*  (<<Menu_ListInactiveVolunteers, _details_>>)
-** *List To Exit Volunteers*  (<<Menu_ListToExitVolunteers, _details_>>)
+** *Create*  (<<VolunteersMenu_CreateVolunteer, _details_>>)
+** *Find Active Volunteer*  (<<VolunteersMenu_FindActiveVolunteer, _details_>>)
+** *Find By Surname*  (<<VolunteersMenu_FindVolunteerBySurname, _details_>>)
+** *List Active Volunteers*  (<<VolunteersMenu_ListActiveVolunteers, _details_>>)
+** *List Inactive Volunteers*  (<<VolunteersMenu_ListInactiveVolunteers, _details_>>)
+** *List To Exit Volunteers*  (<<VolunteersMenu_ListToExitVolunteers, _details_>>)
 * *Attendances*
-** *List Attendance Lists In Period*  (<<Menu_ListAttendanceListsInPeriod, _details_>>)
-** *Find Attendance Lists By Activity Name*  (<<Menu_FindAttendanceListsByActivityName, _details_>>)
-** *List Attendances In Period*  (<<Menu_ListAttendancesInPeriod, _details_>>)
-** *Find Attendances By Activity Name*  (<<Menu_FindAttendancesByActivityName, _details_>>)
-** *Find Attendances By Participant*  (<<Menu_FindAttendancesByParticipant, _details_>>)
-** *Remove Attend From List*  (<<Menu_RemoveAttendFromList, _details_>>)
+** *List Attendance Lists In Period*  (<<AttendancesMenu_ListAttendanceListsInPeriod, _details_>>)
+** *Find Attendance Lists By Activity Name*  (<<AttendancesMenu_FindAttendanceListsByActivityName, _details_>>)
+** *List Attendances In Period*  (<<AttendancesMenu_ListAttendancesInPeriod, _details_>>)
+** *Find Attendances By Activity Name*  (<<AttendancesMenu_FindAttendancesByActivityName, _details_>>)
+** *Find Attendances By Participant*  (<<AttendancesMenu_FindAttendancesByParticipant, _details_>>)
+** *Remove Attend From List*  (<<AttendancesMenu_RemoveAttendFromList, _details_>>)
 * *Calls*
-** *Create* (<<Menu_CreateCall, _details_>>)
-** *Find Care Calls* (<<Menu_FindCareCalls, _details_>>)
-** *Find Reconnect Calls* (<<Menu_FindReconnectCalls, _details_>>)
-** *Find Survey Calls* (<<Menu_FindSurveyCalls, _details_>>)
-** *Find Scheduled Calls* (<<Menu_FindScheduledCalls, _details_>>)
-** *Find By Surname* (<<Menu_FindBySurname, _details_>>)
-** *List Calls In Period* (<<Menu_ListCallsInPeriod, _details_>>)
-** *List Daily Call Schedules For Volunteer* (<<Menu_ListDailyCallSchedulesForVolunteer, _details_>>)
-** *Create Calendar Day Call Schedule* (<<Menu_CreateCalendarDayCallSchedule, _details_>>)
+** *Create* (<<CallsMenu_CreateCall, _details_>>)
+** *Find Care Calls* (<<CallsMenu_FindCareCalls, _details_>>)
+** *Find Reconnect Calls* (<<CallsMenu_FindReconnectCalls, _details_>>)
+** *Find Survey Calls* (<<CallsMenu_FindSurveyCalls, _details_>>)
+** *Find Scheduled Calls* (<<CallsMenu_FindScheduledCalls, _details_>>)
+** *Find By Surname* (<<CallsMenu_FindBySurname, _details_>>)
+** *List Calls In Period* (<<CallsMenu_ListCallsInPeriod, _details_>>)
+** *List Daily Call Schedules For Volunteer* (<<CallsMenu_ListDailyCallSchedulesForVolunteer, _details_>>)
+** *Create Calendar Day Call Schedule* (<<CallsMenu_CreateCalendarDayCallSchedule, _details_>>)
 * *Reports*
-** *Find Participants Call's And Attendances* (<<Menu_FindParticipantsCallsAndAttendances, _details_>>)
-** *List Participant Involvement In Period* (<<Menu_ListParticipantInvolvementInPeriod, _details_>>)
-** *List Participant Involvement In Period Totals* (<<Menu_ListParticipantInvolvementInPeriod Totals, _details_>>)
-** *Find Volunteer's Times* (<<Menu_FindVolunteersTimes, _details_>>)
-** *List Volunteer Involvement In Period* (<<Menu_ListVolunteerInvolvementInPeriod, _details_>>)
-** *List Volunteer Involvement In Period Totals* (<<Menu_ListVolunteerInvolvementInPeriodTotals, _details_>>)
-** *Find Most Inactive Participant* (<<Menu_FindMostInactiveParticipant, _details_>>)
-** *Find Participant Activity* (<<Menu_FindParticipantActivity, _details_>>)
-** *Mail Merge Data* (<<Menu_MailMergeData, _details_>>)
-** *Find Participants With Birthday Between* (<<Menu_FindParticipantsWithBirthdayBetween, _details_>>)
+** *Find Participants Call's And Attendances* (<<ReportsMenu_FindParticipantsCallsAndAttendances, _details_>>)
+** *List Participant Involvement In Period* (<<ReportsMenu_ListParticipantInvolvementInPeriod, _details_>>)
+** *List Participant Involvement In Period Totals* (<<ReportsMenu_ListParticipantInvolvementInPeriod Totals, _details_>>)
+** *Find Volunteer's Times* (<<ReportsMenu_FindVolunteersTimes, _details_>>)
+** *List Volunteer Involvement In Period* (<<ReportsMenu_ListVolunteerInvolvementInPeriod, _details_>>)
+** *List Volunteer Involvement In Period Totals* (<<ReportsMenu_ListVolunteerInvolvementInPeriodTotals, _details_>>)
+** *Find Most Inactive Participant* (<<ReportsMenu_FindMostInactiveParticipant, _details_>>)
+** *Find Participant Activity* (<<ReportsMenu_FindParticipantActivity, _details_>>)
+** *Mail Merge Data* (<<ReportsMenu_MailMergeData, _details_>>)
+** *Find Participants With Birthday Between* (<<ReportsMenu_FindParticipantsWithBirthdayBetween, _details_>>)
+
+=== Menu Option (Action) Descriptions
+
+Descriptions of the menu options (actions) follow, with links to more detail.
+
+[#ActivitiesMenu_CreateRecurringActivity]
+==== Activities -> Create Recurring Activity
+
+[#ActivitiesMenu_CreateOneoffActivity]
+==== Activities -> Create One-off Activity
+
+[#<Menu_CreateOneoffActivity]
+==== Activities -> Find Recurring Activity By Name
+
+[#ActivitiesMenu_FindActivityByName]
+==== Activities -> Find Activity By Name
+
+[#ActivitiesMenu_ListAllRecurringActivities]
+==== Activities -> List All Recurring Activities
+
+[#ActivitiesMenu_ListAllFutureActivities]
+==== Activities -> List All Future Activities
+
+[#ActivitiesMenu_ListAllFutureActivitiesInPeriod]
+==== Activities -> List All Future Activities In Period
+
+[#ParticipantsMenu_CreateParticipant]
+==== Participants -> Create
+
+[#ParticipantsMenu_FindActiveParticipant]
+==== Participants -> Find Active Participant
+
+[#ParticipantsMenu_FindBySurname]
+==== Participants -> Find By Surname
+
+[#ParticipantsMenu_FindFutureParticipation]
+==== Participants -> Find Future Participation
+
+[#ParticipantsMenu_ListActiveParticipants]
+==== Participants -> List Active Participants
+
+[#ParticipantsMenu_ListExitedParticipants]
+==== Participants -> List Exited Participants
+
+[#ParticipantsMenu_ListInactiveParticipants]
+==== Participants -> List Inactive Participants
+
+[#ParticipantsMenu_ListToExitParticipants]
+==== Participants -> List To Exit Participants
+
+
+[#VolunteersMenu_CreateVolunteer]
+==== Volunteers -> Create
+
+[#VolunteersMenu_FindActiveVolunteer]
+==== Volunteers -> Find Active Volunteer
+
+[#VolunteersMenu_FindVolunteerBySurname]
+==== Volunteers -> Find By Surname
+
+[#VolunteersMenu_ListActiveVolunteers]
+==== Volunteers -> List Active Volunteers
+
+[#VolunteersMenu_ListInactiveVolunteers]
+==== Volunteers -> List Inactive Volunteers
+
+[#VolunteersMenu_ListToExitVolunteers]
+==== Volunteers -> List To Exit Volunteers
+
+
+[#AttendancesMenu_ListAttendanceListsInPeriod]
+==== Attendances -> List Attendance Lists In Period
+
+[#AttendancesMenu_FindAttendanceListsByActivityName]
+==== Attendances -> Find Attendance Lists By Activity Name
+
+[#AttendancesMenu_ListAttendancesInPeriod]
+==== Attendances -> List Attendances In Period
+
+[#AttendancesMenu_FindAttendancesByActivityName]
+==== Attendances -> Find Attendances By Activity Name
+
+[#AttendancesMenu_FindAttendancesByParticipant]
+==== Attendances -> Find Attendances By Participant
+
+[#AttendancesMenu_RemoveAttendFromList]
+==== Attendances -> Remove Attend From List
+
+
+[#CallsMenu_CreateCall]
+==== Calls -> Create
+
+[#CallsMenu_FindCareCalls]
+==== Calls -> Find Care Calls
+
+[#CallsMenu_FindReconnectCalls]
+==== Calls -> Find Reconnect Calls
+
+[#CallsMenu_FindSurveyCalls]
+==== Calls -> Find Survey Calls
+
+[#CallsMenu_FindScheduledCalls]
+==== Calls -> Find Scheduled Calls
+
+[#CallsMenu_FindBySurname]
+==== Calls -> Find By Surname
+
+[#CallsMenu_ListCallsInPeriod]
+==== Calls -> List Calls In Period
+
+[#CallsMenu_ListDailyCallSchedulesForVolunteer]
+==== Calls -> List Daily Call Schedules For Volunteer
+
+[#CallsMenu_CreateCalendarDayCallSchedule]
+==== Calls -> Create Calendar Day Call Schedule
+
+[#ReportsMenu_FindParticipantsCallsAndAttendances]
+==== Reports -> Find Participants Call's And Attendances
+
+[#ReportsMenu_ListParticipantInvolvementInPeriod]
+==== Reports -> List Participant Involvement In Period
+
+[#ReportsMenu_ListParticipantInvolvementInPeriod Totals]
+==== Reports -> List Participant Involvement In Period Totals
+
+[#ReportsMenu_FindVolunteersTimes]
+==== Reports -> Find Volunteer's Times
+
+[#ReportsMenu_ListVolunteerInvolvementInPeriod]
+==== Reports -> List Volunteer Involvement In Period
+
+[#ReportsMenu_ListVolunteerInvolvementInPeriodTotals]
+==== Reports -> List Volunteer Involvement In Period Totals
+
+[#ReportsMenu_FindMostInactiveParticipant]
+==== Reports -> Find Most Inactive Participant
+
+[#ReportsMenu_FindParticipantActivity]
+==== Reports -> Find Participant Activity
+
+[#ReportsMenu_MailMergeData]
+==== Reports -> Mail Merge Data
+
+[#ReportsMenu_FindParticipantsWithBirthdayBetween]
+==== Reports -> Find Participants With Birthday Between
 
 
 [#ChatsAppBasics]
