@@ -62,6 +62,62 @@ visited in the current session.
 
 The top-left 'Chats App' text is a hyperlink back to the 'home' page.
 
+The menu items and their options are as follows:
+
+* *Activities*
+** *Create Recurring Activity*
+** *Create One-off Activity*
+** *Find Recurring Activity By Name*
+** *Find Activity By Name*
+** *List All Recurring Activities*
+** *List All Future Activities*
+** *List All Future Activities In Period*
+* *Participants*
+** *Create*
+** *Find Active Participant*
+** *Find By Surname*
+** *Find Future Participation*
+** *List Active Participants*
+** *List Exited Participants*
+** *List Inactive Participants*
+** *List To Exit Participants*
+* *Volunteers*
+** *Create*
+** *Find Active Volunteer*
+** *Find By Surname*
+** *List Active Volunteers*
+** *List Inactive Volunteers*
+** *List To Exit Volunteers*
+* *Attendances*
+** *List Attendance Lists In Period*
+** *Find Attendance Lists By Activity Name*
+** *List Attendances in Period*
+** *Find Attendances By Activity Name*
+** *Find Attendances By Participant*
+** *Remove Attend From List*
+* *Calls*
+** *Create*
+** *Find Care Calls*
+** *Find Reconnect Calls*
+** *Find Survey Calls*
+** *Find Scheduled Calls*
+** *Find By Surname*
+** *List Calls in Period*
+** *List Daily Call Schedules for Volunteer*
+** *Create Calendar Day Call Schedule*
+* *Reports*
+** *Find Participants Call's and Attendances*
+** *List Participant Involvement In Period*
+** *List Participant Involvement In Period Totals*
+** *Find Volunteer's Times*
+** *List Volunteer Involvement In Period*
+** *List Volunteer Involvement In Period Totals*
+** *Find Most Inactive Participant*
+** *Find Participant Activity*
+** *Mail Merge Data*
+** *Find Participants With Birthday Between*
+
+
 [#ChatsAppBasics]
 == Chats Application (App) Basics
 
