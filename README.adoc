@@ -14,46 +14,75 @@
 [#Introduction]
 == Introduction
 
-To start a brief introduction, before getting into details below: The Lifeline Chats Program aims to improve the well-being of elderly people in Tasmania by encouraging them to become more socially engaged, through the organising of Chats [underline]#activities#.
+To start a brief introduction, before getting into details below: The Lifeline Chats Program aims to 
+improve the well-being of elderly people in Tasmania by encouraging them to become more socially 
+engaged, through the organising of Chats [underline]#activities#.
 
-This Chats Application (App) allows activities to be defined, and Chats [underline]#participants# to be booked for future activities. A key aspect of such participation is that some participant's transportation to and from the activity needs to be arranged, the Chats App enables that administrative action.
+This Chats Application (App) allows activities to be defined, and Chats [underline]#participants# to
+ be booked for future activities. A key aspect of such participation is that some participant's 
+ transportation to and from the activity needs to be arranged, the Chats App enables that
+  administrative action.
 
-An aspect of the Chats program is that some of the activities are regular. These are referred to as [underline]#recurring activities#. A participant booked against a recurring activity intends to participate in the individual (actual) activies of that recurring activity.
+An aspect of the Chats program is that some of the activities are regular. These are referred to as
+ [underline]#recurring activities#. A participant booked against a recurring activity intends to 
+ participate in the individual (actual) activies of that recurring activity.
 
-Social engagement is also assisted by means of regular telephone calls to Chats participants. Chats [underline]#calls# are scheduled and then completed when a telephone call is made. Often these calls are made by a Chats [underline]#volunteer#.
+Social engagement is also assisted by means of regular telephone calls to Chats participants. Chats 
+[underline]#calls# are scheduled and then completed when a telephone call is made. Often these calls
+ are made by a Chats [underline]#volunteer#.
 
 There is also reporting functionality that the Chat App provides. 
 
 [#Implementation]
 == Implementation
 
-This application has been developed for Lifeline Tasmania for data management in its https://www.lifeline.org.au/tasmania/chats-program[Chats] social engagement program. 
+This application has been developed for Lifeline Tasmania for data management in its 
+https://www.lifeline.org.au/tasmania/chats-program[Chats] social engagement program. 
 
-It is a application developed on the open-source http://isis.apache.org/[Apache Isis] Java web-application framework.
+It is a application developed on the open-source http://isis.apache.org/[Apache Isis] Java 
+web-application framework.
 
 For installation details see <<Installation,below>>.
 
-Version 2 of Chats App, based on a generic https://github.com/Stephen-Cameron-Data-Services/event-schedule[event-scheduling] app, is https://github.com/Stephen-Cameron-Data-Services/isis-chats/tree/chats2[available] but not as yet in use.
+Version 2 of Chats App, based on a generic 
+https://github.com/Stephen-Cameron-Data-Services/event-schedule[event-scheduling] app, 
+is https://github.com/Stephen-Cameron-Data-Services/isis-chats/tree/chats2[available] but not as yet
+in use.
 
 [#MainMenu]
 == Main Menu
 
-The Chats App has a conventional layout with menu bar across the top with a single row of menu items. Clicking on each of these gives a drop-down list of options each of which is described in sections below. These options in some cases are grouped into logical groupings via a dividing line.
+The Chats App has a conventional layout with menu bar across the top with a single row of menu items.
+Clicking on each of these gives a drop-down list of options each of which is described in sections 
+below. These options in some cases are grouped into logical groupings via a dividing line.
 
-On the left hand side of the menu bar is a small vertical bar (aqua blue in the following image). Clicking on this bar gives a list of bookmarks, which are links to entities that the user has prevously visited in the current session.
+On the left hand side of the menu bar is a small vertical bar (aqua blue in the following image). 
+Clicking on this bar gives a list of bookmarks, which are links to entities that the user has prevously
+visited in the current session.
 
 The top-left 'Chats App' text is a hyperlink back to the 'home' page.
 
 [#ChatsAppBasics]
 == Chats Application (App) Basics
 
-Underneath the menu bar is the body of the page, where, usually, a specific Chats data 'entity' is displayed. Each with an icon and title at the top, and then groups of data items and/or tables of child entities. Each such group and table also has a title at the top. The arrangement of items within groups, and column orders within tables, is called the 'page layout'. 
+Underneath the menu bar is the body of the page, where, usually, a specific Chats data 'entity' is 
+displayed. Each with an icon and title at the top, and then groups of data items and/or tables of 
+child entities. Each such group and table also has a title at the top. The arrangement of items within
+groups, and column orders within tables, is called the 'page layout'. 
 
-On some types of entities, tabs are used to aid navigation within an entity. The tab labels are diplayed as a row under the entity title, clicking on a tab label reveals a different subset of the entities' data.
+On some types of entities, tabs are used to aid navigation within an entity. The tab labels are 
+diplayed as a row under the entity title, clicking on a tab label reveals a different subset of the
+ entities' data.
 
-Navigation in Chats App is via links and icons (both are hyperlinks). A link is seen as underlined (light-blue) text. Specific icons are used to represent different kinds or 'types' of data entities so providing a visual cue. Icon type hyperlinks are displayed on the left of all table rows to allow the user to 'drill down' to get a full display of the child data entity (partially displayed in the row
+Navigation in Chats App is via links and icons (both are hyperlinks). A link is seen as underlined 
+(light-blue) text. Specific icons are used to represent different kinds or 'types' of data entities so
+providing a visual cue. Icon type hyperlinks are displayed on the left of all table rows to allow the
+user to 'drill down' to get a full display of the child data entity (partially displayed in the row
 
-Another key concept in Chats App is that of [underline]#actions#. These are the grey 'buttons' that are placed in relevant locations within the page layout. They usually have a small icon and a name to indicate their function. Hovering over an action button will display a message describing the action in more detail. Actions are the means for Chats App users to interact with an data entity.
+Another key concept in Chats App is that of [underline]#actions#. These are the grey 'buttons' that are
+placed in relevant locations within the page layout. They usually have a small icon and a name to 
+indicate their function. Hovering over an action button will display a message describing the action 
+in more detail. Actions are the means for Chats App users to interact with an data entity.
 
 [#ChatsDataEntities]
 == Chats Data Entities
@@ -74,30 +103,55 @@ The following Chats data-model entities are described in sections below:
 [#Persons]
 === Persons
 
-image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/general/Person.png[30,30] A Person entity in Chats App holds the contact details, address and some other items relating to a specific individual person. A new person is created automatically when a participant or volunteer is created. Validation checks are done to see if a person with the same identifying details is present and if they are linked to an existing participant or volunteer.
+image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/general/Person.png[30,30] 
+A Person entity in Chats App holds the contact details, address and some other items relating to a 
+specific individual person. A new person is created automatically when a participant or volunteer is 
+created. Validation checks are done to see if a person with the same identifying details is present and
+if they are linked to an existing participant or volunteer.
 
-The key personal details of firstname, surname, date-of-birth and sex, which are entered at the time of creation of a new participant (or volunteer), are what are used to identify a unique person. The contact details and address of the person are displayed and can be updated from their participant record, along with the other data that is participant related. Other person data is needed but this described in the <<Administration,Administration>> section.
+The key personal details of firstname, surname, date-of-birth and sex, which are entered at the time of
+creation of a new participant (or volunteer), are what are used to identify a unique person. The
+contact details and address of the person are displayed and can be updated from their participant
+record, along with the other data that is participant related. Other person data is needed but this
+described in the <<Administration,Administration>> section.
 
 [#Activities]
 === Activities
 
-Activities are scheduled by Chats Administrators in the Chats App. There are two ways to create an Activity, either as a [underline]#One-off Activity# or by first creating a [underline]#Recurring Activity# as a 'parent' and then by scheduling 'child' activities off that parent.
+Activities are scheduled by Chats Administrators in the Chats App. There are two ways to create an 
+Activity, either as a [underline]#One-off Activity# or by first creating a 
+[underline]#Recurring Activity# as a 'parent' and then by scheduling 'child' activities off that parent.
 
-When looking at a list of activities from a search, both the one-off and child activities are seen, as they are basically the same, but have a slightly different icon the 'parented' activities having a yellow background image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/ParentedActivityEvent.png[20,20] (more details below). A separate search for recurring activities is provided.
+When looking at a list of activities from a search, both the one-off and child activities are seen, as
+they are basically the same, but have a slightly different icon the 'parented' activities having a 
+yellow background 
+image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/ParentedActivityEvent.png[20,20]
+ (more details below). A separate search for recurring activities is provided.
 
-Activities have child [underline]#participations# and [underline]#attendances#, a participation is essentially an intention to attend an activity (a 'booking') and an attendance is essentially actual attendance by the participant at the activity. There are a few reasons for  separating these two, one reason is that recurring activity parents and children have participations but only children have attendances.
+Activities have child [underline]#participations# and [underline]#attendances#, a participation is
+essentially an intention to attend an activity (a 'booking') and an attendance is essentially actual
+attendance by the participant at the activity. There are a few reasons for  separating these two, one
+reason is that recurring activity parents and children have participations but only children have 
+attendances.
 
 [#One-offActivities]
 ==== One-off Activities 
-image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/ActivityEvent.png[30,30] These kinds of activities are the base kind, they are created from the 'Activities' menu option 'Create One-off Activity'. 
+image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/ActivityEvent.png[30,30] 
+These kinds of activities are the base kind, they are created from the 'Activities' menu option 
+'Create One-off Activity'. 
 
-Enter a name and a date-time - two mandatory properties. Optionally enter a dfferent DEX 'Case' ID (name) for DEX reporting purposes, if you don't one will be created from the mandatory name. DEX Case Id has a limit of 30??? characters, but the prompt allows 25.
+Enter a name and a date-time - two mandatory properties. Optionally enter a dfferent DEX 'Case' ID
+ (name) for DEX reporting purposes, if you don't one will be created from the mandatory name. DEX Case
+  Id has a limit of 30??? characters, but the prompt allows 25.
 
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/OneoffActivity_GeneralTab.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/OneoffActivity_GeneralTab.png"]
 
 [#RecurringActivities]
 ==== Recurring Activities
-image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/RecurringActivity.png[40,40] In the screen capture image below a 'Meet & Make' recurring activity is shown with the 'General' tab content visible. There are four groups of data items with headings: 'General', 'Scheduling' 'Times' and 'Location'. Where possible these groups are standardised between entities to aid familiarity.
+image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/RecurringActivity.png[40,40] 
+In the screen capture image below a 'Meet & Make' recurring activity is shown with the 'General' tab
+content visible. There are four groups of data items with headings: 'General', 'Scheduling' 'Times'
+and 'Location'. Where possible these groups are standardised between entities to aid familiarity.
 
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/RecurringActivity.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/RecurringActivity.png"]
 
@@ -129,9 +183,14 @@ image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom
 [#RegionnAdministration]
 === Regions
 
-Regions are an important part of the Chats App. Most Chats data entities have an assigned region (SOUTH, NORTH, NORTH-WEST) and these values get used to control what data is visible to Chats App users.
+Regions are an important part of the Chats App. Most Chats data entities have an assigned region (SOUTH,
+ NORTH, NORTH-WEST) and these values get used to control what data is visible to Chats App users.
 
-The way this happens is through use of a security module installed as an extra "add-on" to the Apache Isis framework. Basically the framework determines a 'path' for each entity and compares that calculated path (essentially the region's name) to a path defined for each App user in the security module. If there is a match then the user is allowed to see that entity. See the <<UserAdministration, Users and Security>> section for more details.
+The way this happens is through use of a security module installed as an extra "add-on" to the Apache 
+Isis framework. Basically the framework determines a 'path' for each entity and compares that calculated
+ path (essentially the region's name) to a path defined for each App user in the security module. If 
+ there is a match then the user is allowed to see that entity. See the <<UserAdministration, Users and
+  Security>> section for more details.
 
 [#PersonAdministration]
 === Persons
@@ -142,7 +201,10 @@ The way this happens is through use of a security module installed as an extra "
 [#UserAdministration]
 === Users and Security
 
-The http://platform.incode.org/modules/spi/security/spi-security.html[Incode Security Module], an add-on module for Apache Isis, is used by Chats App. It allows control of Users, Roles and Permissions. Chats App also makes use of its http://platform.incode.org/modules/spi/security/spi-security.html#_applicationtenancy_using_paths[Application Tenancy] via "paths" capability to restrict data visibility between Chats regions.
+The http://platform.incode.org/modules/spi/security/spi-security.html[Incode Security Module], an 
+add-on module for Apache Isis, is used by Chats App. It allows control of Users, Roles and Permissions.
+ Chats App also makes use of its 
+ http://platform.incode.org/modules/spi/security/spi-security.html#_applicationtenancy_using_paths[Application Tenancy] via "paths" capability to restrict data visibility between Chats regions.
 
 ////
 
@@ -167,4 +229,4 @@ image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/im
 ////
 
 [#Installation]
-== Installation
+== Installation                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
