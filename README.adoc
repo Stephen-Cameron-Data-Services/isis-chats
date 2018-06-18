@@ -6,7 +6,7 @@
 * <<Introduction,Introduction>>
 * <<Implementation,Implementation>>
 * <<ChatsAppBasics,Chats Application (App) Basics>>
-* <<MainMenu,Main Menu>>
+* <<MainMenu, Main Menu Items>>
 * <<ChatsDataEntities,Chats Data Entities>>
 * <<Administration,Administration>>
 * <<Installation,Installation>>
@@ -49,10 +49,18 @@ https://github.com/Stephen-Cameron-Data-Services/event-schedule[event-scheduling
 is https://github.com/Stephen-Cameron-Data-Services/isis-chats/tree/chats2[available] but not as yet
 in use.
 
-[#MainMenu]
-== Main Menu
+[#ChatsAppBasics]
+== Chats Application (App) Basics
 
-The Chats App has a conventional layout with menu bar across the top with a single row of menu items.
+The framework used to develop the Chats App is unusual in that it is auto-generates the user interface
+from off the so-called 'domain model' design in Java object-oriented code. This sounds inflexible but
+the thinking is that by improving the domain model this flows through to the user level. Once the 
+distinctive features of how this happens are known it provides an efficient intuitive application for
+users. So these are described now.
+
+==== Main Menu Bar
+
+The Chats App has a menu bar across the top with a single row of menu items.
 Clicking on each of these gives a drop-down list of options each of which is described in sections 
 below. These options in some cases are grouped into logical groupings via a dividing line.
 
@@ -61,6 +69,50 @@ Clicking on this bar gives a list of bookmarks, which are links to entities that
 visited in the current session.
 
 The top-left 'Chats App' text is a hyperlink back to the 'home' page.
+
+==== Page Body
+
+Underneath the menu bar is the body of the page, where, usually, a specific Chats data 'entity' is 
+displayed, each with an icon and title at the top, and then groups of data items and/or tables of 
+child entities. Each such group and table also has a title at the top. The arrangement of items within
+groups, and column orders within tables, is called the 'page layout'. 
+
+In searches, usually from a main menu option, a list is returned that fills the page body. Such lists may
+be lists of entities, one per row, or, in the case of some reports each row represents a view across 
+linked entities (e.g. Activity + Participant + Person + Attendance statistic).
+
+==== Tabs
+
+On some types of entities, tabs are used to aid navigation within an entity. The tab labels are 
+diplayed as a row under the entity title, clicking on a tab label reveals a different subset of the
+entities' data.
+ 
+==== Navigation 
+
+Navigation in Chats App is via links and icons (both are hyperlinks). A link is seen as underlined 
+(light-blue) text. Specific icons are used to represent different kinds or 'types' of data entities so
+providing a visual cue. Icon type hyperlinks are displayed on the left of all table rows to allow the
+user to 'drill down' to get a full display of the child data entity (partially displayed in the row
+
+==== Actions (buttons)
+
+Another key concept in Chats App is that of [underline]#actions#. These are the grey 'buttons' that are
+placed in relevant locations within the page layout. They usually have a small icon and a name to 
+indicate their function. Hovering over an action button will display a message describing the action 
+in more detail. Actions are the means for Chats App users to interact with an data entity.
+
+==== Lists (collections)
+
+Other than the use of distinctive icons for navigation into lists mentioned above, another key aspect of
+lists is the left-most action button in the header of lists. This is always present and gives options to
+change the display of the list. There are three standard display options: Table, Hide and Excel. Table is 
+the standard view of the list items, Hide simply removes the list items from view (Table brings them back), 
+Excel offers another action button 'Download as Excel' which if clicked then prompts to display or download 
+the data as spreadsheet (.xlsx) file (just of what is in the table view so if not a complete enough export
+ a custom action is needed).
+
+[#MainMenu]
+== Main Menu Items
 
 === Menu Items and Option (Action) Lists
 
@@ -126,23 +178,56 @@ Descriptions of the menu options (actions) follow, with links to more detail.
 [#ActivitiesMenu_CreateRecurringActivity]
 ==== Activities -> Create Recurring Activity
 
+To create a Recurring Activity the user is prompted to enter a name and a start date-time, optionally to enter a 
+DEX Case Id. The name and start-date time are used to check for an existing activity with the same values in the database. 
+The DEX Case Id will be created from the entered name if none is entered (by removing spaces and trimming to 25 characters).
+
+The start date-time is not that of an actual activity, rather it is the seed date that is used for creation of the first 
+'child' activity scheduled from the newly created parent recurring activity. 
+
+The main reason to create a Recurring Activity parent is to maintain one list of Participants that gets shared with any child
+activities scheduled off that parent. Each child's list of Participants includes those of its parent(<<RecurringActivity, more>>).
+
+The region of the new Recurring Activity is the region assigned to the Chats App user.
+
 [#ActivitiesMenu_CreateOneoffActivity]
 ==== Activities -> Create One-off Activity
+
+To create a Recurring Activity the user is prompted to enter a name and a start date-time, optionally to enter a 
+DEX Case Id. The name and start-date time are used to check for an existing activity with the same values in the database. 
+The DEX Case Id will be created from the entered name if none is entered (by removing spaces and trimming to 25 characters).
+
+The region of the new One-off Activity is the region assigned to the Chats App user.
 
 [#<Menu_CreateOneoffActivity]
 ==== Activities -> Find Recurring Activity By Name
 
+To find Recurring Activity 'parents' enter a name (or a partial name). This is a case sensitive search.  Only shows 
+activities in the region of current Chats App user.
+
 [#ActivitiesMenu_FindActivityByName]
 ==== Activities -> Find Activity By Name
+
+To find activities enter a name (or partial name). This is a case sensitive search. The list returned will include all 
+matching actual activities (i.e. One-off Activies (clear background icon) and Recurring Activity child activities
+(yellow background icon)).  Only shows activities in the region of current Chats App user.
 
 [#ActivitiesMenu_ListAllRecurringActivities]
 ==== Activities -> List All Recurring Activities
 
+Generates a paged listing of all parent Recurring Activities for the region of the current Chats App user. 
+
 [#ActivitiesMenu_ListAllFutureActivities]
 ==== Activities -> List All Future Activities
 
+Generates a paged listing of all actual activities whose start date-time is later than the current date-time. Only shows such
+future activities in the region of the current Chats App user.
+
 [#ActivitiesMenu_ListAllFutureActivitiesInPeriod]
 ==== Activities -> List All Future Activities In Period
+
+Generates a paged listing of all actual activities whose start date-time lies within the Start and End date-times entered. Only shows 
+the activities in the region of the current Chats App user.
 
 [#ParticipantsMenu_CreateParticipant]
 ==== Participants -> Create
@@ -265,45 +350,25 @@ Descriptions of the menu options (actions) follow, with links to more detail.
 ==== Reports -> Find Participants With Birthday Between
 
 
-[#ChatsAppBasics]
-== Chats Application (App) Basics
 
-Underneath the menu bar is the body of the page, where, usually, a specific Chats data 'entity' is 
-displayed. Each with an icon and title at the top, and then groups of data items and/or tables of 
-child entities. Each such group and table also has a title at the top. The arrangement of items within
-groups, and column orders within tables, is called the 'page layout'. 
-
-On some types of entities, tabs are used to aid navigation within an entity. The tab labels are 
-diplayed as a row under the entity title, clicking on a tab label reveals a different subset of the
- entities' data.
-
-Navigation in Chats App is via links and icons (both are hyperlinks). A link is seen as underlined 
-(light-blue) text. Specific icons are used to represent different kinds or 'types' of data entities so
-providing a visual cue. Icon type hyperlinks are displayed on the left of all table rows to allow the
-user to 'drill down' to get a full display of the child data entity (partially displayed in the row
-
-Another key concept in Chats App is that of [underline]#actions#. These are the grey 'buttons' that are
-placed in relevant locations within the page layout. They usually have a small icon and a name to 
-indicate their function. Hovering over an action button will display a message describing the action 
-in more detail. Actions are the means for Chats App users to interact with an data entity.
 
 [#ChatsDataEntities]
 == Chats Data Entities
 
 The following Chats data-model entities are described in sections below:
 
-* <<Persons, Persons>>
-* <<Activities, Activities>>
-** <<One-offActivities, One-off Activities>>
-** <<RecurringActivities, Recurring Activities>>
-* <<Participants, Participants>>
+* <<Person, Persons>>
+* <<Activity, Activities>>
+** <<One-offActivity, One-off Activities>>
+** <<RecurringActivity, Recurring Activities>>
+* <<Participant, Participants>>
 ** <<Participation, Participation>>
 ** <<Attendance, Attendance>>
-* <<Volunteers, Volunteers>>
+* <<Volunteer, Volunteers>>
 ** <<VolunteeredTime, Volunteered Time>>
-* <<ChatsCalls, Chats Calls>>
+* <<ChatsCall, Chats Calls>>
 
-[#Persons]
+[#Person]
 === Persons
 
 image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/general/Person.png[30,30] 
@@ -318,7 +383,7 @@ contact details and address of the person are displayed and can be updated from 
 record, along with the other data that is participant related. Other person data is needed but this
 described in the <<Administration,Administration>> section.
 
-[#Activities]
+[#Activity]
 === Activities
 
 Activities are scheduled by Chats Administrators in the Chats App. There are two ways to create an 
@@ -337,7 +402,7 @@ attendance by the participant at the activity. There are a few reasons for  sepa
 reason is that recurring activity parents and children have participations but only children have 
 attendances.
 
-[#One-offActivities]
+[#One-offActivity]
 ==== One-off Activities 
 image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/ActivityEvent.png[30,30] 
 These kinds of activities are the base kind, they are created from the 'Activities' menu option 
@@ -349,7 +414,7 @@ Enter a name and a date-time - two mandatory properties. Optionally enter a dffe
 
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/OneoffActivity_GeneralTab.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/OneoffActivity_GeneralTab.png"]
 
-[#RecurringActivities]
+[#RecurringActivity]
 ==== Recurring Activities
 image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/RecurringActivity.png[40,40] 
 In the screen capture image below a 'Meet & Make' recurring activity is shown with the 'General' tab
@@ -362,7 +427,7 @@ image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/im
 
 image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom/src/main/java/au/com/scds/chats/dom/activity/ParentedActivityEvent.png[40,40]
 
-[#Participants]
+[#Participant]
 === Participants
 
 [#Participation]
@@ -377,7 +442,7 @@ image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom
 [#VolunteeredTime]
 ==== Volunteered Time
 
-[#ChatsCalls]
+[#ChatsCall]
 === Chats Calls
 
 [#Administration]
