@@ -575,10 +575,10 @@ build, into the web-server (a 'servlet container'). Each of these steps is now d
 ==== 1. Install latest Java Development Kit (JDK)
 
 You need the full JDK not just the Java Runtime Environment (JRE) [so you can compile Java source to class files,
-that then get used by a JRE, one comes with the JDK].
+that then get used by a JRE, one comes with the JDK]. Just get the lastest version, but 1.7 should work too.
 
 Instructions for downloading the Java Development Kit (JDK) Windows Installer are http://www.oracle.com/technetwork/java/javase/downloads/index.html[here]. Note: There are
-different editions of the JDK, only the Standard Edition (Java SE) is necesary not the much bigger Enterprise Edition (Java EE).
+different editions of the JDK, only the Standard Edition (Java SE) is necessary not the much bigger Enterprise Edition (Java EE).
 
 Testing the installation shouldn't be necessary but at a command prompt type: java -version
 ----
@@ -590,13 +590,50 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.161-b12, mixed mode)
 
 ==== 2. Install Apache Maven
 
+Instructions for downloading and installing Maven are https://maven.apache.org/install.html[here].
 
+Testing the installation on my PC by typing: mvn -version
 
+----
+C:\Users\stevec>mvn -v
+Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=256m; support was removed in 8.0
+Apache Maven 3.3.3 (7994120775791599e205a5524ec3e0dfe41d4a06; 2015-04-22T21:57:37+10:00)
+Maven home: D:\java\apache-maven-3.3.3-bin\apache-maven-3.3.3\bin\..
+Java version: 1.8.0_45, vendor: Oracle Corporation
+Java home: D:\java\jdk1.8.0_45\jre
+Default locale: en_US, platform encoding: Cp1252
+OS name: "windows 8.1", version: "6.3", arch: "amd64", family: "dos"
+----
 
-==== 3. Downloand and build the Chats App.
+Apart from compiling Java source (.java) files to class (.class) files and creating libraries (.jar files) from these
+using the installed JDK tools, Maven will also download all the library .jar file dependencies of the project from
+online repositories (e.g. https://search.maven.org/[Maven Central]) and allow other tasks (goals) to be performed. 
 
+To do its work Maven first looks for Project Object Model (pom.xml) files in the project folder hierarchy 
+and these are included in the Chats App Gthub project downloaded in the next step.
 
+Maven creates a local repository so it doesn't download .jar files it's already obtained, by default on Windows
+this is in a .m2 folder in the users home folder.
 
+==== 3. Download and build the Chats App.
+
+The Chats App was intially built from the 'SimpleApp' basic project (called a Maven 'archetype') that is part 
+of the Apache Isis development effort. Using an archetype gives you the standard Maven folder structure, pom files and
+source code. The Apache Isis 'SimpleApp'archetype is well documented 
+http://isis.apache.org/guides/ugfun/ugfun.html#_ugfun_getting-started_simpleapp-archetype[here] 
+and the process of building the Chat App is the same from the http://isis.apache.org/guides/ugfun/ugfun.html#__ugfun_getting-started_simpleapp-archetype_building-the-app[step 5.3]. 
+
+To download the Chats App source from Github you need to get the lastest tagged production release 
+(not to 'clone' the whole repository). 
+So the home page of the project (which displays this document in HTML form) is
+https://github.com/Stephen-Cameron-Data-Services/isis-chats[here] 
+and the list of releases is https://github.com/Stephen-Cameron-Data-Services/isis-chats/releases[here].
+The current production release is version 1.0 with a title 'Apache Isis 1.13.2 production version'.
+
+image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/Github_ProductionRelease.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/Github_ProductionRelease.png"]
+
+Once you have the download zip archive extracted you should open the fold in a command prompt and do the
+mvn clean install (first the clean and then the install goals) as in the SimpleApp documentation.
 
 ==== 4. Install Apache Tomcat web server
 
