@@ -607,7 +607,11 @@ OS name: "windows 8.1", version: "6.3", arch: "amd64", family: "dos"
 
 Apart from compiling Java source (.java) files to class (.class) files and creating libraries (.jar files) from these
 using the installed JDK tools, Maven will also download all the library .jar file dependencies of the project from
-online repositories (e.g. https://search.maven.org/[Maven Central]) and allow other tasks (goals) to be performed. 
+online repositories (e.g. https://search.maven.org/[Maven Central]) and allow other tasks to be performed. 
+
+From the command line you can run maven 'phases' and/or 'goals'. A maven 'phase' consists of a logical sequence of 'goals',
+which are executable Java code found in 'plugins'. A phase can be executed from the command-line using the command mvn <phase-name>. 
+If a specific goal is desired it can be executed using the command format mvn <plugin-name>:<goal-name>.
 
 To do its work Maven first looks for Project Object Model (pom.xml) files in the project folder hierarchy 
 and these are included in the Chats App Gthub project downloaded in the next step.
@@ -618,10 +622,10 @@ this is in a .m2 folder in the users home folder.
 ==== 3. Download and build the Chats App.
 
 The Chats App was intially built from the 'SimpleApp' basic project (called a Maven 'archetype') that is part 
-of the Apache Isis development effort. Using an archetype gives you the standard Maven folder structure, pom files and
+of the Apache Isis development effort. Using an archetype gives you the standard Maven folder structure, maven pom file(s) and
 source code. The Apache Isis 'SimpleApp'archetype is well documented 
 http://isis.apache.org/guides/ugfun/ugfun.html#_ugfun_getting-started_simpleapp-archetype[here] 
-and the process of building the Chat App is the same from the http://isis.apache.org/guides/ugfun/ugfun.html#__ugfun_getting-started_simpleapp-archetype_building-the-app[step 5.3]. 
+and the process of building the Chat App is largely the same from http://isis.apache.org/guides/ugfun/ugfun.html#__ugfun_getting-started_simpleapp-archetype_building-the-app[step 5.3]. 
 
 To download the Chats App source from Github you need to get the lastest tagged production release 
 (not to 'clone' the whole repository). 
@@ -632,13 +636,27 @@ The current production release is version 1.0 with a title 'Apache Isis 1.13.2 p
 
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/Github_ProductionRelease.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/Github_ProductionRelease.png"]
 
-Once you have the download zip archive extracted you should open the fold in a command prompt and do the
-mvn clean install (first the clean and then the install goals) as in the SimpleApp documentation.
+Once you have the download zip archive extracted you should open the folder in a command prompt and do the command
+mvn clean install (i.e. first do the 'clean phase' and then the 'install phase') as in the 
+SimpleApp documentation http://isis.apache.org/guides/ugfun/ugfun.html#__ugfun_getting-started_simpleapp-archetype_building-the-app[step 5.3].
+
+An Apache Isis project derived from SimpleApp archetype, once built, should be runnable directly using mvn jetty:run,
+as in the SimpleApp example. To do this Maven executes the 'run' goal in the 'jetty' plugin,  which has the effect to
+start a basic servlet container (Jetty), and deploy the Apache Isis application into it. Inside of Apache Isis' default
+configuration files there is defined a connection to an in memory Java database (HSQLDB) which it creates at startup.
+Other configuration tells the metamodel via DataNucleus to create the necessary schema, tables and constraints in the database
+if these aren't already present.
 
 ==== 4. Install Apache Tomcat web server
 
+Jetty web container is a light-weight option and there are other options that are normally used for production web-app 
+deployments, in this case we use Apache Tomcat, downloads are http://tomcat.apache.org/[here]. 
 
+Installation is basically to extract a zip archive. Both Apache Tomcat and Apache Isis will need a minimum version of 
+Java to run. Apache Tomcat 8, Apache Isis 1.13.2, Java 1.7 is the current combination. 
 
+The key to running Apache Tomcat on Windows is to create a Windows Service to start and stop Tomcat when the server is 
+started and stopped. This is done with an separate intaller that is available from the download site.
 
 ==== 5. Install MySQL database
 
