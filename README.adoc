@@ -15,15 +15,22 @@
 [#Introduction]
 == Introduction
 
-To start a brief introduction, before getting into details below: The Lifeline Chats Program aims to improve the well-being of elderly people in Tasmania by encouraging them to become more socially engaged, through the organising of Chats [underline]#activities#.
+To start a brief introduction, before getting into details below: The Lifeline Chats Program aims to
+improve the well-being of elderly people in Tasmania by encouraging them to become more socially
+engaged, through the organising of Chats [underline]#activities#.
 
-This Chats Application (App) allows activities to be defined, and Chats [underline]#participants# to be booked for future activities. A key aspect of such participation is that some participant's transportation to and from the activity needs to be arranged,the Chats App enables that administrative action.
+This Chats Application (App) allows activities to be defined, and Chats [underline]#participants# to
+be booked for future activities. A key aspect of such participation is that some participant's
+transportation to and from the activity needs to be arranged,the Chats App enables that
+administrative action.
 
-An aspect of the Chats program is that some of the activities are regular. These are referred to as [underline]#recurring activities#. A participant booked against a recurring activity intends to participate in the individual (actual) activies of that recurring activity.
+An aspect of the Chats program is that some of the activities are regular. These are referred to as
+[underline]#recurring activities#. A participant booked against a recurring activity intends to
+participate in the individual (actual) activies of that recurring activity.
 
 Social engagement is also assisted by means of regular telephone calls to Chats participants. Chats 
 [underline]#calls# are scheduled and then completed when a telephone call is made. Often these calls
- are made by a Chats [underline]#volunteer#.
+are made by a Chats [underline]#volunteer#.
 
 There is also reporting functionality that the Chat App provides. 
 
@@ -495,7 +502,8 @@ Security>> section for more details.
 The http://platform.incode.org/modules/spi/security/spi-security.html[Incode Security Module], an 
 add-on module for Apache Isis, is used by Chats App. It allows control of Users, Roles and Permissions.
  Chats App also makes use of its 
- http://platform.incode.org/modules/spi/security/spi-security.html#_applicationtenancy_using_paths[Application Tenancy] via "paths" capability to restrict data visibility between Chats regions.
+ http://platform.incode.org/modules/spi/security/spi-security.html#_applicationtenancy_using_paths[Application Tenancy] 
+ via "paths" capability to restrict data visibility between Chats regions.
 
 [#DEXAdministration]
 === DSS DEX monthly reporting
@@ -537,3 +545,71 @@ image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/im
 
 [#Installation]
 == Installation
+
+The Chats App is a Java based web-application (web-app) built developed on the open-source 
+http://isis.apache.org/[Apache Isis (AI)] Java web-application framework. This is a mature project having been developed 
+as closed source as the http://www.nakedobjects.org/[Naked Objects] framework for the Irish Social Security Services 
+by The Naked Objects Group Ltd which now develops a http://www.nakedobjects.org/[.Net version]. AI is mostly
+suited to development of https://www.infoq.com/articles/haywood-ddd-no['sovereign' applications] used by people to perform
+their work, as is the case with the Chats App.
+
+AI is well http://isis.apache.org/documentation.html[documented], so there is no need to describe in great detail how it works
+in this document, other than to mention that whilst it is based on the Java Servlet Specification, as most Java web-apps
+are, the user interface is actually built using a component approach via use of another popular free and open-source framework 
+https://wicket.apache.org/[Apache Wicket]. 
+
+As with most web-apps there is a database layer used by the Chats App, in this case https://www.mysql.com/[MySQL]. 
+The data mapping between Java objects and the relational data-model is handled by http://www.datanucleus.org/[DataNucleus (DN)].
+Apache Isis uses DN exclusively for Object-Relational Mapping (ORM), this is largely due to the two having very
+similar approaches, essentially an Aspect-oriented programming paradigm. DN uses byte-code enhancement, whereas AI creates
+a run-time metamodel that binds the User-Interface (UI) to the domain model Java objects 
+(via AI specific and Java Data Objects (JDO) annotations) and manages their life cycles and persistence.
+
+So while the above may seem a bit complex, installing the Chats App its simply done as its managed by the popular
+https://maven.apache.org/[Apache Maven] build system. The process is essentially: () Install Java, Development Kit version.
+ (2) install Maven, (3) download the Chats App
+source from Github and build the Chats App sub-projects in the source using Maven, (4) Install a Java Web-server 
+(Apache Tomcat is used) and (5) database (MySQL with tools), (6) deploy the web-application archive (.war file), created in the 
+build, into the web-server (a 'servlet container'). Each of these steps is now described in the necessary detail:
+
+==== 1. Install latest Java Development Kit (JDK)
+
+You need the full JDK not just the Java Runtime Environment (JRE) [so you can compile Java source to class files,
+that then get used by a JRE, one comes with the JDK].
+
+Instructions for downloading the Java Development Kit (JDK) Windows Installer are http://www.oracle.com/technetwork/java/javase/downloads/index.html[here]. Note: There are
+different editions of the JDK, only the Standard Edition (Java SE) is necesary not the much bigger Enterprise Edition (Java EE).
+
+Testing the installation shouldn't be necessary but at a command prompt type: java -version
+----
+C:\Users\stevec>java -version
+java version "1.8.0_161"
+Java(TM) SE Runtime Environment (build 1.8.0_161-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.161-b12, mixed mode)
+----
+
+==== 2. Install Apache Maven
+
+
+
+
+==== 3. Downloand and build the Chats App.
+
+
+
+
+==== 4. Install Apache Tomcat web server
+
+
+
+
+==== 5. Install MySQL database
+
+
+
+
+==== 6. Deploy the Chats App web-app into Tomcat
+
+
+
+
