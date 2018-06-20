@@ -566,10 +566,10 @@ a run-time metamodel that binds the User-Interface (UI) to the domain model Java
 (via AI specific and Java Data Objects (JDO) annotations) and manages their life cycles and persistence.
 
 So while the above may seem a bit complex, installing the Chats App its simply done as its managed by the popular
-https://maven.apache.org/[Apache Maven] build system. The process is essentially: () Install Java, Development Kit version.
+https://maven.apache.org/[Apache Maven] build system. The process is essentially: (1) Install Java, Development Kit version.
  (2) install Maven, (3) download the Chats App
-source from Github and build the Chats App sub-projects in the source using Maven, (4) Install a Java Web-server 
-(Apache Tomcat is used) and (5) database (MySQL with tools), (6) deploy the web-application archive (.war file), created in the 
+source from Github and build the Chats App sub-projects in the source using Maven, (4) Install database (MySQL with tools), and 
+(5) Install a Java web-container (server), Apache Tomcat is used, (6) deploy the web-application archive (.war file), created in the 
 build, into the web-server (a 'servlet container'). Each of these steps is now described in the necessary detail:
 
 ==== 1. Install latest Java Development Kit (JDK)
@@ -622,8 +622,8 @@ this is in a .m2 folder in the users home folder.
 ==== 3. Download and build the Chats App.
 
 The Chats App was intially built from the 'SimpleApp' basic project (called a Maven 'archetype') that is part 
-of the Apache Isis development effort. Using an archetype gives you the standard Maven folder structure, maven pom file(s) and
-source code. The Apache Isis 'SimpleApp'archetype is well documented 
+of the AI development effort. Using an archetype gives you the standard Maven folder structure, maven pom file(s) and
+source code. The AI 'SimpleApp'archetype is well documented 
 http://isis.apache.org/guides/ugfun/ugfun.html#_ugfun_getting-started_simpleapp-archetype[here] 
 and the process of building the Chat App is largely the same from http://isis.apache.org/guides/ugfun/ugfun.html#__ugfun_getting-started_simpleapp-archetype_building-the-app[step 5.3]. 
 
@@ -636,35 +636,111 @@ The current production release is version 1.0 with a title 'Apache Isis 1.13.2 p
 
 image::https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/Github_ProductionRelease.png[link="https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/images/Github_ProductionRelease.png"]
 
-Once you have the download zip archive extracted you should open the folder in a command prompt and do the command
-mvn clean install (i.e. first do the 'clean phase' and then the 'install phase') as in the 
+Once you have the downloaded zip archive extracted you should go to the top level 'isis-chats' folder in a command prompt
+and run the command: mvn clean install (i.e. first do the 'clean phase' and then the 'install phase') as in the 
 SimpleApp documentation http://isis.apache.org/guides/ugfun/ugfun.html#__ugfun_getting-started_simpleapp-archetype_building-the-app[step 5.3].
+This builds each of the sub-projects in turn, at the end you should see a message to confirm that each
+has been built successfully.
 
-An Apache Isis project derived from SimpleApp archetype, once built, should be runnable directly using mvn jetty:run,
+An AI project derived from SimpleApp archetype, once built, should be runnable directly using mvn jetty:run,
 as in the SimpleApp example. To do this Maven executes the 'run' goal in the 'jetty' plugin,  which has the effect to
-start a basic servlet container (Jetty), and deploy the Apache Isis application into it. Inside of Apache Isis' default
-configuration files there is defined a connection to an in memory Java database (HSQLDB) which it creates at startup.
-Other configuration tells the metamodel via DataNucleus to create the necessary schema, tables and constraints in the database
-if these aren't already present.
+start a basic servlet container (Jetty), and deploy the AI application into it. However, with the Chats App version 1.0 
+its not so simple, due to the use of MySQL specific views causing a problem in HSQLDB, the default in-memory database.
 
-==== 4. Install Apache Tomcat web server
+So, to test Chats App its necessary (at the moment but not in Chats App v2) to use MySQL as the database engine, see below.
 
-Jetty web container is a light-weight option and there are other options that are normally used for production web-app 
-deployments, in this case we use Apache Tomcat, downloads are http://tomcat.apache.org/[here]. 
+In building the Chats App, the sub-project that is built last is the webapp project. In the folder isis-chats/webapp/target you will
+find (after a successful build) the 'chats.war' file. This is what has to be deployed into Tomcat web container.
 
-Installation is basically to extract a zip archive. Both Apache Tomcat and Apache Isis will need a minimum version of 
+==== 4. Install MySQL database
+
+The database server that an AI App uses is configurable, it just needs access to a JDBC driver and connection configuration
+parameters. However, as mentioned in item 3, the Chats App can only use MySQL because of some database views used for
+reports that are MySQL specific. This adds a step to the installation that will be explained at the end of item 5.
+
+Installation of MySQL (the free 'Community Edition') on Windows uses an installer available from https://www.mysql.com/products/community/[here].
+You have to get an Oracle account first though.
+
+When running the installer various options are available as to what gets installed, select the Database Server, the JDBC connector and the Workbench.
+
+Once you have an installation completed, using the MySQL Workbench, its a simple task to create a new schema called 'chats' and a new user also called
+'chats' with password of your choice and to give that new chats user all rights to the chats schema. This will allow all the tables and
+constraints to be created automatically in the chats schema when the Chats App starts for the first time and connects to MySQL. On subsequent restarts
+it finds they are all present and doesn't change anything.
+
+You have set up a MySQL database server in preparation for the Chats App to connect to it, running as a Windows Service.
+
+==== 5. Install Apache Tomcat web server
+
+There are several free Java web-containers, Jetty mentioned above is light-weight and mainly used for testing, for production in the 
+case of Chats App we use Apache Tomcat, downloads are http://tomcat.apache.org/[here]. 
+
+Installation is just to extract a zip archive. Both Apache Tomcat and AI will need a minimum version of 
 Java to run. Apache Tomcat 8, Apache Isis 1.13.2, Java 1.7 is the current combination. 
 
 The key to running Apache Tomcat on Windows is to create a Windows Service to start and stop Tomcat when the server is 
-started and stopped. This is done with an separate intaller that is available from the download site.
+started and stopped. This is done with an separate intaller that is also available from the download site.
 
-==== 5. Install MySQL database
+One way to test Apache Tomcat is to try its default administrator web-app. This requires an admin login which has to
+be enabled in configuration file. See the Tomcat installation docs for how to do that.
 
-
-
+Another thing to do to ensure that with a Windows server shutdown and restart, that the MySQL and Tomcat services start in the correct order.
+MySQL has to be ready to accept connections from the Chats App when Tomcat Service restarts. This is done in the configuration
+of the Service instance.
 
 ==== 6. Deploy the Chats App web-app into Tomcat
 
+There are two ways to deploy a .war file into Tomcat, via the admin web-app web-page or by moving it into the 
+webapp folder in the Tomcat intallation. Tomcat scans this folder for new .war files and on finding one it
+extracts it (they are actually zip archives) and deploys the contents as a new site, usually with a url root  
+the same name as the .war file, so in this case 'chats'. 
 
+So after deploying the chats.war you can test the url http://localhost:8080/chats[http://localhost:8080/chats] 
+but there will be a problem in the first instance due to the need to configure the JDBC connection properly in the
+Apache Isis configuration files. 
+
+By deployng the .war the config files can then be easily found in the standard place, the chats/WEB-INF folder. 
+You'll see a few configuration related files there, web.xml is the standard one used by all Java web-containers, 
+the others are Apache Isis related. Open persistor.properties and look for the following lines:
+
+----
+#
+# JDBC connection details
+# (also update the pom.xml to reference the appropriate JDBC driver)
+#
+
+#
+# SC added MySQL 
+#
+isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionDriverName=com.mysql.jdbc.Driver
+isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionURL=jdbc:mysql://localhost:3306/chats?zeroDateTimeBehavior=convertToNull
+isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionUserName=chats
+isis.persistor.datanucleus.impl.javax.jdo.option.ConnectionPassword=password
+----
+
+The four uncommented lined are the parameters that Apache Isis uses to make a JDBC connection to the database. 
+They are obviously key-value pairs. The first is the name of a Java connection 'driver' class, more on that in the
+ next paragraph. The second is a connection URL that the driver uses to make the connection to the database, the first 
+section indicating the kind of database server (jdbc:mysql), then the http host and port (//localhost:3306), then the
+MySQL parameters of schema-name (/chats) and a specific configuration of how to handle date-times 
+(?zeroDateTimeBehavior=convertToNull). The third and forth are the database user name and password created in step 4 above.
+
+There is one more thing to do to enable the connection of Chats App to the MySQL database, which is to move the
+MySQL JDBC driver/connector from the location of the Chats specific libraries (extracted from chats.war), which is 
+mysql-connector-java-X.X.X.jar in the folder webapps/chats/WEB-INF/lib/, into the shared lib/ folder at the top level of
+the Tomcat intall location. I think the need for this is may be due to Tomcat actually holding the database connections.
+
+Once this configuration step is completed restart the Tomcat service, or else use the Tomcat admin web-app page 
+(if enabled) to just start the chats 'context'. If the chats app is then still not available,  its usually
+necessary to check the tomcat logs in the top level logs/ folder for error messages to figure out why.
+
+==== 7. Other installation issues
+
+In restarting the server
+
+==== Recovering existing database
+
+The Chats MySQL database can be recovered from exports made on a nightly basis and saved to tape. The MySQL workbench can
+do this import task to bring all the exported data
 
 

@@ -129,7 +129,7 @@
 					<plugin>
 						<artifactId>maven-war-plugin</artifactId>
 						<configuration>
-							<warName>chatsapp</warName>
+							<warName>chats</warName>
 							<archive>
 								<manifest>
 									<addClasspath>false</addClasspath>
