@@ -11,7 +11,7 @@
 * <<Reports,Reports>>
 * <<Administration,Administration>>
 * <<Installation,Installation>>
-* <<BackupsAndRestores, Backups and Restores>>
+* <<BackupAndRestore, Backup and Restore>>
 
 [#Introduction]
 == Introduction
@@ -608,7 +608,7 @@ a run-time metamodel that binds the User-Interface (UI) to the domain model Java
 So while the above may seem a bit complex, installing the Chats App its simply done as its managed by the popular
 https://maven.apache.org/[Apache Maven] build system. The process is essentially: (1) Install Java, Development Kit version;
  (2) install Maven; (3) download the Chats App
-source from Github and build the Chats App sub-projects contained using Maven; (4) Install a database server (MySQL with tools), and 
+source from Github and build the Chats App sub-projects contained using Maven; (4) Install a database server (MySQL, with Workbench), and 
 (5) Install a Java web-container; (web-server, servlet-container), Apache Tomcat is used; (6) deploy the web-application archive (.war file), created in the 
 build, into the web-container; (7) Ensure backups and restores of the database. Each of these steps is now described in the necessary detail:
 
@@ -708,7 +708,7 @@ Once you have an installation completed, using the MySQL Workbench, its a simple
 constraints to be created automatically in the chats schema when the Chats App starts for the first time (in step 6) and connects to MySQL. On subsequent restarts
 it finds they are all present and doesn't change anything.
 
-In the case of having to restore the Chats database from an export file, an Import can be done at this stage. See <<BackupsAndRestores, Backups and Restores>>
+In the case of having to restore the Chats database from an export file, an import can be done at this stage. See the section <<BackupAndRestore, Backup and Restore>>
 
 You have set up a MySQL database server in preparation for the Chats App to connect to it, running as a Windows Service.
 
@@ -776,8 +776,8 @@ Once this configuration step is completed restart the Tomcat service, or else us
 (if enabled) to just start the chats 'context'. If the chats app is then still not available,  its usually
 necessary to check the tomcat logs in the top level logs/ folder for error messages to figure out why.
 
-[#BackupsAndRestores]
-== Backups and Restores
+[#BackupAndRestore]
+== Backup and Restore
 
 The Chats App MySQL database can be recovered from exports made on a nightly basis and saved to tape. 
 

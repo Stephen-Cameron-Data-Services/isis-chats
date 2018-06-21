@@ -28,7 +28,6 @@ import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
-import org.incode.module.note.dom.api.notable.Notable;
 import org.joda.time.DateTime;
 
 import au.com.scds.chats.dom.general.Locations;

@@ -48,7 +48,6 @@ import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.annotation.Where;
 //import org.apache.isis.applib.services.eventbus.ActionDomainEvent;
 import org.apache.isis.applib.services.i18n.TranslatableString;
-import org.incode.module.note.dom.api.notable.Notable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Locatable;
 import org.isisaddons.wicket.gmap3.cpt.applib.Location;
 import org.joda.time.DateTime;
@@ -77,7 +76,7 @@ import au.com.scds.chats.dom.participant.Participants;
 				+ "FROM au.com.scds.chats.dom.volunteer.Volunteer WHERE username == :username"), })
 
 @Unique(name = "Volunteer_UNQ", members = { "person", "region" })
-public class Volunteer extends AbstractChatsDomainEntity implements Notable, /* Locatable */ Comparable<Volunteer> {
+public class Volunteer extends AbstractChatsDomainEntity implements Comparable<Volunteer> {
 
 	private Person person;
 	private Status status = Status.ACTIVE;

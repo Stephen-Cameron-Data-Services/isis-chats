@@ -59,6 +59,7 @@ import org.joda.time.LocalDate;
 				+ "  {this.oldId}, "
 				+ "  {this.participantId}, "
 				+ "  {this.participantStatus}, "
+				+ "  {this.aboriginalOrTsi}, "
 				+ "  {this.attendId}, "
 				+ "  {this.attended}, "
 				+ "  {this.arrivingTransportType}, "
@@ -80,6 +81,7 @@ import org.joda.time.LocalDate;
 				+ "  activity.oldid AS oldId, "
 				+ "  participant.participant_id AS participantId, "
 				+ "  participant.status AS participantStatus, "
+				+ "  participant.aboriginalOrTorresStraitIslanderOrigin_name AS aboriginalOrTsi, "
 				+ "  attend.attend_id as attendId, "
 				+ "  attend.attended, "
 				+ "  attend.arrivingtransporttype_name AS arrivingTransportType, "
@@ -102,7 +104,8 @@ import org.joda.time.LocalDate;
 		@Query(name = "allParticipantActivityForPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityParticipantAttendance pa "
 				+ "WHERE pa.startDateTime >= :startDateTime && pa.startDateTime <= :endDateTime && pa.attended == :attended && pa.regionName == :region"),
 		@Query(name = "allParticipantActivityForPeriodAndRegionForDEX", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityParticipantAttendance pa "
-				+ "WHERE pa.startDateTime >= :startDateTime && pa.startDateTime <= :endDateTime && pa.attended == :attended && pa.regionName == :region && pa.ageAtDayOfActivity > 64"), })
+				+ "WHERE pa.startDateTime >= :startDateTime && pa.startDateTime <= :endDateTime && pa.attended == :attended && pa.regionName == :region "  
+				+ "&& (pa.ageAtDayOfActivity > 64 || pa.aboriginalOrTorresStraitIslanderOrigin.substring(40).equals('ABORIGINAL') || pa.aboriginalOrTorresStraitIslanderOrigin.substring(40).equals('TSI'))"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ActivityParticipantAttendance
 		/* implements WithApplicationTenancy */ implements Comparable<ActivityParticipantAttendance> {
@@ -122,6 +125,7 @@ public class ActivityParticipantAttendance
 	private Date startDateTime;
 	private Long oldId;
 	private String participantStatus;
+	private String aboriginalOrTsi;
 	private Integer minutesAttended;
 	private Boolean attended;
 	private String arrivingTransportType;
@@ -227,13 +231,23 @@ public class ActivityParticipantAttendance
 	}
 
 	@Property()
-	@MemberOrder(sequence = "7")
+	@MemberOrder(sequence = "7.0")
 	public String getParticipantStatus() {
-		return participantStatus;
+		return this.participantStatus;
 	}
 
 	public void setParticipantStatus(String participantStatus) {
 		this.participantStatus = participantStatus;
+	}
+	
+	@Property()
+	@MemberOrder(sequence = "7.1")
+	public String getAboriginalOrTsi() {
+		return this.aboriginalOrTsi;
+	}
+
+	public void setAboriginalOrTsi(String aboriginalOrTsi) {
+		this.aboriginalOrTsi = aboriginalOrTsi;
 	}
 
 	@Property()

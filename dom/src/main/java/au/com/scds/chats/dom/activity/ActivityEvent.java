@@ -29,7 +29,6 @@ import javax.jdo.annotations.*;
 
 import org.apache.isis.applib.DomainObjectContainer;
 import org.apache.isis.applib.annotation.*;
-import org.incode.module.note.dom.api.notable.Notable;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEvent;
 import org.isisaddons.wicket.fullcalendar2.cpt.applib.CalendarEventable;
 import org.joda.time.DateTime;
@@ -83,7 +82,7 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 		@Query(name = "findAllFutureActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent WHERE startDateTime > :currentDateTime "),
 		@Query(name = "findAllPastActivities", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent WHERE startDateTime <= :currentDateTime "),
 		@Query(name = "findActivitiesInPeriod", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.activity.ActivityEvent WHERE startDateTime >= :startDateTime && startDateTime <= :endDateTime ORDER BY startDateTime DESC"), })
-public class ActivityEvent extends Activity implements Notable, CalendarEventable {
+public class ActivityEvent extends Activity implements  CalendarEventable {
 
 	protected AttendanceList attendanceList;
 	@Persistent(mappedBy = "activity")
