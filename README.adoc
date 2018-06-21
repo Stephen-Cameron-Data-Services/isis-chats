@@ -11,6 +11,7 @@
 * <<Reports,Reports>>
 * <<Administration,Administration>>
 * <<Installation,Installation>>
+* <<BackupsAndRestores, Backups and Restores>>
 
 [#Introduction]
 == Introduction
@@ -241,33 +242,48 @@ entered. Only shows the activities in the region of the current Chats App user.
 [#ParticipantsMenu_CreateParticipant]
 ==== Participants -> Create
 
-To create a new Participant the user is prompted for the Chats Participant's first-name, surname, date-of-birth 
+To create a new <<Participant, Participant>> the user is prompted for the Chats Participant's first-name, surname, date-of-birth 
 and sex. These data items are considered to uniquely identify a person (and are in fact the items used to calculate
 the Statistical Linkage Key (SLK) used in the <<DEX reports>>).
-
-[#Participants]
-=== Participants
 
 [#ParticipantsMenu_FindActiveParticipant]
 ==== Participants -> Find Active Participant
 
+This option gives a drop-down list of Participants having status 'ACTIVE'. This list is the standard list used throughout
+the App, as Participants are hidden by setting the status to another value (more details <<ParticipantStatus, here>>). 
+Only shows the Participants in the region of the current Chats App user.
+
 [#ParticipantsMenu_FindBySurname]
 ==== Participants -> Find By Surname
+
+This option gives another means to find an active Participant, so essentially the same as previous option but allows part of
+a name to be entered. {Note: in Chats 2.0 this is redundant as auto-complete is added to all Participant listings}.
 
 [#ParticipantsMenu_FindFutureParticipation]
 ==== Participants -> Find Future Participation
 
+Provides a convenient way to get a list of all booked participation in future activities for a specific Participant. Useful if
+the participant rings to enquire about this. This is the same list obtainable from the Participant but only includes future activities.
+
 [#ParticipantsMenu_ListActiveParticipants]
 ==== Participants -> List Active Participants
+
+Gives a paged listing of all the Participants, in the region of the current user, with status 'ACTIVE' (more details <<ParticipantStatus, here>>).
 
 [#ParticipantsMenu_ListExitedParticipants]
 ==== Participants -> List Exited Participants
 
+Gives a paged listing of all the Participants, in the region of the current user, with status 'EXITED' (more details <<ParticipantStatus, here>>).
+
 [#ParticipantsMenu_ListInactiveParticipants]
 ==== Participants -> List Inactive Participants
 
+Gives a paged listing of all the Participants, in the region of the current user, with status 'INACTIVE' (more details <<ParticipantStatus, here>>).
+
 [#ParticipantsMenu_ListToExitParticipants]
 ==== Participants -> List To Exit Participants
+
+Gives a paged listing of all the Participants, in the region of the current user, with status 'TO-EXIT' (more details <<ParticipantStatus, here>>).
 
 [#VolunteersMenu]
 === Volunteers
@@ -275,21 +291,37 @@ the Statistical Linkage Key (SLK) used in the <<DEX reports>>).
 [#VolunteersMenu_CreateVolunteer]
 ==== Volunteers -> Create
 
+To create a new <<Volunteer, Volunteer>> the user is prompted for the Chats Volunteer's first-name, surname, date-of-birth 
+and sex. These data items are considered to uniquely identify a person (and are in fact the items used to calculate
+the Statistical Linkage Key (SLK) used in the <<DEX reports>>). 
+
 [#VolunteersMenu_FindActiveVolunteer]
 ==== Volunteers -> Find Active Volunteer
+
+This option gives a drop-down list of Volunteers having status 'ACTIVE'. This list is the standard list used throughout
+the App, as Volunteers are hidden by setting the status to another value (more details <<VolunteerStatus, here>>). 
+Only shows the Volunteers in the region of the current Chats App user.
 
 [#VolunteersMenu_FindVolunteerBySurname]
 ==== Volunteers -> Find By Surname
 
+This option gives another means to find an active Volunteer, so essentially the same as previous option but allows part of
+a name to be entered. {Note: in Chats 2.0 this is redundant as auto-complete is added to all Volunteer listings}.
+
 [#VolunteersMenu_ListActiveVolunteers]
 ==== Volunteers -> List Active Volunteers
+
+Gives a paged listing of all the Volunteers, in the region of the current user, with status 'ACTIVE' (more details <<VolunteerStatus, here>>).
 
 [#VolunteersMenu_ListInactiveVolunteers]
 ==== Volunteers -> List Inactive Volunteers
 
+Gives a paged listing of all the Volunteers, in the region of the current user, with status 'INACTIVE' (more details <<VolunteerStatus, here>>).
+
 [#VolunteersMenu_ListToExitVolunteers]
 ==== Volunteers -> List To Exit Volunteers
 
+Gives a paged listing of all the Volunteers, in the region of the current user, with status 'TO-EXIT' (more details <<VolunteerStatus, here>>).
 
 [#AttendancesMenu]
 === Attendances
@@ -453,14 +485,22 @@ image:https://raw.github.com/Stephen-Cameron-Data-Services/isis-chats/master/dom
 [#Participant]
 === Participants
 
+[#ParticipantStatus]
+==== Participant Status
+
+{What happens when you change Participant status: ACTIVE, INACTIVE, TO-EXIT, EXITED}
+
 [#Participation]
 ==== Participation
 
 [#Attendance]
 ==== Attendance
 
-[#Volunteers]
+[#Volunteer]
 === Volunteers
+
+[#VolunteerStatus]
+==== Volunteer Status
 
 [#VolunteeredTime]
 ==== Volunteered Time
@@ -566,11 +606,11 @@ a run-time metamodel that binds the User-Interface (UI) to the domain model Java
 (via AI specific and Java Data Objects (JDO) annotations) and manages their life cycles and persistence.
 
 So while the above may seem a bit complex, installing the Chats App its simply done as its managed by the popular
-https://maven.apache.org/[Apache Maven] build system. The process is essentially: (1) Install Java, Development Kit version.
- (2) install Maven, (3) download the Chats App
-source from Github and build the Chats App sub-projects in the source using Maven, (4) Install database (MySQL with tools), and 
-(5) Install a Java web-container (server), Apache Tomcat is used, (6) deploy the web-application archive (.war file), created in the 
-build, into the web-server (a 'servlet container'). Each of these steps is now described in the necessary detail:
+https://maven.apache.org/[Apache Maven] build system. The process is essentially: (1) Install Java, Development Kit version;
+ (2) install Maven; (3) download the Chats App
+source from Github and build the Chats App sub-projects contained using Maven; (4) Install a database server (MySQL with tools), and 
+(5) Install a Java web-container; (web-server, servlet-container), Apache Tomcat is used; (6) deploy the web-application archive (.war file), created in the 
+build, into the web-container; (7) Ensure backups and restores of the database. Each of these steps is now described in the necessary detail:
 
 ==== 1. Install latest Java Development Kit (JDK)
 
@@ -665,8 +705,10 @@ When running the installer various options are available as to what gets install
 
 Once you have an installation completed, using the MySQL Workbench, its a simple task to create a new schema called 'chats' and a new user also called
 'chats' with password of your choice and to give that new chats user all rights to the chats schema. This will allow all the tables and
-constraints to be created automatically in the chats schema when the Chats App starts for the first time and connects to MySQL. On subsequent restarts
+constraints to be created automatically in the chats schema when the Chats App starts for the first time (in step 6) and connects to MySQL. On subsequent restarts
 it finds they are all present and doesn't change anything.
+
+In the case of having to restore the Chats database from an export file, an Import can be done at this stage. See <<BackupsAndRestores, Backups and Restores>>
 
 You have set up a MySQL database server in preparation for the Chats App to connect to it, running as a Windows Service.
 
@@ -684,9 +726,9 @@ started and stopped. This is done with an separate intaller that is also availab
 One way to test Apache Tomcat is to try its default administrator web-app. This requires an admin login which has to
 be enabled in configuration file. See the Tomcat installation docs for how to do that.
 
-Another thing to do to ensure that with a Windows server shutdown and restart, that the MySQL and Tomcat services start in the correct order.
+Also important is ensure that with a Windows server shutdown and restart, that the MySQL and Tomcat services start in the correct order.
 MySQL has to be ready to accept connections from the Chats App when Tomcat Service restarts. This is done in the configuration
-of the Service instance.
+of the Tomcat Service making it dependant on the MySQL Service (I recall???).
 
 ==== 6. Deploy the Chats App web-app into Tomcat
 
@@ -726,7 +768,7 @@ MySQL parameters of schema-name (/chats) and a specific configuration of how to 
 (?zeroDateTimeBehavior=convertToNull). The third and forth are the database user name and password created in step 4 above.
 
 There is one more thing to do to enable the connection of Chats App to the MySQL database, which is to move the
-MySQL JDBC driver/connector from the location of the Chats specific libraries (extracted from chats.war), which is 
+MySQL JDBC driver/connector from the location of the Chats specific libraries (from chats.war), which is 
 mysql-connector-java-X.X.X.jar in the folder webapps/chats/WEB-INF/lib/, into the shared lib/ folder at the top level of
 the Tomcat intall location. I think the need for this is may be due to Tomcat actually holding the database connections.
 
@@ -734,13 +776,24 @@ Once this configuration step is completed restart the Tomcat service, or else us
 (if enabled) to just start the chats 'context'. If the chats app is then still not available,  its usually
 necessary to check the tomcat logs in the top level logs/ folder for error messages to figure out why.
 
-==== 7. Other installation issues
+[#BackupsAndRestores]
+== Backups and Restores
 
-In restarting the server
+The Chats App MySQL database can be recovered from exports made on a nightly basis and saved to tape. 
 
-==== Recovering existing database
+Exports to file and Imports from file can either be done from the command-line or from the MySQL Workbench Client App 
+installed in step 4. 
 
-The Chats MySQL database can be recovered from exports made on a nightly basis and saved to tape. The MySQL workbench can
-do this import task to bring all the exported data
+To create the nightly exports, a Windows batch file is executed by the Windows Scheduler each night at 6:00pm.
+These exported 'dump' files get saved to tape. The last 20 such export files are on the server as the batch file also removes any files older 
+than 20 days in the export folder location.
+
+Doing an data import from the lastest export file is easily done using the MySQL Workbench Client, from the top menu 
+select Server -> Data Import then select the exported 'dump' file to import. It shouldn't be necessary to create the chats schema
+first but doesn't seem to matter if you have already. The import will create all tables and views present in the database schema exported.
+
+
+
+
 
 
