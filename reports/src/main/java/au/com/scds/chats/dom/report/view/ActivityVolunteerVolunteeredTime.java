@@ -31,7 +31,9 @@ import org.joda.time.LocalDate;
 				+ "  {this.ageAtDateOfActivity}, " + "  {this.slk}, " + "  {this.activityId}, "
 				+ "  {this.activityName}, " + "  {this.activityAbbreviatedName}, " + "  {this.regionName}, "
 				+ "  {this.startDateTime}, " + "  {this.cancelled}, " + "  {this.volunteerId}, "
-				+ "  {this.participantId}, " + "  {this.volunteerStatus}, " + "  {this.volunteeredTimeId}, "
+				+ "  {this.participantId}, " 
+				+ "  {this.aboriginalOrTsi}, "
+				+ "  {this.volunteerStatus}, " + "  {this.volunteeredTimeId}, "
 				+ "  {this.includeAsParticipation}, " + "  {this.minutes} " + ") AS " + "SELECT "
 				+ "  person.person_id as personId, " + "  person.surname, " + "  person.firstname AS firstName, "
 				+ "  person.birthdate AS birthDate, "
@@ -39,7 +41,9 @@ import org.joda.time.LocalDate;
 				+ "  person.slk, " + "  activity.activity_id AS activityId, " + "  activity.name AS activityName, "
 				+ "  activity.abbreviatedName AS activityAbbreviatedName, " + "  activity.region_name AS regionName, "
 				+ "  activity.startdatetime AS startDateTime, " + "  activity.cancelled AS cancelled, "
-				+ "  volunteer.volunteer_id AS volunteerId, " + "  participant.participant_id AS participantId, "
+				+ "  volunteer.volunteer_id AS volunteerId, "
+				+ "  participant.participant_id AS participantId, "
+				+ "  participant.aboriginalOrTorresStraitIslanderOrigin_name AS aboriginalOrTsi, "
 				+ "  volunteer.status AS volunteerStatus, "
 				+ "  volunteeredtime.volunteeredtime_id AS volunteeredtimeId, "
 				+ "  volunteeredtime.includeasparticipation as includeAsParticipation, "
@@ -62,7 +66,8 @@ import org.joda.time.LocalDate;
 		@Query(name = "allActivityVolunteerVolunteeredTimeForPeriodAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime vt "
 				+ "WHERE vt.startDateTime >= :startDateTime && vt.startDateTime < :endDateTime && vt.includeAsParticipation == :includeAsParticipation && vt.regionName == :region"),
 		@Query(name = "allActivityVolunteerVolunteeredTimeForPeriodAndRegionForDEX", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime vt "
-				+ "WHERE vt.startDateTime >= :startDateTime && vt.startDateTime < :endDateTime && vt.includeAsParticipation == true && vt.regionName == :region && vt.ageAtDateOfActivity > 64"), })
+				+ "WHERE vt.startDateTime >= :startDateTime && vt.startDateTime < :endDateTime && vt.includeAsParticipation == true && vt.regionName == :region "
+				+ "&& (pa.ageAtDayOfActivity > 64 || pa.aboriginalOrTorresStraitIslanderOrigin.substring(40).equals('ABORIGINAL') || pa.aboriginalOrTorresStraitIslanderOrigin.substring(40).equals('TSI'))"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ActivityVolunteerVolunteeredTime
 		implements WithApplicationTenancy, Comparable<ActivityVolunteerVolunteeredTime> {
@@ -80,6 +85,7 @@ public class ActivityVolunteerVolunteeredTime
 	private Date startDateTime;
 	private Long volunteerId;
 	private Long participantId;
+	private String aboriginalOrTsi;
 	private String volunteerStatus;
 	private Long volunteeredTimeId;
 	private Boolean includeAsParticipation;
@@ -157,13 +163,13 @@ public class ActivityVolunteerVolunteeredTime
 	public void setCancelled(Boolean cancelled) {
 		this.cancelled = cancelled;
 	}
-
-	public String getParticipantStatus() {
-		return volunteerStatus;
+	
+	public String getAboriginalOrTsi() {
+		return this.aboriginalOrTsi;
 	}
 
-	public void setParticipantStatus(String volunteerStatus) {
-		this.volunteerStatus = volunteerStatus;
+	public void setAboriginalOrTsi(String aboriginalOrTsi) {
+		this.aboriginalOrTsi = aboriginalOrTsi;
 	}
 
 	public Integer getMinutes() {
