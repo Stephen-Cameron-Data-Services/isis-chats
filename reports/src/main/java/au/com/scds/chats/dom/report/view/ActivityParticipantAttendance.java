@@ -105,7 +105,7 @@ import org.joda.time.LocalDate;
 				+ "WHERE pa.startDateTime >= :startDateTime && pa.startDateTime <= :endDateTime && pa.attended == :attended && pa.regionName == :region"),
 		@Query(name = "allParticipantActivityForPeriodAndRegionForDEX", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityParticipantAttendance pa "
 				+ "WHERE pa.startDateTime >= :startDateTime && pa.startDateTime <= :endDateTime && pa.attended == :attended && pa.regionName == :region "  
-				+ "&& (pa.ageAtDayOfActivity > 64 || pa.aboriginalOrTorresStraitIslanderOrigin.substring(40).equals('ABORIGINAL') || pa.aboriginalOrTorresStraitIslanderOrigin.substring(40).equals('TSI'))"), })
+				+ "&& (pa.ageAtDayOfActivity > 64 || pa.aboriginalOrTsi.substring(40).equals('ABORIGINAL') || pa.aboriginalOrTsi.substring(40).equals('TSI') || pa.aboriginalOrTsi.substring(40).equals('BOTH'))"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ActivityParticipantAttendance
 		/* implements WithApplicationTenancy */ implements Comparable<ActivityParticipantAttendance> {

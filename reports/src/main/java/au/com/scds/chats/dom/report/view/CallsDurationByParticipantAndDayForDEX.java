@@ -45,13 +45,13 @@ import org.joda.time.LocalDate;
 @PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "CallsDurationByParticipantAndDayForDEX", extensions = {
 		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW CallsDurationByParticipantAndDayForDEX "
 				+ "( " + "  {this.personId}, " + "  {this.surname}, " + "  {this.firstName}, " + "  {this.birthDate}, "
-				+ "  {this.slk}, " + "  {this.ageAtDateOfCall}, " + "  {this.participantId}, " + "  {this.regionName}, "
+				+ "  {this.slk}, " + "  {this.ageAtDayOfCall}, " + "  {this.participantId}, " + "  {this.regionName}, "
 				+ "  {this.participantStatus}, "
 				+ "  {this.aboriginalOrTsi}, "
 				+ "  {this.date}, " + "  {this.callMinutesTotal} " + ") AS "
 				+ "SELECT " + "  person.person_id AS personId, " + "  person.surname, "
 				+ "  person.firstname AS firstName, " + "  person.birthdate AS birthDate, " + "  person.slk, "
-				+ "  timestampdiff(year,person.birthdate,curdate()) AS ageAtDateOfCall, "
+				+ "  timestampdiff(year,person.birthdate,curdate()) AS ageAtDayOfCall, "
 				+ "  participant.participant_id AS participantId, " + "  participant.region_name AS regionName, "
 				+ "  participant.status AS participantStatus, "
 				+ "  participant.aboriginalOrTorresStraitIslanderOrigin_name AS aboriginalOrTsi, "
@@ -65,7 +65,7 @@ import org.joda.time.LocalDate;
 		@Query(name = "allCallsDurationByParticipantAndDay", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX"),
 		@Query(name = "allCallsDurationByParticipantAndDayAndRegion", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.CallsDurationByParticipantAndDayForDEX "
 				+ "WHERE date >= :startDate && date <= :endDate && regionName == :region "
-				+ "&& (pa.ageAtDayOfActivity > 64 || pa.aboriginalOrTorresStraitIslanderOrigin.substring(40).equals('ABORIGINAL') || pa.aboriginalOrTorresStraitIslanderOrigin.substring(40).equals('TSI'))"), })
+				+ "&& (ageAtDayOfCall > 64 || aboriginalOrTsi.substring(40).equals('ABORIGINAL') || aboriginalOrTsi.substring(40).equals('TSI') || aboriginalOrTsi.substring(40).equals('BOTH'))"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTenancy {
 
@@ -74,7 +74,7 @@ public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTe
 	public String firstName;
 	public LocalDate birthDate;
 	public String slk;
-	public Integer ageAtDateOfCall;
+	public Integer ageAtDayOfCall;
 	public Long participantId;
 	public String regionName;
 	public String participantStatus;
@@ -174,12 +174,12 @@ public class CallsDurationByParticipantAndDayForDEX implements WithApplicationTe
 		this.callMinutesTotal = total;
 	}
 
-	public Integer getAgeAtDateOfCall() {
-		return ageAtDateOfCall;
+	public Integer getAgeAtDayOfCall() {
+		return ageAtDayOfCall;
 	}
 
-	public void setAgeAtDateOfCall(Integer ageAtDateOfCall) {
-		this.ageAtDateOfCall = ageAtDateOfCall;
+	public void setAgeAtDateOfCall(Integer ageAtDayOfCall) {
+		this.ageAtDayOfCall = ageAtDayOfCall;
 	}
 
 	@Programmatic

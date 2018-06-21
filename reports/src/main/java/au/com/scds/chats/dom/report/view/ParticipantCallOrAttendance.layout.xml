@@ -10,7 +10,7 @@
 	</row>
 	<row>
 		<col span="12">
-			<ns2:fieldSet name="Mail Merge Data" id="general"
+			<ns2:fieldSet name="Participant Call or Attendance" id="general"
 				unreferencedProperties="true">
 				<ns2:property id="personId" hidden="EVERYWHERE" />
 				<ns2:property id="surname" />

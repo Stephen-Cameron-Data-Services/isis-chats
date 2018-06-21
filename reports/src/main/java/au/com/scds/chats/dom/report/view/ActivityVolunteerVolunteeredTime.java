@@ -28,7 +28,7 @@ import org.joda.time.LocalDate;
 @PersistenceCapable(identityType = IdentityType.NONDURABLE, table = "ActivityVolunteerVolunteeredTime", extensions = {
 		@Extension(vendorName = "datanucleus", key = "view-definition", value = "CREATE VIEW ActivityVolunteerVolunteeredTime "
 				+ "( " + "  {this.personId}, " + "  {this.surname}, " + "  {this.firstName}, " + "  {this.birthDate}, "
-				+ "  {this.ageAtDateOfActivity}, " + "  {this.slk}, " + "  {this.activityId}, "
+				+ "  {this.ageAtDayOfActivity}, " + "  {this.slk}, " + "  {this.activityId}, "
 				+ "  {this.activityName}, " + "  {this.activityAbbreviatedName}, " + "  {this.regionName}, "
 				+ "  {this.startDateTime}, " + "  {this.cancelled}, " + "  {this.volunteerId}, "
 				+ "  {this.participantId}, " 
@@ -37,7 +37,7 @@ import org.joda.time.LocalDate;
 				+ "  {this.includeAsParticipation}, " + "  {this.minutes} " + ") AS " + "SELECT "
 				+ "  person.person_id as personId, " + "  person.surname, " + "  person.firstname AS firstName, "
 				+ "  person.birthdate AS birthDate, "
-				+ "  TIMESTAMPDIFF(YEAR,person.birthdate, activity.startdatetime) AS ageAtDateOfActivity, "
+				+ "  TIMESTAMPDIFF(YEAR,person.birthdate, activity.startdatetime) AS ageAtDayOfActivity, "
 				+ "  person.slk, " + "  activity.activity_id AS activityId, " + "  activity.name AS activityName, "
 				+ "  activity.abbreviatedName AS activityAbbreviatedName, " + "  activity.region_name AS regionName, "
 				+ "  activity.startdatetime AS startDateTime, " + "  activity.cancelled AS cancelled, "
@@ -67,7 +67,7 @@ import org.joda.time.LocalDate;
 				+ "WHERE vt.startDateTime >= :startDateTime && vt.startDateTime < :endDateTime && vt.includeAsParticipation == :includeAsParticipation && vt.regionName == :region"),
 		@Query(name = "allActivityVolunteerVolunteeredTimeForPeriodAndRegionForDEX", language = "JDOQL", value = "SELECT FROM au.com.scds.chats.dom.report.view.ActivityVolunteerVolunteeredTime vt "
 				+ "WHERE vt.startDateTime >= :startDateTime && vt.startDateTime < :endDateTime && vt.includeAsParticipation == true && vt.regionName == :region "
-				+ "&& (pa.ageAtDayOfActivity > 64 || pa.aboriginalOrTorresStraitIslanderOrigin.substring(40).equals('ABORIGINAL') || pa.aboriginalOrTorresStraitIslanderOrigin.substring(40).equals('TSI'))"), })
+				+ "&& (vt.ageAtDayOfActivity > 64 || vt.aboriginalOrTsi.substring(40).equals('ABORIGINAL') || vt.aboriginalOrTsi.substring(40).equals('TSI') || vt.aboriginalOrTsi.substring(40).equals('BOTH'))"), })
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 public class ActivityVolunteerVolunteeredTime
 		implements WithApplicationTenancy, Comparable<ActivityVolunteerVolunteeredTime> {
@@ -90,7 +90,7 @@ public class ActivityVolunteerVolunteeredTime
 	private Long volunteeredTimeId;
 	private Boolean includeAsParticipation;
 	private Integer minutes;
-	private Integer ageAtDateOfActivity;
+	private Integer ageAtDayOfActivity;
 
 	public String getSurname() {
 		return surname;
@@ -237,11 +237,11 @@ public class ActivityVolunteerVolunteeredTime
 	}
 
 	public Integer getAgeAtDateOfActivity() {
-		return this.ageAtDateOfActivity;
+		return this.ageAtDayOfActivity;
 	}
 
-	public void setAgeAtDateOfActivity(Integer ageAtDateOfActivity) {
-		this.ageAtDateOfActivity = ageAtDateOfActivity;
+	public void setAgeAtDateOfActivity(Integer ageAtDayOfActivity) {
+		this.ageAtDayOfActivity = ageAtDayOfActivity;
 	}
 
 	@Override
