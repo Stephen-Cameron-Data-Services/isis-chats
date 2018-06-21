@@ -38,7 +38,7 @@ public class AddressTest {
 
 	public static class AddressTest_Tests extends LocationTest {
 
-		@Test
+		/*@Test
 		public void createLocationFromAddress() throws Exception {
 
 			address.setName("Headquarters");
@@ -52,7 +52,7 @@ public class AddressTest {
 			assertThat(address.getLocation()).isNotEqualTo(null);
 			assertThat(address.getLocation().getLatitude()).isEqualTo(address.getLatitude());
 			assertThat(address.getLocation().getLongitude()).isEqualTo(address.getLongitude());
-		}
+		}*/
 
 		@Test
 		public void updateActivityAddress() {

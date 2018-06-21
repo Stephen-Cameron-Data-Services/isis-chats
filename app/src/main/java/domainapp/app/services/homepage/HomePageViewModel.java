@@ -24,8 +24,6 @@ import org.apache.isis.applib.annotation.CollectionLayout;
 import org.apache.isis.applib.annotation.HomePage;
 import org.apache.isis.applib.annotation.RenderType;
 import org.apache.isis.applib.annotation.ViewModel;
-import org.incode.module.note.dom.impl.note.Note;
-import org.incode.module.note.dom.impl.note.NoteRepository;
 
 @ViewModel
 public class HomePageViewModel {
