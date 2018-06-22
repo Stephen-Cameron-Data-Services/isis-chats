@@ -79,7 +79,11 @@ import au.com.scds.chats.dom.volunteer.Volunteers;
 		@Query(name = "findNewOrModifiedParticipantsByPeriodAndRegion", language = "JDOQL", value = "SELECT "
 				+ "FROM au.com.scds.chats.dom.participant.Participant "
 				+ "WHERE ((person.createdOn >= :startDate AND person.createdOn < :startDate) "
-				+ "OR (person.modifiedOn >= :startDate AND person.modifiedOn < :startDate)) AND region = :region"), })
+				+ "OR (person.modifiedOn >= :startDate AND person.modifiedOn < :startDate)) AND region = :region"),
+		@Query(name = "listAboriginalOrTorresStraitIslander", language = "JDOQL", value = "SELECT "
+				+ "FROM au.com.scds.chats.dom.participant.Participant  " 
+				+ "WHERE aboriginalOrTorresStraitIslanderOrigin == :aboriginal || aboriginalOrTorresStraitIslanderOrigin == :tsi || aboriginalOrTorresStraitIslanderOrigin == :both"),
+		})
 public class Participant extends AbstractChatsDomainEntity
 		implements  Comparable<Participant> {
 

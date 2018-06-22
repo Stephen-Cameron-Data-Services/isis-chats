@@ -59,6 +59,8 @@ import au.com.scds.chats.dom.AbstractChatsDomainEntity;
 import au.com.scds.chats.dom.activity.Activity;
 import au.com.scds.chats.dom.activity.ParentedActivityEvent;
 import au.com.scds.chats.dom.activity.RecurringActivity;
+import au.com.scds.chats.dom.dex.DexReferenceData;
+import au.com.scds.chats.dom.dex.reference.AboriginalOrTorresStraitIslanderOrigin;
 import au.com.scds.chats.dom.general.Person;
 import au.com.scds.chats.dom.general.Persons;
 import au.com.scds.chats.dom.general.Sex;
@@ -370,6 +372,27 @@ public class Participants {
 		container.removeIfNotAlready(note);
 		container.flush();
 	}
+	
+	public List<Participant> listAboriginalOrTorresStraitIslander() {
+		AboriginalOrTorresStraitIslanderOrigin aboriginal = null;
+		AboriginalOrTorresStraitIslanderOrigin tsi = null;
+		AboriginalOrTorresStraitIslanderOrigin both = null;
+		for(AboriginalOrTorresStraitIslanderOrigin a : dexRefData.allAboriginalOrTorresStraitIslanderOrigin()){
+			switch(a.getName()){
+			case "AboriginalOrTorresStraitIslanderOrigin__ABORIGINAL":
+				aboriginal = a;
+				break;
+			case "AboriginalOrTorresStraitIslanderOrigin__TSI":
+				tsi = a;
+				break;
+			case "AboriginalOrTorresStraitIslanderOrigin__BOTH":
+				both = a;
+				break;
+			}
+		}
+		return 	container
+				.allMatches(new QueryDefault<>(Participant.class, "listAboriginalOrTorresStraitIslander","aboriginal",aboriginal,"tsi",tsi,"both",both));
+	}
 
 	@Inject
 	protected Persons persons;
@@ -388,5 +411,8 @@ public class Participants {
 
 	@Inject
 	protected UserService userService;
+	
+	@Inject
+	protected DexReferenceData dexRefData;
 
 }
