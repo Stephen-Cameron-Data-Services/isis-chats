@@ -325,6 +325,22 @@ public class Volunteers {
 		}
 		return newList;
 	}
+	
+
+	@Programmatic
+	public VolunteerNote createVolunteerNote(Volunteer volunteer) {
+		VolunteerNote note = container.newTransientInstance(VolunteerNote.class);
+		note.setVolunteer(volunteer);
+		container.persistIfNotAlready(note);
+		container.flush();
+		return note;
+	}
+
+	@Programmatic
+	public void deleteVolunteerNote(VolunteerNote note) {
+		container.removeIfNotAlready(note);
+		container.flush();
+	}
 
 	@Inject
 	protected DomainObjectContainer container;

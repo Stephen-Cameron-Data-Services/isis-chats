@@ -63,6 +63,7 @@ import au.com.scds.chats.dom.general.Status;
 import au.com.scds.chats.dom.participant.AgeGroup;
 import au.com.scds.chats.dom.participant.Participant;
 import au.com.scds.chats.dom.participant.ParticipantIdentity;
+import au.com.scds.chats.dom.participant.ParticipantNote;
 import au.com.scds.chats.dom.participant.Participants;
 
 @DomainObject(objectType = "VOLUNTEER")
@@ -91,6 +92,8 @@ public class Volunteer extends AbstractChatsDomainEntity implements Comparable<V
 	@Persistent(mappedBy = "volunteer")
 	@Order(column = "v_idx")
 	protected List<RegularScheduledCallAllocation> callAllocations = new ArrayList<>();
+	@Persistent(mappedBy = "volunteer")
+	protected SortedSet<VolunteerNote> notes = new TreeSet<>();
 
 	public String title() {
 		String title = getPerson().getFullname();
@@ -337,11 +340,44 @@ public class Volunteer extends AbstractChatsDomainEntity implements Comparable<V
 
 	@Inject
 	protected Volunteers volunteers;
+	
+	public SortedSet<VolunteerNote> getNotes() {
+		return notes;
+	}
 
+	private void setNotes(SortedSet<VolunteerNote> notes) {
+		this.notes = notes;
+	}
+	@Action
+	public Volunteer addNote(@ParameterLayout(named = "Note Content", multiLine = 10) String notes) {
+		VolunteerNote note = volunteersRepo.createVolunteerNote(this);
+		note.setNote(notes);
+		getNotes().add(note);
+		return this;
+	}
+
+	@Action
+	public Volunteer removeNote(@Parameter() VolunteerNote note) {
+		if (note != null && getNotes().contains(note)) {
+			getNotes().remove(note);
+			volunteersRepo.deleteVolunteerNote(note);
+		}
+		return this;
+	}
+
+	public List<VolunteerNote> choices0RemoveNote() {
+		return new ArrayList<VolunteerNote>(getNotes());
+	}
+	
 	@Inject
 	protected Calls schedulesRepo;
 
 	@Inject
 	protected Participants participantsRepo;
+	
+	@Inject
+	protected Volunteers volunteersRepo;
+
+
 
 }
