@@ -290,7 +290,7 @@ SELECT
   participant.region_name AS regionName, 
   participant.status AS participantStatus, 
   telephonecall.startdatetime AS startdatetime, 
-  CAST(SUM(TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime)) AS UNSIGNED) as callMinutesTotal 
+  TIMESTAMPDIFF(MINUTE,telephonecall.startdatetime,telephonecall.enddatetime) as callMinutesTotal 
 FROM 
   telephonecall, 						
   participant, 

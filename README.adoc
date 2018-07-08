@@ -779,6 +779,14 @@ necessary to check the tomcat logs in the top level logs/ folder for error messa
 [#BackupAndRestore]
 == Backup and Restore
 
+@echo off
+rem Backup Database (Daily,via Task Scheduler)
+rem chats_new
+set filename="C:\Users\lifeline\Documents\dumps\chats.%date:~10,4%%date:~7,2%%date:~4,2%T%time:~0,2%%time:~3,2%.sql"
+"C:\Program Files\MySQL\MySQL Server 5.7\bin\mysqldump.exe" --user=backup --password=password --host=localhost --port=3306 --result-file=%filename% --default-character-set=utf8 --single-transaction=TRUE --databases "chats"
+rem delete files older than 31 days
+forfiles -p "C:\Users\lifeline\Documents\dumps" -m *.sql -d -31 -c "cmd /c del @path"
+
 The Chats App MySQL database can be recovered from exports made on a nightly basis and saved to tape. 
 
 Exports to file and Imports from file can either be done from the command-line or from the MySQL Workbench Client App 
